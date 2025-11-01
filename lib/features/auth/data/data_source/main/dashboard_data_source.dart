@@ -1,0 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rizqmart/features/auth/data/model/main/dash_firestore_model.dart';
+
+class DashboardDataSource {
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Stream<List<DashFirestoreModel>> getAllProducts() {
+    try {
+      return firestore
+          .collection('products')
+          .snapshots()
+          .map((snap) => snap.docs.map((doc) {
+                return DashFirestoreModel.fromFireStore(doc);
+              }).toList());
+    } catch (e) {
+      return const Stream.empty();
+    }
+  }
+}

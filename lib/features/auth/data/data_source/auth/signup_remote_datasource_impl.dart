@@ -1,0 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rizqmart/features/auth/data/data_source/auth/signup_remote_datasource.dart';
+
+
+class SignupRemoteDatasourceImpl implements SignupRemoteDatasource {
+  final FirebaseAuth firebaseAuth;
+  final FirebaseFirestore firebaseFirestore;
+  SignupRemoteDatasourceImpl(
+      {required this.firebaseAuth, required this.firebaseFirestore});
+  @override
+  Future<Map<String, dynamic>> signUp(
+      {required String name,
+      required String email,
+      required String password}) async {
+    final credantial = await firebaseAuth.createUserWithEmailAndPassword(
+        email: email, password: password);
+    final userId = credantial.user!.uid;
+    await firebaseFirestore.collection('users').doc(userId).set({
+      'uid': userId,
+      'name': name,
+      'email': email,
+    });
+    
+    return {
+      'uid': userId,
+      'name': name,
+      'email': email,
+    };
+  }
+}
