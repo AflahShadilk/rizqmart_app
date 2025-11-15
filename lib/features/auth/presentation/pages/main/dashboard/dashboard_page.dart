@@ -8,6 +8,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_sta
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/empty_product_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/product_card.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/topbar_items.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/variant_det_getter.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/bloc%20helper/circular_progress.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/bloc%20helper/scaffold_error.dart';
 
@@ -61,59 +62,103 @@ class _DashboardPageState extends State<DashboardPage> {
             children: [
               topBarItems(context, _searchController, _onSearch),
               Expanded(
-                child: BlocBuilder<DashBloc, DashState>(
-                  buildWhen: (previous, current) =>
-                      current is LoadingProductState ||
-                      current is LoadedProductState ||
-                      current is FailureLoadingProductState,
-                  builder: (context, state) {
-                    if (state is LoadingProductState) {
-                      return Center(child: circularProgressIndicators());
-                    } else if (state is FailureLoadingProductState) {
-                      return errorMessageScaffold(state);
-                    } else if (state is LoadedProductState) {
-                      _allProducts = state.products;
-      
-                      if (_isSearching && _filteredProducts.isEmpty) {
-                        return buildEmpty(
-                            context, _isSearching, _searchController, () {
-                          _searchController.clear();
-                          _onSearch('');
-                        });
-                      }
-      
-                      final displayProducts =
-                          _isSearching ? _filteredProducts : _allProducts;
-      
-                      return displayProducts.isEmpty
-                          ? buildEmpty(
-                              context, _isSearching, _searchController, () {
-                              _searchController.clear();
-                              _onSearch('');
-                            })
-                          : GridView.builder(
-                              padding: const EdgeInsets.all(16),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                childAspectRatio: 0.75,
-                                crossAxisSpacing: 12,
-                                mainAxisSpacing: 16,
-                              ),
-                              itemBuilder: (context, index) {
-                                final product = displayProducts[index];
-                                return ProductCard(product: product);
-                              },
-                              itemCount: displayProducts.length,
-                            );
-                    }
-                    return const SizedBox();
-                  },
+  child: BlocBuilder<DashBloc, DashState>(
+    buildWhen: (previous, current) =>
+        current is LoadingProductState ||
+        current is LoadedProductState ||
+        current is FailureLoadingProductState,
+    builder: (context, state) {
+      if (state is LoadingProductState) {
+        return Center(child: circularProgressIndicators());
+      } else if (state is FailureLoadingProductState) {
+        return errorMessageScaffold(state);
+      } else if (state is LoadedProductState) {
+        _allProducts = state.products;
+
+        if (_isSearching && _filteredProducts.isEmpty) {
+          return buildEmpty(
+              context, _isSearching, _searchController, () {
+            _searchController.clear();
+            _onSearch('');
+          });
+        }
+
+        final displayProducts =
+            _isSearching ? _filteredProducts : _allProducts;
+
+        return displayProducts.isEmpty
+            ? buildEmpty(
+                context, _isSearching, _searchController, () {
+                _searchController.clear();
+                _onSearch('');
+              })
+            : SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+                      child: Text(
+                        'Exclusive Offers',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 210,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        itemCount: displayProducts.length,
+                        itemBuilder: (context, index) {
+                          final product = displayProducts[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: ProductCard(product: product),
+                          );
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 25, 16, 12),
+                      child: Text(
+                        'All Products',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.75,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 16,
+                      ),
+                      itemBuilder: (context, index) {
+                        final product = displayProducts[index];
+                        return ProductCard(product: product);
+                      },
+                      itemCount: displayProducts.length,
+                    ),
+                  ],
                 ),
-              )
+              );
+      }
+      return const SizedBox();
+    },
+  ),
+)
             ],
           ),
-          // Search Results Dropdown
+      
           if (_isSearching && _filteredProducts.isNotEmpty)
             Positioned(
               top: 120,
@@ -171,9 +216,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: product.imageUrl.isNotEmpty
+                  child: getVariantImages(widget).isNotEmpty
                       ? Image.network(
-                          product.imageUrl.first,
+                          getVariantImages(widget).first,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(

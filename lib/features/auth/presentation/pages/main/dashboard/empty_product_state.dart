@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-Widget buildEmpty(BuildContext context, bool _isSearching, dynamic _searchController,void Function() onPress) {
+Widget buildEmpty(BuildContext context, bool isSearching, dynamic searchController,void Function() onPress) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Center(
@@ -34,8 +34,8 @@ Widget buildEmpty(BuildContext context, bool _isSearching, dynamic _searchContro
           ),
           const SizedBox(height: 8),
           Text(
-            _isSearching
-                ? 'No products match "${_searchController.text}"'
+            isSearching
+                ? 'No products match "${searchController.text}"'
                 : 'No products available at the moment',
             style: TextStyle(
               color: colorScheme.onBackground.withOpacity(0.6),
@@ -44,7 +44,7 @@ Widget buildEmpty(BuildContext context, bool _isSearching, dynamic _searchContro
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          if (_isSearching)
+          if (isSearching)
             ElevatedButton(
               onPressed: onPress,
               child: const Text('Clear Search'),

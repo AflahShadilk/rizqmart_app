@@ -7,9 +7,13 @@ import 'package:rizqmart/features/auth/presentation/bloc/auth/forgot/forgot_bloc
 import 'package:rizqmart/features/auth/presentation/bloc/auth/google/google_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signUp/signup_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/counter/counter_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/splash_screen.dart';
-import 'package:rizqmart/features/auth/presentation/pages/registeration/register.dart';
+import 'package:rizqmart/core/services/registeration/register.dart';
 import 'package:rizqmart/firebase_options.dart';
 
 void main() async {
@@ -36,8 +40,12 @@ class MyApp extends StatelessWidget {
         BlocProvider( create: (context) => SigninBloc(signinUsecase: sl()) ),
         BlocProvider(create: (context)=>ForgotBloc(forgotpassUsecase: sl())),
         BlocProvider(create: (context)=>GooogleAuthBloc(signInWithGoogle: sl())),
-        //main parts
+        BlocProvider(create: (context)=>SignOutBloc(signoutUsecase: sl())),
+                                                               //main parts
         BlocProvider(create: (context)=>DashBloc(usecase: sl())),
+        BlocProvider(create: (context)=>CounterCubit()),
+        BlocProvider(create: (context)=>ExploreBloc(getProductUsecase: sl(), getProductbycategoryUsecase: sl(), searchProductsUsecase: sl(), getCategoryUsecase: sl())),
+        BlocProvider(create: (context)=>WishListBloc(addToWishListUsecase: sl(), deleteFrmWishListUsecase: sl(), getAllWishListUsecase: sl(), wishListToggleUsecase: sl())),
       ],
       child: BlocBuilder<ThemeCubit,ThemeState>(builder: (context,state){
        return MaterialApp(
