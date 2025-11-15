@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/view_details_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/variant_det_getter.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/add_to_cart_button.dart';
 
@@ -47,7 +47,7 @@ class _ProductCardState extends State<ProductCard>
       onTapUp: (_) => _controller.reverse(),
       onTapCancel: () => _controller.reverse(),
       onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ViewDetailsPage(product: widget.product))),
+          builder: (context) => ProductDetailsPage(product: widget.product))),
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: SizedBox(
@@ -78,9 +78,9 @@ class _ProductCardState extends State<ProductCard>
                         color: Theme.of(context).brightness == Brightness.dark
                             ? colorScheme.onSurface.withOpacity(0.1)
                             : Colors.grey.shade100,
-                        child: getVariantImages(widget).isNotEmpty
+                        child: getVariantImages(widget.product).isNotEmpty
                             ? Image.network(
-                                getVariantImages(widget).first,
+                                getVariantImages(widget.product).first,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Center(
@@ -133,7 +133,7 @@ class _ProductCardState extends State<ProductCard>
                               children: [
                                 Expanded(
                                   child: Text(
-                                    '₹${getVariantMrp(widget).first.toStringAsFixed(0)}',
+                                    '₹${getVariantMrp(widget.product).first.toStringAsFixed(0)}',
                                     overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context)
                                         .textTheme

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
+import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/empty_wish_list.dart';
 
 class FavoritePage extends StatefulWidget {
@@ -18,7 +19,6 @@ class _FavoritePageState extends State<FavoritePage> {
   @override
   void initState() {
     super.initState();
-    
     context.read<WishListBloc>().add(GetAllWishListEvent());
   }
 
@@ -34,12 +34,12 @@ class _FavoritePageState extends State<FavoritePage> {
       ),
       body: BlocBuilder<WishListBloc, WishListState>(
         builder: (context, state) {
-    
           if (state is LoadingWishListState) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
+
           if (state is FailureWishListState) {
             return Center(
               child: Column(
@@ -59,162 +59,226 @@ class _FavoritePageState extends State<FavoritePage> {
               ),
             );
           }
+
           if (state is LoadedWishListState) {
+            // ✅ FIXED: Now state.items is already a List<WishListEntities>
+            final allProducts = state.items;
 
-            return _buildFavoriteGrid(context, []);
-          }
+            if (allProducts.isEmpty) {
+              return buildEmptyState(context);
+            }
 
-      
-          return buildEmptyState(context);
-        },
-      ),
-    );
-  }
+            // Build list of all variants from all products
+            List<Map<String, dynamic>> allVariants = [];
 
-  Widget _buildFavoriteGrid(BuildContext context, List<dynamic> favoriteProducts) {
-    if (favoriteProducts.isEmpty) {
-      return buildEmptyState(context);
-    }
+            for (var product in allProducts) {
+              if (product.variantDetails.isEmpty) {
+                continue;
+              }
 
-    return GridView.builder(
-      padding: const EdgeInsets.all(12),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.75,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 16,
-      ),
-      itemCount: favoriteProducts.length,
-      itemBuilder: (context, index) {
-        final product = favoriteProducts[index];
-        return _buildProductCard(context, product, index);
-      },
-    );
-  }
+              for (int i = 0; i < product.variantDetails.length; i++) {
+                allVariants.add({
+                  'product': product,
+                  'variantIndex': i,
+                });
+              }
+            }
 
-  Widget _buildProductCard(
-    BuildContext context,
-    dynamic product,
-    int index,
-  ) {
-    // Extract product data - adjust based on your WishListEntities structure
-    final productId = product.id ?? '';
-    final productName = product.name ?? 'Product';
-    final productImage = product.variantDetails?.isNotEmpty == true
-        ? product.variantDetails![0]['imageUrls']:'';
-    final productPrice = product.variantDetails?.isNotEmpty == true
-        ? product.variantDetails![0]['mrp'] ?? 0
-        : 0;
+            if (allVariants.isEmpty) {
+              return buildEmptyState(context);
+            }
 
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                ),
-                color: Colors.grey[200],
+            return GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.72,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
               ),
-              child: Stack(
-                children: [
-                  // Product Image
-                  ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
+              itemCount: allVariants.length,
+              itemBuilder: (context, index) {
+                final product = allVariants[index]['product'];
+                final variantIndex = allVariants[index]['variantIndex'];
+                final variant = product.variantDetails[variantIndex];
+
+                List<String> imageList =
+                    List<String>.from(variant['imageUrls'] ?? []);
+                String image = imageList.isNotEmpty ? imageList[0] : '';
+                String unitName = variant['unitName'] ?? '';
+                String unitType = variant['unitType'] ?? '';
+                double price = (variant['mrp'] ?? 0).toDouble();
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ProductDetailsPage(
+                          product: product,
+                          variantIndex: variantIndex,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    elevation: 6,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    child: productImage.isNotEmpty
-                        ? Image.network(
-                            productImage,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Center(
-                                child: Icon(Icons.image_not_supported),
-                              );
-                            },
-                          )
-                        : const Center(
-                            child: Icon(Icons.image_not_supported),
-                          ),
-                  ),
-                  // Remove button
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: GestureDetector(
-                      onTap: () {
-                        // Send delete event to bloc
-                        context.read<WishListBloc>().add(
-                          DeleteWishListEvent(productId),
-                        );
-                        
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('$productName removed from favorites'),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 4,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Product Image
+                        Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(15),
+                              ),
+                              child: image.isNotEmpty
+                                  ? Image.network(
+                                      image,
+                                      height: 100,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) {
+                                        return Container(
+                                          height: 100,
+                                          color: Colors.grey.shade200,
+                                          child: const Icon(
+                                            Icons.image_not_supported,
+                                          ),
+                                        );
+                                      },
+                                    )
+                                  : Container(
+                                      height: 100,
+                                      color: Colors.grey.shade200,
+                                      child: const Icon(
+                                        Icons.image_not_supported,
+                                      ),
+                                    ),
+                            ),
+                            // Remove button
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: GestureDetector(
+                                onTap: () {
+                                  context.read<WishListBloc>().add(
+                                        DeleteWishListEvent(product.id),
+                                      );
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '${product.name} removed from favorites',
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 4,
+                                      ),
+                                    ],
+                                  ),
+                                  padding: const EdgeInsets.all(8),
+                                  child: const Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
-                        padding: const EdgeInsets.all(8),
-                        child: const Icon(
-                          Icons.favorite,
-                          color: Colors.red,
-                          size: 20,
+                        // Product Details
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  product.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '$unitName $unitType',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '₹${price.toInt()}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                        color: Colors.green,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
+                                        onPressed: () {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                '${product.name} added to cart!',
+                                              ),
+                                              backgroundColor: Colors.green,
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          // Product Details
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  productName,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '₹${productPrice.toString()}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+                );
+              },
+            );
+          }
+
+          return buildEmptyState(context);
+        },
       ),
     );
   }

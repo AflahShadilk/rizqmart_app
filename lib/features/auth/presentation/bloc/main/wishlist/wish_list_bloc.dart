@@ -21,19 +21,22 @@ class WishListBloc extends Bloc<WishListEvent,WishListState>{
     on<DeleteWishListEvent>(onDeleteWishList);
   }
   Future<void>onToggleEvent(ToggleWishListEvent event,Emitter<WishListState>emit)async{
-   emit(LoadingWishListState());
+  //  emit(LoadingWishListState());
    final enitity=WishListEntities(id:event.productId, name:event.name, variantDetails:event.variantDetails);
    final result=await wishListToggleUsecase(event.productId,enitity);
-   result.fold((failure)=>emit(FailureWishListState(failure.toString())), (_)=>emit(InitializeWishListState()));
+   result.fold((failure)=>emit(FailureWishListState(failure.toString())), (_){
+    emit(InitializeWishListState());
+    add(GetAllWishListEvent());
+   });
   }
 
   Future<void>onGetAllWishEvent(GetAllWishListEvent event,Emitter<WishListState>emit)async{
     emit(LoadingWishListState());
     await emit.forEach(getAllWishListUsecase(), onData: (either)=>either.fold((failure)=>FailureWishListState(failure.toString()), (item){
       if(item.isNotEmpty){
-        emit(LoadedWishListState(item[0]));
+        emit(LoadedWishListState(item));
       }
-      return InitializeWishListState();
+      return LoadedWishListState([]);
     }),
     onError: (error,stackTrace){
       return FailureWishListState('Error Loading WishList');
@@ -44,12 +47,16 @@ class WishListBloc extends Bloc<WishListEvent,WishListState>{
   Future<void>onAddtoWishList(AddtoWishListEvent event,Emitter<WishListState>emit)async{
     emit(LoadingWishListState());
     final result=await addToWishListUsecase(event.productId,event.item);
-    result.fold((failure)=>FailureWishListState(failure.toString()), (_)=>emit(InitializeWishListState()));
+    result.fold((failure)=>FailureWishListState(failure.toString()), (_){emit(InitializeWishListState());
+    add(GetAllWishListEvent());
+    });
   }
 
   Future<void>onDeleteWishList(DeleteWishListEvent event,Emitter<WishListState>emit)async{
-    emit(LoadingWishListState());
+   
     final result=await deleteFrmWishListUsecase(event.productId);
-    result.fold((failure)=>FailureWishListState(failure.toString()), (_)=>emit(InitializeWishListState()));
+    result.fold((failure)=>FailureWishListState(failure.toString()), (_){emit(InitializeWishListState());
+    add(GetAllWishListEvent());
+    });
   }
 }

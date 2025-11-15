@@ -7,9 +7,11 @@ import 'package:rizqmart/features/auth/domain/entities/main/explore_entities.dar
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_state.dart';
+import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/bloc%20helper/circular_progress.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/add_to_cart_button.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'filter_bottom_sheet.dart';
 
 class ProductByCategoryPage extends StatefulWidget {
   final String categoryName;
@@ -20,6 +22,10 @@ class ProductByCategoryPage extends StatefulWidget {
 }
 
 class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
+  String? selectedBrand;
+  String? selectedCategory;
+  String? selectedVariant;
+
   @override
   void initState() {
     super.initState();
@@ -28,24 +34,104 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
     );
   }
 
+  void showFilters(List<ExploreEntities> allProducts) {
+    Set<String> brands = {};
+    Set<String> categories = {};
+    Set<String> variants = {};
+
+    for (var product in allProducts) {
+      if (product.brand.isNotEmpty) brands.add(product.brand);
+      if (product.category.isNotEmpty) categories.add(product.category);
+      
+      for (var variant in product.variantDetails) {
+        String variantName = '${variant['unitName'] ?? ''} ${variant['unitType'] ?? ''}'.trim();
+        if (variantName.isNotEmpty) variants.add(variantName);
+      }
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => FilterBottomSheet(
+        brands: brands.toList(),
+        categories: categories.toList(),
+        variants: variants.toList(),
+        selectedBrand: selectedBrand,
+        selectedCategory: selectedCategory,
+        selectedVariant: selectedVariant,
+        onApply: (brand, category, variant) {
+          setState(() {
+            selectedBrand = brand;
+            selectedCategory = category;
+            selectedVariant = variant;
+          });
+        },
+      ),
+    );
+  }
+
+  List<Map<String, dynamic>> getFilteredVariants(List<ExploreEntities> allProducts) {
+    List<Map<String, dynamic>> allVariants = [];
+
+    for (var product in allProducts) {
+      if (product.variantDetails.isEmpty) continue;
+
+      bool matchesBrand = selectedBrand == null || product.brand == selectedBrand;
+      bool matchesCategory = selectedCategory == null || product.category == selectedCategory;
+
+      if (!matchesBrand || !matchesCategory) continue;
+
+      for (int i = 0; i < product.variantDetails.length; i++) {
+        Map<String, dynamic> variant = product.variantDetails[i];
+        String variantName = '${variant['unitName'] ?? ''} ${variant['unitType'] ?? ''}'.trim();
+        
+        bool matchesVariant = selectedVariant == null || variantName == selectedVariant;
+        
+        if (matchesVariant) {
+          allVariants.add({
+            'product': product,
+            'variantIndex': i,
+          });
+        }
+      }
+    }
+
+    return allVariants;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme=Theme.of(context).colorScheme;
+    final theme = Theme.of(context).colorScheme;
     return Scaffold(
-
-       backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         backgroundColor: theme.background,
-        
-        title: Text(widget.categoryName,style:  GoogleFonts.poppins(color: theme.onBackground,fontSize: 20,fontWeight: FontWeight.w900),),
+        title: Text(
+          widget.categoryName,
+          style: GoogleFonts.poppins(
+            color: theme.onBackground,
+            fontSize: 20,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: (){}, icon:Icon(Symbols.settings,color:theme.primary,)),
+          IconButton(
+            onPressed: () {
+              final state = context.read<ExploreBloc>().state;
+              if (state is ExploreLoadedState) {
+                showFilters(state.products);
+              }
+            },
+            icon: Icon(Symbols.settings, color: theme.primary),
+          ),
         ],
       ),
       body: BlocBuilder<ExploreBloc, ExploreState>(
         builder: (context, state) {
-  
           if (state is ExploreLoadingState) {
             return Center(
               child: Column(
@@ -59,7 +145,6 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
             );
           }
 
-        
           if (state is ExploreFailureState) {
             return Center(
               child: Column(
@@ -82,12 +167,10 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
             );
           }
 
-          
           if (state is ExploreLoadedState) {
-            List<ExploreEntities> allProducts = state.products;
+            List<Map<String, dynamic>> filteredVariants = getFilteredVariants(state.products);
 
-          
-            if (allProducts.isEmpty) {
+            if (filteredVariants.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -100,25 +183,6 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
               );
             }
 
-      
-            List<Map<String, dynamic>> allVariants = [];
-
-  
-            for (var product in allProducts) {
-    
-              if (product.variantDetails.isEmpty) {
-                continue;
-              }
-              for (int i = 0; i < product.variantDetails.length; i++) {
-                Map<String, dynamic> variantItem = {
-                  'product': product,
-                  'variantIndex': i,
-                };
-                
-                allVariants.add(variantItem);
-              }
-            }
-
             return GridView.builder(
               padding: const EdgeInsets.all(16),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -127,11 +191,10 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
               ),
-              itemCount: allVariants.length,
+              itemCount: filteredVariants.length,
               itemBuilder: (context, index) {
-                ExploreEntities product = allVariants[index]['product'];
-                int variantIndex = allVariants[index]['variantIndex'];
-
+                ExploreEntities product = filteredVariants[index]['product'];
+                int variantIndex = filteredVariants[index]['variantIndex'];
                 Map<String, dynamic> variant = product.variantDetails[variantIndex];
 
                 List<String> imageList = List<String>.from(variant['imageUrls'] ?? []);
@@ -140,76 +203,87 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
                 String unitType = variant['unitType'] ?? '';
                 double price = (variant['mrp'] ?? 0).toDouble();
 
-                return Card(
-                  elevation: 6,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(15),
-                        ),
-                        child: Image.network(
-                          image,
-                          height: 100,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) {
-                            return Container(
-                              height: 100,
-                              color: Colors.grey.shade200,
-                              child: const Icon(Icons.image_not_supported),
-                            );
-                          },
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ProductDetailsPage(
+                          product: product,
+                          variantIndex: variantIndex,
                         ),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                product.name,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              
-                              const SizedBox(height: 4),
-                              Text(
-                                '$unitName $unitType',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                              const Spacer(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '₹${price.toInt()}',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                  AddToCartButton(widget: product),
-                                ],
-                              ),
-                            ],
+                    );
+                  },
+                  child: Card(
+                    elevation: 6,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(15),
+                          ),
+                          child: Image.network(
+                            image,
+                            height: 100,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) {
+                              return Container(
+                                height: 100,
+                                color: Colors.grey.shade200,
+                                child: const Icon(Icons.image_not_supported),
+                              );
+                            },
                           ),
                         ),
-                      ),
-                    ],
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  product.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '$unitName $unitType',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '₹${price.toInt()}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                    AddToCartButton(widget: product),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

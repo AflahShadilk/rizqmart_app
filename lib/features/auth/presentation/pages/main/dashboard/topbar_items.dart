@@ -8,8 +8,8 @@ import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_s
 import 'package:rizqmart/features/auth/presentation/pages/auth/login_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/icon_and_name.dart';
 
-Container topBarItems(BuildContext context, TextEditingController controller,
-    Function(String) onSearch) {
+Container topBarItems(
+    BuildContext context, searchController, Function(String) onSearch) {
   final colorScheme = Theme.of(context).colorScheme;
 
   return Container(
@@ -42,7 +42,10 @@ Container topBarItems(BuildContext context, TextEditingController controller,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.location_on_outlined,color: colorScheme.secondary,),
+                    Icon(
+                      Icons.location_on_outlined,
+                      color: colorScheme.secondary,
+                    ),
                     Text(
                       'Your Location',
                       style: TextStyle(
@@ -55,67 +58,69 @@ Container topBarItems(BuildContext context, TextEditingController controller,
                 ),
               ),
               Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [
-                      colorScheme.primary,
-                      colorScheme.primary.withOpacity(0.7),
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        colorScheme.primary,
+                        colorScheme.primary.withOpacity(0.7),
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colorScheme.primary.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
                     ],
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: colorScheme.primary.withOpacity(0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: BlocListener<SignOutBloc, SignOutState>(
-  listener: (context, state) {
-    if (state is LoadingSignOutState) {
-      _showLoadingDialog(context);
-      return;
-    }
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context, rootNavigator: true).pop();
-    }
+                  child: BlocListener<SignOutBloc, SignOutState>(
+                    listener: (context, state) {
+                      if (state is LoadingSignOutState) {
+                        _showLoadingDialog(context);
+                        return;
+                      }
+                      if (Navigator.of(context).canPop()) {
+                        Navigator.of(context, rootNavigator: true).pop();
+                      }
 
-    if (state is SignOutFailureState) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(state.error),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 3),
-        ),
-      );
-    } else if (state is SignOutSuccessState) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>LoginPage()));
-    }
-  },
-  child: GestureDetector(
-    onTap: () {
-      context.read<SignOutBloc>().add(SignOutRequestedEvent());
-    },
-    child: Center(
-      child: Icon(
-        Icons.person,
-        color: colorScheme.onPrimary,
-        size: 20,
-      ),
-    ),
-  ),
-)
-              ),
+                      if (state is SignOutFailureState) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.error),
+                            backgroundColor: Colors.red,
+                            duration: Duration(seconds: 3),
+                          ),
+                        );
+                      } else if (state is SignOutSuccessState) {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => LoginPage()));
+                      }
+                    },
+                    child: GestureDetector(
+                      onTap: () {
+                        context
+                            .read<SignOutBloc>()
+                            .add(SignOutRequestedEvent());
+                      },
+                      child: Center(
+                        child: Icon(
+                          Icons.person,
+                          color: colorScheme.onPrimary,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  )),
             ],
           ),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           child: TextField(
-            controller: controller,
+            controller: searchController,
             onChanged: onSearch,
             decoration: InputDecoration(
               hintText: 'Search products...',
@@ -126,10 +131,10 @@ Container topBarItems(BuildContext context, TextEditingController controller,
                 Icons.search,
                 color: colorScheme.onSurface.withOpacity(0.4),
               ),
-              suffixIcon: controller.text.isNotEmpty
+              suffixIcon: searchController.text.isNotEmpty
                   ? GestureDetector(
                       onTap: () {
-                        controller.clear();
+                        searchController.clear();
                         onSearch('');
                       },
                       child: Icon(
@@ -171,8 +176,8 @@ Container topBarItems(BuildContext context, TextEditingController controller,
       ],
     ),
   );
-  
 }
+
 void _showLoadingDialog(BuildContext context) {
   showDialog(
     context: context,
