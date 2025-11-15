@@ -1,12 +1,13 @@
 
 
 
-// Get images
-List<String> getVariantImages(dynamic widget) {
+import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
+
+List<String> getVariantImages(ProductEntities product) {
   List<String> imageUrls = [];
-  if (widget.product.variantDetails != null && 
-      widget.product.variantDetails!.isNotEmpty) {
-    for (var variant in widget.product.variantDetails!) {
+  
+  if (product.variantDetails != null && product.variantDetails!.isNotEmpty) {
+    for (var variant in product.variantDetails!) {
       final imageUrl = variant['imageUrls'] as List?;
       if (imageUrl != null) {
         imageUrls.addAll(imageUrl.whereType<String>());
@@ -16,11 +17,12 @@ List<String> getVariantImages(dynamic widget) {
   return imageUrls;
 }
 
-// Get prices
-List<double> getVariantPrices(dynamic widget) {
+
+List<double> getVariantPrices(ProductEntities product) {
   List<double> prices = [];
-  if (widget.product.variantDetails != null) {
-    for (var variant in widget.product.variantDetails!) {
+  
+  if (product.variantDetails != null) {
+    for (var variant in product.variantDetails!) {
       final price = variant['price'];
       double priceValue = 0.0;
       if (price is int) {
@@ -34,11 +36,11 @@ List<double> getVariantPrices(dynamic widget) {
   return prices;
 }
 
-// Get Mrp
-List<double> getVariantMrp(dynamic widget) {
+List<double> getVariantMrp(ProductEntities product) {
   List<double> mrps = [];
-  if (widget.product.variantDetails != null) {
-    for (var variant in widget.product.variantDetails!) {
+  
+  if (product.variantDetails != null) {
+    for (var variant in product.variantDetails!) {
       final mrp = variant['mrp'];
       double mrpValue = 0.0;
       if (mrp is int) {
@@ -52,11 +54,12 @@ List<double> getVariantMrp(dynamic widget) {
   return mrps;
 }
 
-// Get quantities
-List<int> getVariantQuantities(dynamic widget) {
+
+List<int> getVariantQuantities(ProductEntities product) {
   List<int> quantities = [];
-  if (widget.product.variantDetails != null) {
-    for (var variant in widget.product.variantDetails!) {
+  
+  if (product.variantDetails != null) {
+    for (var variant in product.variantDetails!) {
       quantities.add(variant['quantity'] as int? ?? 0);
     }
   }
@@ -64,10 +67,11 @@ List<int> getVariantQuantities(dynamic widget) {
 }
 
 // Get unit names
-List<String> getVariantNames(dynamic widget) {
+List<String> getVariantNames(ProductEntities product) {
   List<String> names = [];
-  if (widget.product.variantDetails != null) {
-    for (var variant in widget.product.variantDetails!) {
+  
+  if (product.variantDetails != null) {
+    for (var variant in product.variantDetails!) {
       names.add(variant['unitName'] as String? ?? '');
     }
   }

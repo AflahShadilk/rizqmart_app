@@ -1,5 +1,6 @@
   import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/dashboard_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/navigation_bar.dart';
 
 Widget buildEmptyState(BuildContext context) {
     return Center(
@@ -29,7 +30,7 @@ Widget buildEmptyState(BuildContext context) {
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>DashboardPage()));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>NavigationBarPage()));
             },
             child: const Text('Continue Shopping'),
           ),

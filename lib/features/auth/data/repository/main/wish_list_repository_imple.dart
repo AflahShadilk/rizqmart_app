@@ -48,7 +48,7 @@ class WishListRepositoryImple implements WishListRepository{
   @override
   Stream<Either<Failure, List<WishListEntities>>>watchAll(){
    return dataSource.getWishList(userId).map((models){
-    final entities=models.map((m)=>WishListEntities(id: m.id, name:m. name, variantDetails:m. variantDetails)).toList();
+    final entities=models.map((m)=>WishListEntities(id: m.id, name:m. name, variantDetails:m. variantDetails,addedAt: m.addedAt)).toList();
     return Right<Failure,List<WishListEntities>>(entities);
    }).handleError((e)=>Left<Failure,List<WishListEntities>>(ServerFailure(e.toString())));
   }
