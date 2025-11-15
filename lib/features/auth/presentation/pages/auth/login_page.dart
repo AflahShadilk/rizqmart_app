@@ -9,7 +9,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_even
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/forgot_password.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/sign_up_page.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/dashboard_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/navigation_bar.dart';
 import 'package:rizqmart/features/auth/presentation/pages/validators/email_validator.dart';
 import 'package:rizqmart/features/auth/presentation/pages/validators/password_validator.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/app_logo.dart';
@@ -56,8 +56,10 @@ class _LoginPageState extends State<LoginPage> {
             content: Text(state.massage),
             backgroundColor: Colors.green.shade200,
           ));
-           Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => DashboardPage())); 
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => NavigationBarPage()),
+          );
+
           email.clear();
           password.clear();
         } else if (state is SignInFailureState) {
@@ -153,9 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                                     SignInSubmittedEvent(
                                         emailId: email.text.trim(),
                                         password: password.text.trim()));
-
                               }
-                              
                             },
                                 color: Colors.green,
                                 padd: const EdgeInsets.symmetric(
@@ -180,6 +180,11 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                     ),
                                   );
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              NavigationBarPage()),
+                                    );
                                 }
                               },
                               builder: (context, state) {
@@ -196,7 +201,8 @@ class _LoginPageState extends State<LoginPage> {
                                     context
                                         .read<GooogleAuthBloc>()
                                         .add(SignInWithGoogleEvent());
-                               
+                                    
+                                    //------------------------------------------------------------------------------------
                                   },
                                 );
                               },

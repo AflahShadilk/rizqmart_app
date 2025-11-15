@@ -10,4 +10,8 @@ class SigninRepositoryImpl implements SigninAuthrepository{
   Future<SigninUserEntities>signIn({required String email,required String password}){
     return signinRemoteDatasourceImpl.signIn(email: email, password: password);
   }
+  @override
+  Future<void>signOut(){
+    return signinRemoteDatasourceImpl.signOut();
+  }
 }

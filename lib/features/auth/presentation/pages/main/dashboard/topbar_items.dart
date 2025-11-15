@@ -1,6 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_event.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_state.dart';
+import 'package:rizqmart/features/auth/presentation/pages/auth/login_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/icon_and_name.dart';
 
 Container topBarItems(BuildContext context, TextEditingController controller,
@@ -32,30 +37,21 @@ Container topBarItems(BuildContext context, TextEditingController controller,
                 width: MediaQuery.of(context).size.width * 0.12,
                 child: const IconRizq(),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Delivery to',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: colorScheme.onSurface.withOpacity(0.6),
-                          fontWeight: FontWeight.w400,
-                        ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.location_on_outlined,color: colorScheme.secondary,),
+                    Text(
+                      'Your Location',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: colorScheme.onSurface,
+                        fontWeight: FontWeight.w600,
                       ),
-                      Text(
-                        'Your Location',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: colorScheme.onSurface,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               Container(
@@ -77,13 +73,41 @@ Container topBarItems(BuildContext context, TextEditingController controller,
                     ),
                   ],
                 ),
-                child: Center(
-                  child: Icon(
-                    Icons.person,
-                    color: colorScheme.onPrimary,
-                    size: 20,
-                  ),
-                ),
+                child: BlocListener<SignOutBloc, SignOutState>(
+  listener: (context, state) {
+    if (state is LoadingSignOutState) {
+      _showLoadingDialog(context);
+      return;
+    }
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+
+    if (state is SignOutFailureState) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.error),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
+    } else if (state is SignOutSuccessState) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>LoginPage()));
+    }
+  },
+  child: GestureDetector(
+    onTap: () {
+      context.read<SignOutBloc>().add(SignOutRequestedEvent());
+    },
+    child: Center(
+      child: Icon(
+        Icons.person,
+        color: colorScheme.onPrimary,
+        size: 20,
+      ),
+    ),
+  ),
+)
               ),
             ],
           ),
@@ -146,5 +170,27 @@ Container topBarItems(BuildContext context, TextEditingController controller,
         ),
       ],
     ),
+  );
+  
+}
+void _showLoadingDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return Dialog(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 16),
+              Text('Signing out...'),
+            ],
+          ),
+        ),
+      );
+    },
   );
 }

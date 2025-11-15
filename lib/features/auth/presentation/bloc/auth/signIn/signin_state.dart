@@ -10,7 +10,10 @@ class SignInLoadingState extends SignInState{}
 class SignInSuccessState extends SignInState{
   final String massage;
   SignInSuccessState(this.massage);
+  @override
+  List<Object?> get props => [massage];
 }
+
 class SignInFailureState extends SignInState{
   final String error;
   SignInFailureState(this.error);

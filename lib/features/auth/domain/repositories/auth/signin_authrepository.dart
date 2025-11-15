@@ -3,4 +3,5 @@ import 'package:rizqmart/features/auth/domain/entities/auth/signin_user_entities
 
 abstract class SigninAuthrepository {
   Future<SigninUserEntities>signIn({required String email,required String password});
+  Future<void>signOut();
 }
