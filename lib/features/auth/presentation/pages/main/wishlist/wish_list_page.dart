@@ -12,10 +12,10 @@ class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
 
   @override
-  State<FavoritePage> createState() => _FavoritePageState();
+  State<FavoritePage> createState() => FavoritePageState();
 }
 
-class _FavoritePageState extends State<FavoritePage> {
+class FavoritePageState extends State<FavoritePage> {
   @override
   void initState() {
     super.initState();
@@ -27,7 +27,7 @@ class _FavoritePageState extends State<FavoritePage> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        title: const Text('Favorites'),
+        title: const Text('My Favorites'),
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
@@ -53,7 +53,7 @@ class _FavoritePageState extends State<FavoritePage> {
                     onPressed: () {
                       context.read<WishListBloc>().add(GetAllWishListEvent());
                     },
-                    child: const Text('Retry'),
+                    child: const Text('Try Again'),
                   ),
                 ],
               ),
@@ -61,14 +61,12 @@ class _FavoritePageState extends State<FavoritePage> {
           }
 
           if (state is LoadedWishListState) {
-            // ✅ FIXED: Now state.items is already a List<WishListEntities>
             final allProducts = state.items;
 
             if (allProducts.isEmpty) {
               return buildEmptyState(context);
             }
 
-            // Build list of all variants from all products
             List<Map<String, dynamic>> allVariants = [];
 
             for (var product in allProducts) {
@@ -102,8 +100,7 @@ class _FavoritePageState extends State<FavoritePage> {
                 final variantIndex = allVariants[index]['variantIndex'];
                 final variant = product.variantDetails[variantIndex];
 
-                List<String> imageList =
-                    List<String>.from(variant['imageUrls'] ?? []);
+                List<String> imageList = List<String>.from(variant['imageUrls'] ?? []);
                 String image = imageList.isNotEmpty ? imageList[0] : '';
                 String unitName = variant['unitName'] ?? '';
                 String unitType = variant['unitType'] ?? '';
@@ -114,7 +111,7 @@ class _FavoritePageState extends State<FavoritePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ProductDetailsPage(
+                        builder: (context) => ProductDetailsPage(
                           product: product,
                           variantIndex: variantIndex,
                         ),
@@ -129,7 +126,6 @@ class _FavoritePageState extends State<FavoritePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Product Image
                         Stack(
                           children: [
                             ClipRRect(
@@ -142,39 +138,32 @@ class _FavoritePageState extends State<FavoritePage> {
                                       height: 100,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) {
+                                      errorBuilder: (context, error, stackTrace) {
                                         return Container(
                                           height: 100,
                                           color: Colors.grey.shade200,
-                                          child: const Icon(
-                                            Icons.image_not_supported,
-                                          ),
+                                          child: const Icon(Icons.image_not_supported),
                                         );
                                       },
                                     )
                                   : Container(
                                       height: 100,
                                       color: Colors.grey.shade200,
-                                      child: const Icon(
-                                        Icons.image_not_supported,
-                                      ),
+                                      child: const Icon(Icons.image_not_supported),
                                     ),
                             ),
-                            // Remove button
                             Positioned(
                               top: 8,
                               right: 8,
                               child: GestureDetector(
                                 onTap: () {
                                   context.read<WishListBloc>().add(
-                                        DeleteWishListEvent(product.id),
-                                      );
+                                    DeleteWishListEvent(product.id),
+                                  );
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text(
-                                        '${product.name} removed from favorites',
-                                      ),
+                                      content: Text('${product.name} removed from favorites'),
                                     ),
                                   );
                                 },
@@ -200,7 +189,6 @@ class _FavoritePageState extends State<FavoritePage> {
                             ),
                           ],
                         ),
-                        // Product Details
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(10),
@@ -226,8 +214,7 @@ class _FavoritePageState extends State<FavoritePage> {
                                 ),
                                 const Spacer(),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       '₹${price.toInt()}',
@@ -249,15 +236,11 @@ class _FavoritePageState extends State<FavoritePage> {
                                           size: 18,
                                         ),
                                         onPressed: () {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
+                                          ScaffoldMessenger.of(context).showSnackBar(
                                             SnackBar(
-                                              content: Text(
-                                                '${product.name} added to cart!',
-                                              ),
+                                              content: Text('${product.name} added to cart!'),
                                               backgroundColor: Colors.green,
-                                              duration:
-                                                  const Duration(seconds: 2),
+                                              duration: const Duration(seconds: 2),
                                             ),
                                           );
                                         },

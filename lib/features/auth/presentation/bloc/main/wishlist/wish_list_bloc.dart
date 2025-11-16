@@ -7,56 +7,86 @@ import 'package:rizqmart/features/auth/domain/usecase/main/wishlist/wish_list_to
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
 
-class WishListBloc extends Bloc<WishListEvent,WishListState>{
+class WishListBloc extends Bloc<WishListEvent, WishListState> {
   final AddToWishListUsecase addToWishListUsecase;
-
   final DeleteFrmWishListUsecase deleteFrmWishListUsecase;
   final GetAllWishListUsecase getAllWishListUsecase;
   final WishListToggleUsecase wishListToggleUsecase;
 
-  WishListBloc({required this.addToWishListUsecase,required this.deleteFrmWishListUsecase,required this.getAllWishListUsecase,required this.wishListToggleUsecase}):super(InitializeWishListState()){
+  WishListBloc({
+    required this.addToWishListUsecase,
+    required this.deleteFrmWishListUsecase,
+    required this.getAllWishListUsecase,
+    required this.wishListToggleUsecase,
+  }) : super(InitializeWishListState()) {
     on<ToggleWishListEvent>(onToggleEvent);
     on<GetAllWishListEvent>(onGetAllWishEvent);
     on<AddtoWishListEvent>(onAddtoWishList);
     on<DeleteWishListEvent>(onDeleteWishList);
   }
-  Future<void>onToggleEvent(ToggleWishListEvent event,Emitter<WishListState>emit)async{
-  //  emit(LoadingWishListState());
-   final enitity=WishListEntities(id:event.productId, name:event.name, variantDetails:event.variantDetails);
-   final result=await wishListToggleUsecase(event.productId,enitity);
-   result.fold((failure)=>emit(FailureWishListState(failure.toString())), (_){
-    emit(InitializeWishListState());
-    add(GetAllWishListEvent());
-   });
-  }
 
-  Future<void>onGetAllWishEvent(GetAllWishListEvent event,Emitter<WishListState>emit)async{
-    emit(LoadingWishListState());
-    await emit.forEach(getAllWishListUsecase(), onData: (either)=>either.fold((failure)=>FailureWishListState(failure.toString()), (item){
-      if(item.isNotEmpty){
-        emit(LoadedWishListState(item));
-      }
-      return LoadedWishListState([]);
-    }),
-    onError: (error,stackTrace){
-      return FailureWishListState('Error Loading WishList');
-    }
+  Future<void> onToggleEvent(
+      ToggleWishListEvent event, Emitter<WishListState> emit) async {
+    final entity = WishListEntities(
+      id: event.productId,
+      name: event.name,
+      variantDetails: event.variantDetails,
+    );
+    final result = await wishListToggleUsecase(event.productId, entity);
+    result.fold(
+      (failure) => emit(FailureWishListState(failure.toString())),
+      (_) {
+        emit(InitializeWishListState());
+        add(GetAllWishListEvent());
+      },
     );
   }
 
-  Future<void>onAddtoWishList(AddtoWishListEvent event,Emitter<WishListState>emit)async{
+  Future<void> onGetAllWishEvent(
+      GetAllWishListEvent event, Emitter<WishListState> emit) async {
     emit(LoadingWishListState());
-    final result=await addToWishListUsecase(event.productId,event.item);
-    result.fold((failure)=>FailureWishListState(failure.toString()), (_){emit(InitializeWishListState());
-    add(GetAllWishListEvent());
-    });
+    
+    await emit.forEach(
+      getAllWishListUsecase(),
+      onData: (either) {
+        return either.fold(
+          (failure) => FailureWishListState(failure.toString()),
+          (items) {
+            if (items.isNotEmpty) {
+              return LoadedWishListState(items);
+            }
+            return LoadedWishListState(items);
+          },
+        );
+      },
+      onError: (error, stackTrace) {
+        return FailureWishListState('Error Loading WishList');
+      },
+    );
   }
 
-  Future<void>onDeleteWishList(DeleteWishListEvent event,Emitter<WishListState>emit)async{
-   
-    final result=await deleteFrmWishListUsecase(event.productId);
-    result.fold((failure)=>FailureWishListState(failure.toString()), (_){emit(InitializeWishListState());
-    add(GetAllWishListEvent());
-    });
+  Future<void> onAddtoWishList(
+      AddtoWishListEvent event, Emitter<WishListState> emit) async {
+    emit(LoadingWishListState());
+    final result = await addToWishListUsecase(event.productId, event.item);
+    result.fold(
+      (failure) => emit(FailureWishListState(failure.toString())),
+      (_) {
+        emit(InitializeWishListState());
+        add(GetAllWishListEvent());
+      },
+    );
+  }
+
+  Future<void> onDeleteWishList(
+      DeleteWishListEvent event, Emitter<WishListState> emit) async {
+    final result = await deleteFrmWishListUsecase(event.productId);
+    result.fold(
+      (failure) => emit(FailureWishListState(failure.toString())),
+      (_) {
+        emit(InitializeWishListState());
+        add(GetAllWishListEvent());
+      },
+    );
   }
 }
