@@ -7,6 +7,8 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/empty_wish_list.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/add_to_cart_button.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
@@ -103,7 +105,6 @@ class FavoritePageState extends State<FavoritePage> {
                 List<String> imageList = List<String>.from(variant['imageUrls'] ?? []);
                 String image = imageList.isNotEmpty ? imageList[0] : '';
                 String unitName = variant['unitName'] ?? '';
-                String unitType = variant['unitType'] ?? '';
                 double price = (variant['mrp'] ?? 0).toDouble();
 
                 return GestureDetector(
@@ -161,11 +162,7 @@ class FavoritePageState extends State<FavoritePage> {
                                     DeleteWishListEvent(product.id),
                                   );
 
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('${product.name} removed from favorites'),
-                                    ),
-                                  );
+                                  showToast(context, '${product.name} removed from favorites');
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -206,7 +203,7 @@ class FavoritePageState extends State<FavoritePage> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  '$unitName $unitType',
+                                  '$unitName ',
                                   style: TextStyle(
                                     fontSize: 11,
                                     color: Colors.grey.shade600,
@@ -224,28 +221,7 @@ class FavoritePageState extends State<FavoritePage> {
                                         color: Colors.green,
                                       ),
                                     ),
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                        color: Colors.green,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: IconButton(
-                                        icon: const Icon(
-                                          Icons.add,
-                                          color: Colors.white,
-                                          size: 18,
-                                        ),
-                                        onPressed: () {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text('${product.name} added to cart!'),
-                                              backgroundColor: Colors.green,
-                                              duration: const Duration(seconds: 2),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
+                                    AddToCartButton(widget: widget)
                                   ],
                                 ),
                               ],

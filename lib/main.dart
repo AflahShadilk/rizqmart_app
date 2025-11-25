@@ -8,9 +8,14 @@ import 'package:rizqmart/features/auth/presentation/bloc/auth/google/google_bloc
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signUp/signup_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/counter/counter_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/counter/counter_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/description/desicription_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/image/image_index_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/likebutton/like_button_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/toggle_see_all/toggle_see_all_button.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/splash_screen.dart';
 import 'package:rizqmart/core/services/registeration/register.dart';
@@ -22,7 +27,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   setupLocator();
-  
+
   runApp(const MyApp());
 }
 
@@ -32,31 +37,47 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => ThemeCubit()),
-        BlocProvider(
-      create: (context) => SignupBloc(sl()),
-    ),
-        BlocProvider( create: (context) => SigninBloc(signinUsecase: sl()) ),
-        BlocProvider(create: (context)=>ForgotBloc(forgotpassUsecase: sl())),
-        BlocProvider(create: (context)=>GooogleAuthBloc(signInWithGoogle: sl())),
-        BlocProvider(create: (context)=>SignOutBloc(signoutUsecase: sl())),
-                                                               //main parts
-        BlocProvider(create: (context)=>DashBloc(usecase: sl())),
-        BlocProvider(create: (context)=>CounterCubit()),
-        BlocProvider(create: (context)=>ExploreBloc(getProductUsecase: sl(), getProductbycategoryUsecase: sl(), searchProductsUsecase: sl(), getCategoryUsecase: sl())),
-        BlocProvider(create: (context)=>WishListBloc(addToWishListUsecase: sl(), deleteFrmWishListUsecase: sl(), getAllWishListUsecase: sl(), wishListToggleUsecase: sl())),
-      ],
-      child: BlocBuilder<ThemeCubit,ThemeState>(builder: (context,state){
-       return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'RizqMart',
-        theme: ThemeCubit.lightTheme,
+        providers: [
+          BlocProvider(create: (_) => ThemeCubit()),
+          BlocProvider(
+            create: (context) => SignupBloc(sl()),
+          ),
+          BlocProvider(create: (context) => SigninBloc(signinUsecase: sl())),
+          BlocProvider(
+              create: (context) => ForgotBloc(forgotpassUsecase: sl())),
+          BlocProvider(
+              create: (context) => GooogleAuthBloc(signInWithGoogle: sl())),
+          BlocProvider(create: (context) => SignOutBloc(signoutUsecase: sl())),
+          //main parts
+          BlocProvider(create: (context) => DashBloc(usecase: sl())),
+          BlocProvider(create: (context) => CounterCubit()),
+          BlocProvider(
+              create: (context) => ExploreBloc(
+                  getProductUsecase: sl(),
+                  getProductbycategoryUsecase: sl(),
+                  searchProductsUsecase: sl(),
+                  getCategoryUsecase: sl())),
+          BlocProvider(
+              create: (context) => WishListBloc(
+                  addToWishListUsecase: sl(),
+                  deleteFrmWishListUsecase: sl(),
+                  getAllWishListUsecase: sl(),
+                  wishListToggleUsecase: sl())),
+          BlocProvider(create: (context) => SearchCubit()),
+          BlocProvider(create: (context)=>ToggleSeeAllButtonCubit()),
+          BlocProvider(create: (context)=>ImageIndexCubit()),
+          BlocProvider(create: (context)=>DesicriptionCubit()),
+          
+        ],
+        child: BlocBuilder<ThemeCubit, ThemeState>(builder: (context, state) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'RizqMart',
+            theme: ThemeCubit.lightTheme,
             darkTheme: ThemeCubit.darkTheme,
             themeMode: state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-        home: const SplashScreen(),
-      );
-      })
-    );
+            home: const SplashScreen(),
+          );
+        }));
   }
 }

@@ -1,10 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
 import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/variant_det_getter.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/buttons/add_to_cart_button.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/add_to_cart_button.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_not_support_icon.dart';
 
 class ProductCard extends StatefulWidget {
   final ProductEntities product;
@@ -72,7 +75,7 @@ class _ProductCardState extends State<ProductCard>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: 120,
+                      height: 110,
                       width: double.infinity,
                       child: Container(
                         color: Theme.of(context).brightness == Brightness.dark
@@ -93,18 +96,12 @@ class _ProductCardState extends State<ProductCard>
                                   );
                                 },
                               )
-                            : Center(
-                                child: Icon(
-                                  Icons.image_not_supported,
-                                  color: colorScheme.onSurface.withOpacity(0.4),
-                                  size: 24,
-                                ),
-                              ),
+                            : imageNotSupportIcon(colorScheme,24),
                       ),
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.fromLTRB(5, 5, 0,0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -116,36 +113,54 @@ class _ProductCardState extends State<ProductCard>
                                   widget.product.name,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
+                                  style: GoogleFonts.inter(
+                                    textStyle: Theme.of(context)
                                       .textTheme
-                                      .labelSmall
+                                      .labelLarge
                                       ?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         color: colorScheme.onSurface,
-                                        fontSize: 14,
+                                        fontSize: 17,
                                       ),
+                                  )
                                 ),
+                                Text(getVariantNames(widget.product).first,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.inter(
+                                    textStyle: Theme.of(context)
+                                      .textTheme
+                                      .labelSmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: colorScheme.onSurface,
+                                        fontSize: 11,
+                                      ),
+                                  ),
+                                )
                               ],
                             ),
+
                             Row(
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
                                   child: Text(
                                     '₹${getVariantMrp(widget.product).first.toStringAsFixed(0)}',
                                     overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
+                                    style: GoogleFonts.inter(textStyle: Theme.of(context)
                                         .textTheme
                                         .labelSmall
                                         ?.copyWith(
-                                          color:Colors.green[800],
-                                          fontSize: 20,
+                                          letterSpacing: 1,
+                                          color:context.cs.onSecondary,
+                                          fontSize: 15,
                                           fontWeight: FontWeight.w700,
-                                        ),
+                                        )),
                                   ),
                                 ),
-                                AddToCartButton(widget: widget.product)
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0, 0,5, 5),
+                                  child: AddToCartButton(widget: widget.product),
+                                )
                               ],
                             ),
                             
@@ -162,4 +177,6 @@ class _ProductCardState extends State<ProductCard>
       ),
     );
   }
+
+  
 }

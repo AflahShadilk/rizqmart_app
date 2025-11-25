@@ -1,35 +1,35 @@
-import 'package:flutter/widgets.dart';
+// import 'package:flutter/widgets.dart';
 
-class SearchHelper<T> {
-   List<T> allItems;
-  final bool Function(T item, String query) matcher;
+// class SearchHelper<T> {
+//    List<T> allItems;
+//   final bool Function(T item, String query) matcher;
 
-  SearchHelper({
-    required this.allItems,
-    required this.matcher,
-  });
+//   SearchHelper({
+//     required this.allItems,
+//     required this.matcher,
+//   });
 
-  TextEditingController controller = TextEditingController();
+//   TextEditingController controller = TextEditingController();
 
-  bool isSearching = false;
-  List<T> filteredItems = [];
+//   bool isSearching = false;
+//   List<T> filteredItems = [];
 
-  void onSearch(String query) {
-    isSearching = query.isNotEmpty;
+//   void onSearch(String query) {
+//     isSearching = query.isNotEmpty;
 
-    if (query.isEmpty) {
-      filteredItems = [];
-      return;
-    }
+//     if (query.isEmpty) {
+//       filteredItems = [];
+//       return;
+//     }
 
-    filteredItems = allItems
-        .where((item) => matcher(item, query.toLowerCase()))
-        .toList();
-  }
+//     filteredItems = allItems
+//         .where((item) => matcher(item, query.toLowerCase()))
+//         .toList();
+//   }
 
-  void clearSearch() {
-    controller.clear();
-    isSearching = false;
-    filteredItems = [];
-  }
-}
+//   void clearSearch() {
+//     controller.clear();
+//     isSearching = false;
+//     filteredItems = [];
+//   }
+// }

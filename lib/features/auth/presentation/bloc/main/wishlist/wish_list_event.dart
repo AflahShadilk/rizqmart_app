@@ -9,8 +9,9 @@ abstract class WishListEvent extends Equatable {
 class ToggleWishListEvent extends WishListEvent {
   final String productId;
   final String name;
+  final String brand;
   final List<Map<String, dynamic>> variantDetails;
-  ToggleWishListEvent(this.productId, this.name, this.variantDetails);
+  ToggleWishListEvent(this.productId, this.name,this.brand ,this.variantDetails);
   @override
   List<Object?> get props => [productId, name, variantDetails];
 }

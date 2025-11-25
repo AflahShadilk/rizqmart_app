@@ -2,200 +2,144 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/login_page.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/icon_and_name.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/dialogs/logout_dailog.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_bar.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
 Container topBarItems(
-    BuildContext context, searchController, Function(String) onSearch) {
-  final colorScheme = Theme.of(context).colorScheme;
+  BuildContext context,
+  searchController,
+  Function(String) onSearch,
+) {
+   
+  final size = MediaQuery.of(context).size;
 
   return Container(
     width: double.infinity,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(8),
-      color: Theme.of(context).appBarTheme.backgroundColor!.withOpacity(0.05),
+
+      color: Theme.of(context).appBarTheme.foregroundColor,
+
       boxShadow: [
         BoxShadow(
-          color: colorScheme.onBackground.withOpacity(0.05),
-          blurRadius: 8,
+          color: context.cs.primary.withOpacity(0.10),
+          blurRadius: 6,
           offset: const Offset(0, 2),
         ),
       ],
     ),
     child: Column(
       children: [
-        SizedBox(height: 40),
+        const SizedBox(height: 60),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              
+              // ---------- LOGO
               SizedBox(
-                width: MediaQuery.of(context).size.width * 0.12,
-                child: const IconRizq(),
+                width: size.width * 0.1,
+                child: const ClipRRect(
+                  child: Image(
+                    image: AssetImage('assets/icons_and_images/carrot.png'),
+                  ),
+                ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.location_on_outlined,
-                      color: colorScheme.secondary,
+
+              // ---------- LOCATION
+              Row(
+                children: [
+                  Icon(
+                    Icons.location_on_rounded,
+                    color: context.cs.secondary,             
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Your Location',
+                    style:context.ts.bodyMedium?.copyWith(
+                      color:context.cs.onSurface,          
+                      fontWeight: FontWeight.w600,
                     ),
-                    Text(
-                      'Your Location',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: colorScheme.onSurface,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  ),
+                ],
+              ),
+
+              // ---------- PROFILE BUTTON 
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                     context.cs.secondary,
+                     context.cs.secondary.withOpacity(0.7),
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color:context.cs.secondary.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
-              ),
-              Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        colorScheme.primary,
-                        colorScheme.primary.withOpacity(0.7),
-                      ],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: colorScheme.primary.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: BlocListener<SignOutBloc, SignOutState>(
-                    listener: (context, state) {
-                      if (state is LoadingSignOutState) {
-                        _showLoadingDialog(context);
-                        return;
-                      }
-                      if (Navigator.of(context).canPop()) {
-                        Navigator.of(context, rootNavigator: true).pop();
-                      }
+                child: BlocListener<SignOutBloc, SignOutState>(
+                  listener: (context, state) {
+                    if (state is LoadingSignOutState) {
+                      showLoadingDialog(context);
+                      return;
+                    }
+                    if (Navigator.of(context).canPop()) {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
 
-                      if (state is SignOutFailureState) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(state.error),
-                            backgroundColor: Colors.red,
-                            duration: Duration(seconds: 3),
-                          ),
-                        );
-                      } else if (state is SignOutSuccessState) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => LoginPage()));
-                      }
-                    },
-                    child: GestureDetector(
-                      onTap: () {
-                        context
-                            .read<SignOutBloc>()
-                            .add(SignOutRequestedEvent());
-                      },
-                      child: Center(
-                        child: Icon(
-                          Icons.person,
-                          color: colorScheme.onPrimary,
-                          size: 20,
+                    if (state is SignOutFailureState) {
+                      showToast(
+                        context,
+                        state.error,
+                        type: ToastType.error,
+                      );
+                    } else if (state is SignOutSuccessState) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => LoginPage(),
                         ),
+                      );
+                    }
+                  },
+                  child: GestureDetector(
+                    onTap: () {
+                      context.read<SignOutBloc>().add(SignOutRequestedEvent());
+                    },
+                    child: Center(
+                      child: Icon(
+                        Icons.person,
+                        color:context.cs.onSecondary, 
+                        size: 20,
                       ),
                     ),
-                  )),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-          child: TextField(
-            controller: searchController,
+          padding: const EdgeInsets.fromLTRB(15, 13, 15, 8),
+          child: SearchField(
+            controller: searchController, 
             onChanged: onSearch,
-            decoration: InputDecoration(
-              hintText: 'Search products...',
-              hintStyle: TextStyle(
-                color: colorScheme.onSurface.withOpacity(0.5),
-              ),
-              prefixIcon: Icon(
-                Icons.search,
-                color: colorScheme.onSurface.withOpacity(0.4),
-              ),
-              suffixIcon: searchController.text.isNotEmpty
-                  ? GestureDetector(
-                      onTap: () {
-                        searchController.clear();
-                        onSearch('');
-                      },
-                      child: Icon(
-                        Icons.clear,
-                        color: colorScheme.onSurface.withOpacity(0.4),
-                      ),
-                    )
-                  : null,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: colorScheme.onSurface.withOpacity(0.2),
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: colorScheme.onSurface.withOpacity(0.2),
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: Colors.greenAccent,
-                  width: 2,
-                ),
-              ),
-              filled: true,
-              fillColor: Theme.of(context).brightness == Brightness.dark
-                  ? colorScheme.onBackground.withOpacity(0.05)
-                  : colorScheme.onBackground.withOpacity(0.03),
-              contentPadding: const EdgeInsets.symmetric(vertical: 12),
-            ),
-            style: TextStyle(
-              color: colorScheme.onSurface,
-            ),
           ),
         ),
       ],
     ),
-  );
-}
-
-void _showLoadingDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return Dialog(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(width: 16),
-              Text('Signing out...'),
-            ],
-          ),
-        ),
-      );
-    },
   );
 }

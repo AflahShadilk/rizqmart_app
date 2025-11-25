@@ -14,7 +14,7 @@ class WishListRepositoryImple implements WishListRepository{
   @override
   Future<Either<Failure,Unit>>add(String productId,WishListEntities item)async{
     try{
-      final addto=WishFireModel(id: item.id, name: item.name, variantDetails: item.variantDetails,addedAt: item.addedAt);
+      final addto=WishFireModel(id: item.id, name: item.name,brand: item.brand ,variantDetails: item.variantDetails,addedAt: item.addedAt);
      await dataSource.addToWishList(userId, productId, addto);
      return const Right(unit);
 
@@ -48,7 +48,7 @@ class WishListRepositoryImple implements WishListRepository{
   @override
   Stream<Either<Failure, List<WishListEntities>>>watchAll(){
    return dataSource.getWishList(userId).map((models){
-    final entities=models.map((m)=>WishListEntities(id: m.id, name:m. name, variantDetails:m. variantDetails,addedAt: m.addedAt)).toList();
+    final entities=models.map((m)=>WishListEntities(id: m.id, name:m. name,brand: m.brand ,variantDetails:m. variantDetails,addedAt: m.addedAt)).toList();
     return Right<Failure,List<WishListEntities>>(entities);
    }).handleError((e)=>Left<Failure,List<WishListEntities>>(ServerFailure(e.toString())));
   }

@@ -2,15 +2,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/toggle_see_all/toggle_see_all_button.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_state.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/empty_product_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_state.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/search_helper/empty_product_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/product_card.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/topbar_items.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/bloc helper/circular_progress.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/bloc helper/scaffold_error.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_helper.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/see_all_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_helper_dropdown.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -21,37 +26,30 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  late SearchHelper<ProductEntities> _searchHelper;
+
+  final TextEditingController searchController = TextEditingController();
   List<ProductEntities> _allProducts = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _searchHelper = SearchHelper<ProductEntities>(
-      allItems: _allProducts,
-      matcher: (product, query) {
-        return product.name.toLowerCase().contains(query) ||
-            product.brand.toLowerCase().contains(query);
-      },
-    );
-  }
-
   void _onSearch(String query) {
-    setState(() {
-      _searchHelper.allItems = _allProducts;
-      _searchHelper.onSearch(query);
-    });
+    context.read<SearchCubit>().search(
+        allItems: _allProducts,
+        query: query,
+        matcher: (product, q) {
+          final p = product as ProductEntities;
+          return p.name.toLowerCase().contains(q) ||
+              p.brand.toLowerCase().contains(q);
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: context.cs.background,
       body: Stack(
         children: [
           Column(
             children: [
-              topBarItems(context, _searchHelper.controller, _onSearch),
+              topBarItems(context, searchController, _onSearch),
               Expanded(
                 child: BlocBuilder<DashBloc, DashState>(
                   buildWhen: (previous, current) =>
@@ -66,104 +64,111 @@ class _DashboardPageState extends State<DashboardPage> {
                     } else if (state is LoadedProductState) {
                       _allProducts = state.products;
 
-                      if (_searchHelper.isSearching &&
-                          _searchHelper.filteredItems.isEmpty) {
-                        return buildEmpty(
-                          context,
-                          _searchHelper.isSearching,
-                          _searchHelper.controller,
-                          () {
-                            _searchHelper.clearSearch();
-                            setState(() {});
-                          },
-                        );
-                      }
+                      return BlocBuilder<SearchCubit, SearchState>(
+                          builder: (context, state) {
+                        final isSearching = state is SearchReasultState;
+                        final filteredItems =
+                            isSearching ? (state).filteredItems : <dynamic>[];
+                        final displayProducts = isSearching
+                            ? filteredItems.cast<ProductEntities>()
+                            : _allProducts;
 
-                      final displayProducts = _searchHelper.isSearching
-                          ? _searchHelper.filteredItems
-                          : _allProducts;
-
-                      return displayProducts.isEmpty
-                          ? buildEmpty(
-                              context,
-                              _searchHelper.isSearching,
-                              _searchHelper.controller,
-                              () {
-                                _searchHelper.clearSearch();
-                                setState(() {});
-                              },
-                            )
-                          : SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                        if (displayProducts.isEmpty) {
+                          return buildEmpty(
+                              context, isSearching, searchController, () {
+                            context.read<SearchCubit>().clearSearch();
+                            searchController.clear();
+                          });
+                        }
+                        return SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(
                                         16, 20, 16, 12),
-                                    child: Text(
-                                      'Exclusive Offers',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18,
-                                          ),
-                                    ),
+                                    child: AppHeading('Exclusive Offers'),
                                   ),
-                                  SizedBox(
-                                    height: 210,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12),
-                                      itemCount: displayProducts.length,
-                                      itemBuilder: (context, index) {
-                                        final product = displayProducts[index];
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 4),
-                                          child: ProductCard(product: product),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        16, 25, 16, 12),
-                                    child: Text(
-                                      'All Products',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18,
-                                          ),
-                                    ),
-                                  ),
-                                  GridView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 8),
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                  ReusableSeeAllButton(onPress: () {
+                                    context
+                                        .read<ToggleSeeAllButtonCubit>()
+                                        .toggle();
+                                  })
+                                ],
+                              ),
+                              BlocBuilder<ToggleSeeAllButtonCubit, bool>(
+                                builder: (context, isGrid) {
+                           
+                                    return isGrid?
+                                    GridView.builder(
+                                      shrinkWrap: true,
+                                      physics:const NeverScrollableScrollPhysics(),
+                                      padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+
+                                      gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 2,
                                       childAspectRatio: 0.75,
                                       crossAxisSpacing: 12,
-                                      mainAxisSpacing: 16,
-                                    ),
-                                    itemBuilder: (context, index) {
-                                      final product = displayProducts[index];
+                                      mainAxisSpacing: 16
+                                    ), itemBuilder: (context,index){
+                                      final product=displayProducts[index];
                                       return ProductCard(product: product);
-                                    },
-                                    itemCount: displayProducts.length,
-                                  ),
-                                ],
+                                    },itemCount: displayProducts.length,)
+                                    
+                                    : SizedBox(
+                                      height: 210,
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12),
+                                        itemCount: displayProducts.length,
+                                        itemBuilder: (context, index) {
+                                          final product =
+                                              displayProducts[index];
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 4),
+                                            child:
+                                                ProductCard(product: product),
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  
+                               
+                                },
                               ),
-                            );
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(16, 25, 16, 12),
+                                child: AppHeading('All Products'),
+                              ),
+                              GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 0.75,
+                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 16,
+                                ),
+                                itemBuilder: (context, index) {
+                                  final product = displayProducts[index];
+                                  return ProductCard(product: product);
+                                },
+                                itemCount: displayProducts.length,
+                              ),
+                            ],
+                          ),
+                        );
+                      });
                     }
                     return const SizedBox();
                   },
@@ -171,19 +176,28 @@ class _DashboardPageState extends State<DashboardPage> {
               )
             ],
           ),
-          if (_searchHelper.isSearching &&
-              _searchHelper.filteredItems.isNotEmpty)
-            Positioned(
-              top: 120,
-              left: 16,
-              right: 16,
-              child: searchResultsDropdown(context: context, searchHelper: _searchHelper, onProductSelected: ()=>setState(() {
-                
-              })),
-            ),
+          BlocBuilder<SearchCubit, SearchState>(
+            builder: (context, state) {
+              if (state is SearchReasultState &&
+                  state.filteredItems.isNotEmpty) {
+                return Positioned(
+                    top: 120,
+                    left: 16,
+                    right: 16,
+                    child: searchResultsDropdown(
+                        context: context,
+                        controller: searchController,
+                        items: state.filteredItems.cast<ProductEntities>(),
+                        onProductSelected: () {
+                          context.read<SearchCubit>().clearSearch();
+                          searchController.clear();
+                        }));
+              }
+              return const SizedBox();
+            },
+          )
         ],
       ),
     );
   }
-
 }

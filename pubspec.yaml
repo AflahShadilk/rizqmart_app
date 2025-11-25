@@ -54,6 +54,8 @@ dependencies:
   fluttertoast: ^8.0.2
   material_symbols_icons: ^4.2874.0
   dartz: ^0.10.1
+  shimmer: ^3.0.0
+  
  
 
   

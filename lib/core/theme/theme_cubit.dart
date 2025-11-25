@@ -7,108 +7,153 @@ import 'package:rizqmart/core/theme/theme_state.dart';
 class ThemeCubit extends Cubit<ThemeState> {
   ThemeCubit() : super(const ThemeState(isDarkMode: false));
 
-  // 🌞 LIGHT THEME — clean, premium, trust-building (for eCommerce)
+  // ============================================================================
+  // 🎨 APP COLORS (MOVED INSIDE THEME CUBIT)
+  // ============================================================================
+
+  // ------------------- BRAND COLORS -------------------
+  static const Color brandPrimary = Color(0xFF005BEA);       // Main app blue
+  static const Color brandPrimarySoft = Color(0xFF66A8FF);   // Soft blue for dark mode
+
+  static const Color brandSecondary = Color(0xFFFFB300);     // Primary gold
+  static const Color brandSecondarySoft = Color(0xFFFFD861); // Soft gold
+
+
+  // ------------------- BACKGROUND ---------------------
+  static const Color bgLight = Color(0xFFF8F9FC);            // Light background
+  static const Color bgDark = Color(0xFF111315);             // Dark background
+
+  static const Color surfaceLight = Colors.white;            // Light card
+  static const Color surfaceDark = Color(0xFF1A1C1E);        // Dark card
+
+
+  // ------------------- TEXT COLORS ---------------------
+  static const Color textPrimaryLight = Color(0xFF1A1A1A);   // Main light text
+  static const Color textPrimaryDark = Colors.white;         // Main dark text
+
+  static const Color textSecondaryLight = Color(0xFF3C3C3C); // Subtext light
+  static const Color textSecondaryDark = Color(0xFFC9C9C9);  // Subtext dark
+
+
+  // ------------------- SEMANTIC / STATUS ----------------
+  static const Color success = Color(0xFF4CAF50);
+  static const Color error = Color(0xFFE53935);
+  static const Color warning = Color(0xFFFFB300);
+  static const Color info = Color(0xFF2196F3);
+
+
+  // ============================================================================
+  // 🌞 LIGHT THEME
+  // ============================================================================
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    colorScheme: const ColorScheme.light(
-      primary: Color(0xFF0061FF), // 🔹 Main brand color (used for buttons, highlights)
-      secondary: Color(0xFFFFC107), // 🟡 Accent (used for offers, highlights)
-      background: Color(0xFFF5F6FA), // 🩶 Page background
-      surface: Colors.white, // 🧾 Card background (containers, tiles)
-      onPrimary: Colors.white, // 🖋️ Text color on primary (button text)
-      onSecondary: Colors.black, // Text color on accent
-      onBackground: Color(0xFF1C1C1C), // 🖤 Default text color
-      onSurface: Color(0xFF2C2C2C), // Slightly lighter text for cards
-      error: Color(0xFFE53935), // ❌ Error messages or delete actions
+    useMaterial3: true,
+
+    colorScheme: ColorScheme.light(
+      primary: brandPrimary,
+      secondary: brandSecondary,
+      background: bgLight,
+      surface: surfaceLight,
+      onPrimary: Colors.white,  
+      onSecondary: Colors.black,
+      onBackground: textPrimaryLight,
+      onSurface: textSecondaryLight,
+      error: error,
     ),
 
-    // 🧭 AppBar
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF0061FF), // Same as primary for brand consistency
+    appBarTheme: AppBarTheme(
+      backgroundColor: brandPrimary,
       foregroundColor: Colors.white,
       elevation: 0,
-      titleTextStyle: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
+      titleTextStyle: const TextStyle(
+        fontSize: 19,
+        fontWeight: FontWeight.w700,
         color: Colors.white,
       ),
     ),
 
-    // 🧩 Buttons
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xFF0061FF), // Button background
-        foregroundColor: Colors.white, // Button text
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-        ),
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+    textTheme: TextTheme(
+      titleLarge: TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+        color: textPrimaryLight,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 16,
+        color: textSecondaryLight,
       ),
     ),
 
-    // 🏷️ Text
-    textTheme: const TextTheme(
-      titleLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1C1C1C)),
-      bodyMedium: TextStyle(fontSize: 16, color: Color(0xFF2C2C2C)),
-      labelLarge: TextStyle(fontSize: 14, color: Colors.white),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: brandPrimary,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
     ),
-
-    // 📦 Card / Container look
-    cardColor: Colors.white,
-    useMaterial3: true,
   );
 
-  // 🌙 DARK THEME — modern, elegant, eye-friendly
+
+  // ============================================================================
+  // 🌙 DARK THEME
+  // ============================================================================
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    colorScheme: const ColorScheme.dark(
-      primary: Color(0xFF3399FF), // 🔹 Softer blue for dark mode buttons
-      secondary: Color(0xFFFFD54F), // 🟡 Warm accent color
-      background: Color(0xFF0F0F0F), // 🌑 App background
-      surface: Color(0xFF1C1C1C), // 🩶 Card background
-      onPrimary: Colors.black, // Text on blue button
-      onSecondary: Colors.black, // Text on accent color
-      onBackground: Colors.white, // Main text color
-      onSurface: Color(0xFFCCCCCC), // Secondary text (less bright)
-      error: Color(0xFFFF5252), // ❌ Error color
+    useMaterial3: true,
+
+    colorScheme: ColorScheme.dark(
+      primary: brandPrimarySoft,
+      secondary: brandSecondarySoft,
+      background: bgDark,
+      surface: surfaceDark,
+      onPrimary: Colors.white,
+      onSecondary: Colors.black,
+      onBackground: textPrimaryDark,
+      onSurface: textSecondaryDark,
+      error: error,
     ),
 
-    // 🧭 AppBar
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF1E1E1E),
+    appBarTheme: AppBarTheme(
+      backgroundColor: surfaceDark,
       foregroundColor: Colors.white,
       elevation: 0,
-      titleTextStyle: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
+      titleTextStyle: const TextStyle(
+        fontSize: 19,
+        fontWeight: FontWeight.w700,
         color: Colors.white,
       ),
     ),
 
-    // 🧩 Buttons
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xFF3399FF), // Button color
-        foregroundColor: Colors.black, // Text color on button
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-        ),
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+    textTheme: TextTheme(
+      titleLarge: TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+        color: textPrimaryDark,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 16,
+        color: textSecondaryDark,
       ),
     ),
 
-    // 🏷️ Text
-    textTheme: const TextTheme(
-      titleLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
-      bodyMedium: TextStyle(fontSize: 16, color: Color(0xFFCCCCCC)),
-      labelLarge: TextStyle(fontSize: 14, color: Colors.black),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: brandPrimarySoft,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
     ),
-
-    // 📦 Card / Container look
-    cardColor: Color(0xFF1C1C1C),
-    useMaterial3: true,
   );
 
-  // 🔄 Toggle between themes
+
+  // ============================================================================
+  // 🔄 TOGGLE
+  // ============================================================================
   void toggleTheme() => emit(ThemeState(isDarkMode: !state.isDarkMode));
 }
