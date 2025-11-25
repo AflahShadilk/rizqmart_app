@@ -7,6 +7,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_ev
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/product_by_category_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/bloc helper/circular_progress.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -67,12 +68,8 @@ class _ExplorePageState extends State<ExplorePage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Text(
-                    'Find Product',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
+                  child: AppHeading('Find Product'),
+                
                 ),
 
                 Padding(

@@ -18,7 +18,7 @@ class WishListBloc extends Bloc<WishListEvent, WishListState> {
     required this.deleteFrmWishListUsecase,
     required this.getAllWishListUsecase,
     required this.wishListToggleUsecase,
-  }) : super(InitializeWishListState()) {
+  }) : super(InitializeWishListState([])) {
     on<ToggleWishListEvent>(onToggleEvent);
     on<GetAllWishListEvent>(onGetAllWishEvent);
     on<AddtoWishListEvent>(onAddtoWishList);
@@ -30,13 +30,14 @@ class WishListBloc extends Bloc<WishListEvent, WishListState> {
     final entity = WishListEntities(
       id: event.productId,
       name: event.name,
+      brand: event.brand,
       variantDetails: event.variantDetails,
     );
     final result = await wishListToggleUsecase(event.productId, entity);
     result.fold(
       (failure) => emit(FailureWishListState(failure.toString())),
       (_) {
-        emit(InitializeWishListState());
+        emit(InitializeWishListState([]));
         add(GetAllWishListEvent());
       },
     );
@@ -72,7 +73,7 @@ class WishListBloc extends Bloc<WishListEvent, WishListState> {
     result.fold(
       (failure) => emit(FailureWishListState(failure.toString())),
       (_) {
-        emit(InitializeWishListState());
+        emit(InitializeWishListState([]));
         add(GetAllWishListEvent());
       },
     );
@@ -84,7 +85,7 @@ class WishListBloc extends Bloc<WishListEvent, WishListState> {
     result.fold(
       (failure) => emit(FailureWishListState(failure.toString())),
       (_) {
-        emit(InitializeWishListState());
+        emit(InitializeWishListState([]));
         add(GetAllWishListEvent());
       },
     );

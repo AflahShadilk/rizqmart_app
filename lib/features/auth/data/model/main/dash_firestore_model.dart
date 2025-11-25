@@ -15,7 +15,7 @@ class DashFirestoreModel extends ProductEntities {
       // required super.imageUrl,
 
       super.feature,
-      super.variantDetails
+     required super.variantDetails
       });
 
   factory DashFirestoreModel.fromFireStore(DocumentSnapshot doc) {

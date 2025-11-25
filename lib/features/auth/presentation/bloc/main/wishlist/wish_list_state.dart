@@ -7,7 +7,13 @@
     List<Object?> get props => [];
   }
 
-  class InitializeWishListState extends WishListState{}
+  class InitializeWishListState extends WishListState{
+    final List< WishListEntities> item;
+    InitializeWishListState(this.item);
+@override
+    
+    List<Object?> get props => [item];
+  }
 
   class LoadingWishListState extends WishListState{}
 

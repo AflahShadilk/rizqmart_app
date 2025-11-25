@@ -5,6 +5,7 @@ class WishFireModel extends WishListEntities {
   const WishFireModel(
       {required super.id,
       required super.name,
+      required super.brand,
       required super.variantDetails,
       super.addedAt});
 
@@ -13,6 +14,7 @@ class WishFireModel extends WishListEntities {
     return WishFireModel(
         id: doc.id,
         name: data['name'] ?? '',
+        brand: data['brand']??"",
         variantDetails:List<Map<String, dynamic>>.from(data['variantDetails'] ?? []),
             
         addedAt: (data['addedAt']as Timestamp?)?.toDate());
@@ -21,6 +23,7 @@ class WishFireModel extends WishListEntities {
   Map<String,dynamic>toMap(){
     return{
     'name':name,
+    'brand':brand,
     'variantDetails':variantDetails,
     'addedAt':addedAt!=null?Timestamp.fromDate(addedAt!):FieldValue.serverTimestamp()
     };
