@@ -3,6 +3,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:rizqmart/core/theme/color_getter.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
 
 class SearchField extends StatefulWidget {
   final TextEditingController controller;
@@ -44,10 +46,10 @@ class _SearchFieldState extends State<SearchField> {
             color: colorScheme.onSurface.withOpacity(0.5),
           ),
 
-          suffixIcon:const Icon(
+          suffixIcon: Icon(
             Icons.search,
             size: 22,
-            color: Colors.green,
+            color: context.cs.success,
           ),
 
           enabledBorder: OutlineInputBorder(

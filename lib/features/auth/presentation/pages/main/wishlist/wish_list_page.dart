@@ -2,12 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/theme/color_getter.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/empty_wish_list.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/add_to_cart_button.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_not_support_icon.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
 class FavoritePage extends StatefulWidget {
@@ -29,7 +32,7 @@ class FavoritePageState extends State<FavoritePage> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        title: const Text('My Favorites'),
+        title: AppHeading('My Favorites'),
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
@@ -47,7 +50,7 @@ class FavoritePageState extends State<FavoritePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error, size: 50, color: Colors.red),
+                   Icon(Icons.error, size: 50, color:context.cs.error),
                   const SizedBox(height: 16),
                   Text('Error: ${state.message}'),
                   const SizedBox(height: 16),
@@ -93,8 +96,8 @@ class FavoritePageState extends State<FavoritePage> {
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 0.72,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 8,
               ),
               itemCount: allVariants.length,
               itemBuilder: (context, index) {
@@ -104,7 +107,6 @@ class FavoritePageState extends State<FavoritePage> {
 
                 List<String> imageList = List<String>.from(variant['imageUrls'] ?? []);
                 String image = imageList.isNotEmpty ? imageList[0] : '';
-                String unitName = variant['unitName'] ?? '';
                 double price = (variant['mrp'] ?? 0).toDouble();
 
                 return GestureDetector(
@@ -120,7 +122,7 @@ class FavoritePageState extends State<FavoritePage> {
                     );
                   },
                   child: Card(
-                    elevation: 6,
+                    elevation: 3,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -136,22 +138,18 @@ class FavoritePageState extends State<FavoritePage> {
                               child: image.isNotEmpty
                                   ? Image.network(
                                       image,
-                                      height: 100,
+                                      height: 150,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
                                       errorBuilder: (context, error, stackTrace) {
                                         return Container(
                                           height: 100,
-                                          color: Colors.grey.shade200,
+                                          color: context.cs.onSurface,
                                           child: const Icon(Icons.image_not_supported),
                                         );
                                       },
                                     )
-                                  : Container(
-                                      height: 100,
-                                      color: Colors.grey.shade200,
-                                      child: const Icon(Icons.image_not_supported),
-                                    ),
+                                  : imageNotSupportIcon(context.cs, 50),
                             ),
                             Positioned(
                               top: 8,
@@ -166,19 +164,19 @@ class FavoritePageState extends State<FavoritePage> {
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: context.cs.onBackground.withOpacity(0.08),
                                     shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withOpacity(0.1),
+                                        color: context.cs.onSecondary.withOpacity(0.08),
                                         blurRadius: 4,
                                       ),
                                     ],
                                   ),
                                   padding: const EdgeInsets.all(8),
-                                  child: const Icon(
+                                  child:  Icon(
                                     Icons.favorite,
-                                    color: Colors.red,
+                                    color: context.cs.error,
                                     size: 20,
                                   ),
                                 ),
@@ -188,7 +186,7 @@ class FavoritePageState extends State<FavoritePage> {
                         ),
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -201,28 +199,16 @@ class FavoritePageState extends State<FavoritePage> {
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                const SizedBox(height: 4),
+                            
+                                
+                                
                                 Text(
-                                  '$unitName ',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    color: Colors.grey.shade600,
+                                  '₹${price.toInt()}',
+                                  style:  TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16,
+                                    color: context.cs.success,
                                   ),
-                                ),
-                                const Spacer(),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '₹${price.toInt()}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                    AddToCartButton(widget: widget)
-                                  ],
                                 ),
                               ],
                             ),

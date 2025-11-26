@@ -2,12 +2,19 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/product_by_category_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/bloc helper/circular_progress.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_bar.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/search_helper/empty_product_state.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_helper_dropdown.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -19,9 +26,8 @@ class ExplorePage extends StatefulWidget {
 class _ExplorePageState extends State<ExplorePage> {
   final TextEditingController _searchController = TextEditingController();
 
-  bool _isSearching = false;
   List<dynamic> _allCategories = [];
-  List<dynamic> _filteredCategories = [];
+  List<ShowProductEntities> _allProducts = [];
 
   final List<Color> cardColors = [
     Color(0xFFFFF3E0),
@@ -38,27 +44,25 @@ class _ExplorePageState extends State<ExplorePage> {
   void initState() {
     super.initState();
     context.read<ExploreBloc>().add(GetCategoriesEvent());
+    context.read<ExploreBloc>().add(GetAllProductsEvent());
   }
 
   void _onSearch(String query) {
-    setState(() {
-      _isSearching = query.isNotEmpty;
-
-      if (query.isEmpty) {
-        _filteredCategories = [];
-        return;
-      }
-
-      _filteredCategories = _allCategories
-          .where((cat) =>
-              cat.categoryName.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    });
+    context.read<SearchCubit>().search(
+      allItems: _allProducts,
+      query: query,
+      matcher: (product, q) {
+        return product.name.toLowerCase().contains(q) ||
+            product.brand.toLowerCase().contains(q) ||
+            ((product.category?.toString().toLowerCase().contains(q) ??
+                    false));
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    
 
     return Scaffold(
       body: Stack(
@@ -69,49 +73,15 @@ class _ExplorePageState extends State<ExplorePage> {
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: AppHeading('Find Product'),
-                
                 ),
-
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: TextField(
+                  child: SearchField(
                     controller: _searchController,
-                    onChanged: (q) {
-                      _onSearch(q);
-
-                      if (q.isEmpty) {
-                        context.read<ExploreBloc>().add(GetCategoriesEvent());
-                      }
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Search category...',
-                      prefixIcon: const Icon(Icons.search),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          _onSearch('');
-                          context.read<ExploreBloc>().add(GetCategoriesEvent());
-                        },
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey.shade50,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide:
-                            BorderSide(color: Colors.green.shade400, width: 2),
-                      ),
-                    ),
+                    onChanged: _onSearch,
                   ),
                 ),
-
                 const SizedBox(height: 16),
-
-           
                 Expanded(
                   child: BlocBuilder<ExploreBloc, ExploreState>(
                     builder: (context, state) {
@@ -122,12 +92,17 @@ class _ExplorePageState extends State<ExplorePage> {
                       if (state is ExploreFailureState) {
                         return Center(
                           child: Column(
-                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Text('Error: ${state.message}'),
                               IconButton(
-                                onPressed: () =>
-                                    context.read<ExploreBloc>().add(GetCategoriesEvent()),
+                                onPressed: () {
+                                  context
+                                      .read<ExploreBloc>()
+                                      .add(GetCategoriesEvent());
+                                  context
+                                      .read<ExploreBloc>()
+                                      .add(GetAllProductsEvent());
+                                },
                                 icon: const Icon(Icons.refresh),
                               ),
                             ],
@@ -136,175 +111,142 @@ class _ExplorePageState extends State<ExplorePage> {
                       }
 
                       if (state is ExploreLoadedState) {
-                       
                         _allCategories = state.categories;
+                        _allProducts =
+                            state.products.cast<ShowProductEntities>();
+                        return BlocBuilder<SearchCubit, SearchState>(
+                          builder: (context, searchState) {
+                            final isSearching =
+                                searchState is SearchReasultState;
+                            final filteredItems = isSearching
+                                ? searchState.filteredItems
+                                : <ShowProductEntities>[];
 
-                        final displayCategories = _isSearching
-                            ? _filteredCategories
-                            : state.categories;
+                            if (isSearching && filteredItems.isEmpty) {
+                              return buildEmpty(
+                                context,
+                                true,
+                                _searchController,
+                                () {
+                                  context.read<SearchCubit>().clearSearch();
+                                  _searchController.clear();
+                                },
+                              );
+                            }
 
-                        return GridView.builder(
-                          padding: const EdgeInsets.all(16),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 1.1,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                          ),
-                          itemCount: displayCategories.length,
-                          itemBuilder: (context, index) {
-                            final cat = displayCategories[index];
-                            final color =
-                                cardColors[index % cardColors.length];
-
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ProductByCategoryPage(
-                                      categoryName: cat.categoryName,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: color,
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.08),
-                                      blurRadius: 12,
-                                      offset: Offset(0, 6),
-                                    ),
-                                  ],
+                            if (!isSearching) {
+                              return GridView.builder(
+                                padding: const EdgeInsets.all(16),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 1.1,
+                                  crossAxisSpacing: 16,
+                                  mainAxisSpacing: 16,
                                 ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(16),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.network(
-                                          cat.logoUrl,
-                                          width: 80,
-                                          height: 60,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) => Icon(
-                                            Icons.category,
-                                            size: 40,
-                                            color: Colors.grey.shade600,
+                                itemCount: _allCategories.length,
+                                itemBuilder: (context, index) {
+                                  final cat = _allCategories[index];
+                                  final color =
+                                      cardColors[index % cardColors.length];
+
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ProductByCategoryPage(
+                                            categoryName: cat.categoryName,
                                           ),
                                         ),
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: color,
+                                        borderRadius:
+                                            BorderRadius.circular(20),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: context.cs.onSecondary
+                                                .withOpacity(0.08),
+                                            blurRadius: 12,
+                                            offset: Offset(0, 6),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(16),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: Image.network(
+                                                cat.logoUrl,
+                                                width: 80,
+                                                height: 60,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            cat.categoryName,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: Colors.black87,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            overflow:
+                                                TextOverflow.ellipsis,
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text(
-                                      cat.categoryName,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.black87,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
+                                  );
+                                },
+                              );
+                            }
+
+                            return const SizedBox();
                           },
                         );
                       }
 
-                      return SizedBox();
+                      return const SizedBox();
                     },
                   ),
                 ),
               ],
             ),
           ),
-
-         
-          if (_isSearching && _filteredCategories.isNotEmpty)
-            Positioned(
-              top: 140,
-              left: 16,
-              right: 16,
-              child: _buildSearchDropdown(colorScheme),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSearchDropdown(ColorScheme colorScheme) {
-    return Material(
-      elevation: 8,
-      borderRadius: BorderRadius.circular(12),
-      color: colorScheme.surface,
-      child: Container(
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.3,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: colorScheme.primary.withOpacity(0.2),
-            width: 1,
-          ),
-        ),
-        child: ListView.separated(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          itemCount:
-              _filteredCategories.length > 5 ? 5 : _filteredCategories.length,
-          separatorBuilder: (_, __) => Divider(
-            height: 1,
-            color: colorScheme.onBackground.withOpacity(0.1),
-            indent: 12,
-            endIndent: 12,
-          ),
-          itemBuilder: (context, index) {
-            final cat = _filteredCategories[index];
-
-            return ListTile(
-              onTap: () {
-                _searchController.text = cat.categoryName;
-                _onSearch(cat.categoryName);
-                FocusScope.of(context).unfocus(); 
-                _searchController.clear();
-                // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ProductByCategoryPage(categoryName:)))
-              },
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: Image.network(
-                  cat.logoUrl,
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Icon(
-                    Icons.category,
-                    size: 20,
-                    color: colorScheme.primary,
+          BlocBuilder<SearchCubit, SearchState>(
+            builder: (context, state) {
+              if (state is SearchReasultState &&
+                  state.filteredItems.isNotEmpty) {
+                return Positioned(
+                  top: 140,
+                  left: 16,
+                  right: 16,
+                  child: searchResultsDropdown(
+                    context: context,
+                    controller: _searchController,
+                    items: state.filteredItems.cast<ShowProductEntities>(),
+                    onProductSelected: () {
+                      context.read<SearchCubit>().clearSearch();
+                      _searchController.clear();
+                    },
                   ),
-                ),
-              ),
-              title: Text(
-                cat.categoryName,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: colorScheme.primary.withOpacity(0.5),
-              ),
-            );
-          },
-        ),
+                );
+              }
+              return const SizedBox();
+            },
+          ),
+        ],
       ),
     );
   }
