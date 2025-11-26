@@ -1,19 +1,21 @@
 
 
 
-import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
+// ignore_for_file: unnecessary_null_comparison
 
-List<String> getVariantImages(ProductEntities product) {
+import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
+
+List<String> getVariantImages(ShowProductEntities product) {
   List<String> imageUrls = [];
-  
-  if (product.variantDetails != null && product.variantDetails!.isNotEmpty) {
-    for (var variant in product.variantDetails!) {
-      final imageUrl = variant['imageUrls'] as List?;
-      if (imageUrl != null) {
-        imageUrls.addAll(imageUrl.whereType<String>());
-      }
+
+  for (var variant in product.variantDetails) {
+    final imageUrl = variant['imageUrls'] as List?;
+    if (imageUrl != null) {
+      imageUrls.addAll(imageUrl.whereType<String>());
     }
   }
+
   return imageUrls;
 }
 

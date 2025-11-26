@@ -2,6 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/theme/color_getter.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/core/theme/theme_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/reusable_main_button.dart';
 
 class FilterBottomSheet extends StatefulWidget {
   final List<String> brands;
@@ -137,24 +141,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: applyFilters,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                'Apply Filters',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+            height: 55,
+            child:MainButton(
+                    label: 'Apply Filter',
+                    icon: Icons.filter_alt_outlined,
+                    onPress:applyFilters,
+                    color: context.cs.success,
+                    textColor: ThemeCubit.textSecondaryDark)
           ),
         ],
       ),

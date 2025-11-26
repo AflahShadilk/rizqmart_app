@@ -61,7 +61,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       borderRadius: BorderRadius.circular(12),
                       color: isDark
                           ? colorScheme.onSurface.withOpacity(0.1)
-                          : Colors.grey.shade100,
+                          : context.cs.onSurface.withOpacity(0.05),
                       boxShadow: [
                         BoxShadow(
                           color: colorScheme.primary.withOpacity(0.1),
@@ -81,7 +81,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 itemBuilder: (context, index) {
                                   return Image.network(
                                     images[index],
-                                    fit: BoxFit.contain,
+                                    fit: BoxFit.fill,
                                     width: double.infinity,
                                     loadingBuilder:
                                         (context, child, loadingProgress) {

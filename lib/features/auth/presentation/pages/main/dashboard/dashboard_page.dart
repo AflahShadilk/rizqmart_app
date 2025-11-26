@@ -181,7 +181,7 @@ class _DashboardPageState extends State<DashboardPage> {
               if (state is SearchReasultState &&
                   state.filteredItems.isNotEmpty) {
                 return Positioned(
-                    top: 120,
+                    top: 195,
                     left: 16,
                     right: 16,
                     child: searchResultsDropdown(

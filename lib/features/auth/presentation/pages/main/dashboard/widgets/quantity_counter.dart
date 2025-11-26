@@ -18,7 +18,7 @@ Widget buildQuantityButton(ColorScheme colorScheme) {
             onPressed: () {
               context.read<CounterCubit>().decreament();
             },
-            icon: Icon(Icons.remove, color: colorScheme.primary, size: 25),
+            icon: Icon(Icons.remove, color: colorScheme.primary.withOpacity(0.5), size: 25),
             splashRadius: 10,
             constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
           ),
@@ -31,7 +31,7 @@ Widget buildQuantityButton(ColorScheme colorScheme) {
         ),
         borderRadius: BorderRadius.circular(14),
             ),
-            padding: const EdgeInsets.fromLTRB(10,5,10,5),
+            padding: const EdgeInsets.fromLTRB(15,5,15,5),
             child: Text(
               "$state",
               style: TextStyle(
