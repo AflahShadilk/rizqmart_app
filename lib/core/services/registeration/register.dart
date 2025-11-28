@@ -115,7 +115,7 @@ void setupLocator() {
   sl.registerLazySingleton<ExploreRepository>(
       () => ExploreRepositoryImple(exploreDataSource: sl()));
   sl.registerLazySingleton<WishListRepository>(
-      () => WishListRepositoryImple(dataSource: sl(), userId: FirebaseAuth.instance.currentUser?.uid ?? 'anonymous'));
+      () => WishListRepositoryImple(dataSource: sl(), auth: sl()));
   //use -------------------------------------------------------------------------------
   //productUsecases
   sl.registerLazySingleton(() => GetProductUsecase(sl()));

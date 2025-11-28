@@ -11,9 +11,11 @@ class ToggleWishListEvent extends WishListEvent {
   final String name;
   final String brand;
   final List<Map<String, dynamic>> variantDetails;
-  ToggleWishListEvent(this.productId, this.name,this.brand ,this.variantDetails);
+  final int variantIndex;
+  final String userId;
+  ToggleWishListEvent(this.productId, this.name,this.brand ,this.variantDetails,this.variantIndex,this.userId);
   @override
-  List<Object?> get props => [productId, name, variantDetails];
+  List<Object?> get props => [productId, name, variantDetails,variantIndex,userId];
 }
 
 class GetAllWishListEvent extends WishListEvent{

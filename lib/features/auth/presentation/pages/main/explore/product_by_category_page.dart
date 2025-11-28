@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/explore_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/productbycategory/filter_cubit.dart';
@@ -15,7 +14,7 @@ import 'package:rizqmart/features/auth/presentation/pages/product_details_page/v
 import 'package:rizqmart/features/auth/presentation/widgets/bloc%20helper/circular_progress.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/add_to_cart_button.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_not_support_icon.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
 import 'filter_bottom_sheet.dart';
 
 class ProductByCategoryPage extends StatefulWidget {
@@ -226,10 +225,16 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
                           List<String>.from(variant['imageUrls'] ?? []);
                       String image = imageList.isNotEmpty ? imageList[0] : '';
                       String unitName = variant['unitName'] ?? '';
-                     
+
                       double price = (variant['mrp'] ?? 0).toDouble();
 
-                      return GestureDetector(
+                      return VariantCard(
+                        productName: product.name,
+                        variantName: unitName,
+                        price: price,
+                        imageUrl: image,
+                        colorScheme: context.cs,
+                        actionButton: AddToCartButton(widget: product),
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -240,73 +245,6 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
                             ),
                           );
                         },
-                        child: Card(
-                          elevation: 6,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(15),
-                                ),
-                                child: Image.network(
-                                  image,
-                                  height: 100,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) {
-                                    return imageNotSupportIcon(context.cs, 100);
-                                  },
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        product.name,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13,
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        '$unitName ',
-                                        style: context.ts.bodySmall
-                                            ?.copyWith(fontSize: 11),
-                                      ),
-                                      const Spacer(),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            '₹${price.toInt()}',
-                                            style: context.ts.bodyMedium
-                                                ?.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16,
-                                                    color: context.cs.success),
-                                          ),
-                                          AddToCartButton(widget: product),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                       );
                     },
                   );

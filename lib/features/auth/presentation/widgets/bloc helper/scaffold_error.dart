@@ -1,7 +1,7 @@
   // ignore_for_file: deprecated_member_use
 
   import 'package:flutter/material.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/dashboard/dash_state.dart';
 
 SnackBar errorMessageScaffold(FailureLoadingProductState state) {
     return SnackBar(

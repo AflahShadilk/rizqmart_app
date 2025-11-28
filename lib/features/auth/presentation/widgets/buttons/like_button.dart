@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
@@ -15,6 +16,7 @@ class LikeButton extends StatefulWidget {
   final String? brand;
   final List<Map<String, dynamic>> variantDetails;
   final bool initialValue;
+  final int selectedVariantIndex;
 
   const LikeButton({
     super.key,
@@ -23,6 +25,7 @@ class LikeButton extends StatefulWidget {
     this.brand,
     required this.variantDetails,
     this.initialValue = false,
+    this.selectedVariantIndex = 0
   });
 
   @override
@@ -47,7 +50,15 @@ class _LikeButtonState extends State<LikeButton>
     _animationController.dispose();
     super.dispose();
   }
-
+  
+  String get getWishListItemId {
+    return "${widget.productId}_variant_${widget.selectedVariantIndex}";
+  }
+  
+  String get getCurrentUserId {
+    return FirebaseAuth.instance.currentUser?.uid ?? '';
+  }
+  
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -56,34 +67,22 @@ class _LikeButtonState extends State<LikeButton>
       create: (context) => LikeButtonCubit(),
       child: BlocListener<WishListBloc, WishListState>(
         listener: (context, state) {
-          final cubit = context.read<LikeButtonCubit>();
           if (state is FailureWishListState) {
             showToast(context, 'Error: ${state.message}');
-            cubit.toggle();
-          }
-          else if (state is LoadedWishListState) {
-            _animationController.forward(from: 0.0);
-            bool isNowInWishlist = state.items.any((item) => item.id == widget.productId);
-            if (isNowInWishlist) {
-              showToast(context, 'Added to wishlist');
-            } else {
-              showToast(context, 'Removed from wishlist');
-            }
           }
         },
         child: BlocBuilder<WishListBloc, WishListState>(
+          buildWhen: (previous, current) => true,
           builder: (context, wishlistState) {
-            bool isFavorite = widget.initialValue;
+            bool isFavorite = false;
 
             if (wishlistState is LoadedWishListState) {
               isFavorite = wishlistState.items
-                  .any((item) => item.id == widget.productId);
-            }
-            else if (wishlistState is InitializeWishListState) {
+                  .any((item) => item.id == getWishListItemId);
+            } else if (wishlistState is InitializeWishListState) {
               isFavorite = wishlistState.item
-                  .any((item) => item.id == widget.productId);
+                  .any((item) => item.id == getWishListItemId);
             }
-
             return ScaleTransition(
               scale: Tween(begin: 1.0, end: 1.3).animate(
                 CurvedAnimation(
@@ -100,16 +99,25 @@ class _LikeButtonState extends State<LikeButton>
                   size: 28,
                 ),
                 onPressed: () {
-                  context.read<LikeButtonCubit>().toggle();
                   _animationController.forward(from: 0.0);
+
+                  List<Map<String, dynamic>> allVariants = widget.variantDetails;
+                  String variantName = widget.variantDetails[widget.selectedVariantIndex]['unitName'] as String? ?? '';
                   context.read<WishListBloc>().add(
                     ToggleWishListEvent(
-                      widget.productId,
-                      widget.productName,
+                      getWishListItemId,
+                      '${widget.productName} - $variantName',
                       widget.brand ?? '',
-                      widget.variantDetails,
-                    ),
+                      allVariants,
+                      widget.selectedVariantIndex,
+                      getCurrentUserId
+                    )
                   );
+                  if (isFavorite) {
+                    showToast(context, 'Removed from wishlist');
+                  } else {
+                    showToast(context, 'Added to wishlist');
+                  }
                 },
               ),
             );
