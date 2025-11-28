@@ -32,6 +32,8 @@ class WishListBloc extends Bloc<WishListEvent, WishListState> {
       name: event.name,
       brand: event.brand,
       variantDetails: event.variantDetails,
+      variantIndex: event.variantIndex,
+      userId: event.userId
     );
     final result = await wishListToggleUsecase(event.productId, entity);
     result.fold(
