@@ -1,5 +1,5 @@
   import 'package:flutter/material.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/navigation_bar.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigation_bar.dart';
 
 Widget buildEmptyState(BuildContext context) {
     return Center(

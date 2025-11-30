@@ -11,6 +11,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/product_by_category_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/bloc helper/circular_progress.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_bar.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/empty_product_state.dart';
@@ -49,21 +50,19 @@ class _ExplorePageState extends State<ExplorePage> {
 
   void _onSearch(String query) {
     context.read<SearchCubit>().search(
-      allItems: _allProducts,
-      query: query,
-      matcher: (product, q) {
-        return product.name.toLowerCase().contains(q) ||
-            product.brand.toLowerCase().contains(q) ||
-            ((product.category?.toString().toLowerCase().contains(q) ??
+          allItems: _allProducts,
+          query: query,
+          matcher: (product, q) {
+            return product.name.toLowerCase().contains(q) ||
+                product.brand.toLowerCase().contains(q) ||
+                ((product.category?.toString().toLowerCase().contains(q) ??
                     false));
-      },
-    );
+          },
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    
-
     return Scaffold(
       body: Stack(
         children: [
@@ -164,8 +163,7 @@ class _ExplorePageState extends State<ExplorePage> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: color,
-                                        borderRadius:
-                                            BorderRadius.circular(20),
+                                        borderRadius: BorderRadius.circular(20),
                                         boxShadow: [
                                           BoxShadow(
                                             color: context.cs.onSecondary
@@ -181,15 +179,12 @@ class _ExplorePageState extends State<ExplorePage> {
                                         children: [
                                           Container(
                                             padding: const EdgeInsets.all(16),
-                                            child: ClipRRect(
+                                            child: ProductImage(
+                                              imageUrl: cat.logoUrl,
+                                              height: 60,
+                                              width: 80,
                                               borderRadius:
                                                   BorderRadius.circular(8),
-                                              child: Image.network(
-                                                cat.logoUrl,
-                                                width: 80,
-                                                height: 60,
-                                                fit: BoxFit.cover,
-                                              ),
                                             ),
                                           ),
                                           Text(
@@ -201,8 +196,7 @@ class _ExplorePageState extends State<ExplorePage> {
                                             ),
                                             textAlign: TextAlign.center,
                                             maxLines: 2,
-                                            overflow:
-                                                TextOverflow.ellipsis,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ],
                                       ),

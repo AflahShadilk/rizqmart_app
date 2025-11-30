@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:rizqmart/core/constants.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/login_page.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/navigation_bar.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigation_bar.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/welcome1.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

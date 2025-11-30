@@ -5,9 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
 import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/variant_det_getter.dart';
+import 'package:rizqmart/core/services/firestore_product/variant_det_getter.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/add_to_cart_button.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_not_support_icon.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 
 class ProductCard extends StatefulWidget {
   final ProductEntities product;
@@ -74,34 +74,12 @@ class _ProductCardState extends State<ProductCard>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: 110,
-                      width: double.infinity,
-                      child: Container(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? colorScheme.onSurface.withOpacity(0.1)
-                            : Colors.grey.shade100,
-                        child: getVariantImages(widget.product).isNotEmpty
-                            ? Image.network(
-                                getVariantImages(widget.product).first,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Center(
-                                    child: Icon(
-                                      Icons.image_not_supported,
-                                      color:
-                                          colorScheme.onSurface.withOpacity(0.4),
-                                      size: 24,
-                                    ),
-                                  );
-                                },
-                              )
-                            : imageNotSupportIcon(colorScheme,24),
-                      ),
+                    ProductImage(
+                      imageUrl: getVariantImages(widget.product).firstOrNull,
                     ),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 5, 0,0),
+                        padding: const EdgeInsets.fromLTRB(5, 5, 0, 0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,61 +87,61 @@ class _ProductCardState extends State<ProductCard>
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Text(widget.product.name,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.inter(
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            color: colorScheme.onSurface,
+                                            fontSize: 17,
+                                          ),
+                                    )),
                                 Text(
-                                  widget.product.name,
-                                  maxLines: 2,
+                                  getVariantNames(widget.product).first,
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.inter(
                                     textStyle: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        color: colorScheme.onSurface,
-                                        fontSize: 17,
-                                      ),
-                                  )
-                                ),
-                                Text(getVariantNames(widget.product).first,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.inter(
-                                    textStyle: Theme.of(context)
-                                      .textTheme
-                                      .labelSmall
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        color: colorScheme.onSurface,
-                                        fontSize: 11,
-                                      ),
+                                        .textTheme
+                                        .labelSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          color: colorScheme.onSurface,
+                                          fontSize: 11,
+                                        ),
                                   ),
                                 )
                               ],
                             ),
-
                             Row(
                               children: [
                                 Expanded(
                                   child: Text(
                                     '₹${getVariantMrp(widget.product).first.toStringAsFixed(0)}',
                                     overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.inter(textStyle: Theme.of(context)
-                                        .textTheme
-                                        .labelSmall
-                                        ?.copyWith(
-                                          letterSpacing: 1,
-                                          color:context.cs.onSecondary,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w700,
-                                        )),
+                                    style: GoogleFonts.inter(
+                                        textStyle: Theme.of(context)
+                                            .textTheme
+                                            .labelSmall
+                                            ?.copyWith(
+                                              letterSpacing: 1,
+                                              color: context.cs.onSecondary,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w700,
+                                            )),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.fromLTRB(0, 0,5, 5),
-                                  child: AddToCartButton(widget: widget.product),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 5, 5),
+                                  child:
+                                      AddToCartButton(widget: widget.product),
                                 )
                               ],
                             ),
-                            
                           ],
                         ),
                       ),
@@ -177,6 +155,4 @@ class _ProductCardState extends State<ProductCard>
       ),
     );
   }
-
-  
 }
