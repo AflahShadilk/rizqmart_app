@@ -9,7 +9,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_even
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/forgot_password.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/sign_up_page.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/navigation_bar.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigation_bar.dart';
 import 'package:rizqmart/features/auth/presentation/pages/validators/email_validator.dart';
 import 'package:rizqmart/features/auth/presentation/pages/validators/password_validator.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/app_logo.dart';

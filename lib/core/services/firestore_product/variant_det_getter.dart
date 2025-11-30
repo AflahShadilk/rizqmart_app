@@ -24,7 +24,7 @@ List<double> getVariantPrices(ProductEntities product) {
   List<double> prices = [];
   
   if (product.variantDetails != null) {
-    for (var variant in product.variantDetails!) {
+    for (var variant in product.variantDetails) {
       final price = variant['price'];
       double priceValue = 0.0;
       if (price is int) {

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 class VariantCard extends StatelessWidget {
   final String productName;
   final String variantName;
@@ -60,42 +61,12 @@ class VariantCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
+             ProductImage(
+                imageUrl: imageUrl.isNotEmpty ? imageUrl : null,
+                height: 100,
+                width: double.infinity,
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(15),
-                ),
-                child: Container(
-                  height: 100,
-                  width: double.infinity,
-                  color: colorScheme.onSurface.withOpacity(0.05),
-                  child: imageUrl.isNotEmpty
-                      ? Image.network(
-                          imageUrl,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Center(
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation(
-                                  colorScheme.primary,
-                                ),
-                              ),
-                            );
-                          },
-                          errorBuilder: (_, __, ___) {
-                            return Icon(
-                              Icons.image_not_supported_outlined,
-                              size: 40,
-                              color: colorScheme.onSurface.withOpacity(0.3),
-                            );
-                          },
-                        )
-                      : Icon(
-                          Icons.image_not_supported_outlined,
-                          size: 40,
-                          color: colorScheme.onSurface.withOpacity(0.3),
-                        ),
                 ),
               ),
               Expanded(

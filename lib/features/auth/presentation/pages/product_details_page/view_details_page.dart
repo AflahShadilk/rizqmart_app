@@ -18,7 +18,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/quantity_counter.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/back_button_common.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_not_support_icon.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_place_holder.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
@@ -49,11 +49,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     }
     return id;
   }
-  
+
   String getWishlistId(int variantIdx) {
     return '${productId}_variant_$variantIdx';
   }
-  
+
   @override
   void initState() {
     super.initState();
@@ -63,20 +63,21 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       final wishlistState = context.read<WishListBloc>().state;
       if (wishlistState is! LoadedWishListState) {
         context.read<WishListBloc>().add(GetAllWishListEvent());
-      } 
+      }
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => CounterCubit()),
         BlocProvider(
-          create: (_) => VariantSelectionCubit()..selectVariant(widget.variantIndex),
+          create: (_) =>
+              VariantSelectionCubit()..selectVariant(widget.variantIndex),
         ),
         BlocProvider(create: (_) => ImageIndexCubit()),
         BlocProvider(create: (_) => DesicriptionCubit()),
@@ -85,8 +86,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         builder: (context, variantState) {
           selectedVariantIndex = variantState;
           final images = getImages(widget.product, selectedVariantIndex);
-          final variantCount = getVariantDetails(widget.product)?.length ?? 0;
-          
+          final variantCount = getVariantDetails(widget.product).length;
+
           return Scaffold(
             backgroundColor: colorScheme.background,
             body: SafeArea(
@@ -116,27 +117,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 children: [
                                   PageView.builder(
                                     onPageChanged: (index) {
-                                      context.read<ImageIndexCubit>().change(index);
+                                      context
+                                          .read<ImageIndexCubit>()
+                                          .change(index);
                                     },
                                     itemCount: images.length,
                                     itemBuilder: (context, index) {
-                                      return Image.network(
-                                        images[index],
-                                        fit: BoxFit.fill,
+                                      return ProductImage(
+                                        imageUrl: images[index],
+                                        height: 280,
                                         width: double.infinity,
-                                        loadingBuilder:
-                                            (context, child, loadingProgress) {
-                                          if (loadingProgress == null) return child;
-                                          return RectangularShimmerPlaceholder(
-                                            height: 280,
-                                            width: double.infinity,
-                                            borderRadius: 12,
-                                          );
-                                        },
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return imageNotSupportIcon(
-                                              colorScheme, 50);
-                                        },
+                                        borderRadius: BorderRadius.circular(12),
                                       );
                                     },
                                   ),
@@ -150,25 +141,28 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                           return Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
-                                            children:
-                                                images.asMap().entries.map((entry) {
+                                            children: images
+                                                .asMap()
+                                                .entries
+                                                .map((entry) {
                                               return AnimatedContainer(
                                                 duration: const Duration(
                                                     milliseconds: 300),
-                                                width:
-                                                    currentImageIndex == entry.key
-                                                        ? 28
-                                                        : 8,
+                                                width: currentImageIndex ==
+                                                        entry.key
+                                                    ? 28
+                                                    : 8,
                                                 height: 8,
-                                                margin: const EdgeInsets.symmetric(
-                                                    horizontal: 5),
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 5),
                                                 decoration: BoxDecoration(
                                                   shape: BoxShape.circle,
-                                                  color:
-                                                      currentImageIndex == entry.key
-                                                          ? colorScheme.primary
-                                                          : colorScheme.onSurface
-                                                              .withOpacity(0.2),
+                                                  color: currentImageIndex ==
+                                                          entry.key
+                                                      ? colorScheme.primary
+                                                      : colorScheme.onSurface
+                                                          .withOpacity(0.2),
                                                 ),
                                               );
                                             }).toList(),
@@ -242,10 +236,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        getName(widget.product),
+                                        getName(
+                                          widget.product,
+                                        ),
                                         style: GoogleFonts.inter(
                                           textStyle: Theme.of(context)
                                               .textTheme
@@ -261,8 +258,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                       ),
                                       const SizedBox(height: 6),
                                       Text(
-                                          getVariantName(
-                                              widget.product, selectedVariantIndex),
+                                          getVariantName(widget.product,
+                                              selectedVariantIndex),
                                           style: GoogleFonts.inter(
                                             textStyle: Theme.of(context)
                                                 .textTheme
@@ -283,23 +280,28 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
                                     if (state is LoadedWishListState) {
                                       isInWishList = state.items.any((item) {
-                                        final match = item.id == getWishlistId(selectedVariantIndex);
+                                        final match = item.id ==
+                                            getWishlistId(selectedVariantIndex);
                                         return match;
                                       });
-                                    } else if (state is InitializeWishListState) {
+                                    } else if (state
+                                        is InitializeWishListState) {
                                       isInWishList = state.item.any((item) {
-                                        final match = item.id == getWishlistId(selectedVariantIndex);
+                                        final match = item.id ==
+                                            getWishlistId(selectedVariantIndex);
                                         return match;
                                       });
                                     }
 
                                     return LikeButton(
-                                        key: ValueKey(getWishlistId(selectedVariantIndex)),
+                                        key: ValueKey(getWishlistId(
+                                            selectedVariantIndex)),
                                         productId: productId,
                                         productName: getName(widget.product),
                                         variantDetails:
                                             getVariantDetails(widget.product),
-                                        selectedVariantIndex: selectedVariantIndex,
+                                        selectedVariantIndex:
+                                            selectedVariantIndex,
                                         initialValue: isInWishList);
                                   },
                                 ),
@@ -311,9 +313,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             child: BlocBuilder<CounterCubit, int>(
                               builder: (context, state) {
                                 return Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    buildQuantityButton(colorScheme),
+                                    quantityButton(colorScheme),
                                     Container(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10, vertical: 12),
@@ -335,7 +338,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           ),
                           if (variantCount > 1)
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
+                              padding:
+                                  const EdgeInsets.fromLTRB(20, 24, 20, 16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -351,7 +355,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   ),
                                   GridView.builder(
                                       shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount: 3,
@@ -363,21 +368,25 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                         final isSelected =
                                             selectedVariantIndex == index;
                                         return VariantCard(
-                                            productName: getName(widget.product),
+                                            productName:
+                                                getName(widget.product),
                                             variantName: getVariantName(
                                                 widget.product, index),
-                                            price: getPrice(widget.product, index),
-                                            imageUrl:
-                                                getImages(widget.product, index)
-                                                        .isNotEmpty
-                                                    ? getImages(
-                                                        widget.product, index)[0]
-                                                    : '',
+                                            price:
+                                                getPrice(widget.product, index),
+                                            imageUrl: getImages(
+                                                        widget.product, index)
+                                                    .isNotEmpty
+                                                ? getImages(
+                                                    widget.product, index)[0]
+                                                : '',
                                             onTap: () {
                                               context
                                                   .read<VariantSelectionCubit>()
                                                   .selectVariant(index);
-                                              context.read<CounterCubit>().reset();
+                                              context
+                                                  .read<CounterCubit>()
+                                                  .reset();
                                               context
                                                   .read<ImageIndexCubit>()
                                                   .change(0);
@@ -414,8 +423,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                           ),
                                           AnimatedRotation(
                                             turns: isExpanded ? 0.5 : 0,
-                                            duration:
-                                                const Duration(milliseconds: 250),
+                                            duration: const Duration(
+                                                milliseconds: 250),
                                             child: Icon(
                                               Icons.expand_more,
                                               color: colorScheme.primary,
@@ -443,7 +452,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                       crossFadeState: isExpanded
                                           ? CrossFadeState.showSecond
                                           : CrossFadeState.showFirst,
-                                      duration: const Duration(milliseconds: 250),
+                                      duration:
+                                          const Duration(milliseconds: 250),
                                     ),
                                   ],
                                 );
@@ -491,7 +501,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     borderRadius: BorderRadius.circular(10),
                                     child: IconButton(
                                         onPressed: () {},
-                                        icon: Icon(Icons.navigate_next_outlined))),
+                                        icon: Icon(
+                                            Icons.navigate_next_outlined))),
                               ],
                             ),
                           ),

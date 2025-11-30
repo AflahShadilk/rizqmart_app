@@ -4,6 +4,14 @@ String getName(ShowProductEntities product) {
   return product.name;
 }
 
+String getVariantName(ShowProductEntities product, int variantIndex) {
+  final variants = getVariantDetails(product);
+  if (variants.isEmpty || variantIndex >= variants.length) return '';
+
+  final unitName = variants[variantIndex]['unitName'] ?? '';
+  return unitName;
+}
+
 String getDescription(ShowProductEntities product) {
   return product.description ?? "No description available";
 }
@@ -36,13 +44,7 @@ double getPrice(ShowProductEntities product, int variantIndex) {
   return (price is num) ? price.toDouble() : 0.0;
 }
 
-String getVariantName(ShowProductEntities product, int variantIndex) {
-  final variants = getVariantDetails(product);
-  if (variants.isEmpty || variantIndex >= variants.length) return '';
 
-  final unitName = variants[variantIndex]['unitName'] ?? '';
-  return unitName;
-}
 
 //   import 'package:rizqmart/features/auth/domain/entities/main/explore_entities.dart';
 // import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';

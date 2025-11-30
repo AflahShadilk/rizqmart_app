@@ -6,7 +6,7 @@ import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/counter/counter_cubit.dart';
 
-Widget buildQuantityButton(ColorScheme colorScheme) {
+Widget quantityButton(ColorScheme colorScheme) {
     return BlocBuilder<CounterCubit,int>(builder: (context,state){
       return Container(
       decoration: BoxDecoration(

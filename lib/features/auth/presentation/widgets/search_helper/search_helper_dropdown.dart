@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/variant_det_getter.dart';
+import 'package:rizqmart/core/services/firestore_product/variant_det_getter.dart';
 import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
 
 Widget searchResultsDropdown({
