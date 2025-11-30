@@ -17,7 +17,7 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.cs.onBackground,
+      backgroundColor: context.cs.surface,
        appBar: AppBar(
         title: AppHeading('My Cart'),
         centerTitle: true,
