@@ -1,13 +1,17 @@
 // ignore_for_file: deprecated_member_use
 
+
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
-import 'package:rizqmart/core/theme/theme_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/productbycategory/filteritem/filter_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/productbycategory/filteritem/filter_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/reusable_main_button.dart';
 
-class FilterBottomSheet extends StatefulWidget {
+class FilterBottomSheet extends StatelessWidget {
   final List<String> brands;
   final List<String> categories;
   final List<String> variants;
@@ -28,128 +32,107 @@ class FilterBottomSheet extends StatefulWidget {
   });
 
   @override
-  State<FilterBottomSheet> createState() => _FilterBottomSheetState();
-}
-
-class _FilterBottomSheetState extends State<FilterBottomSheet> {
-  String? tempBrand;
-  String? tempCategory;
-  String? tempVariant;
-
-  @override
-  void initState() {
-    super.initState();
-    tempBrand = widget.selectedBrand;
-    tempCategory = widget.selectedCategory;
-    tempVariant = widget.selectedVariant;
-  }
-
-  void clearAll() {
-    setState(() {
-      tempBrand = null;
-      tempCategory = null;
-      tempVariant = null;
-    });
-  }
-
-  void applyFilters() {
-    widget.onApply(tempBrand, tempCategory, tempVariant);
-    Navigator.pop(context);
-  }
-
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme;
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      height: MediaQuery.of(context).size.height * 0.7,
-      decoration: BoxDecoration(
-        color: theme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+    return BlocProvider(
+      create: (context) => FiltersCubit(
+        initialBrand: selectedBrand,
+        initialCategory: selectedCategory,
+        initialVariant: selectedVariant,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Filters',
-                style: GoogleFonts.poppins(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: theme.onBackground,
-                ),
-              ),
-              TextButton(
-                onPressed: clearAll,
-                child: Text(
-                  'Clear All',
-                  style: TextStyle(color: theme.primary),
-                ),
-              ),
-            ],
-          ),
-          const Divider(),
-          const SizedBox(height: 10),
+      child: BlocBuilder<FiltersCubit, FiltersState>(
+        builder: (context, state) {
+          final filterCubit = context.read<FiltersCubit>();
 
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FilterSection(
-                    title: 'Brand',
-                    items: widget.brands,
-                    selectedValue: tempBrand,
-                    onChanged: (value) {
-                      setState(() {
-                        tempBrand = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20),
-
-                  FilterSection(
-                    title: 'Category',
-                    items: widget.categories,
-                    selectedValue: tempCategory,
-                    onChanged: (value) {
-                      setState(() {
-                        tempCategory = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20),
-
-                  FilterSection(
-                    title: 'Variant',
-                    items: widget.variants,
-                    selectedValue: tempVariant,
-                    onChanged: (value) {
-                      setState(() {
-                        tempVariant = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
+          return Container(
+            padding: const EdgeInsets.all(20),
+            height: MediaQuery.of(context).size.height * 0.7,
+            decoration: BoxDecoration(
+              color: theme.surface,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             ),
-          ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Filters',
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: theme.onBackground,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => filterCubit.clearAll(),
+                      child: Text(
+                        'Clear All',
+                        style: TextStyle(color: theme.primary),
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(),
+                const SizedBox(height: 10),
 
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            height: 55,
-            child:MainButton(
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FilterSection(
+                          title: 'Brand',
+                          items: brands,
+                          selectedValue: state.selectedBrand,
+                          onChanged: (value) => filterCubit.updateBrand(value),
+                        ),
+                        const SizedBox(height: 20),
+
+                        FilterSection(
+                          title: 'Category',
+                          items: categories,
+                          selectedValue: state.selectedCategory,
+                          onChanged: (value) => filterCubit.updateCategory(value),
+                        ),
+                        const SizedBox(height: 20),
+
+                        FilterSection(
+                          title: 'Variant',
+                          items: variants,
+                          selectedValue: state.selectedVariant,
+                          onChanged: (value) => filterCubit.updateVariant(value),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  height: 55,
+                  child: MainButton(
                     label: 'Apply Filter',
                     icon: Icons.filter_alt_outlined,
-                    onPress:applyFilters,
-                    color: context.cs.success,
-                    textColor: ThemeCubit.textSecondaryDark)
-          ),
-        ],
+                    onPress: () {
+                      onApply(
+                        state.selectedBrand,
+                        state.selectedCategory,
+                        state.selectedVariant,
+                      );
+                      Navigator.pop(context);
+                    },
+                    color: context.cs.primary,
+                    textColor: context.cs.background,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
