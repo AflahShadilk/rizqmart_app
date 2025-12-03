@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_types_as_parameter_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 
@@ -15,7 +17,7 @@ class CartFirestoreModel extends CartEntities {
       factory CartFirestoreModel.fromFireStore(DocumentSnapshot snapShot){
         final data=snapShot.data() as Map<String,dynamic>;
         return CartFirestoreModel(
-          id: snapShot.id, 
+          id: data['id']??'', 
           name:data['name']??'', 
           brand: data['brand']??'',
           description: data['description']??'',
@@ -28,6 +30,7 @@ class CartFirestoreModel extends CartEntities {
 
     Map<String,dynamic>toMap(){
       return{
+        'id':id,
         'name': name,
         'brand':brand,
       'variantDetails': variantDetails,

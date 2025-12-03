@@ -14,6 +14,8 @@ class CartDataSource {
   Future<void> addToCart(
       {required String id,
       required String name,
+      required String brand,
+      required String? description,
       required List<Map<String, dynamic>> variantDetails,
       required int count,
       required int variantIndex,
@@ -22,7 +24,10 @@ class CartDataSource {
       final cartItemId = '${id}_variant_$variantIndex';
 
       final cartData = {
+        'id': id,
         'name': name,
+        'brand': brand,
+        'description': description,
         'variantDetails': variantDetails,
         'count': count,
         'variantIndex': variantIndex,
@@ -77,38 +82,40 @@ class CartDataSource {
     }
   }
 
-  Future<void> incrementQuantity(
-      {required String userId, required String cartItemId}) async {
-    try {
-      await cartCollectionReference(userId).doc(cartItemId).update({
-        'count': FieldValue.increment(1),
-        'updatedAt': FieldValue.serverTimestamp()
-      });
-    } catch (e) {
-      throw Exception('Failed to increment quantity: $e');
-    }
+Future<void> incrementQuantity(
+    {required String userId, required String cartItemId}) async {
+  try {
+    await cartCollectionReference(userId).doc(cartItemId).update({
+      'count': FieldValue.increment(1),
+      'updatedAt': FieldValue.serverTimestamp()
+    });
+  } catch (e) {
+    throw Exception('Failed to increment quantity: $e');
   }
+}
 
-  Future<void> decrementQuantity(
-      {required String userId, required String cartItemId}) async {
-    try {
-      final doc = await cartCollectionReference(userId).doc(cartItemId).get();
-      if (doc.exists) {
-        final data = doc.data() as Map<String, dynamic>?;
-        final currrentCount = (data?['count'] ?? 1) as int;
-        if (currrentCount <= 1) {
-          await removeFromCart(userId: userId, cartItemId: cartItemId);
-        } else {
-          await cartCollectionReference(userId).doc(cartItemId).update({
-            'count': FieldValue.increment(-1),
-            'updatedAt': FieldValue.serverTimestamp(),
-          });
-        }
+Future<void> decrementQuantity(
+    {required String userId, required String cartItemId}) async {
+  try {
+    final doc = await cartCollectionReference(userId).doc(cartItemId).get();
+    if (doc.exists) {
+      final data = doc.data() as Map<String, dynamic>?;
+      final currentCount = (data?['count'] ?? 1) as int;
+      
+      if (currentCount <= 1) {
+        await removeFromCart(userId: userId, cartItemId: cartItemId);
+      } else {
+        await cartCollectionReference(userId).doc(cartItemId).update({
+          'count': FieldValue.increment(-1),
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
       }
-    } catch (e) {
-      throw Exception('Failed to increment quantity: $e');
+    } else {
     }
+  } catch (e) {
+    throw Exception('Failed to decrement quantity: $e');
   }
+}
 
   Future<void> clearCart(String userId) async {
     try {

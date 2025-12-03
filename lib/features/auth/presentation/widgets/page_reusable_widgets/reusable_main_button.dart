@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MainButton extends StatelessWidget {
   final String label;
-  final IconData icon;
+  final IconData? icon;
   final VoidCallback onPress;
   final Color color;
   final Color textColor;
@@ -10,7 +10,7 @@ class MainButton extends StatelessWidget {
   const MainButton({
     super.key,
     required this.label,
-    required this.icon,
+     this.icon,
     required this.onPress,
     required this.color,
     required this.textColor,

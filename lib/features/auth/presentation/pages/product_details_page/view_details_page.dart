@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,7 +8,10 @@ import 'package:rizqmart/core/services/firestore_product/access_product_variant_
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/core/theme/theme_cubit.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/counter/counter_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/description/desicription_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/image/image_index_cubit.dart';
@@ -462,7 +466,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           ),
                           const SizedBox(height: 30),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            padding: const EdgeInsets.fromLTRB(20, 0, 15, 0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -542,7 +546,30 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         label: 'Add to Cart ₹$totalPrice',
                         icon: Icons.shopping_bag_outlined,
                         onPress: () {
-                          showToast(context, "Added $state item(s) to cart");
+                          if (state < 1) {
+                            showToast(
+                              context,
+                              'Please select at least 1 item',
+                              type: ToastType.error,
+                            );
+                            return;
+                          }
+                          final cartItem = CartEntities(
+                              id: productId,
+                              name: getName(widget.product),
+                              brand: getBrand(widget.product),
+                              description: getDescription(widget.product),
+                              variantDetails: getVariantDetails(widget.product),
+                              count: state,
+                              variantIndex: selectedVariantIndex,
+                              userId: '');
+                          context.read<CartBloc>().add(AddToCartEvent(
+                              productId: productId, item: cartItem));
+                          final variantName = getVariantName(
+                              widget.product, selectedVariantIndex);
+                          showToast(context,
+                              'Added $count x ${getName(widget.product)} ($variantName) to cart!',
+                              type: ToastType.success);
                         },
                         color: context.cs.success,
                         textColor: ThemeCubit.textSecondaryDark);

@@ -1,4 +1,5 @@
   import 'package:flutter/material.dart';
+import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigation_bar.dart';
 
 Widget buildEmptyState(BuildContext context) {
@@ -9,7 +10,7 @@ Widget buildEmptyState(BuildContext context) {
           Icon(
             Icons.favorite_border,
             size: 80,
-            color: Colors.grey[400],
+            color: AppColors.grey400,
           ),
           const SizedBox(height: 16),
           Text(
@@ -22,7 +23,7 @@ Widget buildEmptyState(BuildContext context) {
           Text(
             'Add products to your favorites to see them here',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey[600],
+              color: AppColors.grey600,
             ),
             textAlign: TextAlign.center,
           ),
