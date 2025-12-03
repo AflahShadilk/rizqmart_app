@@ -42,7 +42,7 @@ List<double> getVariantMrp(ProductEntities product) {
   List<double> mrps = [];
   
   if (product.variantDetails != null) {
-    for (var variant in product.variantDetails!) {
+    for (var variant in product.variantDetails) {
       final mrp = variant['mrp'];
       double mrpValue = 0.0;
       if (mrp is int) {
@@ -61,7 +61,7 @@ List<int> getVariantQuantities(ProductEntities product) {
   List<int> quantities = [];
   
   if (product.variantDetails != null) {
-    for (var variant in product.variantDetails!) {
+    for (var variant in product.variantDetails) {
       quantities.add(variant['quantity'] as int? ?? 0);
     }
   }
@@ -73,7 +73,7 @@ List<String> getVariantNames(ProductEntities product) {
   List<String> names = [];
   
   if (product.variantDetails != null) {
-    for (var variant in product.variantDetails!) {
+    for (var variant in product.variantDetails) {
       names.add(variant['unitName'] as String? ?? '');
     }
   }

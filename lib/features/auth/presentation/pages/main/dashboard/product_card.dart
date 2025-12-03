@@ -19,13 +19,27 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
+
+  late String productName;
+  late String? productImage;
+  late String variantName;
+  late double variantMrp;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
+
+    productName = widget.product.name;
+    productImage = getVariantImages(widget.product).firstOrNull;
+    variantName = getVariantNames(widget.product).first;
+    variantMrp = getVariantMrp(widget.product).first;
+
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -36,6 +50,18 @@ class _ProductCardState extends State<ProductCard>
   }
 
   @override
+  void didUpdateWidget(ProductCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.product.id != widget.product.id) {
+      productName = widget.product.name;
+      productImage = getVariantImages(widget.product).firstOrNull;
+      variantName = getVariantNames(widget.product).first;
+      variantMrp = getVariantMrp(widget.product).first;
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -43,6 +69,7 @@ class _ProductCardState extends State<ProductCard>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final colorScheme = Theme.of(context).colorScheme;
 
     return GestureDetector(
@@ -74,9 +101,7 @@ class _ProductCardState extends State<ProductCard>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ProductImage(
-                      imageUrl: getVariantImages(widget.product).firstOrNull,
-                    ),
+                    ProductImage(imageUrl: productImage),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(5, 5, 0, 0),
@@ -87,21 +112,23 @@ class _ProductCardState extends State<ProductCard>
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(widget.product.name,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.inter(
-                                      textStyle: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w600,
-                                            color: colorScheme.onSurface,
-                                            fontSize: 17,
-                                          ),
-                                    )),
                                 Text(
-                                  getVariantNames(widget.product).first,
+                                  productName,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.inter(
+                                    textStyle: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          color: colorScheme.onSurface,
+                                          fontSize: 17,
+                                        ),
+                                  ),
+                                ),
+                                Text(
+                                  variantName,
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.inter(
                                     textStyle: Theme.of(context)
@@ -120,25 +147,24 @@ class _ProductCardState extends State<ProductCard>
                               children: [
                                 Expanded(
                                   child: Text(
-                                    '₹${getVariantMrp(widget.product).first.toStringAsFixed(0)}',
+                                    '₹${variantMrp.toStringAsFixed(0)}',
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.inter(
-                                        textStyle: Theme.of(context)
-                                            .textTheme
-                                            .labelSmall
-                                            ?.copyWith(
-                                              letterSpacing: 1,
-                                              color: context.cs.onSecondary,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w700,
-                                            )),
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .labelSmall
+                                          ?.copyWith(
+                                            letterSpacing: 1,
+                                            color: context.cs.onSecondary,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
                                   ),
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 5, 5),
-                                  child:
-                                      AddToCartButton(widget: widget.product),
+                                  padding: const EdgeInsets.fromLTRB(0, 0, 5, 5),
+                                  child: AddToCartButton(widget: widget.product),
                                 )
                               ],
                             ),

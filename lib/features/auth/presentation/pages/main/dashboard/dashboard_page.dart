@@ -26,9 +26,9 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-
   final TextEditingController searchController = TextEditingController();
   List<ProductEntities> _allProducts = [];
+  List<ProductEntities> _cachedDisplayProducts = [];
 
   void _onSearch(String query) {
     context.read<SearchCubit>().search(
@@ -80,6 +80,12 @@ class _DashboardPageState extends State<DashboardPage> {
                             searchController.clear();
                           });
                         }
+                        if (displayProducts.length !=
+                                _cachedDisplayProducts.length ||
+                            _areListsEqual(
+                                displayProducts, _cachedDisplayProducts)) {
+                          _cachedDisplayProducts = List.from(displayProducts);
+                        }
                         return SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,44 +108,54 @@ class _DashboardPageState extends State<DashboardPage> {
                               ),
                               BlocBuilder<ToggleSeeAllButtonCubit, bool>(
                                 builder: (context, isGrid) {
-                           
-                                    return isGrid?
-                                    GridView.builder(
-                                      shrinkWrap: true,
-                                      physics:const NeverScrollableScrollPhysics(),
-                                      padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 8),
-
-                                      gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      childAspectRatio: 0.75,
-                                      crossAxisSpacing: 12,
-                                      mainAxisSpacing: 16
-                                    ), itemBuilder: (context,index){
-                                      final product=displayProducts[index];
-                                      return ProductCard(product: product);
-                                    },itemCount: displayProducts.length,)
-                                    
-                                    : SizedBox(
-                                      height: 210,
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12),
-                                        itemCount: displayProducts.length,
-                                        itemBuilder: (context, index) {
-                                          final product =
-                                              displayProducts[index];
-                                          return Padding(
+                                  return isGrid
+                                      ? GridView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 8),
+                                          addAutomaticKeepAlives:
+                                              true, 
+                                          addRepaintBoundaries:
+                                              true, 
+                                          gridDelegate:
+                                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2,
+                                            childAspectRatio: 0.75,
+                                            crossAxisSpacing: 12,
+                                            mainAxisSpacing: 16,
+                                          ),
+                                          itemBuilder: (context, index) {
+                                            return ProductCard(
+                                              key: ValueKey(
+                                                  displayProducts[index]
+                                                      .id),
+                                              product: displayProducts[index],
+                                            );
+                                          },
+                                          itemCount: displayProducts.length,
+                                        )
+                                      : SizedBox(
+                                          height: 210,
+                                          child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 4),
-                                            child:
-                                                ProductCard(product: product),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  
-                               
+                                                horizontal: 12),
+                                            itemCount: displayProducts.length,
+                                            itemBuilder: (context, index) {
+                                              final product =
+                                                  displayProducts[index];
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 4),
+                                                child: ProductCard(
+                                                    product: product),
+                                              );
+                                            },
+                                          ),
+                                        );
                                 },
                               ),
                               Padding(
@@ -152,6 +168,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 8),
+                                addAutomaticKeepAlives: true,
+                                addRepaintBoundaries: true, 
                                 gridDelegate:
                                     const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
@@ -160,8 +178,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                   mainAxisSpacing: 16,
                                 ),
                                 itemBuilder: (context, index) {
-                                  final product = displayProducts[index];
-                                  return ProductCard(product: product);
+                                  return ProductCard(
+                                    key: ValueKey(displayProducts[index]
+                                        .id), 
+                                    product: displayProducts[index],
+                                  );
                                 },
                                 itemCount: displayProducts.length,
                               ),
@@ -199,5 +220,14 @@ class _DashboardPageState extends State<DashboardPage> {
         ],
       ),
     );
+  }
+
+  bool _areListsEqual(
+      List<ProductEntities> list1, List<ProductEntities> list2) {
+    if (list1.length != list2.length) return false;
+    for (int i = 0; i < list1.length; i++) {
+      if (list1[i].id != list2[i].id) return false;
+    }
+    return true;
   }
 }

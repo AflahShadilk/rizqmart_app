@@ -12,22 +12,16 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
-class FavoritePage extends StatefulWidget {
+class FavoritePage extends StatelessWidget {
   const FavoritePage({super.key});
 
   @override
-  State<FavoritePage> createState() => FavoritePageState();
-}
-
-class FavoritePageState extends State<FavoritePage> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<WishListBloc>().add(GetAllWishListEvent());
-  }
-
-  @override
   Widget build(BuildContext context) {
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<WishListBloc>().add(GetAllWishListEvent());
+    });
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
@@ -55,7 +49,9 @@ class FavoritePageState extends State<FavoritePage> {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<WishListBloc>().add(GetAllWishListEvent());
+                      context.read<WishListBloc>().add(
+                            GetAllWishListEvent(),
+                          );
                     },
                     child: const Text('Try Again'),
                   ),
@@ -83,8 +79,10 @@ class FavoritePageState extends State<FavoritePage> {
               itemBuilder: (context, index) {
                 final wishListItem = allProducts[index];
                 final currentVariantIndex = wishListItem.variantIndex;
+
                 final variant = wishListItem.variantDetails.isNotEmpty &&
-                        currentVariantIndex < wishListItem.variantDetails.length
+                        currentVariantIndex <
+                            wishListItem.variantDetails.length
                     ? wishListItem.variantDetails[currentVariantIndex]
                     : {};
 

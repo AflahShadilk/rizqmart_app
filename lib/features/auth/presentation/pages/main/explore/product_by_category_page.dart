@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/explore_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/productbycategory/filter_cubit.dart';
@@ -165,7 +166,7 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error, size: 50, color: Colors.red),
+                  const Icon(Icons.error, size: 50, color:AppColors.error500),
                   const SizedBox(height: 16),
                   Text('Error: ${state.message}'),
                   const SizedBox(height: 16),
@@ -195,7 +196,7 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Icon(Icons.shopping_bag_outlined,
-                              size: 80, color: Colors.grey),
+                              size: 80, color: AppColors.grey500),
                           const SizedBox(height: 16),
                           const Text('No products found'),
                         ],
@@ -234,7 +235,11 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
                         price: price,
                         imageUrl: image,
                         colorScheme: context.cs,
-                        actionButton: AddToCartButton(widget: product),
+                        actionButton: AddToCartButton(
+                          widget: product,
+                          variantIndex: variantIndex,
+                          count: 1,
+                        ),
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(

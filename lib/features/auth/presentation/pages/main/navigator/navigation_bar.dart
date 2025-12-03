@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/navigation/navigation_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/cart/cart_page.dart';
@@ -10,14 +11,9 @@ import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/dashboa
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/explore_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/wish_list_page.dart';
 
-class NavigationBarPage extends StatefulWidget {
+class NavigationBarPage extends StatelessWidget {
   const NavigationBarPage({super.key});
 
-  @override
-  State<NavigationBarPage> createState() => _NavigationBarPageState();
-}
-
-class _NavigationBarPageState extends State<NavigationBarPage> {
   final List<Widget> pages = const [
     DashboardPage(),
     ExplorePage(),
@@ -39,7 +35,7 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 20,
-                    color: Colors.black.withOpacity(0.1),
+                    color: AppColors.black.withOpacity(0.1),
                   )
                 ],
               ),
@@ -48,10 +44,10 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
                   child: GNav(
-                    rippleColor: Colors.grey[300]!,
-                    hoverColor: Colors.grey[100]!,
+                    rippleColor: AppColors.grey300,
+                    hoverColor: AppColors.grey100,
                     gap: 6,
-                    activeColor: Colors.white,
+                    activeColor: AppColors.white,
                     iconSize: 22,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),

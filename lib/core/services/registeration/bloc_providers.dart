@@ -66,9 +66,9 @@ class BlocProviders extends StatelessWidget {
                   removeFromCartUsecase: RemoveFromCartUsecase(sl()),
                   updateCartitemQuantityUsecase:
                       UpdateCartitemQuantityUsecase(sl()),
-                  incrementCartItemUsecase: IncrementCartItemUsecase(sl()),
+                  incrementCartItemUsecase: IncrementCartItemUsecase(sl()), 
                   decreamentCartItemUsecase: DecreamentCartItemUsecase(sl()),
-                  clearCartItemUsecase: ClearCartItemUsecase(sl())))
+                  clearCartItemUsecase: ClearCartItemUsecase(sl())),lazy: false,),
         ],
         child: BlocBuilder<ThemeCubit, ThemeState>(builder: (context, state) {
           return MaterialApp(
