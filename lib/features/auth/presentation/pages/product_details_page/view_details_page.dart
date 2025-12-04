@@ -20,10 +20,10 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/quantity_counter.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/back_button_common.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/buttons/back_button_common.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_not_support_icon.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/reusable_main_button.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 import '../../widgets/buttons/like_button.dart';
