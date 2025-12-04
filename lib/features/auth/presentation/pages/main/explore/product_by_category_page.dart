@@ -13,7 +13,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_ev
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/bloc%20helper/circular_progress.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/add_to_cart_button.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/buttons/add_to_cart_button.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
 import 'filter_bottom_sheet.dart';

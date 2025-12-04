@@ -15,7 +15,7 @@ import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/topbar_
 import 'package:rizqmart/features/auth/presentation/widgets/bloc helper/circular_progress.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/bloc helper/scaffold_error.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/see_all_button.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/buttons/see_all_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_helper_dropdown.dart';
 
 class DashboardPage extends StatefulWidget {
