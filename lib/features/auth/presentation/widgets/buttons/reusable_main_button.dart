@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class MainButton extends StatelessWidget {
   final String label;
   final IconData? icon;
-  final VoidCallback onPress;
+  final VoidCallback? onPress; 
   final Color color;
   final Color textColor;
 
   const MainButton({
     super.key,
     required this.label,
-     this.icon,
+    this.icon,
     required this.onPress,
     required this.color,
     required this.textColor,
@@ -20,7 +20,7 @@ class MainButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: onPress,
-      icon: Icon(icon, size: 22, color: textColor),
+      icon: icon != null ? Icon(icon, size: 22, color: textColor) : const SizedBox.shrink(),
       label: Text(
         label,
         style: TextStyle(

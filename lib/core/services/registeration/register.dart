@@ -10,6 +10,7 @@ import 'package:rizqmart/features/auth/data/data_source/auth/signup_remote_datas
 import 'package:rizqmart/features/auth/data/data_source/main/cart_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/dashboard_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/explore_data_source.dart';
+import 'package:rizqmart/features/auth/data/data_source/main/order_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/wish_list_data_source.dart';
 import 'package:rizqmart/features/auth/data/repository/auth/google_repository_imple.dart';
 import 'package:rizqmart/features/auth/data/repository/auth/signin_repository_impl.dart';
@@ -17,6 +18,7 @@ import 'package:rizqmart/features/auth/data/repository/auth/signup_repository_im
 import 'package:rizqmart/features/auth/data/repository/main/cart_repository_impl.dart';
 import 'package:rizqmart/features/auth/data/repository/main/dashboard_repository_impl.dart';
 import 'package:rizqmart/features/auth/data/repository/main/explore_repository_imple.dart';
+import 'package:rizqmart/features/auth/data/repository/main/order_repository_imple.dart';
 import 'package:rizqmart/features/auth/data/repository/main/wish_list_repository_imple.dart';
 import 'package:rizqmart/features/auth/domain/repositories/auth/google_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/auth/create_account_authrepository.dart';
@@ -25,6 +27,7 @@ import 'package:rizqmart/features/auth/domain/repositories/auth/forgotpass_authr
 import 'package:rizqmart/features/auth/domain/repositories/main/cart_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/dashboard_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/explore_repository.dart';
+import 'package:rizqmart/features/auth/domain/repositories/main/order_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/wish_list_repository.dart';
 import 'package:rizqmart/features/auth/domain/usecase/auth/google_sign_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/auth/signin_usecase.dart';
@@ -43,6 +46,9 @@ import 'package:rizqmart/features/auth/domain/usecase/main/explore/get_productby
 import 'package:rizqmart/features/auth/domain/usecase/main/explore/get_products_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/explore/search_products_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/dashboard/get_product_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/order/cancel_order_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/order/get_user_orders_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/order/place_order_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/wishlist/add_to_wish_list_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/wishlist/delete_frm_wish_list_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/wishlist/get_all_wish_list_usecase.dart';
@@ -120,6 +126,7 @@ void setupLocator() {
   sl.registerLazySingleton<ExploreDataSources>(() => ExploreDataSources());
   sl.registerLazySingleton<WishListDataSource>(() => WishListDataSource());
   sl.registerLazySingleton<CartDataSource>(()=>CartDataSource());
+  sl.registerLazySingleton<OrderDataSource>(()=>OrderDataSource());
   //main part repos-------------------------------------------------------------------
   sl.registerLazySingleton<DashboardRepository>(
       () => DashboardRepositoryImpl(dataSource: sl()));
@@ -128,6 +135,7 @@ void setupLocator() {
   sl.registerLazySingleton<WishListRepository>(
       () => WishListRepositoryImple(dataSource: sl(), auth: sl()));
   sl.registerLazySingleton<CartRepository>(()=>CartRepositoryImpl(dataSource: sl()));
+  sl.registerLazySingleton<OrderRepository>(()=>OrderRepositoryImpl(dataSource: sl()));
   //use -------------------------------------------------------------------------------
   //productUsecases
   sl.registerLazySingleton(() => GetProductUsecase(sl()));
@@ -151,4 +159,9 @@ void setupLocator() {
   sl.registerLazySingleton(()=>DecreamentCartItemUsecase(sl()));
   sl.registerLazySingleton(()=>RemoveFromCartUsecase(sl()));
   sl.registerLazySingleton(()=>ClearCartItemUsecase(sl()));
+
+  //Order usecase
+  sl.registerLazySingleton(()=>PlaceOrderUsecase(sl()));
+  sl.registerLazySingleton(()=>GetUserOrdersUsecase(sl()));
+  sl.registerLazySingleton(()=>CancelOrderUsecase(sl()));
 }
