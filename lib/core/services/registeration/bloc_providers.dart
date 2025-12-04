@@ -21,8 +21,10 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/toggle_see_
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/splash_screen.dart';
+
 class BlocProviders extends StatelessWidget {
   const BlocProviders({
     super.key,
@@ -60,15 +62,22 @@ class BlocProviders extends StatelessWidget {
           BlocProvider(create: (context) => SearchCubit()),
           BlocProvider(create: (context) => ToggleSeeAllButtonCubit()),
           BlocProvider(
-              create: (context) => CartBloc(
-                  getCartItemsUsecase: GetCartItemsUsecase(sl()),
-                  addToCartUsecase: AddToCartUsecase(sl()),
-                  removeFromCartUsecase: RemoveFromCartUsecase(sl()),
-                  updateCartitemQuantityUsecase:
-                      UpdateCartitemQuantityUsecase(sl()),
-                  incrementCartItemUsecase: IncrementCartItemUsecase(sl()), 
-                  decreamentCartItemUsecase: DecreamentCartItemUsecase(sl()),
-                  clearCartItemUsecase: ClearCartItemUsecase(sl())),lazy: false,),
+            create: (context) => CartBloc(
+                getCartItemsUsecase: GetCartItemsUsecase(sl()),
+                addToCartUsecase: AddToCartUsecase(sl()),
+                removeFromCartUsecase: RemoveFromCartUsecase(sl()),
+                updateCartitemQuantityUsecase:
+                    UpdateCartitemQuantityUsecase(sl()),
+                incrementCartItemUsecase: IncrementCartItemUsecase(sl()),
+                decreamentCartItemUsecase: DecreamentCartItemUsecase(sl()),
+                clearCartItemUsecase: ClearCartItemUsecase(sl())),
+            lazy: false,
+          ),
+          BlocProvider(
+              create: (context) => OrderBloc(
+                  placeOrderUsecase: sl(),
+                  getUserOrdersUsecase: sl(),
+                  cancelOrderUsecase: sl())),
         ],
         child: BlocBuilder<ThemeCubit, ThemeState>(builder: (context, state) {
           return MaterialApp(
