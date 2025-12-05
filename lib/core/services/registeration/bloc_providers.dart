@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
+import 'package:rizqmart/core/routes/rout_generator.dart';
 import 'package:rizqmart/core/services/registeration/register.dart';
 import 'package:rizqmart/core/theme/theme_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_bloc.dart';
@@ -23,7 +25,6 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_bl
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/pages/onboarding/splash_screen.dart';
 
 class BlocProviders extends StatelessWidget {
   const BlocProviders({
@@ -86,7 +87,8 @@ class BlocProviders extends StatelessWidget {
             theme: ThemeCubit.lightTheme,
             darkTheme: ThemeCubit.darkTheme,
             themeMode: state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            home: const SplashScreen(),
+            initialRoute: AppRoutes.splash,
+            onGenerateRoute: RouteGenerator.onGenerate,
           );
         }));
   }

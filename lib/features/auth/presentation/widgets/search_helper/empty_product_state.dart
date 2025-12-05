@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 Widget buildEmpty(BuildContext context, bool isSearching, dynamic searchController,void Function() onPress) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -25,14 +26,14 @@ Widget buildEmpty(BuildContext context, bool isSearching, dynamic searchControll
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          24.h,
           Text(
             'No Products Found',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: colorScheme.onBackground,
                 ),
           ),
-          const SizedBox(height: 8),
+          8.h,
           Text(
             isSearching
                 ? 'No products match "${searchController.text}"'
@@ -43,7 +44,7 @@ Widget buildEmpty(BuildContext context, bool isSearching, dynamic searchControll
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 24),
+          24.h,
           if (isSearching)
             ElevatedButton(
               onPressed: onPress,

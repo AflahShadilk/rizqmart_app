@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:rizqmart/features/auth/presentation/pages/auth/login_page.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/widget/welcome_page_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,9 +30,7 @@ class _WelcomeFlowState extends State<WelcomeFlow> with TickerProviderStateMixin
     final pref = await SharedPreferences.getInstance();
     await pref.setBool('welcome', true);
     if (mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const LoginPage()),
-      );
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
     }
   }
 
@@ -156,38 +154,6 @@ class _WelcomeFlowState extends State<WelcomeFlow> with TickerProviderStateMixin
                   ),
                 ),
                 const SizedBox(height: 25),
-                // Next Button
-                // ScaleTransition(
-                //   scale: Tween<double>(begin: 0.9, end: 1.0).animate(
-                //     CurvedAnimation(
-                //       parent: _animationController,
-                //       curve: Curves.elasticOut,
-                //     ),
-                //   ),
-                //   child: SizedBox(
-                //     width: double.infinity,
-                //     child: ElevatedButton(
-                //       onPressed: _nextPage,
-                //       style: ElevatedButton.styleFrom(
-                //         backgroundColor: Colors.white,
-                //         padding: const EdgeInsets.symmetric(vertical: 14),
-                //         shape: RoundedRectangleBorder(
-                //           borderRadius: BorderRadius.circular(12),
-                //         ),
-                //         elevation: 5,
-                //       ),
-                //       child: Text(
-                //         _currentPage == 2 ? 'Get Started' : 'Next',
-                //         style: const TextStyle(
-                //           color: Colors.black87,
-                //           fontSize: 16,
-                //           fontWeight: FontWeight.bold,
-                //           letterSpacing: 0.5,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),

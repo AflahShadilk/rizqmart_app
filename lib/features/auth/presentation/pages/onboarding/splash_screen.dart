@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:rizqmart/core/constants.dart';
-import 'package:rizqmart/features/auth/presentation/pages/auth/login_page.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigation_bar.dart';
-import 'package:rizqmart/features/auth/presentation/pages/onboarding/welcome1.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -31,17 +29,11 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) return;
 
     if (!haseen) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const WelcomeFlow()),
-      );
+      Navigator.pushReplacementNamed(context, AppRoutes.welcome);
     } else if (userLogin) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => NavigationBarPage()),
-      );
+      Navigator.pushReplacementNamed(context, AppRoutes.navigationBar);
     } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const LoginPage()),
-      );
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
     }
   }
 

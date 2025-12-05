@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
-import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
 import 'package:rizqmart/core/services/firestore_product/variant_det_getter.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/add_to_cart_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
@@ -20,13 +20,15 @@ class ProductCard extends StatefulWidget {
 
 class _ProductCardState extends State<ProductCard>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
 
   late String productName;
   late String? productImage;
   late String variantName;
   late double variantMrp;
+
+  static const double _radiusValue = 12;
 
   @override
   bool get wantKeepAlive => true;
@@ -44,13 +46,14 @@ class _ProductCardState extends State<ProductCard>
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
+
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
   }
 
   @override
-  void didUpdateWidget(ProductCard oldWidget) {
+  void didUpdateWidget(covariant ProductCard oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.product.id != widget.product.id) {
@@ -70,14 +73,20 @@ class _ProductCardState extends State<ProductCard>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     final colorScheme = Theme.of(context).colorScheme;
+    // ignore: prefer_function_declarations_over_variables
+    final onTapNav = () =>
+        Navigator.pushNamed(context, AppRoutes.productDetails, arguments: {
+          'product': widget.product,
+          'variantIndex': 0,
+        });
 
     return GestureDetector(
       onTapDown: (_) => _controller.forward(),
       onTapUp: (_) => _controller.reverse(),
       onTapCancel: () => _controller.reverse(),
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProductDetailsPage(product: widget.product))),
+      onTap: onTapNav,
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: SizedBox(
@@ -85,7 +94,7 @@ class _ProductCardState extends State<ProductCard>
           height: 200,
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(_radiusValue),
               boxShadow: [
                 BoxShadow(
                   color: colorScheme.onBackground.withOpacity(0.03),
@@ -95,7 +104,7 @@ class _ProductCardState extends State<ProductCard>
               ],
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(_radiusValue),
               child: Material(
                 color: colorScheme.surface,
                 child: Column(
@@ -140,7 +149,7 @@ class _ProductCardState extends State<ProductCard>
                                           fontSize: 11,
                                         ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                             Row(
@@ -163,9 +172,12 @@ class _ProductCardState extends State<ProductCard>
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.fromLTRB(0, 0, 5, 5),
-                                  child: AddToCartButton(widget: widget.product),
-                                )
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 5, 5),
+                                  child: AddToCartButton(
+                                    widget: widget.product,
+                                  ),
+                                ),
                               ],
                             ),
                           ],

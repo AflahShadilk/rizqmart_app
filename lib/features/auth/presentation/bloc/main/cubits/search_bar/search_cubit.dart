@@ -3,9 +3,14 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/
 
 class SearchCubit extends Cubit<SearchState>{
   SearchCubit():super(SearchInitialState());
+  
+  List<dynamic>allItems=[];
+  void setItems(List<dynamic>items){
+    allItems=items;
+  }
 
   void search({
-   required List<dynamic>allItems,
+   
    required String query,
    required bool Function(dynamic item,String query)matcher
   }){

@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/toggle_see_all/toggle_see_all_button.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_cubit.dart';
@@ -27,18 +27,16 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final TextEditingController searchController = TextEditingController();
-  List<ProductEntities> _allProducts = [];
-  List<ProductEntities> _cachedDisplayProducts = [];
 
   void _onSearch(String query) {
     context.read<SearchCubit>().search(
-        allItems: _allProducts,
-        query: query,
-        matcher: (product, q) {
-          final p = product as ProductEntities;
-          return p.name.toLowerCase().contains(q) ||
-              p.brand.toLowerCase().contains(q);
-        });
+    query:   query,
+    matcher:  (product, q) {
+        final p = product as ProductEntities;
+        return p.name.toLowerCase().contains(q) ||
+            p.brand.toLowerCase().contains(q);
+      },
+    );
   }
 
   @override
@@ -50,184 +48,163 @@ class _DashboardPageState extends State<DashboardPage> {
           Column(
             children: [
               topBarItems(context, searchController, _onSearch),
+
               Expanded(
                 child: BlocBuilder<DashBloc, DashState>(
-                  buildWhen: (previous, current) =>
+                  buildWhen: (_, current) =>
                       current is LoadingProductState ||
                       current is LoadedProductState ||
                       current is FailureLoadingProductState,
-                  builder: (context, state) {
-                    if (state is LoadingProductState) {
+                  builder: (context, dashState) {
+                    if (dashState is LoadingProductState) {
                       return Center(child: circularProgressIndicators());
-                    } else if (state is FailureLoadingProductState) {
-                      return errorMessageScaffold(state);
-                    } else if (state is LoadedProductState) {
-                      _allProducts = state.products;
+                    }
+
+                    if (dashState is FailureLoadingProductState) {
+                      return errorMessageScaffold(dashState);
+                    }
+
+                    if (dashState is LoadedProductState) {
+                      final products = dashState.products;
+
+                      context.read<SearchCubit>().setItems(products);
 
                       return BlocBuilder<SearchCubit, SearchState>(
-                          builder: (context, state) {
-                        final isSearching = state is SearchReasultState;
-                        final filteredItems =
-                            isSearching ? (state).filteredItems : <dynamic>[];
-                        final displayProducts = isSearching
-                            ? filteredItems.cast<ProductEntities>()
-                            : _allProducts;
+                        builder: (context, searchState) {
+                          final isSearching = searchState is SearchReasultState;
+                          final displayProducts = isSearching
+                              ? searchState.filteredItems.cast<ProductEntities>()
+                              : products;
 
-                        if (displayProducts.isEmpty) {
-                          return buildEmpty(
-                              context, isSearching, searchController, () {
-                            context.read<SearchCubit>().clearSearch();
-                            searchController.clear();
-                          });
-                        }
-                        if (displayProducts.length !=
-                                _cachedDisplayProducts.length ||
-                            _areListsEqual(
-                                displayProducts, _cachedDisplayProducts)) {
-                          _cachedDisplayProducts = List.from(displayProducts);
-                        }
-                        return SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        16, 20, 16, 12),
-                                    child: AppHeading('Exclusive Offers'),
-                                  ),
-                                  ReusableSeeAllButton(onPress: () {
-                                    context
-                                        .read<ToggleSeeAllButtonCubit>()
-                                        .toggle();
-                                  })
-                                ],
-                              ),
-                              BlocBuilder<ToggleSeeAllButtonCubit, bool>(
-                                builder: (context, isGrid) {
-                                  return isGrid
-                                      ? GridView.builder(
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 8),
-                                          addAutomaticKeepAlives:
-                                              true, 
-                                          addRepaintBoundaries:
-                                              true, 
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 2,
-                                            childAspectRatio: 0.75,
-                                            crossAxisSpacing: 12,
-                                            mainAxisSpacing: 16,
-                                          ),
-                                          itemBuilder: (context, index) {
-                                            return ProductCard(
-                                              key: ValueKey(
-                                                  displayProducts[index]
-                                                      .id),
-                                              product: displayProducts[index],
-                                            );
-                                          },
-                                          itemCount: displayProducts.length,
-                                        )
-                                      : SizedBox(
-                                          height: 210,
-                                          child: ListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 12),
-                                            itemCount: displayProducts.length,
-                                            itemBuilder: (context, index) {
-                                              final product =
-                                                  displayProducts[index];
-                                              return Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 4),
-                                                child: ProductCard(
-                                                    product: product),
-                                              );
-                                            },
-                                          ),
-                                        );
-                                },
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(16, 25, 16, 12),
-                                child: AppHeading('All Products'),
-                              ),
-                              GridView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
-                                addAutomaticKeepAlives: true,
-                                addRepaintBoundaries: true, 
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 0.75,
-                                  crossAxisSpacing: 12,
-                                  mainAxisSpacing: 16,
+                          if (displayProducts.isEmpty) {
+                            return buildEmpty(
+                              context,
+                              isSearching,
+                              searchController,
+                              () {
+                                context.read<SearchCubit>().clearSearch();
+                                searchController.clear();
+                              },
+                            );
+                          }
+
+                          return SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _exclusiveSection(
+                                  context,
+                                  displayProducts,
                                 ),
-                                itemBuilder: (context, index) {
-                                  return ProductCard(
-                                    key: ValueKey(displayProducts[index]
-                                        .id), 
-                                    product: displayProducts[index],
-                                  );
-                                },
-                                itemCount: displayProducts.length,
-                              ),
-                            ],
-                          ),
-                        );
-                      });
+                                _allProductsSection(displayProducts),
+                              ],
+                            ),
+                          );
+                        },
+                      );
                     }
+
                     return const SizedBox();
                   },
                 ),
               )
             ],
           ),
-          BlocBuilder<SearchCubit, SearchState>(
-            builder: (context, state) {
-              if (state is SearchReasultState &&
-                  state.filteredItems.isNotEmpty) {
-                return Positioned(
-                    top: 195,
-                    left: 16,
-                    right: 16,
-                    child: searchResultsDropdown(
-                        context: context,
-                        controller: searchController,
-                        items: state.filteredItems.cast<ProductEntities>(),
-                        onProductSelected: () {
-                          context.read<SearchCubit>().clearSearch();
-                          searchController.clear();
-                        }));
-              }
-              return const SizedBox();
-            },
-          )
+
+          _searchDropdown(context),
         ],
       ),
     );
   }
 
-  bool _areListsEqual(
-      List<ProductEntities> list1, List<ProductEntities> list2) {
-    if (list1.length != list2.length) return false;
-    for (int i = 0; i < list1.length; i++) {
-      if (list1[i].id != list2[i].id) return false;
-    }
-    return true;
+  Widget _exclusiveSection(
+    BuildContext context,
+    List<ProductEntities> displayProducts,
+  ) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const AppHeading('Exclusive Offers'),
+              ReusableSeeAllButton(
+                onPress: () {
+                  Navigator.pushNamed(context, AppRoutes.allProduct,arguments: displayProducts);
+                },
+              )
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 210,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            itemCount:
+                displayProducts.length > 10 ? 10 : displayProducts.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: ProductCard(product: displayProducts[index]),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _allProductsSection(List<ProductEntities> products) {
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.fromLTRB(16, 25, 16, 12),
+          child: AppHeading('All Products'),
+        ),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.75,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 16,
+          ),
+          itemCount: products.length,
+          itemBuilder: (_, index) {
+            return ProductCard(
+              key: ValueKey(products[index].id),
+              product: products[index],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _searchDropdown(BuildContext context) {
+    return BlocBuilder<SearchCubit, SearchState>(
+      builder: (context, state) {
+        if (state is SearchReasultState && state.filteredItems.isNotEmpty) {
+          return Positioned(
+              top: 195,
+              left: 16,
+              right: 16,
+              child: searchResultsDropdown(
+                context: context,
+                controller: searchController,
+                items: state.filteredItems.cast<ProductEntities>(),
+                onProductSelected: () {
+                  context.read<SearchCubit>().clearSearch();
+                  searchController.clear();
+                },
+              ));
+        }
+        return const SizedBox();
+      },
+    );
   }
 }

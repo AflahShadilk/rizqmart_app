@@ -8,6 +8,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_e
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/login_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/dialogs/logout_dailog.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_bar.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
@@ -36,7 +37,7 @@ Container topBarItems(
     ),
     child: Column(
       children: [
-        const SizedBox(height: 60),
+        60.h,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
@@ -60,7 +61,7 @@ Container topBarItems(
                     Icons.location_on_rounded,
                     color: context.cs.secondary,             
                   ),
-                  const SizedBox(width: 4),
+                  4.w,
                   Text(
                     'Your Location',
                     style:context.ts.bodyMedium?.copyWith(
@@ -110,7 +111,7 @@ Container topBarItems(
                     } else if (state is SignOutSuccessState) {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (context) => LoginPage(),
+                          builder: (context) => LoginPage(),                                   //change to profile
                         ),
                       );
                     }

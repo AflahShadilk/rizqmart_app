@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signUp/signup_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signUp/signup_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signUp/signup_state.dart';
-import 'package:rizqmart/features/auth/presentation/pages/auth/login_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/validators/email_validator.dart';
 import 'package:rizqmart/features/auth/presentation/pages/validators/name_validator.dart';
 import 'package:rizqmart/features/auth/presentation/pages/validators/password_validator.dart';
@@ -15,6 +15,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/auth_decoration_name
 import 'package:rizqmart/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/elevated_buttons.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/text_button.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_responsive.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -76,7 +77,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       );
                     },
                   ),
-                  const SizedBox(height: 16),
+                  16.h,
                   Text(
                     state.message,
                     textAlign: TextAlign.center,
@@ -93,8 +94,7 @@ class _SignUpPageState extends State<SignUpPage> {
           Future.delayed(const Duration(seconds: 2), () {
             if (mounted) {
               Navigator.pop(context);
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginPage()));
+              Navigator.pushReplacementNamed(context, AppRoutes.login);
             }
           });
         } else if (state is SignupFailure) {
@@ -113,9 +113,9 @@ class _SignUpPageState extends State<SignUpPage> {
               children: [
                 Column(
                   children: [
-                    const SizedBox(height: 25),
+                    25.h,
                     Center(child: CommonAppLogo()),
-                    const SizedBox(height: 5),
+                    5.h,
                   ],
                 ),
                 AnimatedPositioned(
@@ -159,14 +159,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 5),
+                            5.h,
                             fieldCatogoryName('Full Name'),
                             TextFormFLogin(
                               controller: nameField,
                               hint: 'Enter your full name',
                               validator: nameFieldValidator,
                             ),
-                            const SizedBox(height: 5),
+                            5.h,
                             fieldCatogoryName('Email'),
                             TextFormFLogin(
                               controller: email,
@@ -174,7 +174,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               validator: emailValidator,
                               keyboardType: TextInputType.emailAddress,
                             ),
-                            const SizedBox(height: 5),
+                            5.h,
                             fieldCatogoryName('Password'),
                             TextFormFLogin(
                               controller: password,
@@ -182,7 +182,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               validator: passwordValidator,
                               obscureText: true,
                             ),
-                            const SizedBox(height: 5),
+                            5.h,
                             fieldCatogoryName('Confirm Password'),
                             TextFormFLogin(
                               controller: cpassword,
@@ -190,7 +190,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               validator: passwordValidator,
                               obscureText: true,
                             ),
-                            const SizedBox(height: 15),
+                            15.h,
                             Center(
                               child: elevatedButton(fontSize,
                                   onpress: () {
@@ -211,14 +211,11 @@ class _SignUpPageState extends State<SignUpPage> {
                                       horizontal: 80, vertical: 14),
                                   content: 'Get Started'),
                             ),
-                            const SizedBox(height: 10),
+                            10.h,
                             Center(
                               child: textButtonAuth(context,
                                   onpress: () {
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            LoginPage()));
+                                Navigator.pushReplacementNamed(context, AppRoutes.login);
                               },
                                   content:
                                       "Already have an account?Login",
