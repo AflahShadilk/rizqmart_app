@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigation_bar.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/reusable_text.dart';
@@ -68,11 +68,7 @@ Future<dynamic> orderErrorDialog(BuildContext context, String message) {
                 12.h,
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => const NavigationBarPage()
-                      )
-                    );
+                    Navigator.of(context).pushReplacementNamed(AppRoutes.navigationBar);
                   },
                   child: Text(
                     'Back to Home',

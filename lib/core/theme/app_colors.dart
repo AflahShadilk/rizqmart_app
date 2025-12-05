@@ -2,9 +2,6 @@
 
 import 'package:flutter/material.dart';
 
-/// Central place for all app colors.
-/// Follow naming: BaseColor + Shade
-/// Example: primary600, grey200, error500
 class AppColors {
   // BRAND COLORS -----------------------------------------------------
 

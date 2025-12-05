@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/explore_entities.dart';
@@ -11,10 +12,10 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/productbyca
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_state.dart';
-import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/bloc%20helper/circular_progress.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/add_to_cart_button.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
 import 'filter_bottom_sheet.dart';
 
@@ -166,10 +167,10 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error, size: 50, color:AppColors.error500),
-                  const SizedBox(height: 16),
+                  const Icon(Icons.error, size: 50, color: AppColors.error500),
+                  16.h,
                   Text('Error: ${state.message}'),
-                  const SizedBox(height: 16),
+                  16.h,
                   ElevatedButton(
                     onPressed: () {
                       context.read<ExploreBloc>().add(
@@ -197,7 +198,7 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
                         children: [
                           const Icon(Icons.shopping_bag_outlined,
                               size: 80, color: AppColors.grey500),
-                          const SizedBox(height: 16),
+                          16.h,
                           const Text('No products found'),
                         ],
                       ),
@@ -241,14 +242,11 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
                           count: 1,
                         ),
                         onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => ProductDetailsPage(
-                                product: product,
-                                variantIndex: variantIndex,
-                              ),
-                            ),
-                          );
+                          Navigator.pushNamed(context, AppRoutes.productDetails,
+                              arguments: {
+                                'product': product,
+                                'variantIndex': variantIndex,
+                              });
                         },
                       );
                     },

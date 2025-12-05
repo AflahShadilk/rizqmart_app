@@ -1,15 +1,16 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
+import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/google/google.state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/google/google_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/google/google_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_state.dart';
-import 'package:rizqmart/features/auth/presentation/pages/auth/forgot_password.dart';
-import 'package:rizqmart/features/auth/presentation/pages/auth/sign_up_page.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigation_bar.dart';
 import 'package:rizqmart/features/auth/presentation/pages/validators/email_validator.dart';
 import 'package:rizqmart/features/auth/presentation/pages/validators/password_validator.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/app_logo.dart';
@@ -18,7 +19,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/auth_text_field.dart
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/elevated_buttons.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/google_sign_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/text_button.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/common_sized_box.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_responsive.dart';
 
 class LoginPage extends StatefulWidget {
@@ -54,18 +55,16 @@ class _LoginPageState extends State<LoginPage> {
         if (state is SignInSuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(state.massage),
-            backgroundColor: Colors.green.shade200,
+            backgroundColor: AppColors.success500.withOpacity(.2),
           ));
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => NavigationBarPage()),
-          );
+          Navigator.pushReplacementNamed(context,AppRoutes.navigationBar);
 
           email.clear();
           password.clear();
         } else if (state is SignInFailureState) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(state.error),
-              backgroundColor: Colors.red.shade300));
+              backgroundColor: AppColors.error500.withOpacity(0.3)));
         }
       },
       builder: (context, state) {
@@ -73,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
         final isKeyboardVisible = keyboardHeight > 0;
 
         return Scaffold(
-          backgroundColor: Colors.green.shade100,
+          backgroundColor: Colors.green,
           resizeToAvoidBottomInset: true,
           body: SafeArea(
               child: Stack(
@@ -100,11 +99,11 @@ class _LoginPageState extends State<LoginPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppColors.white,
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black12,
+                        color: AppColors.black10,
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       )
@@ -122,11 +121,11 @@ class _LoginPageState extends State<LoginPage> {
                               style: GoogleFonts.poppins(
                                 fontSize: fontSize,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                                color: AppColors.black50,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          24.h,
                           fieldCatogoryName('Email'),
                           TextFormFLogin(
                             controller: email,
@@ -134,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                             validator: emailValidator,
                             keyboardType: TextInputType.emailAddress,
                           ),
-                          Common_sizedBox_height10(),
+                          10.h,
                           fieldCatogoryName('Password'),
                           TextFormFLogin(
                             controller: password,
@@ -143,9 +142,8 @@ class _LoginPageState extends State<LoginPage> {
                             obscureText: true,
                           ),
                           textButtonAuth(context, onpress: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ForgotPassword()));
-                          }, content: "Forgot Password?", color: Colors.black),
+                            Navigator.of(context).pushNamed(AppRoutes.forgot);
+                          }, content: "Forgot Password?", color: AppColors.black),
 
                           //Login button
                           Center(
@@ -180,11 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                     ),
                                   );
-                                  Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              NavigationBarPage()),
-                                    );
+                                  Navigator.pushReplacementNamed(context, AppRoutes.navigationBar);
                                 }
                               },
                               builder: (context, state) {
@@ -208,11 +202,10 @@ class _LoginPageState extends State<LoginPage> {
                               },
                             ),
                           ),
-                          const SizedBox(height: 5),
+                          5.h,
                           Center(
                             child: textButtonAuth(context, onpress: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => SignUpPage()));
+                              Navigator.pushNamed(context, AppRoutes.signUp);
                             },
                                 content: "Don't have an account? Sign up",
                                 color: Colors.green),

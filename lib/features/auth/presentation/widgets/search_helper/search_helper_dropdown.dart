@@ -1,9 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
 import 'package:rizqmart/core/services/firestore_product/variant_det_getter.dart';
-import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
 
 Widget searchResultsDropdown({
   required BuildContext context,
@@ -48,11 +48,11 @@ Widget searchResultsDropdown({
                   FocusScope.of(context).unfocus();
                   onProductSelected();
 
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ProductDetailsPage(product: product),
-                    ),
-                  );
+                  Navigator.pushNamed(context, AppRoutes.productDetails,
+                      arguments: {
+                        'product': product,
+                        'variantIndex': 0,
+                      });
                 },
                 leading: Container(
                   width: 40,
@@ -108,7 +108,6 @@ Widget searchResultsDropdown({
             },
           ),
         ),
-
         Positioned(
           top: 4,
           right: 4,

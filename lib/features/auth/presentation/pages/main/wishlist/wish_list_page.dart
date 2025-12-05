@@ -2,11 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
-import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/empty_wish_list.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
@@ -17,7 +17,6 @@ class FavoritePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<WishListBloc>().add(GetAllWishListEvent());
     });
@@ -81,8 +80,7 @@ class FavoritePage extends StatelessWidget {
                 final currentVariantIndex = wishListItem.variantIndex;
 
                 final variant = wishListItem.variantDetails.isNotEmpty &&
-                        currentVariantIndex <
-                            wishListItem.variantDetails.length
+                        currentVariantIndex < wishListItem.variantDetails.length
                     ? wishListItem.variantDetails[currentVariantIndex]
                     : {};
 
@@ -99,14 +97,13 @@ class FavoritePage extends StatelessWidget {
                   imageUrl: image,
                   colorScheme: Theme.of(context).colorScheme,
                   onTap: () {
-                    Navigator.push(
+                    Navigator.pushNamed(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductDetailsPage(
-                          product: wishListItem,
-                          variantIndex: wishListItem.variantIndex,
-                        ),
-                      ),
+                      AppRoutes.productDetails,
+                      arguments: {
+                        'product': wishListItem,
+                        'variantIndex': wishListItem.variantIndex,
+                      },
                     );
                   },
                   actionButton: GestureDetector(
