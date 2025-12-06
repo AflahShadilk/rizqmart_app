@@ -42,6 +42,7 @@ dependencies:
   equatable: ^2.0.7
   firebase_auth: ^6.0.2
   cloud_firestore: ^6.0.1
+  firebase_storage: ^11.5.6
   get_it: ^8.2.0
   dart_either: ^2.0.0
   google_sign_in: ^5.4.4
@@ -55,10 +56,11 @@ dependencies:
   material_symbols_icons: ^4.2874.0
   dartz: ^0.10.1
   shimmer: ^3.0.0
-  
- 
-
-  
+  geolocator: ^13.0.0 
+  geocoding: ^3.0.0
+  image_picker: ^1.0.7
+  cached_network_image: ^3.3.1
+  image_cropper: ^5.0.1
   
 
   

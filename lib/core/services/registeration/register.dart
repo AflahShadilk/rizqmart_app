@@ -7,33 +7,45 @@ import 'package:rizqmart/features/auth/data/data_source/auth/google_auth_remote_
 import 'package:rizqmart/features/auth/data/data_source/auth/signin_remote_datasource_impl.dart';
 import 'package:rizqmart/features/auth/data/data_source/auth/signup_remote_datasource.dart';
 import 'package:rizqmart/features/auth/data/data_source/auth/signup_remote_datasource_impl.dart';
+import 'package:rizqmart/features/auth/data/data_source/main/address_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/cart_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/dashboard_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/explore_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/order_data_source.dart';
+import 'package:rizqmart/features/auth/data/data_source/main/user_profile_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/wish_list_data_source.dart';
 import 'package:rizqmart/features/auth/data/repository/auth/google_repository_imple.dart';
 import 'package:rizqmart/features/auth/data/repository/auth/signin_repository_impl.dart';
 import 'package:rizqmart/features/auth/data/repository/auth/signup_repository_impl.dart';
+import 'package:rizqmart/features/auth/data/repository/main/address_repository_imple.dart';
 import 'package:rizqmart/features/auth/data/repository/main/cart_repository_impl.dart';
 import 'package:rizqmart/features/auth/data/repository/main/dashboard_repository_impl.dart';
 import 'package:rizqmart/features/auth/data/repository/main/explore_repository_imple.dart';
 import 'package:rizqmart/features/auth/data/repository/main/order_repository_imple.dart';
+import 'package:rizqmart/features/auth/data/repository/main/user_profile_repository_imple.dart';
 import 'package:rizqmart/features/auth/data/repository/main/wish_list_repository_imple.dart';
 import 'package:rizqmart/features/auth/domain/repositories/auth/google_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/auth/create_account_authrepository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/auth/signin_authrepository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/auth/forgotpass_authrepo.dart';
+import 'package:rizqmart/features/auth/domain/repositories/main/address_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/cart_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/dashboard_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/explore_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/order_repository.dart';
+import 'package:rizqmart/features/auth/domain/repositories/main/user_profile_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/wish_list_repository.dart';
 import 'package:rizqmart/features/auth/domain/usecase/auth/google_sign_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/auth/signin_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/auth/signout_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/auth/signup_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/auth/forgotpass_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/address/add_address_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/address/delete_address_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/address/get_address_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/address/get_current_location_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/address/set_default_address_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/address/update_address_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/cart/add_to_cart_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/cart/clear_cart_item_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/cart/decreament_cart_item_usecase.dart';
@@ -49,6 +61,9 @@ import 'package:rizqmart/features/auth/domain/usecase/main/dashboard/get_product
 import 'package:rizqmart/features/auth/domain/usecase/main/order/cancel_order_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/order/get_user_orders_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/order/place_order_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/delete_profile_photo_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/update_profile_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/upload_profile_photo_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/wishlist/add_to_wish_list_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/wishlist/delete_frm_wish_list_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/wishlist/get_all_wish_list_usecase.dart';
@@ -127,6 +142,9 @@ void setupLocator() {
   sl.registerLazySingleton<WishListDataSource>(() => WishListDataSource());
   sl.registerLazySingleton<CartDataSource>(()=>CartDataSource());
   sl.registerLazySingleton<OrderDataSource>(()=>OrderDataSource());
+  sl.registerLazySingleton<UserProfileDataSource>(()=>UserProfileDataSource(firestore: sl()));
+  sl.registerLazySingleton<AddressRemoteDataSource>(()=>AddressRemoteDataSource(firestore: sl()));
+
   //main part repos-------------------------------------------------------------------
   sl.registerLazySingleton<DashboardRepository>(
       () => DashboardRepositoryImpl(dataSource: sl()));
@@ -136,6 +154,8 @@ void setupLocator() {
       () => WishListRepositoryImple(dataSource: sl(), auth: sl()));
   sl.registerLazySingleton<CartRepository>(()=>CartRepositoryImpl(dataSource: sl()));
   sl.registerLazySingleton<OrderRepository>(()=>OrderRepositoryImpl(dataSource: sl()));
+  sl.registerLazySingleton<UserProfileRepository>(()=>UserProfileRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<AddressRepository>(()=>AddressRepositoryImpl(remoteDataSource: sl()));
   //use -------------------------------------------------------------------------------
   //productUsecases
   sl.registerLazySingleton(() => GetProductUsecase(sl()));
@@ -164,4 +184,20 @@ void setupLocator() {
   sl.registerLazySingleton(()=>PlaceOrderUsecase(sl()));
   sl.registerLazySingleton(()=>GetUserOrdersUsecase(sl()));
   sl.registerLazySingleton(()=>CancelOrderUsecase(sl()));
+
+  ///User Profile usecase
+  sl.registerLazySingleton(()=>GetUserOrdersUsecase(sl()));
+  sl.registerLazySingleton(()=>UpdateProfileUsecase(sl()));
+  sl.registerLazySingleton(()=>UploadProfilePhotoUsecase(sl()));
+  sl.registerLazySingleton(()=>DeleteProfilePhotoUsecase(sl()));
+
+  //User address usecase
+  sl.registerLazySingleton(()=>GetAddressUsecase(sl()));
+  sl.registerLazySingleton(()=>AddAddressUsecase(sl()));
+  sl.registerLazySingleton(()=>UpdateAddressUsecase(sl()));
+  sl.registerLazySingleton(()=>SetDefaultAddressUsecase(sl()));
+  sl.registerLazySingleton(()=>DeleteAddressUsecase(sl()));
+  sl.registerLazySingleton(()=>GetCurrentLocationUsecase(sl()));
+  
+  
 }

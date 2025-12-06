@@ -4,6 +4,7 @@ import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/routes/rout_generator.dart';
 import 'package:rizqmart/core/services/registeration/register.dart';
 import 'package:rizqmart/core/theme/theme_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/address/address_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signUp/signup_bloc.dart';
 import 'package:rizqmart/core/theme/theme_state.dart';
@@ -24,6 +25,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_blo
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
 
 class BlocProviders extends StatelessWidget {
@@ -79,6 +81,20 @@ class BlocProviders extends StatelessWidget {
                   placeOrderUsecase: sl(),
                   getUserOrdersUsecase: sl(),
                   cancelOrderUsecase: sl())),
+          BlocProvider(
+              create: (context) => UserProfileBloc(
+                  getUserProfileUsecase: sl(),
+                  uploadProfilePhotoUsecase: sl(),
+                  updateProfileUsecase: sl(),
+                  deleteProfilePhotoUsecase: sl())),
+          BlocProvider(
+              create: (context) => AddressBloc(
+                  getAddressUsecase: sl(),
+                  addAddressUsecase: sl(),
+                  updateAddressUsecase: sl(),
+                  deleteAddressUsecase: sl(),
+                  setDefaultAddressUsecase: sl(),
+                  getCurrentLocationUsecase: sl())),
         ],
         child: BlocBuilder<ThemeCubit, ThemeState>(builder: (context, state) {
           return MaterialApp(
