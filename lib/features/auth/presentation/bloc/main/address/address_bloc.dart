@@ -5,8 +5,8 @@ import 'package:rizqmart/features/auth/domain/usecase/main/address/get_address_u
 import 'package:rizqmart/features/auth/domain/usecase/main/address/get_current_location_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/address/set_default_address_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/address/update_address_usecase.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/address/address_event.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/address/address_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_state.dart';
 
 class AddressBloc extends Bloc<AddressEvent, AddressState> {
   final GetAddressUsecase getAddressUsecase;

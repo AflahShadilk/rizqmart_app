@@ -4,7 +4,7 @@ import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/routes/rout_generator.dart';
 import 'package:rizqmart/core/services/registeration/register.dart';
 import 'package:rizqmart/core/theme/theme_cubit.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/address/address_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signUp/signup_bloc.dart';
 import 'package:rizqmart/core/theme/theme_state.dart';
