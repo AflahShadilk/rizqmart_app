@@ -11,7 +11,7 @@ abstract class AddressState extends Equatable {
 class AddressInitialState extends AddressState {}
 
 class AddressLoadingState extends AddressState {}
-
+class LocationLoadingState extends AddressState{}
 class AddressesLoadedState extends AddressState {
   final List<AddressEntities> addresses;
 

@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_state.dart';
@@ -28,15 +30,21 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   final TextEditingController searchController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    context.read<DashBloc>().add(const LoadingProductsEvent());
+  }
+
   void _onSearch(String query) {
     context.read<SearchCubit>().search(
-    query:   query,
-    matcher:  (product, q) {
-        final p = product as ProductEntities;
-        return p.name.toLowerCase().contains(q) ||
-            p.brand.toLowerCase().contains(q);
-      },
-    );
+          query: query,
+          matcher: (item, q) {
+            final p = item as ShowProductEntities;
+            return p.name.toLowerCase().contains(q) ||
+                p.brand.toLowerCase().contains(q);
+          },
+        );
   }
 
   @override
@@ -48,15 +56,16 @@ class _DashboardPageState extends State<DashboardPage> {
           Column(
             children: [
               topBarItems(context, searchController, _onSearch),
-
               Expanded(
                 child: BlocBuilder<DashBloc, DashState>(
                   buildWhen: (_, current) =>
+                      current is DashInitialState ||
                       current is LoadingProductState ||
                       current is LoadedProductState ||
                       current is FailureLoadingProductState,
                   builder: (context, dashState) {
-                    if (dashState is LoadingProductState) {
+                    if (dashState is DashInitialState ||
+                        dashState is LoadingProductState) {
                       return Center(child: circularProgressIndicators());
                     }
 
@@ -66,17 +75,15 @@ class _DashboardPageState extends State<DashboardPage> {
 
                     if (dashState is LoadedProductState) {
                       final products = dashState.products;
-
                       context.read<SearchCubit>().setItems(products);
 
                       return BlocBuilder<SearchCubit, SearchState>(
                         builder: (context, searchState) {
-                          final isSearching = searchState is SearchReasultState;
-                          final displayProducts = isSearching
-                              ? searchState.filteredItems.cast<ProductEntities>()
-                              : products;
-
-                          if (displayProducts.isEmpty) {
+                          final isSearching =
+                              searchState is SearchReasultState &&
+                                  searchController.text.isNotEmpty;
+                          if (isSearching &&
+                              searchState.filteredItems.isEmpty) {
                             return buildEmpty(
                               context,
                               isSearching,
@@ -87,16 +94,23 @@ class _DashboardPageState extends State<DashboardPage> {
                               },
                             );
                           }
-
+                          if (!isSearching) {
+                            return SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _exclusiveSection(context, products),
+                                  _allProductsSection(products),
+                                ],
+                              ),
+                            );
+                          }
                           return SingleChildScrollView(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _exclusiveSection(
-                                  context,
-                                  displayProducts,
-                                ),
-                                _allProductsSection(displayProducts),
+                                _exclusiveSection(context, products),
+                                _allProductsSection(products),
                               ],
                             ),
                           );
@@ -110,7 +124,6 @@ class _DashboardPageState extends State<DashboardPage> {
               )
             ],
           ),
-
           _searchDropdown(context),
         ],
       ),
@@ -131,7 +144,11 @@ class _DashboardPageState extends State<DashboardPage> {
               const AppHeading('Exclusive Offers'),
               ReusableSeeAllButton(
                 onPress: () {
-                  Navigator.pushNamed(context, AppRoutes.allProduct,arguments: displayProducts);
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.allProduct,
+                    arguments: displayProducts,
+                  );
                 },
               )
             ],
@@ -158,6 +175,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _allProductsSection(List<ProductEntities> products) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
           padding: EdgeInsets.fromLTRB(16, 25, 16, 12),
@@ -188,23 +206,33 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _searchDropdown(BuildContext context) {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
-        if (state is SearchReasultState && state.filteredItems.isNotEmpty) {
+        if (state is SearchReasultState &&
+            state.filteredItems.isNotEmpty &&
+            searchController.text.isNotEmpty) {
           return Positioned(
-              top: 195,
-              left: 16,
-              right: 16,
-              child: searchResultsDropdown(
-                context: context,
-                controller: searchController,
-                items: state.filteredItems.cast<ProductEntities>(),
-                onProductSelected: () {
-                  context.read<SearchCubit>().clearSearch();
-                  searchController.clear();
-                },
-              ));
+            top: 195,
+            left: 16,
+            right: 16,
+            child: searchResultsDropdown(
+              context: context,
+              controller: searchController,
+              items: state.filteredItems.cast<ShowProductEntities>(),
+              onProductSelected: () {
+                context.read<SearchCubit>().clearSearch();
+                searchController.clear();
+              },
+            ),
+          );
         }
+       
         return const SizedBox();
       },
     );
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 }

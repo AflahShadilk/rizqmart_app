@@ -55,13 +55,13 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     UploadProfilePhotoEvent event,
     Emitter<UserProfileState> emit,
   ) async {
-    emit(UserProfilePhotoUploadingState());
+    // emit(UserProfilePhotoUploadingState());
 
     try {
       final photoUrl = await uploadProfilePhotoUsecase.call(event.userId, event.file);
       emit(UserProfilePhotoUploadedState(photoUrl: photoUrl));
-      
-      add(LoadUserProfileEvent(userId: event.userId));
+      //  await Future.delayed(const Duration(milliseconds: 500));
+      // add(LoadUserProfileEvent(userId: event.userId));
     } catch (e) {
       emit(UserProfileErrorState(message: e.toString()));
     }

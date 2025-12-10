@@ -7,6 +7,10 @@ abstract class DashState extends Equatable{
   List<Object?> get props => [];
 }
 
+class DashInitialState extends DashState{
+  const DashInitialState();
+}
+
 class LoadingProductState extends DashState{
   const LoadingProductState();
 }

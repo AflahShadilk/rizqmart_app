@@ -1,42 +1,102 @@
- 
- import 'dart:convert';
-
+import 'dart:convert';
+import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 
-import 'package:http/http.dart'as http;
+Future<String?> uploadToCloudinary(FilePickerResult? filePickerResult) async {
+  try {
+    if (filePickerResult == null || filePickerResult.files.isEmpty) {
+      return null;
+    }
 
-Future<String?>uploadToCloudinary(FilePickerResult? filePickerResult)async{
-  if(filePickerResult==null||filePickerResult.files.isEmpty){
+    var file = filePickerResult.files.single;
+    var bytes = file.bytes;
+    var fileName = file.name;
 
+
+    // If bytes is null, try to read from path
+    if (bytes == null) {
+      
+      if (file.path == null) {
+        return null;
+      }
+
+      try {
+        final fileFromPath = File(file.path!);
+        bytes = await fileFromPath.readAsBytes();
+      } catch (e) {
+        return null;
+      }
+    } else {
+    }
+
+    if (bytes.isEmpty) {
+      return null;
+    }
+
+    String cloudName = dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? '';
+    String preset = dotenv.env['PRESET_NAME'] ?? '';
+
+
+    //  Validate credentials
+    if (cloudName.isEmpty) {
+      return null;
+    }
+    if (preset.isEmpty) {
+      return null;
+    }
+
+    var uri = Uri.parse(
+        "https://api.cloudinary.com/v1_1/$cloudName/image/upload");
+
+
+    var request = http.MultipartRequest("POST", uri);
+    request.fields['upload_preset'] = preset;
+
+    request.files.add(
+      http.MultipartFile.fromBytes(
+        'file',
+        bytes,
+        filename: fileName,
+      ),
+    );
+
+    var response = await request.send().timeout(
+      const Duration(seconds: 60), 
+      onTimeout: () {
+        throw TimeoutException('Cloudinary upload timeout');
+      },
+    );
+
+    var responseBody = await response.stream.bytesToString();
+
+
+    if (response.statusCode == 200) {
+      try {
+        final data = jsonDecode(responseBody);
+        final secureUrl = data['secure_url'] as String?;
+
+        if (secureUrl != null && secureUrl.isNotEmpty) {
+          return secureUrl;
+        } else {
+          return null;
+        }
+      } catch (e) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  } catch (e) {
     return null;
   }
-  final bytes=filePickerResult.files.single.bytes;
-  final fileName=filePickerResult.files.single.name;
-  if(bytes==null)return null;
+}
 
+class TimeoutException implements Exception {
+  final String message;
+  TimeoutException(this.message);
 
-  String cloudName=dotenv.env['CLOUDINARY_CLOUD_NAME']??'';
-  String preset=dotenv.env['PRESET_NAME']??'';
-
-  var uri=Uri.parse("https://api.cloudinary.com/v1_1/$cloudName/image/upload");
-  var request=http.MultipartRequest("POST",uri);
-  request.fields['upload_preset']=preset;
-  
-  
-
-  request.files.add(http.MultipartFile.fromBytes('file',bytes,filename: fileName));
-  
-  var response= await request.send();
-  
-  var responseBody= await response.stream.bytesToString();
-
-  if(response.statusCode==200){
-    final data=jsonDecode(responseBody);
-    return data['secure_url'];
-   
-  }else{
-    return null;
-  }
-
+  @override
+  String toString() => message;
 }

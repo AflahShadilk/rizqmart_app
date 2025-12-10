@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/forgot_password.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/login_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/sign_up_page.dart';
@@ -11,6 +12,9 @@ import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigat
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/explore_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/product_by_category_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/order/success_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/address/address_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/profile_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/show_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/wish_list_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/splash_screen.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/welcome1.dart';
@@ -78,6 +82,19 @@ class RouteGenerator {
       case AppRoutes.orderSuccess:
         return MaterialPageRoute(builder: (_) => SuccessPage());
 
+      case AppRoutes.profile:
+        return MaterialPageRoute(builder: (_) => ProfilePage());
+      case AppRoutes.profileDetails:
+        final bloc = settings.arguments as UserProfileBloc;
+        return MaterialPageRoute(
+          builder: (_) => ShowDetailsPage(profileBloc: bloc),
+        );
+
+      case AppRoutes.userAddress:
+        final String userId=settings.arguments as String;
+        return MaterialPageRoute(builder: (_)=>AddressPage(userId: userId));
+
+      //========
       default:
         return MaterialPageRoute(
           builder: (_) => const NavigationBarPage(),

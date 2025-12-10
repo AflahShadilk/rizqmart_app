@@ -1,21 +1,37 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/user_profile_entities.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/profilephoto/profile_photo_upload_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/show_details.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
+
 class ShowDetailsPage extends StatelessWidget {
-  const ShowDetailsPage({super.key});
+  final UserProfileBloc profileBloc;
+
+  const ShowDetailsPage({
+    super.key,
+    required this.profileBloc,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => UserDetailsEditCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: profileBloc),
+        BlocProvider(create: (context) => UserDetailsEditCubit()),
+        BlocProvider(create: (context) => ProfilePhotoUploadCubit()),
+      ],
       child: Scaffold(
         backgroundColor: context.cs.surface,
         appBar: AppBar(
@@ -49,10 +65,16 @@ class ShowDetailsPage extends StatelessWidget {
           listener: (context, state) {
             if (state is UserProfileErrorState) {
               showToast(context, state.message);
+              context.read<ProfilePhotoUploadCubit>().stopUploading();
             }
             if (state is UserProfileLoadedState) {
               context.read<UserDetailsEditCubit>().setEditMode(false);
               showToast(context, 'Profile updated successfully');
+              context.read<ProfilePhotoUploadCubit>().stopUploading();
+            }
+            if (state is UserProfilePhotoUploadedState) {
+              showToast(context, 'Photo uploaded successfully');
+              context.read<ProfilePhotoUploadCubit>().stopUploading();
             }
           },
           builder: (context, state) {
@@ -117,13 +139,29 @@ class _UserDetailsContentState extends State<UserDetailsContent> {
     super.dispose();
   }
 
-  void saveProfile() {
+ void saveProfile() {
+
     if (formKey.currentState!.validate()) {
+      final currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser == null) {
+        showToast(context, 'Error: User not authenticated');
+        return;
+      }
+
+      final userId = currentUser.uid;
+
+      if (userId.isEmpty) {
+        showToast(context, 'Error: User ID is missing');
+        return;
+      }
+
       final updatedProfile = UserProfileEntities(
-        userId: widget.profile.userId,
+        userId: userId, 
         name: nameController.text,
         email: emailController.text,
-        phoneNumber: phoneController.text.isEmpty ? null : phoneController.text,
+        phoneNumber:
+            phoneController.text.isEmpty ? null : phoneController.text,
         photoUrl: widget.profile.photoUrl,
         bio: bioController.text.isEmpty ? null : bioController.text,
         dateOfBirth: selectedDateOfBirth,
@@ -131,9 +169,11 @@ class _UserDetailsContentState extends State<UserDetailsContent> {
         updatedAt: DateTime.now(),
       );
 
+
       context.read<UserProfileBloc>().add(
             UpdateUserProfileEvent(profile: updatedProfile),
           );
+    } else {
     }
   }
 
@@ -263,69 +303,103 @@ class ProfilePhotoSection extends StatelessWidget {
     required this.isEditing,
   });
 
+  Future<void> _pickAndUploadImage(BuildContext context) async {
+    try {
+      final filePickerResult = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: false,
+      );
+
+      if (filePickerResult == null || filePickerResult.files.isEmpty) {
+        showToast(context, 'No image selected');
+        return;
+      }
+
+      context.read<ProfilePhotoUploadCubit>().startUploading();
+
+      
+      context.read<UserProfileBloc>().add(
+            UploadProfilePhotoEvent(
+              userId: userId,
+              file: filePickerResult,
+            ),
+          );
+
+      
+    } catch (e) {
+      showToast(context, 'Error picking image: $e');
+      context.read<ProfilePhotoUploadCubit>().stopUploading();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(60),
-            child: photoUrl.isNotEmpty
-                ? Image.network(
-                    photoUrl,
-                    width: 120,
-                    height: 120,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        width: 120,
-                        height: 120,
-                        color: context.cs.primaryContainer,
-                        child: Icon(
-                          Icons.person,
-                          size: 60,
-                          color: context.cs.onPrimaryContainer,
+    return BlocBuilder<ProfilePhotoUploadCubit, bool>(
+      builder: (context, isUploading) {
+        return Center(
+          child: Stack(
+            children: [
+              if (isUploading)
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(60),
+                      color: Colors.black.withOpacity(0.3),
+                    ),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          context.cs.primary,
                         ),
-                      );
-                    },
-                  )
-                : Container(
-                    width: 120,
-                    height: 120,
-                    color: context.cs.primaryContainer,
-                    child: Icon(
-                      Icons.person,
-                      size: 60,
-                      color: context.cs.onPrimaryContainer,
+                      ),
                     ),
-                  ),
-          ),
-          if (isEditing)
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: GestureDetector(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: context.cs.primary,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: context.cs.surface,
-                      width: 3,
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.camera_alt,
-                    color: context.cs.onPrimary,
-                    size: 20,
                   ),
                 ),
+
+              ProductImage(
+                imageUrl: photoUrl.isEmpty ? null : photoUrl,
+                width: 120,
+                height: 120,
+                borderRadius: BorderRadius.circular(60),
               ),
-            ),
-        ],
-      ),
+
+              if (isEditing)
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: isUploading
+                        ? null
+                        : () => _pickAndUploadImage(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: context.cs.primary,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: context.cs.surface,
+                          width: 3,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: context.cs.primary.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        Icons.camera_alt,
+                        color: context.cs.onPrimary,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

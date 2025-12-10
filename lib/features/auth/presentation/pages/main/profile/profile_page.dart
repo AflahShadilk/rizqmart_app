@@ -1,55 +1,128 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/core/services/registeration/register.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/dob/date_of_birth_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/gender/gender_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_state.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/profile_menu_item.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  late UserProfileBloc _profileBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeProfileBloc();
+  }
+
+  void _initializeProfileBloc() {
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+
+      if (userId == null || userId.isEmpty) {
+        showToast(context, 'User not authenticated');
+        return;
+      }
+
+      _profileBloc = UserProfileBloc(
+        getUserProfileUsecase: sl(),
+        uploadProfilePhotoUsecase: sl(),
+        updateProfileUsecase: sl(),
+        deleteProfilePhotoUsecase: sl(),
+      );
+
+      _profileBloc.add(LoadUserProfileEvent(userId: userId));
+    } catch (e) {
+      showToast(context, 'Error loading profile');
+    }
+  }
+
+  @override
+  void dispose() {
+    if (!_profileBloc.isClosed) {
+      _profileBloc.close();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.cs.surface,
-      body: BlocConsumer<UserProfileBloc, UserProfileState>(
-        listener: (context, state) {
-          if (state is UserProfileErrorState) {
-            showToast(context, state.message);
-          }
-        },
-        builder: (context, state) {
-          if (state is UserProfileLoadingState) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+    return BlocProvider.value(
+      value: _profileBloc,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => DateOfBirthCubit(null),
+          ),
+          BlocProvider(
+            create: (context) => GenderCubit(null),
+          ),
+        ],
+        child: Scaffold(
+          backgroundColor: context.cs.surface,
+          body: BlocConsumer<UserProfileBloc, UserProfileState>(
+            listener: (context, state) {
+              if (state is UserProfileErrorState) {
+                showToast(context, state.message);
+              }
+            },
+            builder: (context, state) {
+              return switch (state) {
+                UserProfileLoadingState() => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                UserProfileLoadedState() => _buildProfileContent(
+                    context,
+                    state.profile,
+                  ),
+                _ => Center(
+                    child: Text(
+                      'Unable to load profile',
+                      style: context.ts.bodyLarge,
+                    ),
+                  ),
+              };
+            },
+          ),
+        ),
+      ),
+    );
+  }
 
-          if (state is UserProfileLoadedState) {
-            final userProfile = state.profile;
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    ProfileHeader(
-                      photoUrl: userProfile.photoUrl ?? '',
-                      name: userProfile.name,
-                      email: userProfile.email,
-                    ),
-                    const SizedBox(height: 32),
-                    Expanded(
-                      child: ProfileMenuList(),
-                    ),
-                  ],
-                ),
+  Widget _buildProfileContent(BuildContext context, dynamic profile) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            ProfileHeader(
+              photoUrl: profile.photoUrl ?? '',
+              name: profile.name,
+              email: profile.email,
+            ),
+            const SizedBox(height: 32),
+            Expanded(
+              child: ProfileMenuList(
+                userProfileBloc: _profileBloc,
               ),
-            );
-          }
-
-          return const SizedBox.shrink();
-        },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -77,37 +150,11 @@ class ProfileHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: photoUrl.isNotEmpty
-                ? Image.network(
-                    photoUrl,
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        width: 80,
-                        height: 80,
-                        color: context.cs.primaryContainer,
-                        child: Icon(
-                          Icons.person,
-                          size: 40,
-                          color: context.cs.onPrimaryContainer,
-                        ),
-                      );
-                    },
-                  )
-                : Container(
-                    width: 80,
-                    height: 80,
-                    color: context.cs.primaryContainer,
-                    child: Icon(
-                      Icons.person,
-                      size: 40,
-                      color: context.cs.onPrimaryContainer,
-                    ),
-                  ),
+          ProductImage(
+            imageUrl: photoUrl.isEmpty ? null : photoUrl,
+            width: 80,
+            height: 80,
+            borderRadius: BorderRadius.circular(50),
           ),
           16.w,
           Expanded(
@@ -116,11 +163,11 @@ class ProfileHeader extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: context.ts.titleMedium,
+                  style: context.ts.titleLarge,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
+                4.h,
                 Text(
                   email,
                   style: context.ts.bodySmall,
@@ -137,10 +184,17 @@ class ProfileHeader extends StatelessWidget {
 }
 
 class ProfileMenuList extends StatelessWidget {
-  const ProfileMenuList({super.key});
+  final UserProfileBloc userProfileBloc;
+
+  const ProfileMenuList({
+    super.key,
+    required this.userProfileBloc,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
     final menuItems = [
       ProfileMenuItem(
         icon: Icons.shopping_bag,
@@ -150,12 +204,28 @@ class ProfileMenuList extends StatelessWidget {
       ProfileMenuItem(
         icon: Icons.person_outline,
         title: 'My Details',
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            AppRoutes.profileDetails,
+            arguments: userProfileBloc,
+          );
+        },
       ),
       ProfileMenuItem(
         icon: Icons.location_on,
         title: 'Delivery Address',
-        onTap: () {},
+        onTap: () {
+          if (userId.isEmpty) {
+            showToast(context, 'User not authenticated');
+            return;
+          }
+          Navigator.pushNamed(
+            context,
+            AppRoutes.userAddress,
+            arguments: userId,
+          );
+        },
       ),
       ProfileMenuItem(
         icon: Icons.payment_outlined,
@@ -181,59 +251,8 @@ class ProfileMenuList extends StatelessWidget {
 
     return ListView.separated(
       itemCount: menuItems.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 8),
-      itemBuilder: (context, index) {
-        return menuItems[index];
-      },
-    );
-  }
-}
-
-class ProfileMenuItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-
-  const ProfileMenuItem({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        decoration: BoxDecoration(
-          color: context.cs.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: context.cs.onSurface,
-              size: 24,
-            ),
-            16.w,
-            Expanded(
-              child: Text(
-                title,
-                style: context.ts.bodyLarge,
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: context.cs.onSurfaceVariant,
-              size: 16,
-            ),
-          ],
-        ),
-      ),
+      separatorBuilder: (context, index) => 8.h,
+      itemBuilder: (context, index) => menuItems[index],
     );
   }
 }
