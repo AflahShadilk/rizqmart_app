@@ -72,7 +72,6 @@ class _LikeButtonState extends State<LikeButton>
           }
         },
         child: BlocBuilder<WishListBloc, WishListState>(
-          buildWhen: (previous, current) => true,
           builder: (context, wishlistState) {
             bool isFavorite = false;
 

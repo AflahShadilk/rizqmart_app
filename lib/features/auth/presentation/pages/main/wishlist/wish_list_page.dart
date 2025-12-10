@@ -12,15 +12,22 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
-class FavoritePage extends StatelessWidget {
+class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<WishListBloc>().add(GetAllWishListEvent());
-    });
+  State<FavoritePage> createState() => _FavoritePageState();
+}
 
+class _FavoritePageState extends State<FavoritePage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<WishListBloc>().add(GetAllWishListEvent());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(

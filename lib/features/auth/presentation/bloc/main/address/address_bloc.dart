@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/services/location/location_services.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/address/add_address_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/address/delete_address_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/address/get_address_usecase.dart';
@@ -17,22 +18,22 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
   final GetCurrentLocationUsecase getCurrentLocationUsecase;
 
   AddressBloc({
-  required this.getAddressUsecase,
-  required this.addAddressUsecase,
-  required this.updateAddressUsecase,
-  required this.deleteAddressUsecase,
-  required this.setDefaultAddressUsecase,
-  required this.getCurrentLocationUsecase
+    required this.getAddressUsecase,
+    required this.addAddressUsecase,
+    required this.updateAddressUsecase,
+    required this.deleteAddressUsecase,
+    required this.setDefaultAddressUsecase,
+    required this.getCurrentLocationUsecase,
   }) : super(AddressInitialState()) {
-    on<LoadAddressesEvent>(onLoadAddresses);
-    on<AddAddressEvent>(onAddAddress);
-    on<UpdateAddressEvent>(onUpdateAddress);
-    on<DeleteAddressEvent>(onDeleteAddress);
-    on<SetDefaultAddressEvent>(onSetDefaultAddress);
-    on<GetCurrentLocationEvent>(onGetCurrentLocation);
+    on<LoadAddressesEvent>(_onLoadAddresses);
+    on<AddAddressEvent>(_onAddAddress);
+    on<UpdateAddressEvent>(_onUpdateAddress);
+    on<DeleteAddressEvent>(_onDeleteAddress);
+    on<SetDefaultAddressEvent>(_onSetDefaultAddress);
+    on<GetCurrentLocationEvent>(_onGetCurrentLocation);
   }
 
-  Future<void> onLoadAddresses(
+  Future<void> _onLoadAddresses(
     LoadAddressesEvent event,
     Emitter<AddressState> emit,
   ) async {
@@ -46,7 +47,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     }
   }
 
-  Future<void> onAddAddress(
+  Future<void> _onAddAddress(
     AddAddressEvent event,
     Emitter<AddressState> emit,
   ) async {
@@ -55,14 +56,14 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     try {
       final newAddress = await addAddressUsecase.call(event.address);
       emit(AddressAddedState(address: newAddress));
-      
+
       add(LoadAddressesEvent(userId: event.address.userId));
     } catch (e) {
       emit(AddressErrorState(message: e.toString()));
     }
   }
 
-  Future<void> onUpdateAddress(
+  Future<void> _onUpdateAddress(
     UpdateAddressEvent event,
     Emitter<AddressState> emit,
   ) async {
@@ -71,14 +72,14 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     try {
       final updatedAddress = await updateAddressUsecase.call(event.address);
       emit(AddressUpdatedState(address: updatedAddress));
-      
+
       add(LoadAddressesEvent(userId: event.address.userId));
     } catch (e) {
       emit(AddressErrorState(message: e.toString()));
     }
   }
 
-  Future<void> onDeleteAddress(
+  Future<void> _onDeleteAddress(
     DeleteAddressEvent event,
     Emitter<AddressState> emit,
   ) async {
@@ -87,14 +88,14 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     try {
       await deleteAddressUsecase.call(event.userId, event.addressId);
       emit(AddressDeletedState(message: 'Address deleted successfully'));
-      
+
       add(LoadAddressesEvent(userId: event.userId));
     } catch (e) {
       emit(AddressErrorState(message: e.toString()));
     }
   }
 
-  Future<void> onSetDefaultAddress(
+  Future<void> _onSetDefaultAddress(
     SetDefaultAddressEvent event,
     Emitter<AddressState> emit,
   ) async {
@@ -103,29 +104,60 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     try {
       await setDefaultAddressUsecase.call(event.userId, event.addressId);
       emit(DefaultAddressSetState(message: 'Default address updated'));
-      
+
       add(LoadAddressesEvent(userId: event.userId));
     } catch (e) {
       emit(AddressErrorState(message: e.toString()));
     }
   }
 
-  Future<void> onGetCurrentLocation(
+  Future<void> _onGetCurrentLocation(
     GetCurrentLocationEvent event,
     Emitter<AddressState> emit,
   ) async {
-    emit(AddressLoadingState());
-
     try {
-      final location = await getCurrentLocationUsecase.call();
-      
-      emit(LocationLoadedState(
-        latitude: location['latitude'] as double,
-        longitude: location['longitude'] as double,
-        accuracy: location['accuracy'] as double,
-      ));
+      emit(LocationLoadingState());
+
+      // Call the usecase without NoParams
+      final locationData = await getCurrentLocationUsecase.call();
+
+      emit(
+        LocationLoadedState(
+          latitude: locationData['latitude'] as double,
+          longitude: locationData['longitude'] as double,
+          accuracy: locationData['accuracy'] as double? ?? 0.0,
+        ),
+      );
+    } on LocationException catch (e) {
+      // Handle LocationException directly
+      emit(
+        AddressErrorState(
+          message: e.getUserFriendlyMessage(),
+        ),
+      );
     } catch (e) {
-      emit(AddressErrorState(message: e.toString()));
+      // Handle wrapped exceptions
+      String errorMessage = 'An unexpected error occurred. Please try again.';
+
+      final errorStr = e.toString();
+
+      if (errorStr.contains('Location services are disabled')) {
+        errorMessage = 'Please enable location services in Settings > Location';
+      } else if (errorStr.contains('Location permission')) {
+        errorMessage =
+            'Location permission is required. Please grant it in app settings.';
+      } else if (errorStr.contains('timed out')) {
+        errorMessage = 'Location request timed out. Please try again.';
+      } else if (errorStr.contains('No last known location')) {
+        errorMessage =
+            'No location found. Please check your location settings.';
+      }
+
+      emit(
+        AddressErrorState(
+          message: errorMessage,
+        ),
+      );
     }
   }
 }

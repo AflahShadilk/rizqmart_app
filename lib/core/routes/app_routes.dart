@@ -13,5 +13,8 @@ class AppRoutes {
   static const wishList='/wishList';  
   static const cart='/cart';
   static const orderSuccess='/orderSuccess';
+  static const profile='/profile';
+  static const profileDetails='profileDetails';
+  static const userAddress='/userAddress';
   
 }

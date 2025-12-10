@@ -64,6 +64,7 @@ import 'package:rizqmart/features/auth/domain/usecase/main/order/place_order_use
 import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/delete_profile_photo_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/update_profile_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/upload_profile_photo_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/get_user_profile_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/wishlist/add_to_wish_list_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/wishlist/delete_frm_wish_list_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/wishlist/get_all_wish_list_usecase.dart';
@@ -186,7 +187,7 @@ void setupLocator() {
   sl.registerLazySingleton(()=>CancelOrderUsecase(sl()));
 
   ///User Profile usecase
-  sl.registerLazySingleton(()=>GetUserOrdersUsecase(sl()));
+  sl.registerLazySingleton(()=>GetUserProfileUsecase(sl()));
   sl.registerLazySingleton(()=>UpdateProfileUsecase(sl()));
   sl.registerLazySingleton(()=>UploadProfilePhotoUsecase(sl()));
   sl.registerLazySingleton(()=>DeleteProfilePhotoUsecase(sl()));

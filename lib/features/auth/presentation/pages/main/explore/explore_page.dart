@@ -88,6 +88,7 @@ class _ExplorePageState extends State<ExplorePage> {
                       if (state is ExploreFailureState) {
                         return Center(
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text('Error: ${state.message}'),
                               IconButton(
@@ -112,7 +113,8 @@ class _ExplorePageState extends State<ExplorePage> {
                         return BlocBuilder<SearchCubit, SearchState>(
                           builder: (context, searchState) {
                             final isSearching =
-                                searchState is SearchReasultState;
+                                searchState is SearchReasultState &&
+                                    _searchController.text.isNotEmpty;
 
                             if (isSearching &&
                                 searchState.filteredItems.isEmpty) {
@@ -126,12 +128,16 @@ class _ExplorePageState extends State<ExplorePage> {
                                 },
                               );
                             }
-
                             if (!isSearching) {
-                              return _categoriesGrid(context, state.categories);
+                              return _categoriesGrid(
+                                context,
+                                state.categories,
+                              );
                             }
-
-                            return const SizedBox();
+                            return _categoriesGrid(
+                              context,
+                              state.categories,
+                            );
                           },
                         );
                       }
@@ -214,7 +220,10 @@ class _ExplorePageState extends State<ExplorePage> {
   Widget _searchDropdown(BuildContext context) {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
-        if (state is SearchReasultState && state.filteredItems.isNotEmpty) {
+
+        if (state is SearchReasultState &&
+            state.filteredItems.isNotEmpty &&
+            _searchController.text.isNotEmpty) {
           return Positioned(
             top: 140,
             left: 16,
@@ -230,8 +239,15 @@ class _ExplorePageState extends State<ExplorePage> {
             ),
           );
         }
+       
         return const SizedBox();
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 }

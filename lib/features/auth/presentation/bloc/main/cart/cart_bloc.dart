@@ -118,5 +118,11 @@ class CartBloc extends Bloc<CartEvent,CartState>{
   }
 
  }
+
+ @override
+ Future<void> close() {
+   cartSubscription?.cancel();
+   return super.close();
+ }
 }
 

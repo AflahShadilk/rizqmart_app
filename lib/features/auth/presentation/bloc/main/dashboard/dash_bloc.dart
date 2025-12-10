@@ -9,10 +9,10 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_sta
 class DashBloc extends Bloc<DashEvent,DashState>{
 final GetProductUsecase usecase;
 StreamSubscription<List<ProductEntities>>? subscription;
- DashBloc({required this.usecase}):super(LoadingProductState()){
+ DashBloc({required this.usecase}):super(const DashInitialState()){
 on<LoadingProductsEvent>(loadingProduct);
 on<LoadedProductEvent>(loadedProducts);
-add(LoadingProductsEvent());
+// Removed: add(LoadingProductsEvent()); - Let page trigger load
 }
 
  Future<void>loadingProduct(LoadingProductsEvent event,Emitter<DashState>emit)async{
@@ -28,5 +28,11 @@ add(LoadingProductsEvent());
 
  Future<void>loadedProducts(LoadedProductEvent event,Emitter<DashState>emit)async{
   emit(LoadedProductState(event.products));
+ }
+
+ @override
+ Future<void> close() {
+   subscription?.cancel();
+   return super.close();
  }
 }
