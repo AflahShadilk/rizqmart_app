@@ -1,18 +1,22 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/user_profile_entities.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/dob/date_of_birth_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/gender/gender_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/profilephoto/profile_photo_upload_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/show_details.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_state.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/date_of_birth_field.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/genden/gender_selection.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/profile_photo.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/profile_text_field.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
 
@@ -113,8 +117,8 @@ class _UserDetailsContentState extends State<UserDetailsContent> {
   late TextEditingController phoneController;
   late TextEditingController emailController;
   late TextEditingController bioController;
-  DateTime? selectedDateOfBirth;
-  String? selectedGender;
+  late DateOfBirthCubit dateOfBirthCubit;
+  late GenderCubit genderCubit;
 
   final formKey = GlobalKey<FormState>();
 
@@ -126,8 +130,8 @@ class _UserDetailsContentState extends State<UserDetailsContent> {
         TextEditingController(text: widget.profile.phoneNumber ?? '');
     emailController = TextEditingController(text: widget.profile.email);
     bioController = TextEditingController(text: widget.profile.bio ?? '');
-    selectedDateOfBirth = widget.profile.dateOfBirth;
-    selectedGender = widget.profile.gender;
+    dateOfBirthCubit = DateOfBirthCubit(widget.profile.dateOfBirth);
+    genderCubit = GenderCubit(widget.profile.gender);
   }
 
   @override
@@ -136,11 +140,12 @@ class _UserDetailsContentState extends State<UserDetailsContent> {
     phoneController.dispose();
     emailController.dispose();
     bioController.dispose();
+    dateOfBirthCubit.close();
+    genderCubit.close();
     super.dispose();
   }
 
- void saveProfile() {
-
+  void saveProfile() {
     if (formKey.currentState!.validate()) {
       final currentUser = FirebaseAuth.instance.currentUser;
 
@@ -157,23 +162,21 @@ class _UserDetailsContentState extends State<UserDetailsContent> {
       }
 
       final updatedProfile = UserProfileEntities(
-        userId: userId, 
+        userId: userId,
         name: nameController.text,
         email: emailController.text,
         phoneNumber:
             phoneController.text.isEmpty ? null : phoneController.text,
         photoUrl: widget.profile.photoUrl,
         bio: bioController.text.isEmpty ? null : bioController.text,
-        dateOfBirth: selectedDateOfBirth,
-        gender: selectedGender,
+        dateOfBirth: dateOfBirthCubit.state, 
+        gender: genderCubit.state, 
         updatedAt: DateTime.now(),
       );
-
 
       context.read<UserProfileBloc>().add(
             UpdateUserProfileEvent(profile: updatedProfile),
           );
-    } else {
     }
   }
 
@@ -232,23 +235,29 @@ class _UserDetailsContentState extends State<UserDetailsContent> {
                     },
                   ),
                   16.h,
-                  DateOfBirthField(
-                    selectedDate: selectedDateOfBirth,
-                    enabled: isEditing,
-                    onDateSelected: (date) {
-                      setState(() {
-                        selectedDateOfBirth = date;
-                      });
+                  BlocBuilder<DateOfBirthCubit, DateTime?>(
+                    bloc: dateOfBirthCubit,
+                    builder: (context, selectedDate) {
+                      return DateOfBirthField(
+                        selectedDate: selectedDate,
+                        enabled: isEditing,
+                        onDateSelected: (date) {
+                          dateOfBirthCubit.setDate(date);
+                        },
+                      );
                     },
                   ),
                   16.h,
-                  GenderSelector(
-                    selectedGender: selectedGender,
-                    enabled: isEditing,
-                    onGenderSelected: (gender) {
-                      setState(() {
-                        selectedGender = gender;
-                      });
+                  BlocBuilder<GenderCubit, String?>(
+                    bloc: genderCubit,
+                    builder: (context, selectedGender) {
+                      return GenderSelector(
+                        selectedGender: selectedGender,
+                        enabled: isEditing,
+                        onGenderSelected: (gender) {
+                          genderCubit.setGender(gender);
+                        },
+                      );
                     },
                   ),
                   16.h,
@@ -287,393 +296,6 @@ class _UserDetailsContentState extends State<UserDetailsContent> {
           ),
         );
       },
-    );
-  }
-}
-
-class ProfilePhotoSection extends StatelessWidget {
-  final String photoUrl;
-  final String userId;
-  final bool isEditing;
-
-  const ProfilePhotoSection({
-    super.key,
-    required this.photoUrl,
-    required this.userId,
-    required this.isEditing,
-  });
-
-  Future<void> _pickAndUploadImage(BuildContext context) async {
-    try {
-      final filePickerResult = await FilePicker.platform.pickFiles(
-        type: FileType.image,
-        allowMultiple: false,
-      );
-
-      if (filePickerResult == null || filePickerResult.files.isEmpty) {
-        showToast(context, 'No image selected');
-        return;
-      }
-
-      context.read<ProfilePhotoUploadCubit>().startUploading();
-
-      
-      context.read<UserProfileBloc>().add(
-            UploadProfilePhotoEvent(
-              userId: userId,
-              file: filePickerResult,
-            ),
-          );
-
-      
-    } catch (e) {
-      showToast(context, 'Error picking image: $e');
-      context.read<ProfilePhotoUploadCubit>().stopUploading();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ProfilePhotoUploadCubit, bool>(
-      builder: (context, isUploading) {
-        return Center(
-          child: Stack(
-            children: [
-              if (isUploading)
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(60),
-                      color: Colors.black.withOpacity(0.3),
-                    ),
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          context.cs.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-              ProductImage(
-                imageUrl: photoUrl.isEmpty ? null : photoUrl,
-                width: 120,
-                height: 120,
-                borderRadius: BorderRadius.circular(60),
-              ),
-
-              if (isEditing)
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: isUploading
-                        ? null
-                        : () => _pickAndUploadImage(context),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: context.cs.primary,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: context.cs.surface,
-                          width: 3,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: context.cs.primary.withOpacity(0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        Icons.camera_alt,
-                        color: context.cs.onPrimary,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class ProfileTextField extends StatelessWidget {
-  final TextEditingController controller;
-  final String label;
-  final IconData icon;
-  final bool enabled;
-  final TextInputType keyboardType;
-  final int maxLines;
-  final String? Function(String?)? validator;
-
-  const ProfileTextField({
-    super.key,
-    required this.controller,
-    required this.label,
-    required this.icon,
-    required this.enabled,
-    this.keyboardType = TextInputType.text,
-    this.maxLines = 1,
-    this.validator,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      enabled: enabled,
-      keyboardType: keyboardType,
-      maxLines: maxLines,
-      validator: validator,
-      style: context.ts.bodyLarge,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: context.ts.bodyMedium?.copyWith(
-          color: context.cs.onSurfaceVariant,
-        ),
-        prefixIcon: Icon(icon, color: context.cs.onSurfaceVariant),
-        filled: true,
-        fillColor: enabled
-            ? context.cs.surfaceContainerHighest
-            : context.cs.surfaceContainerHighest.withOpacity(0.5),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: context.cs.primary,
-            width: 2,
-          ),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: context.cs.error,
-            width: 1,
-          ),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: context.cs.error,
-            width: 2,
-          ),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-  }
-}
-
-class DateOfBirthField extends StatelessWidget {
-  final DateTime? selectedDate;
-  final bool enabled;
-  final Function(DateTime?) onDateSelected;
-
-  const DateOfBirthField({
-    super.key,
-    required this.selectedDate,
-    required this.enabled,
-    required this.onDateSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: enabled
-          ? () async {
-              final date = await showDatePicker(
-                context: context,
-                initialDate: selectedDate ?? DateTime.now(),
-                firstDate: DateTime(1900),
-                lastDate: DateTime.now(),
-              );
-              onDateSelected(date);
-            }
-          : null,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        decoration: BoxDecoration(
-          color: enabled
-              ? context.cs.surfaceContainerHighest
-              : context.cs.surfaceContainerHighest.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.calendar_today_outlined,
-              color: context.cs.onSurfaceVariant,
-            ),
-            16.w,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Date of Birth',
-                    style: context.ts.bodyMedium?.copyWith(
-                      color: context.cs.onSurfaceVariant,
-                    ),
-                  ),
-                  4.h,
-                  Text(
-                    selectedDate != null
-                        ? MaterialLocalizations.of(context)
-                            .formatShortDate(selectedDate!)
-                        : 'Not set',
-                    style: context.ts.bodyLarge,
-                  ),
-                ],
-              ),
-            ),
-            if (enabled)
-              Icon(
-                Icons.arrow_forward_ios,
-                color: context.cs.onSurfaceVariant,
-                size: 16,
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class GenderSelector extends StatelessWidget {
-  final String? selectedGender;
-  final bool enabled;
-  final Function(String?) onGenderSelected;
-
-  const GenderSelector({
-    super.key,
-    required this.selectedGender,
-    required this.enabled,
-    required this.onGenderSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: enabled
-            ? context.cs.surfaceContainerHighest
-            : context.cs.surfaceContainerHighest.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.people_outline,
-                color: context.cs.onSurfaceVariant,
-              ),
-              16.w,
-              Text(
-                'Gender',
-                style: context.ts.bodyMedium?.copyWith(
-                  color: context.cs.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-          8.h,
-          Row(
-            children: [
-              Expanded(
-                child: GenderOption(
-                  label: 'Male',
-                  isSelected: selectedGender == 'Male',
-                  enabled: enabled,
-                  onTap: () => onGenderSelected('Male'),
-                ),
-              ),
-              12.w,
-              Expanded(
-                child: GenderOption(
-                  label: 'Female',
-                  isSelected: selectedGender == 'Female',
-                  enabled: enabled,
-                  onTap: () => onGenderSelected('Female'),
-                ),
-              ),
-              12.w,
-              Expanded(
-                child: GenderOption(
-                  label: 'Other',
-                  isSelected: selectedGender == 'Other',
-                  enabled: enabled,
-                  onTap: () => onGenderSelected('Other'),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class GenderOption extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final bool enabled;
-  final VoidCallback onTap;
-
-  const GenderOption({
-    super.key,
-    required this.label,
-    required this.isSelected,
-    required this.enabled,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: enabled ? onTap : null,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected ? context.cs.primaryContainer : context.cs.surface,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected ? context.cs.primary : context.cs.outlineVariant,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: context.ts.bodyMedium?.copyWith(
-              color: isSelected
-                  ? context.cs.onPrimaryContainer
-                  : context.cs.onSurface,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -12,7 +12,7 @@ import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigat
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/explore_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/product_by_category_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/order/success_page.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/profile/address/address_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/address/address_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/profile_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/show_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/wish_list_page.dart';
