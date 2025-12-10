@@ -10,7 +10,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/address/add
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_state.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/profile/address/widget/address_picker_button.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/address/widget/address_picker_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
