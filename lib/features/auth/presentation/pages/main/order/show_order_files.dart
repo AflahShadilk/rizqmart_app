@@ -1,8 +1,10 @@
 
 // ignore_for_file: deprecated_member_use
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
@@ -19,6 +21,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_mai
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/divider_ext.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
 Future<dynamic> modelBottomSheet(
   BuildContext context,
   CartLoadedState cartState,
@@ -105,7 +108,11 @@ Future<dynamic> modelBottomSheet(
                     title: 'Delivery',
                     trailing: selectedDeliveryMethod ?? 'Select method',
                     onTap: () {
-                      // Show delivery method
+                       Navigator.pushNamed(
+            context,
+            AppRoutes.userAddress,
+            arguments: userId,
+          );
                     },
                   ),
                   5.h,
@@ -245,6 +252,7 @@ Future<dynamic> modelBottomSheet(
                       textColor: context.cs.surface,
                     ),
                   ),
+                  10.h,
                 ],
               ),
             ),

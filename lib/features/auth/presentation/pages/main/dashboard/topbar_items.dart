@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_event.dart';
@@ -109,11 +110,7 @@ Container topBarItems(
                         type: ToastType.error,
                       );
                     } else if (state is SignOutSuccessState) {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => LoginPage(),                                   //change to profile
-                        ),
-                      );
+                      Navigator.pushReplacementNamed(context, AppRoutes.login);
                     }
                   },
                   child: GestureDetector(

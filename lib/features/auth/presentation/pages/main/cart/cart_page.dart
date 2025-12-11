@@ -6,6 +6,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_event.da
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/cart/widget/cart_widgets.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/bloc%20helper/circular_progress.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
@@ -71,7 +72,8 @@ class _CartPageState extends State<CartPage> {
                     },
                   ),
                 ),
-                cardSummery(context, state)
+                cardSummery(context, state),
+                10.h
               ],
             );
           }
