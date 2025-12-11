@@ -29,14 +29,15 @@ class ProfileMenuItem extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: context.cs.onSurface,
+              color: context.cs.primary,
               size: 24,
             ),
             16.w,
             Expanded(
               child: Text(
                 title,
-                style: context.ts.bodyLarge,
+                style:
+                    context.ts.bodyLarge!.copyWith(fontWeight: FontWeight.w500),
               ),
             ),
             Icon(

@@ -4,12 +4,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/core/services/registeration/register.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_event.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/dob/date_of_birth_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/gender/gender_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/profile_menu_item.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/dialogs/logout_dailog.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
@@ -105,6 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildProfileContent(BuildContext context, dynamic profile) {
+    final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -121,6 +127,36 @@ class _ProfilePageState extends State<ProfilePage> {
                 userProfileBloc: _profileBloc,
               ),
             ),
+            SizedBox(
+                width: size.width * 0.9,
+                child: BlocListener<SignOutBloc, SignOutState>(
+                  listener: (context, state) {
+                    if (state is LoadingSignOutState) {
+                      showLoadingDialog(context);
+                      return;
+                    }
+                    Navigator.of(context, rootNavigator: true).pop();
+                    if (state is SignOutFailureState) {
+                      showToast(
+                        context,
+                        state.error,
+                        type: ToastType.error,
+                      );
+                    }
+                    if (state is SignOutSuccessState) {
+                      Navigator.pushReplacementNamed(context, AppRoutes.login);
+
+                    }
+                  },
+                  child: MainButton(
+                      label: 'Log Out',
+                      onPress: () {
+                      context.read<SignOutBloc>().add(SignOutRequestedEvent());
+
+                      },
+                      color: context.cs.primary,
+                      textColor: context.cs.surface),
+                ))
           ],
         ),
       ),
