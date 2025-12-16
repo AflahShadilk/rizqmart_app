@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/address/address_display_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/address/add_edit_address_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/forgot_password.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/login_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/sign_up_page.dart';
@@ -12,7 +15,6 @@ import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigat
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/explore_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/product_by_category_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/order/success_page.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/address/address_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/profile_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/show_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/wish_list_page.dart';
@@ -77,13 +79,16 @@ class RouteGenerator {
 
       case AppRoutes.wishList:
         return MaterialPageRoute(builder: (_) => FavoritePage());
+
       case AppRoutes.cart:
         return MaterialPageRoute(builder: (_) => CartPage());
+
       case AppRoutes.orderSuccess:
         return MaterialPageRoute(builder: (_) => SuccessPage());
 
       case AppRoutes.profile:
         return MaterialPageRoute(builder: (_) => ProfilePage());
+
       case AppRoutes.profileDetails:
         final bloc = settings.arguments as UserProfileBloc;
         return MaterialPageRoute(
@@ -91,10 +96,32 @@ class RouteGenerator {
         );
 
       case AppRoutes.userAddress:
-        final String userId=settings.arguments as String;
-        return MaterialPageRoute(builder: (_)=>AddressPage(userId: userId));
+        if (args is String) {
+          return MaterialPageRoute(
+            builder: (_) => AddressDisplayPage(userId: args),
+          );
+        }
+        return _error();
 
-      //========
+      case AppRoutes.addAddress:
+        if (args is String) {
+          return MaterialPageRoute(
+            builder: (_) => AddEditAddressPage(userId: args),
+          );
+        }
+        return _error();
+
+      case AppRoutes.editAddress:
+        if (args is Map<String, dynamic>) {
+          return MaterialPageRoute(
+            builder: (_) => AddEditAddressPage(
+              userId: args['userId'] as String,
+              address: args['address'] as AddressEntities?,
+            ),
+          );
+        }
+        return _error();
+
       default:
         return MaterialPageRoute(
           builder: (_) => const NavigationBarPage(),
