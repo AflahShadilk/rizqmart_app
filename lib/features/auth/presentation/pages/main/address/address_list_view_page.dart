@@ -13,6 +13,7 @@ class AddressListView extends StatelessWidget {
   final String userId;
   final VoidCallback onAddAddress;
   final Function(AddressEntities) onEditAddress;
+  final Function(AddressEntities) onDeleteAddress;
 
   const AddressListView({
     super.key,
@@ -20,6 +21,7 @@ class AddressListView extends StatelessWidget {
     required this.userId,
     required this.onAddAddress,
     required this.onEditAddress,
+    required this.onDeleteAddress,
   });
 
   @override
@@ -34,44 +36,10 @@ class AddressListView extends StatelessWidget {
           address: address,
           userId: userId,
           onEdit: () => onEditAddress(address),
-          onDelete: () => _deleteAddress(context, address),
+          onDelete: () => onDeleteAddress(address),
           onSetDefault: () => _setDefaultAddress(context, address),
         );
       },
-    );
-  }
-
-  void _deleteAddress(BuildContext context, AddressEntities address) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Delete Address',
-            style: context.ts.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
-        content: Text('Are you sure you want to delete this address?',
-            style: context.ts.bodyMedium),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel',
-                style: TextStyle(
-                    color: context.cs.onSurfaceVariant,
-                    fontWeight: FontWeight.w500)),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              context.read<AddressBloc>().add(DeleteAddressEvent(
-                    addressId: address.id,
-                    userId: userId,
-                  ));
-            },
-            child: Text('Delete',
-                style: TextStyle(
-                    color: context.cs.error, fontWeight: FontWeight.w600)),
-          ),
-        ],
-      ),
     );
   }
 
@@ -285,7 +253,7 @@ class AddressCardItem extends StatelessWidget {
             ),
           )
         else
-          SizedBox.shrink(),
+          const SizedBox.shrink(),
         if (!address.isDefault) 8.w,
         Expanded(
           child: _buildActionButton(
