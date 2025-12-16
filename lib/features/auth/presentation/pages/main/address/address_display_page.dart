@@ -49,6 +49,8 @@ class AddressDisplayPage extends StatelessWidget {
             }
             if (state is AddressDeletedState) {
               showToast(context, state.message);
+              // Reload addresses after deletion
+              context.read<AddressBloc>().add(LoadAddressesEvent(userId: userId));
             }
             if (state is DefaultAddressSetState) {
               showToast(context, state.message);
@@ -74,6 +76,8 @@ class AddressDisplayPage extends StatelessWidget {
                 onAddAddress: () => _navigateToAddAddress(context),
                 onEditAddress: (address) =>
                     _navigateToEditAddress(context, address),
+                onDeleteAddress: (address) =>
+                    _deleteAddress(context, address),
               );
             }
 
@@ -118,5 +122,39 @@ class AddressDisplayPage extends StatelessWidget {
     ).then((_) {
       context.read<AddressBloc>().add(LoadAddressesEvent(userId: userId));
     });
+  }
+
+  void _deleteAddress(BuildContext context, AddressEntities address) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Delete Address'),
+          content: const Text('Are you sure you want to delete this address?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                // Dispatch delete event to bloc
+                context.read<AddressBloc>().add(
+                  DeleteAddressEvent(
+                    userId: userId,
+                    addressId: address.id,
+                  ),
+                );
+              },
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
