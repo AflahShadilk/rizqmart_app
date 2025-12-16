@@ -1,5 +1,6 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/address/address_form_cubit/address_form_cubit.dart';
@@ -13,48 +14,36 @@ class AddressLabelSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AddressFormCubit, AddressFormState>(
       builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        return Row(
           children: [
-            Text(
-              'Address Type',
-              style: context.ts.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
+            Expanded(
+              child: AddressLabelOption(
+                label: 'Home',
+                icon: Icons.home,
+                isSelected: state.label == 'Home',
+                onTap: () =>
+                    context.read<AddressFormCubit>().updateLabel('Home'),
               ),
             ),
-            12.h,
-            Row(
-              children: [
-                Expanded(
-                  child: AddressLabelOption(
-                    label: 'Home',
-                    icon: Icons.home_outlined,
-                    isSelected: state.label == 'Home',
-                    onTap: () =>
-                        context.read<AddressFormCubit>().updateLabel('Home'),
-                  ),
-                ),
-                12.w,
-                Expanded(
-                  child: AddressLabelOption(
-                    label: 'Work',
-                    icon: Icons.work_outline,
-                    isSelected: state.label == 'Work',
-                    onTap: () =>
-                        context.read<AddressFormCubit>().updateLabel('Work'),
-                  ),
-                ),
-                12.w,
-                Expanded(
-                  child: AddressLabelOption(
-                    label: 'Other',
-                    icon: Icons.location_on_outlined,
-                    isSelected: state.label == 'Other',
-                    onTap: () =>
-                        context.read<AddressFormCubit>().updateLabel('Other'),
-                  ),
-                ),
-              ],
+            12.w,
+            Expanded(
+              child: AddressLabelOption(
+                label: 'Work',
+                icon: Icons.work,
+                isSelected: state.label == 'Work',
+                onTap: () =>
+                    context.read<AddressFormCubit>().updateLabel('Work'),
+              ),
+            ),
+            12.w,
+            Expanded(
+              child: AddressLabelOption(
+                label: 'Other',
+                icon: Icons.location_on,
+                isSelected: state.label == 'Other',
+                onTap: () =>
+                    context.read<AddressFormCubit>().updateLabel('Other'),
+              ),
             ),
           ],
         );
@@ -79,38 +68,38 @@ class AddressLabelOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         decoration: BoxDecoration(
           color: isSelected
-              ? context.cs.primaryContainer
-              : context.cs.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(12),
+              ? context.cs.primary.withOpacity(0.08)
+              : context.cs.surface,
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isSelected ? context.cs.primary : context.cs.outlineVariant,
-            width: isSelected ? 2 : 1,
+            color: isSelected
+                ? context.cs.primary.withOpacity(0.4)
+                : context.cs.outlineVariant.withOpacity(0.3),
+            width: 1.2,
           ),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
-              color: isSelected
-                  ? context.cs.onPrimaryContainer
-                  : context.cs.onSurfaceVariant,
-              size: 28,
+              color: isSelected ? context.cs.primary : context.cs.onSurfaceVariant,
+              size: 20,
             ),
-            8.h,
+            6.h,
             Text(
               label,
-              style: context.ts.bodyMedium?.copyWith(
-                color: isSelected
-                    ? context.cs.onPrimaryContainer
-                    : context.cs.onSurface,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              style: context.ts.labelSmall?.copyWith(
+                color: isSelected ? context.cs.primary : context.cs.onSurface,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                fontSize: 12,
               ),
             ),
           ],

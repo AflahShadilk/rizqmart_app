@@ -7,7 +7,6 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_state.dart';
-import 'package:rizqmart/features/auth/presentation/pages/auth/login_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/dialogs/logout_dailog.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_bar.dart';
