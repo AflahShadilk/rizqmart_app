@@ -1,24 +1,18 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/user_profile_entities.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/dob/date_of_birth_cubit.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/gender/gender_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/profilephoto/profile_photo_upload_cubit.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/show_details.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_state.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/date_of_birth_field.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/genden/gender_selection.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/profile_photo.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/profile_text_field.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/buttons/back_button_common.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
-
 
 class ShowDetailsPage extends StatelessWidget {
   final UserProfileBloc profileBloc;
@@ -33,7 +27,6 @@ class ShowDetailsPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: profileBloc),
-        BlocProvider(create: (context) => UserDetailsEditCubit()),
         BlocProvider(create: (context) => ProfilePhotoUploadCubit()),
       ],
       child: Scaffold(
@@ -41,27 +34,53 @@ class ShowDetailsPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: context.cs.surface,
           elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: context.cs.onSurface),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text(
-            'My Details',
-            style: context.ts.titleLarge,
-          ),
+          leading: BackButtonCommon(colorScheme: context.cs),
+          title: AppHeading('My Details'),
+          centerTitle: true,
           actions: [
-            BlocBuilder<UserDetailsEditCubit, bool>(
-              builder: (context, isEditing) {
-                return IconButton(
-                  icon: Icon(
-                    isEditing ? Icons.close : Icons.edit,
-                    color: context.cs.onSurface,
-                  ),
-                  onPressed: () {
-                    context.read<UserDetailsEditCubit>().toggleEditMode();
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: Center(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.editProfileDetails,
+                      arguments: profileBloc,
+                    );
                   },
-                );
-              },
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: context.cs.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.edit,
+                          color: context.cs.primary,
+                          size: 16,
+                        ),
+                        4.w,
+                        Text(
+                          'Edit',
+                          style: context.ts.labelSmall?.copyWith(
+                            color: context.cs.primary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -69,11 +88,6 @@ class ShowDetailsPage extends StatelessWidget {
           listener: (context, state) {
             if (state is UserProfileErrorState) {
               showToast(context, state.message);
-              context.read<ProfilePhotoUploadCubit>().stopUploading();
-            }
-            if (state is UserProfileLoadedState) {
-              context.read<UserDetailsEditCubit>().setEditMode(false);
-              showToast(context, 'Profile updated successfully');
               context.read<ProfilePhotoUploadCubit>().stopUploading();
             }
             if (state is UserProfilePhotoUploadedState) {
@@ -89,7 +103,7 @@ class ShowDetailsPage extends StatelessWidget {
             }
 
             if (state is UserProfileLoadedState) {
-              return UserDetailsContent(profile: state.profile);
+              return _UserDetailsViewContent(profile: state.profile);
             }
 
             return const SizedBox.shrink();
@@ -100,202 +114,154 @@ class ShowDetailsPage extends StatelessWidget {
   }
 }
 
-class UserDetailsContent extends StatefulWidget {
+class _UserDetailsViewContent extends StatelessWidget {
   final UserProfileEntities profile;
 
-  const UserDetailsContent({
-    super.key,
+  const _UserDetailsViewContent({
     required this.profile,
   });
 
   @override
-  State<UserDetailsContent> createState() => _UserDetailsContentState();
-}
-
-class _UserDetailsContentState extends State<UserDetailsContent> {
-  late TextEditingController nameController;
-  late TextEditingController phoneController;
-  late TextEditingController emailController;
-  late TextEditingController bioController;
-  late DateOfBirthCubit dateOfBirthCubit;
-  late GenderCubit genderCubit;
-
-  final formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    nameController = TextEditingController(text: widget.profile.name);
-    phoneController =
-        TextEditingController(text: widget.profile.phoneNumber ?? '');
-    emailController = TextEditingController(text: widget.profile.email);
-    bioController = TextEditingController(text: widget.profile.bio ?? '');
-    dateOfBirthCubit = DateOfBirthCubit(widget.profile.dateOfBirth);
-    genderCubit = GenderCubit(widget.profile.gender);
-  }
-
-  @override
-  void dispose() {
-    nameController.dispose();
-    phoneController.dispose();
-    emailController.dispose();
-    bioController.dispose();
-    dateOfBirthCubit.close();
-    genderCubit.close();
-    super.dispose();
-  }
-
-  void saveProfile() {
-    if (formKey.currentState!.validate()) {
-      final currentUser = FirebaseAuth.instance.currentUser;
-
-      if (currentUser == null) {
-        showToast(context, 'Error: User not authenticated');
-        return;
-      }
-
-      final userId = currentUser.uid;
-
-      if (userId.isEmpty) {
-        showToast(context, 'Error: User ID is missing');
-        return;
-      }
-
-      final updatedProfile = UserProfileEntities(
-        userId: userId,
-        name: nameController.text,
-        email: emailController.text,
-        phoneNumber:
-            phoneController.text.isEmpty ? null : phoneController.text,
-        photoUrl: widget.profile.photoUrl,
-        bio: bioController.text.isEmpty ? null : bioController.text,
-        dateOfBirth: dateOfBirthCubit.state, 
-        gender: genderCubit.state, 
-        updatedAt: DateTime.now(),
-      );
-
-      context.read<UserProfileBloc>().add(
-            UpdateUserProfileEvent(profile: updatedProfile),
-          );
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserDetailsEditCubit, bool>(
-      builder: (context, isEditing) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: formKey,
-              child: Column(
-                children: [
-                  ProfilePhotoSection(
-                    photoUrl: widget.profile.photoUrl ?? '',
-                    userId: widget.profile.userId,
-                    isEditing: isEditing,
-                  ),
-                  32.h,
-                  ProfileTextField(
-                    controller: nameController,
-                    label: 'Name',
-                    icon: Icons.person_outline,
-                    enabled: isEditing,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Name is required';
-                      }
-                      return null;
-                    },
-                  ),
-                  16.h,
-                  ProfileTextField(
-                    controller: phoneController,
-                    label: 'Phone Number',
-                    icon: Icons.phone_outlined,
-                    enabled: isEditing,
-                    keyboardType: TextInputType.phone,
-                  ),
-                  16.h,
-                  ProfileTextField(
-                    controller: emailController,
-                    label: 'Email',
-                    icon: Icons.email_outlined,
-                    enabled: isEditing,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Email is required';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Enter a valid email';
-                      }
-                      return null;
-                    },
-                  ),
-                  16.h,
-                  BlocBuilder<DateOfBirthCubit, DateTime?>(
-                    bloc: dateOfBirthCubit,
-                    builder: (context, selectedDate) {
-                      return DateOfBirthField(
-                        selectedDate: selectedDate,
-                        enabled: isEditing,
-                        onDateSelected: (date) {
-                          dateOfBirthCubit.setDate(date);
-                        },
-                      );
-                    },
-                  ),
-                  16.h,
-                  BlocBuilder<GenderCubit, String?>(
-                    bloc: genderCubit,
-                    builder: (context, selectedGender) {
-                      return GenderSelector(
-                        selectedGender: selectedGender,
-                        enabled: isEditing,
-                        onGenderSelected: (gender) {
-                          genderCubit.setGender(gender);
-                        },
-                      );
-                    },
-                  ),
-                  16.h,
-                  ProfileTextField(
-                    controller: bioController,
-                    label: 'Bio',
-                    icon: Icons.info_outline,
-                    enabled: isEditing,
-                    maxLines: 3,
-                  ),
-                  32.h,
-                  if (isEditing)
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: saveProfile,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: context.cs.primary,
-                          foregroundColor: context.cs.onPrimary,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Text(
-                          'Save Changes',
-                          style: context.ts.titleMedium?.copyWith(
-                            color: context.cs.onPrimary,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Column(
+          children: [
+            _buildProfilePhotoSection(context),
+            28.h,
+            _buildSectionTitle(context, 'Basic Information'),
+            14.h,
+            _buildInfoField(
+                context, 'Full Name', profile.name, Icons.person_outline),
+            12.h,
+            _buildInfoField(
+                context, 'Email', profile.email, Icons.email_outlined),
+            12.h,
+            _buildInfoField(context, 'Phone Number',
+                profile.phoneNumber ?? 'Not specified', Icons.phone_outlined),
+            20.h,
+            _buildSectionTitle(context, 'Personal Details'),
+            14.h,
+            _buildInfoField(context, 'Date of Birth',
+                _formatDate(profile.dateOfBirth), Icons.cake_outlined),
+            12.h,
+            _buildInfoField(
+                context, 'Gender', profile.gender ?? 'Not specified', Icons.wc),
+            20.h,
+            _buildSectionTitle(context, 'About You'),
+            14.h,
+            _buildInfoField(context, 'Bio', profile.bio ?? 'Not specified',
+                Icons.info_outline),
+            28.h,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfilePhotoSection(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        children: [
+          ProfilePhotoSection(
+            photoUrl: profile.photoUrl ?? '',
+            userId: profile.userId,
+            isEditing: false,
+          ),
+          10.h,
+          Text(
+            profile.name,
+            style: context.ts.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: context.cs.onSurface,
             ),
           ),
-        );
-      },
+          4.h,
+          Text(
+            profile.email,
+            style: context.ts.bodySmall?.copyWith(
+              color: context.cs.onSurfaceVariant,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  Widget _buildSectionTitle(BuildContext context, String title) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        title,
+        style: context.ts.labelLarge?.copyWith(
+          color: context.cs.onSurface,
+          fontWeight: FontWeight.w600,
+          fontSize: 13,
+          letterSpacing: 0.3,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoField(
+    BuildContext context,
+    String label,
+    String value,
+    IconData icon,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: context.cs.surfaceContainerHighest.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: context.cs.outlineVariant.withOpacity(0.5),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            color: context.cs.onSurfaceVariant,
+            size: 20,
+          ),
+          16.w,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: context.ts.labelSmall?.copyWith(
+                    color: context.cs.onSurfaceVariant,
+                    fontSize: 11,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                4.h,
+                Text(
+                  value,
+                  style: context.ts.bodyMedium?.copyWith(
+                    color: context.cs.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return 'Not specified';
+    return '${date.day}/${date.month}/${date.year}';
   }
 }
