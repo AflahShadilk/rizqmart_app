@@ -18,13 +18,62 @@ class GenderSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // If not in edit mode, show only the selected gender
+    if (!enabled) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: context.cs.surfaceContainerHighest.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: context.cs.outlineVariant.withOpacity(0.5),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.wc,
+              color: context.cs.onSurfaceVariant,
+              size: 20,
+            ),
+            16.w,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Gender',
+                  style: context.ts.labelSmall?.copyWith(
+                    color: context.cs.onSurfaceVariant,
+                    fontSize: 11,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                4.h,
+                Text(
+                  selectedGender ?? 'Not specified',
+                  style: context.ts.bodyMedium?.copyWith(
+                    color: context.cs.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
+    // In edit mode, show all gender options
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: enabled
-            ? context.cs.surfaceContainerHighest
-            : context.cs.surfaceContainerHighest.withOpacity(0.5),
+        color: context.cs.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: context.cs.primary.withOpacity(0.2),
+          width: 1.5,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,42 +81,49 @@ class GenderSelector extends StatelessWidget {
           Row(
             children: [
               Icon(
-                Icons.people_outline,
-                color: context.cs.onSurfaceVariant,
+                Icons.wc,
+                color: context.cs.primary,
+                size: 20,
               ),
-              16.w,
+              12.w,
               Text(
                 'Gender',
-                style: context.ts.bodyMedium?.copyWith(
-                  color: context.cs.onSurfaceVariant,
+                style: context.ts.labelMedium?.copyWith(
+                  color: context.cs.onSurface,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                  letterSpacing: 0.3,
                 ),
               ),
             ],
           ),
-          8.h,
+          16.h,
           Row(
             children: [
               Expanded(
                 child: GenderOption(
                   label: 'Male',
+                  icon: Icons.male,
                   isSelected: selectedGender == 'Male',
                   enabled: enabled,
                   onTap: () => onGenderSelected('Male'),
                 ),
               ),
-              12.w,
+              10.w,
               Expanded(
                 child: GenderOption(
                   label: 'Female',
+                  icon: Icons.female,
                   isSelected: selectedGender == 'Female',
                   enabled: enabled,
                   onTap: () => onGenderSelected('Female'),
                 ),
               ),
-              12.w,
+              10.w,
               Expanded(
                 child: GenderOption(
                   label: 'Other',
+                  icon: Icons.transgender,
                   isSelected: selectedGender == 'Other',
                   enabled: enabled,
                   onTap: () => onGenderSelected('Other'),
@@ -83,6 +139,7 @@ class GenderSelector extends StatelessWidget {
 
 class GenderOption extends StatelessWidget {
   final String label;
+  final IconData icon;
   final bool isSelected;
   final bool enabled;
   final VoidCallback onTap;
@@ -90,6 +147,7 @@ class GenderOption extends StatelessWidget {
   const GenderOption({
     super.key,
     required this.label,
+    required this.icon,
     required this.isSelected,
     required this.enabled,
     required this.onTap,
@@ -97,28 +155,50 @@ class GenderOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: enabled ? onTap : null,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected ? context.cs.primaryContainer : context.cs.surface,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected ? context.cs.primary : context.cs.outlineVariant,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: context.ts.bodyMedium?.copyWith(
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: enabled ? onTap : null,
+        borderRadius: BorderRadius.circular(10),
+        highlightColor: context.cs.primary.withOpacity(0.1),
+        splashColor: context.cs.primary.withOpacity(0.15),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? context.cs.primary.withOpacity(0.12)
+                : context.cs.surface,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
               color: isSelected
-                  ? context.cs.onPrimaryContainer
-                  : context.cs.onSurface,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  ? context.cs.primary
+                  : context.cs.outlineVariant.withOpacity(0.5),
+              width: isSelected ? 2 : 1.5,
             ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: isSelected
+                    ? context.cs.primary
+                    : context.cs.onSurfaceVariant,
+                size: 24,
+              ),
+              6.h,
+              Text(
+                label,
+                style: context.ts.labelSmall?.copyWith(
+                  color: isSelected
+                      ? context.cs.primary
+                      : context.cs.onSurfaceVariant,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  fontSize: 12,
+                ),
+              ),
+            ],
           ),
         ),
       ),

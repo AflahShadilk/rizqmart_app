@@ -18,7 +18,7 @@ class ProfileTextField extends StatelessWidget {
     required this.enabled,
     this.keyboardType = TextInputType.text,
     this.maxLines = 1,
-    this.validator,
+    this.validator, required String helperText,
   });
 
   @override

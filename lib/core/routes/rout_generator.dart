@@ -17,6 +17,7 @@ import 'package:rizqmart/features/auth/presentation/pages/main/explore/product_b
 import 'package:rizqmart/features/auth/presentation/pages/main/order/success_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/profile_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/show_details_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/edit_user_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/wish_list_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/splash_screen.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/welcome1.dart';
@@ -93,6 +94,12 @@ class RouteGenerator {
         final bloc = settings.arguments as UserProfileBloc;
         return MaterialPageRoute(
           builder: (_) => ShowDetailsPage(profileBloc: bloc),
+        );
+
+      case AppRoutes.editProfileDetails:
+        final bloc = settings.arguments as UserProfileBloc;
+        return MaterialPageRoute(
+          builder: (_) => EditUserDetailsPage(profileBloc: bloc),
         );
 
       case AppRoutes.userAddress:
