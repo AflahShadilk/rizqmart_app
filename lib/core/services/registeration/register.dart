@@ -12,6 +12,7 @@ import 'package:rizqmart/features/auth/data/data_source/main/cart_data_source.da
 import 'package:rizqmart/features/auth/data/data_source/main/dashboard_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/explore_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/order_data_source.dart';
+import 'package:rizqmart/features/auth/data/data_source/main/payment_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/user_profile_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/wish_list_data_source.dart';
 import 'package:rizqmart/features/auth/data/repository/auth/google_repository_imple.dart';
@@ -22,6 +23,7 @@ import 'package:rizqmart/features/auth/data/repository/main/cart_repository_impl
 import 'package:rizqmart/features/auth/data/repository/main/dashboard_repository_impl.dart';
 import 'package:rizqmart/features/auth/data/repository/main/explore_repository_imple.dart';
 import 'package:rizqmart/features/auth/data/repository/main/order_repository_imple.dart';
+import 'package:rizqmart/features/auth/data/repository/main/payment_repository_imple.dart';
 import 'package:rizqmart/features/auth/data/repository/main/user_profile_repository_imple.dart';
 import 'package:rizqmart/features/auth/data/repository/main/wish_list_repository_imple.dart';
 import 'package:rizqmart/features/auth/domain/repositories/auth/google_repository.dart';
@@ -33,6 +35,7 @@ import 'package:rizqmart/features/auth/domain/repositories/main/cart_repository.
 import 'package:rizqmart/features/auth/domain/repositories/main/dashboard_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/explore_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/order_repository.dart';
+import 'package:rizqmart/features/auth/domain/repositories/main/payment_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/user_profile_repository.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/wish_list_repository.dart';
 import 'package:rizqmart/features/auth/domain/usecase/auth/google_sign_usecase.dart';
@@ -61,6 +64,11 @@ import 'package:rizqmart/features/auth/domain/usecase/main/dashboard/get_product
 import 'package:rizqmart/features/auth/domain/usecase/main/order/cancel_order_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/order/get_user_orders_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/order/place_order_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/cancel_order_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/capture_paypal_payment_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/create_order_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_cod_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_paypal_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/delete_profile_photo_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/update_profile_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/upload_profile_photo_usecase.dart';
@@ -145,6 +153,8 @@ void setupLocator() {
   sl.registerLazySingleton<OrderDataSource>(()=>OrderDataSource());
   sl.registerLazySingleton<UserProfileDataSource>(()=>UserProfileDataSource(firestore: sl()));
   sl.registerLazySingleton<AddressRemoteDataSource>(()=>AddressRemoteDataSource(firestore: sl()));
+  sl.registerLazySingleton<PaymentDataSource>(()=>PaymentDataSource());
+
 
   //main part repos-------------------------------------------------------------------
   sl.registerLazySingleton<DashboardRepository>(
@@ -157,6 +167,8 @@ void setupLocator() {
   sl.registerLazySingleton<OrderRepository>(()=>OrderRepositoryImpl(dataSource: sl()));
   sl.registerLazySingleton<UserProfileRepository>(()=>UserProfileRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<AddressRepository>(()=>AddressRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<PaymentRepository>(()=>PaymentRepositoryImpl(paymentDataSource: sl(), orderDataSource: sl(), cartDataSource: sl(), payPalService:sl()));
+
   //use -------------------------------------------------------------------------------
   //productUsecases
   sl.registerLazySingleton(() => GetProductUsecase(sl()));
@@ -200,5 +212,11 @@ void setupLocator() {
   sl.registerLazySingleton(()=>DeleteAddressUsecase(sl()));
   sl.registerLazySingleton(()=>GetCurrentLocationUsecase(sl()));
   
-  
+  //Payment usecases
+  sl.registerLazySingleton(()=>CreateOrderUsecase(sl()));
+  sl.registerLazySingleton(()=>PayWithPayPalUseCase(sl()));
+  sl.registerLazySingleton(()=>PayWithCODUseCase(sl()));
+  sl.registerLazySingleton(()=>CapturePaypalPaymentUsecase(paymentRepository: sl()));
+  sl.registerLazySingleton(()=>CancelPaymentOrderUseCase(sl()));
+
 }
