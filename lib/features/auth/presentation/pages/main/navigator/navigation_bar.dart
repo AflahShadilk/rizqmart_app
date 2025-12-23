@@ -9,13 +9,12 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/navigation/
 import 'package:rizqmart/features/auth/presentation/pages/main/cart/cart_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/dashboard_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/explore_page.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/profile/profile_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/wish_list_page.dart';
 
 class NavigationBarPage extends StatelessWidget {
   const NavigationBarPage({super.key});
 
-  Widget _buildPage(int index) {
+  Widget buildPage(int index) {
     switch (index) {
       case 0:
         return const DashboardPage();
@@ -25,14 +24,12 @@ class NavigationBarPage extends StatelessWidget {
         return FavoritePage();
       case 3:
         return CartPage();
-      case 4:
-        return const ProfilePage();
       default:
         return const DashboardPage();
     }
   }
 
-  Widget _buildBottomNavBar(BuildContext context, int selectedIndex) {
+  Widget buildBottomNavBar(BuildContext context, int selectedIndex) {
     return Container(
       decoration: BoxDecoration(
         color: context.cs.surface,
@@ -61,7 +58,6 @@ class NavigationBarPage extends StatelessWidget {
               GButton(icon: Icons.search, text: 'Explore'),
               GButton(icon: Icons.favorite_border, text: 'Wishlist'),
               GButton(icon: Icons.shopping_cart_outlined, text: 'Cart'),
-              GButton(icon: Icons.person_2_outlined, text: 'Profile'),
             ],
             selectedIndex: selectedIndex,
             onTabChange: (value) {
@@ -80,8 +76,8 @@ class NavigationBarPage extends StatelessWidget {
       child: BlocBuilder<NavigationCubit, int>(
         builder: (context, selectedIndex) {
           return Scaffold(
-            body: _buildPage(selectedIndex),
-            bottomNavigationBar: _buildBottomNavBar(context, selectedIndex),
+            body: buildPage(selectedIndex),
+            bottomNavigationBar: buildBottomNavBar(context, selectedIndex),
           );
         },
       ),

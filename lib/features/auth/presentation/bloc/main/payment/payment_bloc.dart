@@ -1,51 +1,45 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/cancel_order_usecase.dart';
-import 'package:rizqmart/features/auth/domain/usecase/main/payment/capture_paypal_payment_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/create_order_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_cod_usecase.dart';
-import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_paypal_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_stripe_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/refund_order_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_state.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
- 
   final CreateOrderUsecase createOrderUsecase;
-  final PayWithPayPalUseCase payWithPayPalUseCase;
+  final PayWithStripeUseCase payWithStripeUseCase; 
   final PayWithCODUseCase payWithCODUseCase;
-  final CapturePaypalPaymentUsecase capturePaypalPaymentUsecase;
   final CancelPaymentOrderUseCase cancelOrderUseCase;
   final RefundOrderUseCase refundOrderUseCase;
 
-  OrderEntities? _currentOrder;
-  String? _selectedPaymentMethod;
-  String? _paypalOrderId;
+  OrderEntities? currentOrder;
+  String? selectedPaymentMethod;
 
   PaymentBloc({
     required this.createOrderUsecase,
-    required this.payWithPayPalUseCase,
+    required this.payWithStripeUseCase,
     required this.payWithCODUseCase,
-    required this.capturePaypalPaymentUsecase,
     required this.cancelOrderUseCase,
     required this.refundOrderUseCase,
   }) : super(const PaymentInitialState()) {
-    on<InitializePaymentEvent>(_onInitializePayment);
-    on<ProcessPaymentEvent>(_onProcessPayment);
-    on<ConfirmPaymentEvent>(_onConfirmPayment);
-    on<CancelPaymentEvent>(_onCancelPayment);
-    on<RefundPaymentEvent>(_onRefundPayment);
+    on<InitializePaymentEvent>(onInitializePayment);
+    on<ProcessPaymentEvent>(onProcessPayment);
+    on<CancelPaymentEvent>(onCancelPayment);
+    on<RefundPaymentEvent>(onRefundPayment);
   }
 
-  Future<void> _onInitializePayment(
+  Future<void> onInitializePayment(
     InitializePaymentEvent event,
     Emitter<PaymentState> emit,
   ) async {
     try {
       emit(const PaymentLoadingState('Initializing payment...'));
 
-      _currentOrder = event.order;
-      _selectedPaymentMethod = event.paymentMethod;
+      currentOrder = event.order;
+      selectedPaymentMethod = event.paymentMethod;
 
       emit(PaymentMethodSelectedState(
         paymentMethod: event.paymentMethod,
@@ -56,11 +50,11 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
   }
 
-  Future<void> _onProcessPayment(
+  Future<void> onProcessPayment(
     ProcessPaymentEvent event,
     Emitter<PaymentState> emit,
   ) async {
-    if (_currentOrder == null) {
+    if (currentOrder == null) {
       emit(const PaymentFailedState('Order not initialized'));
       return;
     }
@@ -68,10 +62,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     try {
       emit(const PaymentLoadingState('Creating order...'));
 
-      final createdOrder = await createOrderUsecase.call(_currentOrder!);
-      _currentOrder = createdOrder;
+      final createdOrder = await createOrderUsecase.call(currentOrder!);
+      currentOrder = createdOrder;
 
-      if (_selectedPaymentMethod == 'cod') {
+      if (selectedPaymentMethod == 'cod') {
         emit(const PaymentLoadingState('Processing COD payment...'));
         await payWithCODUseCase.call(createdOrder);
 
@@ -80,55 +74,29 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           payment: null,
           order: createdOrder,
         ));
-      } else if (_selectedPaymentMethod == 'paypal') {
-        emit(const PaymentLoadingState('Preparing PayPal payment...'));
+      } else if (selectedPaymentMethod == 'stripe') { 
+        emit(const PaymentLoadingState('Processing Stripe payment...'));
 
-        final payment = await payWithPayPalUseCase.call(createdOrder);
-        _paypalOrderId = payment.paymentId;
+        final payment = await payWithStripeUseCase.call(createdOrder); 
 
-        emit(PayPalOrderCreatedState(
-          paypalOrderId: payment.paymentId,
-          approvalLinks: [],
+        emit(PaymentSuccessState(
+          orderId: createdOrder.orderId,
+          payment: payment,
           order: createdOrder,
         ));
+      } else {
+        emit(PaymentFailedState('Unknown payment method: $selectedPaymentMethod'));
       }
     } catch (e) {
       emit(PaymentFailedState('Payment processing failed: $e'));
     }
   }
 
-  Future<void> _onConfirmPayment(
-    ConfirmPaymentEvent event,
-    Emitter<PaymentState> emit,
-  ) async {
-    if (_currentOrder == null || _paypalOrderId == null) {
-      emit(const PaymentFailedState(
-        'Order or PayPal transaction not found',
-      ));
-      return;
-    }
-
-    try {
-      emit(const PaymentLoadingState('Confirming PayPal payment...'));
-
-      final capturedPayment =
-          await capturePaypalPaymentUsecase.call(_paypalOrderId!);
-
-      emit(PaymentSuccessState(
-        orderId: _currentOrder!.orderId,
-        payment: capturedPayment,
-        order: _currentOrder!,
-      ));
-    } catch (e) {
-      emit(PaymentFailedState('Payment confirmation failed: $e'));
-    }
-  }
-
-  Future<void> _onCancelPayment(
+  Future<void> onCancelPayment(
     CancelPaymentEvent event,
     Emitter<PaymentState> emit,
   ) async {
-    if (_currentOrder == null) {
+    if (currentOrder == null) {
       emit(const PaymentFailedState('Order not found'));
       return;
     }
@@ -137,13 +105,12 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       emit(const PaymentLoadingState('Cancelling order...'));
 
       final cancelledPayment =
-          await cancelOrderUseCase.call(_currentOrder!.orderId);
+          await cancelOrderUseCase.call(currentOrder!.orderId);
 
-      final orderId = _currentOrder!.orderId;
+      final orderId = currentOrder!.orderId;
 
-      _currentOrder = null;
-      _selectedPaymentMethod = null;
-      _paypalOrderId = null;
+      currentOrder = null;
+      selectedPaymentMethod = null;
 
       emit(CancellationSuccessState(
         orderId: orderId,
@@ -155,15 +122,13 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
   }
 
-
-  Future<void> _onRefundPayment(
+  Future<void> onRefundPayment(
     RefundPaymentEvent event,
     Emitter<PaymentState> emit,
   ) async {
     try {
       emit(const PaymentLoadingState('Processing refund...'));
 
-      // ignore: unused_local_variable
       final refundedPayment =
           await refundOrderUseCase.call(event.orderId, event.amount);
 

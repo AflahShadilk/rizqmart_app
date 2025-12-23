@@ -1,5 +1,4 @@
-
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,21 +6,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_event.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_state.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/order/error_order.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/order/success_page.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/cart/widget/cart_widgets.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/checkout/checkout_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/checkout/checkout_state.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/payment/payment_selection_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/divider_ext.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
 Future<dynamic> modelBottomSheet(
   BuildContext context,
   CartLoadedState cartState,
@@ -31,10 +27,6 @@ Future<dynamic> modelBottomSheet(
   final discount = 0.0;
   final totalCost = subtotal + deliveryFee - discount;
 
-  String? selectedDeliveryMethod;
-  String? selectedPaymentMethod;
-  String? selectedPromoCode;
-
   return showModalBottomSheet(
     elevation: 3,
     isDismissible: true,
@@ -42,40 +34,25 @@ Future<dynamic> modelBottomSheet(
     backgroundColor: Colors.transparent,
     context: context,
     builder: (bottomSheetContext) {
-      return BlocConsumer<OrderBloc, OrderState>(
-        listener: (context, state) {
-          if (state is OrderSuccessState) {
-            context.read<CartBloc>().add(const ClearCartEvent());
-
-            Navigator.pop(bottomSheetContext);
-            Navigator.of(bottomSheetContext).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => const SuccessPage(),
-              ),
-            );
-          }
-          if (state is OrderErrorState) {
-            Navigator.pop(bottomSheetContext);
-            orderErrorDialog(bottomSheetContext, state.message);
-          }
-        },
-        builder: (context, orderState) {
-          final isLoading = orderState is OrderLoadingState;
-
-          return Container(
-            decoration: BoxDecoration(
-              color: context.cs.background,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(30),
-              ),
+      return BlocProvider(
+        create: (context) => CheckoutCubit(),
+        child: Container(
+          decoration: BoxDecoration(
+            color: context.cs.background,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(30),
             ),
-            padding: const EdgeInsets.all(20),
-            child: SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          padding: const EdgeInsets.all(20),
+          child: DraggableScrollableSheet(
+            expand: false,
+            minChildSize: 0.5,
+            maxChildSize: 0.9,
+            builder: (context, scrollController) {
+              return ListView(
+                controller: scrollController,
+                shrinkWrap: true,
                 children: [
-                  // Header
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -94,171 +71,404 @@ Future<dynamic> modelBottomSheet(
                       ),
                     ],
                   ),
-                  16.h,
+                  8.h,
                   context.divider(
                     thickness: 1,
                     color: context.cs.outlineVariant.withOpacity(0.3),
                   ),
-                  5.h,
-
-                  // Delivery Method
-                  checkoutRow(
-                    context,
-                    icon: Icons.local_shipping_outlined,
-                    title: 'Delivery',
-                    trailing: selectedDeliveryMethod ?? 'Select method',
-                    onTap: () {
-                       Navigator.pushNamed(
-            context,
-            AppRoutes.userAddress,
-            arguments: userId,
-          );
-                    },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.orange.withOpacity(0.2),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.schedule,
+                            color: Colors.orange,
+                            size: 18,
+                          ),
+                          8.w,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Quick Delivery',
+                                  style: context.ts.labelSmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange,
+                                  ),
+                                ),
+                                2.h,
+                                Text(
+                                  'Within 1 hour',
+                                  style: context.ts.labelSmall?.copyWith(
+                                    color: Colors.orange.withOpacity(0.8),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  5.h,
+                  8.h,
                   context.divider(
                     thickness: 1,
                     color: context.cs.outlineVariant.withOpacity(0.3),
                   ),
-                  5.h,
-
-                  // Payment Method
-                  checkoutRow(
-                    context,
-                    icon: Icons.payments_rounded,
-                    title: 'Payment',
-                    trailing: selectedPaymentMethod ?? 'Select method',
-                    onTap: () {
-                      // Show payment method
+                  8.h,
+                  BlocBuilder<CheckoutCubit, CheckoutState>(
+                    builder: (context, checkoutState) {
+                      return checkoutRowCompact(
+                        context,
+                        icon: Icons.local_shipping_outlined,
+                        title: 'Delivery',
+                        trailing: checkoutState.deliveryMethod ?? 'Quick',
+                        onTap: () {
+                          context.read<CheckoutCubit>()
+                              .setDeliveryMethod('Quick Delivery (Within 1 Hour)');
+                        },
+                      );
                     },
                   ),
-                  5.h,
+                  4.h,
                   context.divider(
                     thickness: 1,
                     color: context.cs.outlineVariant.withOpacity(0.3),
                   ),
-                  5.h,
+                  4.h,
+                  BlocBuilder<CheckoutCubit, CheckoutState>(
+                    builder: (context, checkoutState) {
+                      return checkoutRowCompact(
+                        context,
+                        icon: Icons.location_on_outlined,
+                        title: 'Address',
+                        trailing: checkoutState.deliveryAddress != null
+                            ? _truncateAddress(checkoutState.deliveryAddress!)
+                            : 'Select',
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.selectAddress,
+                            arguments: userId,
+                          ).then((result) {
+                            if (result != null) {
+                              String addressToStore = '';
 
-                  // Promo Code
-                  checkoutRow(
-                    context,
-                    icon: Icons.local_offer_outlined,
-                    title: 'Promo Code',
-                    trailing: selectedPromoCode ?? 'Pick discount',
-                    onTap: () {
-                      // Show promo code
+                              if (result is String) {
+                                addressToStore = result;
+                              } else if (result is AddressEntities) {
+                                addressToStore = result.label;
+                              }
+
+                              if (addressToStore.isNotEmpty) {
+                                context.read<CheckoutCubit>().setDeliveryAddress(addressToStore);
+                              }
+                            }
+                          });
+                        },
+                      );
                     },
                   ),
-                  5.h,
+                  4.h,
+                  context.divider(
+                    thickness: 1,
+                    color: context.cs.outlineVariant.withOpacity(0.3),
+                  ),
+                  4.h,
+                  BlocBuilder<CheckoutCubit, CheckoutState>(
+                    builder: (context, checkoutState) {
+                      return checkoutRowCompact(
+                        context,
+                        icon: Icons.payments_rounded,
+                        title: 'Payment',
+                        trailing: checkoutState.paymentMethod ?? 'Select',
+                        onTap: () => _showPaymentMethodDialog(context),
+                      );
+                    },
+                  ),
+                  4.h,
+                  context.divider(
+                    thickness: 1,
+                    color: context.cs.outlineVariant.withOpacity(0.3),
+                  ),
+                  4.h,
+                  BlocBuilder<CheckoutCubit, CheckoutState>(
+                    builder: (context, checkoutState) {
+                      return checkoutRowCompact(
+                        context,
+                        icon: Icons.local_offer_outlined,
+                        title: 'Promo',
+                        trailing: checkoutState.promoCode ?? 'Add',
+                        onTap: () {},
+                      );
+                    },
+                  ),
+                  8.h,
                   context.divider(
                     thickness: 1,
                     color: context.cs.outlineVariant.withOpacity(.3),
                   ),
-                  16.h,
-
-                  // Cost managment
-                  costRow(context, 'Subtotal', subtotal),
                   8.h,
-                  costRow(context, 'Delivery Fee', deliveryFee),
+                  _costRowCompact(context, 'Subtotal', subtotal),
+                  6.h,
+                  _costRowCompact(context, 'Delivery', deliveryFee),
                   if (discount > 0) ...[
-                    8.h,
-                    costRow(context, 'Discount', -discount, isDiscount: true),
+                    6.h,
+                    _costRowCompact(context, 'Discount', -discount,
+                        isDiscount: true),
                   ],
-                  8.h,
+                  6.h,
                   context.divider(
                     thickness: 1,
                     color: context.cs.outlineVariant.withOpacity(.3),
                   ),
-                  8.h,
-
-                  // Total Cost
+                  6.h,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Total Cost',
-                        style: context.ts.titleLarge?.copyWith(
+                        'Total',
+                        style: context.ts.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
                         '₹${totalCost.toStringAsFixed(2)}',
-                        style: context.ts.titleLarge?.copyWith(
+                        style: context.ts.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: context.cs.primary,
                         ),
                       ),
                     ],
                   ),
-                  16.h,
-
-                  // Terms and Conditions
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'By placing an order you agree to our',
-                        style: context.ts.labelSmall?.copyWith(
-                          color: context.cs.onSurface.withOpacity(0.5),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {},
-                        child: Text(
-                          'Terms and Conditions',
-                          style: context.ts.labelSmall?.copyWith(
-                            color: context.cs.primary,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  10.h,
-
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: MainButton(
-                      label: isLoading
-                          ? 'Processing...'
-                          : 'Place Order  ₹${totalCost.toStringAsFixed(2)}',
-                      onPress: isLoading
-                          ? null
-                          : () {
-                              final order = OrderEntities(
-                                orderId: '',
-                                userId: '',
-                                items: cartState.items,
-                                subtotal: subtotal,
-                                deliveryFee: deliveryFee,
-                                discount: discount,
-                                totalCost: totalCost,
-                                deliveryMethod: selectedDeliveryMethod ??
-                                    'Standard Delivery',
-                                paymentMethod:
-                                    selectedPaymentMethod ?? 'Cash on Delivery',
-                                promoCode: selectedPromoCode,
-                                status: 'pending',
-                                createdAt: DateTime.now(),
-                                deliveryAddress: 'User Address Here okkkkk',
-                              );
-
-                              context
-                                  .read<OrderBloc>()
-                                  .add(PlaceOrderEvent(order));
-                            },
-                      color: context.cs.success,
-                      textColor: context.cs.surface,
+                  12.h,
+                  Text(
+                    'By placing an order you agree to our Terms and Conditions',
+                    style: context.ts.labelSmall?.copyWith(
+                      color: context.cs.onSurface.withOpacity(0.5),
                     ),
                   ),
-                  10.h,
+                  12.h,
+                  BlocBuilder<CheckoutCubit, CheckoutState>(
+                    builder: (context, checkoutState) {
+                      final canProceed = checkoutState.deliveryMethod != null &&
+                          checkoutState.deliveryAddress != null &&
+                          checkoutState.paymentMethod != null;
+
+                      return SizedBox(
+                        width: double.infinity,
+                        height: 52,
+                        child: MainButton(
+                          label: canProceed
+                              ? 'Place Order  ₹${totalCost.toStringAsFixed(2)}'
+                              : 'Complete all fields',
+                          onPress: canProceed
+                              ? () {
+                                  final order = OrderEntities(
+                                    orderId: '',
+                                    userId: userId,
+                                    items: cartState.items,
+                                    subtotal: subtotal,
+                                    deliveryFee: deliveryFee,
+                                    discount: discount,
+                                    totalCost: totalCost,
+                                    deliveryMethod:
+                                        checkoutState.deliveryMethod!,
+                                    paymentMethod:
+                                        checkoutState.paymentMethod!,
+                                    promoCode: checkoutState.promoCode,
+                                    status: 'pending_payment',
+                                    createdAt: DateTime.now(),
+                                    deliveryAddress:
+                                        checkoutState.deliveryAddress!,
+                                  );
+
+                                  Navigator.pop(bottomSheetContext);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (ctx) =>
+                                          PaymentSelectionPage(order: order),
+                                    ),
+                                  );
+                                }
+                              : null,
+                          color: context.cs.success,
+                          textColor: context.cs.surface,
+                        ),
+                      );
+                    },
+                  ),
+                  8.h,
                 ],
-              ),
-            ),
-          );
-        },
+              );
+            },
+          ),
+        ),
       );
     },
+  );
+}
+
+String _truncateAddress(String address) {
+  return address.length > 20
+      ? '${address.substring(0, 20)}...'
+      : address;
+}
+
+Widget checkoutRowCompact(
+  BuildContext context, {
+  required IconData icon,
+  required String title,
+  required String trailing,
+  required VoidCallback onTap,
+}) {
+  return InkWell(
+    onTap: onTap,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Icon(icon, color: context.cs.primary, size: 18),
+          const SizedBox(width: 8),
+          Text(title, style: context.ts.bodyMedium),
+          const Spacer(),
+          Text(trailing, style: context.ts.bodySmall),
+          const SizedBox(width: 6),
+          Icon(
+            Icons.arrow_forward_ios,
+            size: 14,
+            color: context.cs.onSurface.withOpacity(0.4),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _costRowCompact(
+  BuildContext context,
+  String label,
+  double amount, {
+  bool isDiscount = false,
+}) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(
+        label,
+        style: context.ts.bodySmall,
+      ),
+      Text(
+        '${isDiscount ? '-' : ''}₹${amount.abs().toStringAsFixed(2)}',
+        style: context.ts.bodySmall?.copyWith(
+          color: isDiscount ? context.cs.success : context.cs.onSurface,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ],
+  );
+}
+
+void _showPaymentMethodDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text(
+        'Payment Method',
+        style: context.ts.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _paymentOptionCompact(
+            context,
+            title: 'Cash on Delivery',
+            subtitle: 'Pay on delivery',
+            value: 'cod',
+            icon: Icons.money,
+          ),
+          12.h,
+           _paymentOptionCompact(
+            context,
+            title: 'Stripe',
+            subtitle: 'Secure online payment',
+            value: 'stripe',
+            icon: Icons.credit_card,
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: const Text('Cancel'),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _paymentOptionCompact(
+  BuildContext context, {
+  required String title,
+  required String subtitle,
+  required String value,
+  required IconData icon,
+}) {
+  return InkWell(
+    onTap: () {
+      context.read<CheckoutCubit>().setPaymentMethod(value);
+      Navigator.pop(context);
+    },
+    borderRadius: BorderRadius.circular(8),
+    child: Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: context.cs.outlineVariant,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            color: context.cs.primary,
+            size: 22,
+          ),
+          10.w,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: context.ts.bodySmall
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                2.h,
+                Text(
+                  subtitle,
+                  style: context.ts.labelSmall?.copyWith(
+                    color: context.cs.onSurface.withOpacity(0.6),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
   );
 }

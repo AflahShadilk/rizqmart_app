@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rizqmart/core/services/stripe_services.dart';
 import 'package:rizqmart/features/auth/data/data_source/auth/forgotpass_remote_datasource_impl.dart';
 import 'package:rizqmart/features/auth/data/data_source/auth/google_auth_remote_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/auth/signin_remote_datasource_impl.dart';
@@ -65,10 +66,10 @@ import 'package:rizqmart/features/auth/domain/usecase/main/order/cancel_order_us
 import 'package:rizqmart/features/auth/domain/usecase/main/order/get_user_orders_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/order/place_order_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/cancel_order_usecase.dart';
-import 'package:rizqmart/features/auth/domain/usecase/main/payment/capture_paypal_payment_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/create_order_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_cod_usecase.dart';
-import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_paypal_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_stripe_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/refund_order_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/delete_profile_photo_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/update_profile_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/upload_profile_photo_usecase.dart';
@@ -145,6 +146,7 @@ void setupLocator() {
   sl.registerLazySingleton(
     () => GooogleAuthBloc(signInWithGoogle: sl()),
   );
+
   //main part data source------------------------------------------------------------
   sl.registerLazySingleton<DashboardDataSource>(() => DashboardDataSource());
   sl.registerLazySingleton<ExploreDataSources>(() => ExploreDataSources());
@@ -154,7 +156,9 @@ void setupLocator() {
   sl.registerLazySingleton<UserProfileDataSource>(()=>UserProfileDataSource(firestore: sl()));
   sl.registerLazySingleton<AddressRemoteDataSource>(()=>AddressRemoteDataSource(firestore: sl()));
   sl.registerLazySingleton<PaymentDataSource>(()=>PaymentDataSource());
-
+  
+  // ========== Services ==========
+  // sl.registerLazySingleton<StripeService>(() => StripeService());
 
   //main part repos-------------------------------------------------------------------
   sl.registerLazySingleton<DashboardRepository>(
@@ -167,7 +171,7 @@ void setupLocator() {
   sl.registerLazySingleton<OrderRepository>(()=>OrderRepositoryImpl(dataSource: sl()));
   sl.registerLazySingleton<UserProfileRepository>(()=>UserProfileRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<AddressRepository>(()=>AddressRepositoryImpl(remoteDataSource: sl()));
-  sl.registerLazySingleton<PaymentRepository>(()=>PaymentRepositoryImpl(paymentDataSource: sl(), orderDataSource: sl(), cartDataSource: sl(), payPalService:sl()));
+  sl.registerLazySingleton<PaymentRepository>(()=>PaymentRepositoryImpl(paymentDataSource: sl(), orderDataSource: sl(), cartDataSource: sl(),));
 
   //use -------------------------------------------------------------------------------
   //productUsecases
@@ -214,9 +218,10 @@ void setupLocator() {
   
   //Payment usecases
   sl.registerLazySingleton(()=>CreateOrderUsecase(sl()));
-  sl.registerLazySingleton(()=>PayWithPayPalUseCase(sl()));
+  sl.registerLazySingleton(()=>PayWithStripeUseCase(sl()));
   sl.registerLazySingleton(()=>PayWithCODUseCase(sl()));
-  sl.registerLazySingleton(()=>CapturePaypalPaymentUsecase(paymentRepository: sl()));
   sl.registerLazySingleton(()=>CancelPaymentOrderUseCase(sl()));
+  sl.registerLazySingleton(()=>RefundOrderUseCase(sl()));
+ 
 
 }

@@ -9,6 +9,8 @@ import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dar
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/address/address_selection_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/address/select_address_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/address/address_list_view_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/address/widget/empty_address.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
@@ -16,30 +18,39 @@ import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.d
 
 class AddressDisplayPage extends StatelessWidget {
   final String userId;
+  final bool isSelecting;
 
   const AddressDisplayPage({
     super.key,
     required this.userId,
+    this.isSelecting = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AddressBloc(
-          getAddressUsecase: sl(),
-          addAddressUsecase: sl(),
-          updateAddressUsecase: sl(),
-          deleteAddressUsecase: sl(),
-          setDefaultAddressUsecase: sl(),
-          getCurrentLocationUsecase: sl())
-        ..add(LoadAddressesEvent(userId: userId)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AddressBloc(
+              getAddressUsecase: sl(),
+              addAddressUsecase: sl(),
+              updateAddressUsecase: sl(),
+              deleteAddressUsecase: sl(),
+              setDefaultAddressUsecase: sl(),
+              getCurrentLocationUsecase: sl())
+            ..add(LoadAddressesEvent(userId: userId)),
+        ),
+        BlocProvider(
+          create: (context) => AddressSelectionCubit(),
+        ),
+      ],
       child: Scaffold(
         backgroundColor: context.cs.surface,
         appBar: AppBar(
           backgroundColor: context.cs.surface,
           elevation: 0,
-          leading: BackButton(),
-          title: AppHeading('My Addresses'),
+          leading: const BackButton(),
+          title: AppHeading(isSelecting ? 'Select Address' : 'My Addresses'),
           centerTitle: true,
         ),
         body: BlocConsumer<AddressBloc, AddressState>(
@@ -49,7 +60,6 @@ class AddressDisplayPage extends StatelessWidget {
             }
             if (state is AddressDeletedState) {
               showToast(context, state.message);
-              // Reload addresses after deletion
               context.read<AddressBloc>().add(LoadAddressesEvent(userId: userId));
             }
             if (state is DefaultAddressSetState) {
@@ -66,42 +76,185 @@ class AddressDisplayPage extends StatelessWidget {
             if (state is AddressesLoadedState) {
               if (state.addresses.isEmpty) {
                 return EmptyAddressView(
-                  onAddAddress: () => _navigateToAddAddress(context),
+                  onAddAddress: () => navigateToAddAddress(context),
+                );
+              }
+
+              if (isSelecting) {
+                return buildSelectableAddressListView(
+                  context,
+                  state.addresses,
                 );
               }
 
               return AddressListView(
                 addresses: state.addresses,
                 userId: userId,
-                onAddAddress: () => _navigateToAddAddress(context),
+                onAddAddress: () => navigateToAddAddress(context),
                 onEditAddress: (address) =>
-                    _navigateToEditAddress(context, address),
+                    navigateToEditAddress(context, address),
                 onDeleteAddress: (address) =>
-                    _deleteAddress(context, address),
+                    deleteAddress(context, address),
               );
             }
 
             return EmptyAddressView(
-              onAddAddress: () => _navigateToAddAddress(context),
+              onAddAddress: () => navigateToAddAddress(context),
             );
           },
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => _navigateToAddAddress(context),
-          backgroundColor: context.cs.primary,
-          icon: Icon(Icons.add, color: context.cs.onPrimary),
-          label: Text(
-            'Add Address',
-            style: context.ts.labelLarge?.copyWith(
-              color: context.cs.onPrimary,
-            ),
+        floatingActionButton: isSelecting
+            ? null
+            : FloatingActionButton.extended(
+                onPressed: () => navigateToAddAddress(context),
+                backgroundColor: context.cs.primary,
+                icon: Icon(Icons.add, color: context.cs.onPrimary),
+                label: Text(
+                  'Add Address',
+                  style: context.ts.labelLarge?.copyWith(
+                    color: context.cs.onPrimary,
+                  ),
+                ),
+              ),
+        bottomNavigationBar: isSelecting
+            ? BlocBuilder<AddressSelectionCubit, AddressSelectionState>(
+                builder: (context, state) {
+                  return state.selectedAddress != null
+                      ? buildConfirmAddressButton(context, state.selectedAddress!)
+                      : const SizedBox.shrink();
+                },
+              )
+            : null,
+      ),
+    );
+  }
+
+  Widget buildSelectableAddressListView(
+    BuildContext context,
+    List<AddressEntities> addresses,
+  ) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: addresses.length,
+      itemBuilder: (context, index) {
+        final address = addresses[index];
+
+        return BlocBuilder<AddressSelectionCubit, AddressSelectionState>(
+          builder: (context, state) {
+            final isSelected = state.selectedAddress?.id == address.id;
+            return buildSelectableAddressCard(context, address, isSelected);
+          },
+        );
+      },
+    );
+  }
+
+  Widget buildSelectableAddressCard(
+    BuildContext context,
+    AddressEntities address,
+    bool isSelected,
+  ) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: isSelected ? context.cs.primary : Colors.transparent,
+          width: 2,
+        ),
+      ),
+      child: InkWell(
+        onTap: () {
+          context.read<AddressSelectionCubit>().selectAddress(address);
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildAddressTypeLabel(context, address),
+                    const SizedBox(height: 8),
+                    buildAddressDetailsText(context, address),
+                  ],
+                ),
+              ),
+              Radio<bool>(
+                value: true,
+                groupValue: isSelected,
+                onChanged: (value) {
+                  if (value == true) {
+                    context.read<AddressSelectionCubit>().selectAddress(address);
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  void _navigateToAddAddress(BuildContext context) {
+  Widget buildAddressTypeLabel(
+    BuildContext context,
+    AddressEntities address,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: context.cs.primary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        address.label,
+        style: context.ts.labelSmall?.copyWith(
+          color: context.cs.primary,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget buildAddressDetailsText(
+    BuildContext context,
+    AddressEntities address,
+  ) {
+    return Text(
+      '${address.city}, ${address.state}',
+      style: context.ts.bodyMedium?.copyWith(
+        fontWeight: FontWeight.w500,
+      ),
+    );
+  }
+
+  Widget buildConfirmAddressButton(
+    BuildContext context,
+    AddressEntities selectedAddress,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.pop(context, selectedAddress.label);
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: context.cs.primary,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+        ),
+        child: Text(
+          'Confirm Address',
+          style: context.ts.labelLarge?.copyWith(
+            color: context.cs.onPrimary,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void navigateToAddAddress(BuildContext context) {
     Navigator.pushNamed(
       context,
       AppRoutes.addAddress,
@@ -111,7 +264,7 @@ class AddressDisplayPage extends StatelessWidget {
     });
   }
 
-  void _navigateToEditAddress(BuildContext context, AddressEntities address) {
+  void navigateToEditAddress(BuildContext context, AddressEntities address) {
     Navigator.pushNamed(
       context,
       AppRoutes.editAddress,
@@ -124,7 +277,7 @@ class AddressDisplayPage extends StatelessWidget {
     });
   }
 
-  void _deleteAddress(BuildContext context, AddressEntities address) {
+  void deleteAddress(BuildContext context, AddressEntities address) {
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -139,7 +292,6 @@ class AddressDisplayPage extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(dialogContext);
-                // Dispatch delete event to bloc
                 context.read<AddressBloc>().add(
                   DeleteAddressEvent(
                     userId: userId,

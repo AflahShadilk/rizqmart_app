@@ -17,6 +17,12 @@ class AppRoutes {
   static const String profileDetails = '/profileDetails';
   static const String editProfileDetails ='/editProfileDetails';
   static const String userAddress = '/userAddress';
+  static const String selectAddress = '/selectAddress';
   static const String addAddress = '/addAddress';
   static const String editAddress = '/editAddress';
+  static const String paymentProcessing='/paymentProcessing';
+   static const String settings = '/settings';
+  static const String help = '/help';
+  static const String aboutUs = '/aboutUs';
+
 }

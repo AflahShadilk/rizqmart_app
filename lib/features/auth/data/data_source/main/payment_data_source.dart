@@ -30,7 +30,6 @@ class PaymentDataSource {
   }
 
 
-  // This is used in cancelOrder() and refundOrder()
   Future<PaymentFirestoreModel?> getPaymentByOrderId(String orderId) async {
     try {
       final query = await firestore

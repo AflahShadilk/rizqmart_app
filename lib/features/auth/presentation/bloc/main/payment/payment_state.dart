@@ -15,7 +15,6 @@ class PaymentInitialState extends PaymentState {
 
 class PaymentLoadingState extends PaymentState {
   final String message;
-
   const PaymentLoadingState(this.message);
 
   @override
@@ -35,21 +34,6 @@ class PaymentMethodSelectedState extends PaymentState {
   List<Object?> get props => [paymentMethod, order];
 }
 
-class PayPalOrderCreatedState extends PaymentState {
-  final String paypalOrderId;
-  final List<dynamic> approvalLinks;
-  final OrderEntities order;
-
-  const PayPalOrderCreatedState({
-    required this.paypalOrderId,
-    required this.approvalLinks,
-    required this.order,
-  });
-
-  @override
-  List<Object?> get props => [paypalOrderId, approvalLinks, order];
-}
-
 class PaymentSuccessState extends PaymentState {
   final String orderId;
   final PaymentEntity? payment;
@@ -67,7 +51,6 @@ class PaymentSuccessState extends PaymentState {
 
 class PaymentFailedState extends PaymentState {
   final String message;
-
   const PaymentFailedState(this.message);
 
   @override
@@ -76,8 +59,8 @@ class PaymentFailedState extends PaymentState {
 
 class CancellationSuccessState extends PaymentState {
   final String orderId;
-  final PaymentEntity cancelledPayment; 
-  final double refundAmount; 
+  final PaymentEntity cancelledPayment;
+  final double refundAmount;
 
   const CancellationSuccessState({
     required this.orderId,
@@ -89,10 +72,8 @@ class CancellationSuccessState extends PaymentState {
   List<Object?> get props => [orderId, cancelledPayment, refundAmount];
 }
 
-
 class RefundSuccessState extends PaymentState {
   final String message;
-
   const RefundSuccessState(this.message);
 
   @override

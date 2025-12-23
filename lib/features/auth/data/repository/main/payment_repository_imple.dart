@@ -1,4 +1,4 @@
-import 'package:rizqmart/core/services/pay_pal_services.dart';
+import 'package:rizqmart/core/services/stripe_services.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/cart_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/order_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/payment_data_source.dart';
@@ -12,22 +12,26 @@ class PaymentRepositoryImpl implements PaymentRepository {
   final PaymentDataSource paymentDataSource;
   final OrderDataSource orderDataSource;
   final CartDataSource cartDataSource;
-  final PayPalService payPalService;
 
   PaymentRepositoryImpl({
     required this.paymentDataSource,
     required this.orderDataSource,
     required this.cartDataSource,
-    required this.payPalService,
   });
 
   @override
   Future<OrderEntities> createOrder(OrderEntities order) async {
     try {
+      final authenticatedUserId = orderDataSource.currentUserId;
+      
+      if (authenticatedUserId.isEmpty) {
+        throw Exception('User not authenticated');
+      }
+
       final orderId = await orderDataSource.placeOrder(
         OrderFirestoreModel(
           orderId: '',
-          userId: order.userId,
+          userId: authenticatedUserId,
           items: order.items,
           subtotal: order.subtotal,
           deliveryFee: order.deliveryFee,
@@ -44,7 +48,7 @@ class PaymentRepositoryImpl implements PaymentRepository {
 
       return OrderFirestoreModel(
         orderId: orderId,
-        userId: order.userId,
+        userId: authenticatedUserId,
         items: order.items,
         subtotal: order.subtotal,
         deliveryFee: order.deliveryFee,
@@ -63,72 +67,73 @@ class PaymentRepositoryImpl implements PaymentRepository {
   }
 
   @override
-  Future<PaymentEntity> payWithPaypal(OrderEntities order) async {
+  Future<PaymentEntity> payWithStripe(OrderEntities order) async {
     try {
       if (order.orderId.isEmpty) {
-        throw Exception('Order ID is required for PayPal payment');
+        throw Exception('Order ID is required for Stripe payment');
       }
 
-      final paypalOrderResult = await payPalService.createPayPalOrder(
+      final authenticatedUserId = orderDataSource.currentUserId;
+      
+      if (authenticatedUserId.isEmpty) {
+        throw Exception('User not authenticated');
+      }
+
+      // Create payment intent
+      final paymentIntent = await StripeService.createPaymentIntent(
         amount: order.totalCost,
+        currency: 'INR',
         orderId: order.orderId,
-        description: 'Order from RizqMart - ${order.items.length} items',
-        returnUrl: 'https://your-app.com/payment/success',
-        cancelUrl: 'https://your-app.com/payment/cancel',
       );
 
-      if (!paypalOrderResult['success']) {
-        throw Exception('Failed to create PayPal order');
+      if (!paymentIntent['success']) {
+        throw Exception('Failed to create payment intent');
       }
 
+      // Present payment sheet to user
+      final success = await StripeService.presentPaymentSheet(
+        clientSecret: paymentIntent['clientSecret'],
+        merchantDisplayName: 'RizqMart',
+      );
+
+      if (!success) {
+        throw Exception('Payment cancelled or failed');
+      }
+
+      // Verify payment was successful
+      final confirmation = await StripeService.confirmPayment(
+        paymentIntent['paymentIntentId'],
+      );
+
+      if (!confirmation['success']) {
+        throw Exception('Payment verification failed');
+      }
+
+      // Create payment record
       final payment = PaymentFirestoreModel(
-        paymentId: paypalOrderResult['orderId'],
+        paymentId: paymentIntent['paymentIntentId'],
         orderId: order.orderId,
-        userId: order.userId,
+        userId: authenticatedUserId,
         amount: order.totalCost,
-        method: 'paypal',
-        status: 'pending',
+        method: 'stripe',
+        status: 'completed',
         createdAt: DateTime.now(),
       );
 
       await paymentDataSource.createPayment(payment);
 
+      // Update order status to confirmed
+      await orderDataSource.firestore
+          .collection('orders')
+          .doc(order.orderId)
+          .update({
+        'status': 'confirmed',
+        'paymentId': payment.paymentId,
+      });
+
       return payment;
     } catch (e) {
-      throw Exception('PayPal payment failed: $e');
-    }
-  }
-
-  @override
-  Future<PaymentEntity> capturePaypalPayment(String paypalOrderId) async {
-    try {
-      final captureResult = await payPalService.capturePayment(paypalOrderId);
-
-      if (!captureResult['success']) {
-        throw Exception('Failed to capture PayPal payment');
-      }
-
-      await paymentDataSource.updatePaymentStatus(
-        paypalOrderId,
-        'completed',
-        transactionId: captureResult['transactionId'],
-      );
-
-      final payment =
-          await paymentDataSource.getPaymentById(paypalOrderId);
-
-      if (payment != null) {
-        await orderDataSource.firestore
-            .collection('orders')
-            .doc(payment.orderId)
-            .update({'status': 'confirmed'});
-      }
-
-      final updatedPayment =
-          await paymentDataSource.getPaymentById(paypalOrderId);
-      return updatedPayment!;
-    } catch (e) {
-      throw Exception('PayPal payment capture failed: $e');
+      throw Exception('Stripe payment failed: $e');
     }
   }
 
@@ -139,10 +144,16 @@ class PaymentRepositoryImpl implements PaymentRepository {
         throw Exception('Order ID is required for COD payment');
       }
 
+      final authenticatedUserId = orderDataSource.currentUserId;
+      
+      if (authenticatedUserId.isEmpty) {
+        throw Exception('User not authenticated');
+      }
+
       final payment = PaymentFirestoreModel(
         paymentId: '',
         orderId: order.orderId,
-        userId: order.userId,
+        userId: authenticatedUserId,
         amount: order.totalCost,
         method: 'cod',
         status: 'pending',
@@ -162,7 +173,7 @@ class PaymentRepositoryImpl implements PaymentRepository {
       return PaymentFirestoreModel(
         paymentId: paymentId,
         orderId: order.orderId,
-        userId: order.userId,
+        userId: authenticatedUserId,
         amount: order.totalCost,
         method: 'cod',
         status: 'pending',
@@ -181,17 +192,21 @@ class PaymentRepositoryImpl implements PaymentRepository {
       if (payment == null) {
         throw Exception('Payment not found for order: $orderId');
       }
+
       await orderDataSource.cancelOrder(orderId);
-      if (payment.method == 'paypal') {
-        final refunded = await payPalService.refundPayment(payment.paymentId);
+
+      if (payment.method == 'stripe' && payment.status == 'completed') {
+        final refunded = await StripeService.refundPayment(payment.paymentId);
         if (!refunded) {
-          throw Exception('PayPal refund failed');
+          throw Exception('Stripe refund failed');
         }
       }
+
       await paymentDataSource.updatePaymentStatus(
         payment.paymentId,
         'cancelled',
       );
+
       return PaymentEntity(
         paymentId: payment.paymentId,
         orderId: orderId,
@@ -215,14 +230,14 @@ class PaymentRepositoryImpl implements PaymentRepository {
         throw Exception('Payment not found for order: $orderId');
       }
 
-      if (payment.method == 'paypal') {
-        final refunded = await payPalService.refundPayment(
+      if (payment.method == 'stripe') {
+        final refunded = await StripeService.refundPayment(
           payment.paymentId,
           amount: amount,
         );
 
         if (!refunded) {
-          throw Exception('PayPal refund failed');
+          throw Exception('Stripe refund failed');
         }
       }
 
@@ -249,6 +264,4 @@ class PaymentRepositoryImpl implements PaymentRepository {
       throw Exception('Failed to refund order: $e');
     }
   }
-
-  
 }

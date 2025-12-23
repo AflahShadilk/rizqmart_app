@@ -24,6 +24,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/toggle_see_
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
 
 class BlocProviders extends StatelessWidget {
@@ -33,7 +34,7 @@ class BlocProviders extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        // Theme 
+        // Theme
         BlocProvider(
           create: (_) => ThemeCubit(),
         ),
@@ -58,7 +59,7 @@ class BlocProviders extends StatelessWidget {
           lazy: true,
         ),
 
-        // Main Feature BLoCs 
+        // Main Feature BLoCs
         BlocProvider(
           create: (context) => DashBloc(usecase: sl()),
         ),
@@ -93,7 +94,7 @@ class BlocProviders extends StatelessWidget {
           lazy: true,
         ),
 
-        // Cart BLoC 
+        // Cart BLoC
         BlocProvider(
           create: (context) => CartBloc(
             getCartItemsUsecase: GetCartItemsUsecase(sl()),
@@ -107,7 +108,7 @@ class BlocProviders extends StatelessWidget {
           lazy: true,
         ),
 
-        //Order BLoC 
+        //Order BLoC
         BlocProvider(
           create: (context) => OrderBloc(
             placeOrderUsecase: sl(),
@@ -116,7 +117,15 @@ class BlocProviders extends StatelessWidget {
           ),
           lazy: true,
         ),
-
+        BlocProvider(
+          create: (context) => PaymentBloc(
+              createOrderUsecase: sl(),
+              payWithStripeUseCase: sl(),
+              payWithCODUseCase: sl(),
+              cancelOrderUseCase: sl(),
+              refundOrderUseCase: sl()),
+          lazy: true,
+        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
@@ -128,7 +137,6 @@ class BlocProviders extends StatelessWidget {
             themeMode: state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
             initialRoute: AppRoutes.splash,
             onGenerateRoute: RouteGenerator.onGenerate,
-
           );
         },
       ),

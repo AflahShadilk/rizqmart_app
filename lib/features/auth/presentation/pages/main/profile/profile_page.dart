@@ -27,15 +27,15 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late UserProfileBloc _profileBloc;
+  late UserProfileBloc profileBloc;
 
   @override
   void initState() {
     super.initState();
-    _initializeProfileBloc();
+    initializeProfileBloc();
   }
 
-  void _initializeProfileBloc() {
+  void initializeProfileBloc() {
     try {
       final userId = FirebaseAuth.instance.currentUser?.uid;
 
@@ -44,14 +44,14 @@ class _ProfilePageState extends State<ProfilePage> {
         return;
       }
 
-      _profileBloc = UserProfileBloc(
+      profileBloc = UserProfileBloc(
         getUserProfileUsecase: sl(),
         uploadProfilePhotoUsecase: sl(),
         updateProfileUsecase: sl(),
         deleteProfilePhotoUsecase: sl(),
       );
 
-      _profileBloc.add(LoadUserProfileEvent(userId: userId));
+      profileBloc.add(LoadUserProfileEvent(userId: userId));
     } catch (e) {
       showToast(context, 'Error loading profile');
     }
@@ -59,8 +59,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void dispose() {
-    if (!_profileBloc.isClosed) {
-      _profileBloc.close();
+    if (!profileBloc.isClosed) {
+      profileBloc.close();
     }
     super.dispose();
   }
@@ -68,7 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: _profileBloc,
+      value: profileBloc,
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
@@ -91,7 +91,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 UserProfileLoadingState() => const Center(
                     child: CircularProgressIndicator(),
                   ),
-                UserProfileLoadedState() => _buildProfileContent(
+                UserProfileLoadedState() => buildProfileContent(
                     context,
                     state.profile,
                   ),
@@ -109,75 +109,65 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildProfileContent(BuildContext context, dynamic profile) {
+  Widget buildProfileContent(BuildContext context, dynamic profile) {
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            ProfileHeader(
-              photoUrl: profile.photoUrl ?? '',
-              name: profile.name,
-              email: profile.email,
+            buildProfileHeader(
+              context,
+              profile.photoUrl ?? '',
+              profile.name,
+              profile.email,
             ),
             const SizedBox(height: 32),
             Expanded(
-              child: ProfileMenuList(
-                userProfileBloc: _profileBloc,
-              ),
+              child: buildProfileMenuList(context),
             ),
             SizedBox(
-                width: size.width * 0.9,
-                child: BlocListener<SignOutBloc, SignOutState>(
-                  listener: (context, state) {
-                    if (state is LoadingSignOutState) {
-                      showLoadingDialog(context);
-                      return;
-                    }
-                    Navigator.of(context, rootNavigator: true).pop();
-                    if (state is SignOutFailureState) {
-                      showToast(
-                        context,
-                        state.error,
-                        type: ToastType.error,
-                      );
-                    }
-                    if (state is SignOutSuccessState) {
-                      Navigator.pushReplacementNamed(context, AppRoutes.login);
-
-                    }
+              width: size.width * 0.9,
+              child: BlocListener<SignOutBloc, SignOutState>(
+                listener: (context, state) {
+                  if (state is LoadingSignOutState) {
+                    showLoadingDialog(context);
+                    return;
+                  }
+                  Navigator.of(context, rootNavigator: true).pop();
+                  if (state is SignOutFailureState) {
+                    showToast(
+                      context,
+                      state.error,
+                      type: ToastType.error,
+                    );
+                  }
+                  if (state is SignOutSuccessState) {
+                    Navigator.pushReplacementNamed(context, AppRoutes.login);
+                  }
+                },
+                child: MainButton(
+                  label: 'Log Out',
+                  onPress: () {
+                    context.read<SignOutBloc>().add(SignOutRequestedEvent());
                   },
-                  child: MainButton(
-                      label: 'Log Out',
-                      onPress: () {
-                      context.read<SignOutBloc>().add(SignOutRequestedEvent());
-
-                      },
-                      color: context.cs.primary,
-                      textColor: context.cs.surface),
-                ))
+                  color: context.cs.primary,
+                  textColor: context.cs.surface,
+                ),
+              ),
+            )
           ],
         ),
       ),
     );
   }
-}
 
-class ProfileHeader extends StatelessWidget {
-  final String photoUrl;
-  final String name;
-  final String email;
-
-  const ProfileHeader({
-    super.key,
-    required this.photoUrl,
-    required this.name,
-    required this.email,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget buildProfileHeader(
+    BuildContext context,
+    String photoUrl,
+    String name,
+    String email,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -217,38 +207,28 @@ class ProfileHeader extends StatelessWidget {
       ),
     );
   }
-}
 
-class ProfileMenuList extends StatelessWidget {
-  final UserProfileBloc userProfileBloc;
-
-  const ProfileMenuList({
-    super.key,
-    required this.userProfileBloc,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget buildProfileMenuList(BuildContext context) {
     final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
 
     final menuItems = [
-      ProfileMenuItem(
+      buildProfileMenuItem(
         icon: Icons.shopping_bag,
         title: 'Orders',
         onTap: () {},
       ),
-      ProfileMenuItem(
+      buildProfileMenuItem(
         icon: Icons.person_outline,
         title: 'My Details',
         onTap: () {
           Navigator.pushNamed(
             context,
             AppRoutes.profileDetails,
-            arguments: userProfileBloc,
+            arguments: profileBloc,
           );
         },
       ),
-      ProfileMenuItem(
+      buildProfileMenuItem(
         icon: Icons.location_on,
         title: 'Delivery Address',
         onTap: () {
@@ -263,25 +243,36 @@ class ProfileMenuList extends StatelessWidget {
           );
         },
       ),
-      ProfileMenuItem(
+      buildProfileMenuItem(
         icon: Icons.payment_outlined,
         title: 'Payment Method',
         onTap: () {},
       ),
-      ProfileMenuItem(
+      buildProfileMenuItem(
         icon: Icons.local_offer_outlined,
         title: 'Promo code',
         onTap: () {},
       ),
-      ProfileMenuItem(
+      buildProfileMenuItem(
+        icon: Icons.settings_outlined,
+        title: 'Settings',
+        onTap: () {
+          Navigator.pushNamed(context, AppRoutes.settings);
+        },
+      ),
+      buildProfileMenuItem(
         icon: Icons.help_outline,
         title: 'Help',
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, AppRoutes.help);
+        },
       ),
-      ProfileMenuItem(
+      buildProfileMenuItem(
         icon: Icons.info_outline,
         title: 'About',
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, AppRoutes.aboutUs);
+        },
       ),
     ];
 
@@ -289,6 +280,18 @@ class ProfileMenuList extends StatelessWidget {
       itemCount: menuItems.length,
       separatorBuilder: (context, index) => 8.h,
       itemBuilder: (context, index) => menuItems[index],
+    );
+  }
+
+  Widget buildProfileMenuItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ProfileMenuItem(
+      icon: icon,
+      title: title,
+      onTap: onTap,
     );
   }
 }

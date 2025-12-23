@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
+import 'package:rizqmart/core/services/registeration/register.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/address/address_display_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/address/add_edit_address_page.dart';
@@ -15,6 +19,10 @@ import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigat
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/explore_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/product_by_category_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/order/success_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/payment/payment_processing_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&about&setting/about_us_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&about&setting/help_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&about&setting/settings_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/profile_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/show_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/edit_user_details_page.dart';
@@ -89,6 +97,15 @@ class RouteGenerator {
 
       case AppRoutes.profile:
         return MaterialPageRoute(builder: (_) => ProfilePage());
+        case AppRoutes.settings:
+  return MaterialPageRoute(builder: (_) => const SettingsPage());
+
+case AppRoutes.help:
+  return MaterialPageRoute(builder: (_) => const HelpPage());
+
+case AppRoutes.aboutUs:
+  return MaterialPageRoute(builder: (_) => const AboutUsPage());
+
 
       case AppRoutes.profileDetails:
         final bloc = settings.arguments as UserProfileBloc;
@@ -105,11 +122,19 @@ class RouteGenerator {
       case AppRoutes.userAddress:
         if (args is String) {
           return MaterialPageRoute(
-            builder: (_) => AddressDisplayPage(userId: args),
+            builder: (_) =>
+                AddressDisplayPage(userId: args, isSelecting: false),
           );
         }
         return _error();
 
+      case AppRoutes.selectAddress:
+        if (args is String) {
+          return MaterialPageRoute(
+            builder: (_) => AddressDisplayPage(userId: args, isSelecting: true),
+          );
+        }
+        return _error();
       case AppRoutes.addAddress:
         if (args is String) {
           return MaterialPageRoute(
@@ -128,6 +153,19 @@ class RouteGenerator {
           );
         }
         return _error();
+
+      case AppRoutes.paymentProcessing:
+  if (args is Map<String, dynamic>) {
+    final order = args['order'] as OrderEntities;
+    final paymentMethod = args['paymentMethod'] as String;
+    return MaterialPageRoute(
+      builder: (_) => PaymentProcessingPage(
+        order: order,
+        paymentMethod: paymentMethod,
+      ),
+    );
+  }
+  return _error();
 
       default:
         return MaterialPageRoute(
