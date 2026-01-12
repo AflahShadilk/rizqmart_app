@@ -10,13 +10,32 @@ class OrderDataSource {
 
   Future<String> placeOrder(OrderFirestoreModel order) async {
     try {
-      final docRef = await firestore
-          .collection('orders')
-          .add(order.toMap());
-      
+      final docRef = await firestore.collection('orders').add({
+        ...order.toMap(),
+        'paymentStatus': 'succeeded',
+      });
+      await clearUserCart(order.userId);
       return docRef.id;
     } catch (e) {
       throw Exception('Failed to place order: $e');
+    }
+  }
+
+  Future<void> clearUserCart(String userId) async {
+    try {
+      final batch = firestore.batch();
+      final cartRef =
+          firestore.collection('users').doc(userId).collection('cart');
+
+      final snapshot = await cartRef.get();
+
+      for (var doc in snapshot.docs) {
+        batch.delete(doc.reference);
+      }
+
+      await batch.commit();
+    } catch (e) {
+      throw Exception('Failed to clear cart: $e');
     }
   }
 
@@ -27,7 +46,7 @@ class OrderDataSource {
           .where('userId', isEqualTo: currentUserId)
           .orderBy('createdAt', descending: true)
           .get();
-      
+
       return snapshot.docs;
     } catch (e) {
       throw Exception('Failed to get orders: $e');

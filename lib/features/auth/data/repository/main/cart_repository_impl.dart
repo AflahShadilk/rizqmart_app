@@ -9,7 +9,7 @@ class CartRepositoryImpl implements CartRepository{
 
 @override
 Stream<List<CartEntities>>getCartItems(){
-  final userId=dataSource.currentUserId;
+  final userId=dataSource.currentUserId;  
   return dataSource.getCartItems(userId).map((cart){
     return cart.map((map)=> CartFirestoreModel.fromFireStore(map)).toList();
   });
