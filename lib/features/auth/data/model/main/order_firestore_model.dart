@@ -16,15 +16,19 @@ class OrderFirestoreModel extends OrderEntities {
     required super.status,
     required super.createdAt,
     super.deliveryAddress,
+    super.userName,
+    super.userEmail,
+    super.userPhone,
+    super.deliveryNotes,
   });
 
   factory OrderFirestoreModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    
+
     return OrderFirestoreModel(
       orderId: doc.id,
       userId: data['userId'] ?? '',
-      items: [], 
+      items: [],
       subtotal: (data['subtotal'] ?? 0).toDouble(),
       deliveryFee: (data['deliveryFee'] ?? 0).toDouble(),
       discount: (data['discount'] ?? 0).toDouble(),
@@ -33,8 +37,12 @@ class OrderFirestoreModel extends OrderEntities {
       paymentMethod: data['paymentMethod'] ?? '',
       promoCode: data['promoCode'],
       status: data['status'] ?? 'pending',
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      deliveryAddress: data['deliveryAddress'],
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      deliveryAddress: data['deliveryAddress'] ?? '',
+      userName: data['userName'] ?? 'Unknown',
+      userEmail: data['userEmail'] ?? 'N/A',
+      userPhone: data['userPhone'] ?? 'N/A',
+      deliveryNotes: data['deliveryNotes'],
     );
   }
 
@@ -59,6 +67,10 @@ class OrderFirestoreModel extends OrderEntities {
       'status': status,
       'createdAt': FieldValue.serverTimestamp(),
       'deliveryAddress': deliveryAddress,
+      'userName': userName ?? 'Unknown',
+      'userEmail': userEmail ?? 'N/A',
+      'userPhone': userPhone ?? 'N/A',
+      'deliveryNotes': deliveryNotes,
     };
   }
 }

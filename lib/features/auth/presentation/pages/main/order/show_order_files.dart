@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +6,7 @@ import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
+import 'package:rizqmart/features/auth/domain/repositories/main/user_profile_repository.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/checkout/checkout_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/checkout/checkout_state.dart';
@@ -15,8 +14,10 @@ import 'package:rizqmart/features/auth/presentation/pages/main/payment/payment_s
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/divider_ext.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/core/services/registeration/register.dart';
 
 final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+final userName = FirebaseAuth.instance.currentUser?.displayName ?? 'Customer';
 
 Future<dynamic> modelBottomSheet(
   BuildContext context,
@@ -167,7 +168,9 @@ Future<dynamic> modelBottomSheet(
                               if (result is String) {
                                 addressToStore = result;
                               } else if (result is AddressEntities) {
-                                addressToStore = result.label;
+                                // Construct full address string
+                                addressToStore = 
+                                    '${result.fullName}, ${result.address1}, ${result.address2}, ${result.city}, ${result.state} - ${result.pincode}, Phone: ${result.phoneNumber}';
                               }
 
                               if (addressToStore.isNotEmpty) {
@@ -273,34 +276,68 @@ Future<dynamic> modelBottomSheet(
                               ? 'Place Order  ₹${totalCost.toStringAsFixed(2)}'
                               : 'Complete all fields',
                           onPress: canProceed
-                              ? () {
-                                  final order = OrderEntities(
-                                    orderId: '',
-                                    userId: userId,
-                                    items: cartState.items,
-                                    subtotal: subtotal,
-                                    deliveryFee: deliveryFee,
-                                    discount: discount,
-                                    totalCost: totalCost,
-                                    deliveryMethod:
-                                        checkoutState.deliveryMethod!,
-                                    paymentMethod:
-                                        checkoutState.paymentMethod!,
-                                    promoCode: checkoutState.promoCode,
-                                    status: 'pending_payment',
-                                    createdAt: DateTime.now(),
-                                    deliveryAddress:
-                                        checkoutState.deliveryAddress!,
-                                  );
+                              ? () async {
+                                  // Fetch user profile data
+                                  try {
+                                    // Default values from Auth
+                                    String userName = FirebaseAuth.instance.currentUser?.displayName ?? 'Customer';
+                                    String userEmail = FirebaseAuth.instance.currentUser?.email ?? 'no-email@example.com';
+                                    String userPhone = 'N/A';
+                                    
+                                    // Try to fetch from repository using sl
+                                    try {
+                                      final userProfileRepo = sl<UserProfileRepository>();
+                                      final userProfile = await userProfileRepo.getUserProfile(userId);
+                                      
+                                      // Update with profile data if available
+                                      if (userProfile.name.isNotEmpty) userName = userProfile.name;
+                                      if (userProfile.email.isNotEmpty) userEmail = userProfile.email;
+                                      userPhone = userProfile.phoneNumber ?? 'N/A';
+                                      
+                                    } catch (e) {
+                                      debugPrint('Could not fetch user profile: $e');
+                                    }
 
-                                  Navigator.pop(bottomSheetContext);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (ctx) =>
-                                          PaymentSelectionPage(order: order),
-                                    ),
-                                  );
+                                    final order = OrderEntities(
+                                      orderId: '',
+                                      userId: userId,
+                                      items: cartState.items,
+                                      subtotal: subtotal,
+                                      deliveryFee: deliveryFee,
+                                      discount: discount,
+                                      totalCost: totalCost,
+                                      deliveryMethod:
+                                          checkoutState.deliveryMethod!,
+                                      paymentMethod:
+                                          checkoutState.paymentMethod!,
+                                      promoCode: checkoutState.promoCode,
+                                      status: 'pending_payment',
+                                      createdAt: DateTime.now(),
+                                      deliveryAddress:
+                                          checkoutState.deliveryAddress!,
+                                      // Fetch from user profile or Firebase Auth
+                                      userName: userName,
+                                      userEmail: userEmail,
+                                      userPhone: userPhone,
+                                      deliveryNotes: checkoutState.deliveryNotes,
+                                    );
+
+                                    Navigator.pop(bottomSheetContext);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (ctx) =>
+                                            PaymentSelectionPage(order: order),
+                                      ),
+                                    );
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Error placing order: $e'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
                                 }
                               : null,
                           color: context.cs.success,
@@ -399,7 +436,7 @@ void _showPaymentMethodDialog(BuildContext context) {
             icon: Icons.money,
           ),
           12.h,
-           _paymentOptionCompact(
+          _paymentOptionCompact(
             context,
             title: 'Stripe',
             subtitle: 'Secure online payment',

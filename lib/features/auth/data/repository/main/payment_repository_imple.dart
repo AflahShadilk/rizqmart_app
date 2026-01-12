@@ -43,6 +43,10 @@ class PaymentRepositoryImpl implements PaymentRepository {
           status: 'pending_payment',
           createdAt: DateTime.now(),
           deliveryAddress: order.deliveryAddress,
+          userName: order.userName,
+          userEmail: order.userEmail,
+          userPhone: order.userPhone,
+          deliveryNotes: order.deliveryNotes,
         ),
       );
 
@@ -60,6 +64,10 @@ class PaymentRepositoryImpl implements PaymentRepository {
         status: 'pending_payment',
         createdAt: DateTime.now(),
         deliveryAddress: order.deliveryAddress,
+        userName: order.userName,
+        userEmail: order.userEmail,
+        userPhone: order.userPhone,
+        deliveryNotes: order.deliveryNotes,
       );
     } catch (e) {
       throw Exception('Failed to create order: $e');

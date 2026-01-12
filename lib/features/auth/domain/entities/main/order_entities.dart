@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 
-class OrderEntities extends Equatable{
+class OrderEntities extends Equatable {
   final String orderId;
   final String userId;
   final List<CartEntities> items;
@@ -12,9 +12,13 @@ class OrderEntities extends Equatable{
   final String deliveryMethod;
   final String paymentMethod;
   final String? promoCode;
-  final String status; 
+  final String status;
   final DateTime createdAt;
   final String? deliveryAddress;
+  final String? userName;
+  final String? userEmail;
+  final String? userPhone;
+  final String? deliveryNotes;
 
   const OrderEntities({
     required this.orderId,
@@ -30,6 +34,10 @@ class OrderEntities extends Equatable{
     required this.status,
     required this.createdAt,
     this.deliveryAddress,
+    this.userName,
+    this.userEmail,
+    this.userPhone,
+    this.deliveryNotes,
   });
 
   @override
@@ -47,5 +55,9 @@ class OrderEntities extends Equatable{
         status,
         createdAt,
         deliveryAddress,
+        userName,
+        userEmail,
+        userPhone,
+        deliveryNotes
       ];
 }

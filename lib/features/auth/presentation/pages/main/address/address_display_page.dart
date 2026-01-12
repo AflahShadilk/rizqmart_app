@@ -238,7 +238,7 @@ class AddressDisplayPage extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: ElevatedButton(
         onPressed: () {
-          Navigator.pop(context, selectedAddress.label);
+          Navigator.pop(context, selectedAddress);
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: context.cs.primary,

@@ -27,7 +27,9 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   void setPromoCode(String? code) {
     emit(state.copyWith(promoCode: code));
   }
-
+  void setDeliveryNotes(String notes) {
+    emit(state.copyWith(deliveryNotes: notes));
+  }
   void reset() {
     emit(
       const CheckoutState(

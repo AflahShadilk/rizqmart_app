@@ -10,13 +10,28 @@ class OrderDataSource {
 
   Future<String> placeOrder(OrderFirestoreModel order) async {
     try {
+      print('🔵 Creating order for user: ${order.userId}');
+      
       final docRef = await firestore.collection('orders').add({
         ...order.toMap(),
         'paymentStatus': 'succeeded',
+        // ✅ ENSURE THESE ARE SAVED
+        'userName': order.userName,
+        'userEmail': order.userEmail,
+        'userPhone': order.userPhone,
+        'deliveryNotes': order.deliveryNotes,
       });
+      
+      print('✅ Order created: ${docRef.id}');
+      print('📝 Customer: ${order.userName}');
+      print('📍 Address: ${order.deliveryAddress}');
+      
+      // Clear cart after order
       await clearUserCart(order.userId);
+      
       return docRef.id;
     } catch (e) {
+      print('🔴 Error creating order: $e');
       throw Exception('Failed to place order: $e');
     }
   }
