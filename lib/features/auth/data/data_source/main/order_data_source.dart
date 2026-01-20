@@ -10,7 +10,7 @@ class OrderDataSource {
 
   Future<String> placeOrder(OrderFirestoreModel order) async {
     try {
-      print('🔵 Creating order for user: ${order.userId}');
+
       
       final docRef = await firestore.collection('orders').add({
         ...order.toMap(),
@@ -22,16 +22,14 @@ class OrderDataSource {
         'deliveryNotes': order.deliveryNotes,
       });
       
-      print('✅ Order created: ${docRef.id}');
-      print('📝 Customer: ${order.userName}');
-      print('📍 Address: ${order.deliveryAddress}');
+
       
       // Clear cart after order
       await clearUserCart(order.userId);
       
       return docRef.id;
     } catch (e) {
-      print('🔴 Error creating order: $e');
+
       throw Exception('Failed to place order: $e');
     }
   }
@@ -64,6 +62,9 @@ class OrderDataSource {
 
       return snapshot.docs;
     } catch (e) {
+      if (e.toString().contains('requires an index')) {
+
+      }
       throw Exception('Failed to get orders: $e');
     }
   }
@@ -78,9 +79,42 @@ class OrderDataSource {
 
   Future<void> cancelOrder(String orderId) async {
     try {
-      await firestore.collection('orders').doc(orderId).update({
-        'status': 'cancelled',
-        'cancelledAt': FieldValue.serverTimestamp(),
+      await firestore.runTransaction((transaction) async {
+        final orderRef = firestore.collection('orders').doc(orderId);
+        final orderDoc = await transaction.get(orderRef);
+
+        if (!orderDoc.exists) {
+          throw Exception('Order does not exist!');
+        }
+
+        final orderData = orderDoc.data() as Map<String, dynamic>;
+        final currentStatus = orderData['status'] as String? ?? 'unknown';
+
+        if (currentStatus == 'cancelled') {
+          throw Exception('Order is already cancelled');
+        }
+
+        final userId = orderData['userId'] as String;
+        final totalCost = (orderData['totalCost'] as num).toDouble();
+
+        // 2. Refund to User Wallet - READ FIRST
+        final userRef = firestore.collection('users').doc(userId);
+        final userDoc = await transaction.get(userRef);
+
+        // NOW DO WRITES
+        
+        // 1. Update Order Status
+        transaction.update(orderRef, {
+          'status': 'cancelled',
+          'cancelledAt': FieldValue.serverTimestamp(),
+        });
+
+        if (userDoc.exists) {
+          final currentBalance = (userDoc.data() as Map<String, dynamic>)['walletBalance'] as num? ?? 0.0;
+          transaction.update(userRef, {
+            'walletBalance': currentBalance + totalCost,
+          });
+        }
       });
     } catch (e) {
       throw Exception('Failed to cancel order: $e');

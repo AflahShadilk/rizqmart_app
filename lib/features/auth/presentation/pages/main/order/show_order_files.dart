@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -295,7 +297,7 @@ Future<dynamic> modelBottomSheet(
                                       userPhone = userProfile.phoneNumber ?? 'N/A';
                                       
                                     } catch (e) {
-                                      debugPrint('Could not fetch user profile: $e');
+
                                     }
 
                                     final order = OrderEntities(
@@ -323,13 +325,13 @@ Future<dynamic> modelBottomSheet(
                                     );
 
                                     Navigator.pop(bottomSheetContext);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (ctx) =>
-                                            PaymentSelectionPage(order: order),
-                                      ),
-                                    );
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (ctx) =>
+                                              PaymentSelectionPage(order: order),
+                                        ),
+                                      );
                                   } catch (e) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(

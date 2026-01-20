@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rizqmart/features/auth/data/model/main/address_fire_store_model.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
@@ -168,12 +169,32 @@ class AddressRemoteDataSource {
         desiredAccuracy: LocationAccuracy.high,
       );
 
+      String addressName = "Unknown Location";
+      try {
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+          position.latitude,
+          position.longitude,
+        );
+        if (placemarks.isNotEmpty) {
+          Placemark place = placemarks[0];
+          // Construct address string: Locality, SubLocality or Area
+          addressName = "${place.subLocality ?? ''} ${place.locality ?? ''}".trim();
+          if (addressName.isEmpty) {
+            addressName = place.administrativeArea ?? "Unknown Location";
+          }
+        }
+      } catch (e) {
+        // Fallback or ignore geocoding error, just return coords
+        addressName = "${position.latitude.toStringAsFixed(2)}, ${position.longitude.toStringAsFixed(2)}";
+      }
+
       // Return location data as a map
       return {
         'latitude': position.latitude,
         'longitude': position.longitude,
         'accuracy': position.accuracy,
         'timestamp': position.timestamp.toIso8601String(),
+        'addressName': addressName,
       };
     } catch (e) {
       throw Exception('Failed to get current location: $e');

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 
 class OrderFirestoreModel extends OrderEntities {
@@ -20,6 +21,7 @@ class OrderFirestoreModel extends OrderEntities {
     super.userEmail,
     super.userPhone,
     super.deliveryNotes,
+    super.adminNotes,
   });
 
   factory OrderFirestoreModel.fromFirestore(DocumentSnapshot doc) {
@@ -28,7 +30,21 @@ class OrderFirestoreModel extends OrderEntities {
     return OrderFirestoreModel(
       orderId: doc.id,
       userId: data['userId'] ?? '',
-      items: [],
+      items: (data['items'] as List<dynamic>?)?.map((item) {
+        final itemMap = item as Map<String, dynamic>;
+        // Create CartEntities (or CartFirestoreModel)
+        return CartEntities(
+          id: itemMap['id'] ?? '',
+          name: itemMap['name'] ?? '',
+          brand: itemMap['brand'] ?? '',
+          description: itemMap['description'] ?? '',
+          variantDetails: List<Map<String, dynamic>>.from(
+              itemMap['variantDetails'] ?? []),
+          count: (itemMap['count'] ?? 1).toInt(),
+          variantIndex: (itemMap['variantIndex'] ?? 0).toInt(),
+          userId: data['userId'] ?? '',
+        );
+      }).toList() ?? [],
       subtotal: (data['subtotal'] ?? 0).toDouble(),
       deliveryFee: (data['deliveryFee'] ?? 0).toDouble(),
       discount: (data['discount'] ?? 0).toDouble(),
@@ -43,6 +59,7 @@ class OrderFirestoreModel extends OrderEntities {
       userEmail: data['userEmail'] ?? 'N/A',
       userPhone: data['userPhone'] ?? 'N/A',
       deliveryNotes: data['deliveryNotes'],
+      adminNotes: data['adminNotes'],
     );
   }
 
@@ -71,6 +88,7 @@ class OrderFirestoreModel extends OrderEntities {
       'userEmail': userEmail ?? 'N/A',
       'userPhone': userPhone ?? 'N/A',
       'deliveryNotes': deliveryNotes,
+      'adminNotes': adminNotes,
     };
   }
 }

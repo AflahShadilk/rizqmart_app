@@ -215,7 +215,9 @@ class _ProfilePageState extends State<ProfilePage> {
       buildProfileMenuItem(
         icon: Icons.shopping_bag,
         title: 'Orders',
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, AppRoutes.orders);
+        },
       ),
       buildProfileMenuItem(
         icon: Icons.person_outline,

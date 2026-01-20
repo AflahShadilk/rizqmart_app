@@ -61,15 +61,17 @@ class LocationLoadedState extends AddressState {
   final double latitude;
   final double longitude;
   final double accuracy;
+  final String? addressName;
 
   const LocationLoadedState({
     required this.latitude,
     required this.longitude,
     required this.accuracy,
+    this.addressName,
   });
 
   @override
-  List<Object?> get props => [latitude, longitude, accuracy];
+  List<Object?> get props => [latitude, longitude, accuracy, addressName];
 }
 
 class AddressErrorState extends AddressState {

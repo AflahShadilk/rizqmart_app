@@ -55,7 +55,13 @@ class SuccessPage extends StatelessWidget {
                 height: 56,
                 child: MainButton(
                   label: 'Track Order',
-                  onPress: () {},
+                  onPress: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context, 
+                      AppRoutes.orders,
+                      (route) => route.settings.name == AppRoutes.navigationBar
+                    );
+                  },
                   color: context.cs.primary,
                   textColor: context.cs.surface,
                 ),

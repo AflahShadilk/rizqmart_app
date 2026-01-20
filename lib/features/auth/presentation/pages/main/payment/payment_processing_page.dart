@@ -299,7 +299,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
   //     }
 
   //     // Show error
-  //     debugPrint('❌ Payment error: $e');
+
   //     ScaffoldMessenger.of(context).showSnackBar(
   //       SnackBar(
   //         content: Text('Payment error: ${e.toString()}'),

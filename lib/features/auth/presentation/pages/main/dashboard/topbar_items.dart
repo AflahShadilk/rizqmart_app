@@ -6,6 +6,10 @@ import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_bar.dart';
 
 Container topBarItems(
@@ -49,21 +53,43 @@ Container topBarItems(
               ),
 
               // ---------- LOCATION
-              Row(
-                children: [
-                  Icon(
-                    Icons.location_on_rounded,
-                    color: context.cs.secondary,
-                  ),
-                  4.w,
-                  Text(
-                    'Your Location',
-                    style: context.ts.bodyMedium?.copyWith(
-                      color: context.cs.onSurface,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+              GestureDetector(
+                onTap: () {
+                   context.read<AddressBloc>().add(GetCurrentLocationEvent());
+                },
+                child: BlocBuilder<AddressBloc, AddressState>(
+                  builder: (context, state) {
+                    String locationText = 'Your Location';
+                    if (state is LocationLoadedState) {
+                      locationText = state.addressName ?? 'Unknown Location';
+                    } else if (state is LocationLoadingState) {
+                      locationText = 'Locating...';
+                    }
+                
+                    return Row(
+                      mainAxisSize: MainAxisSize.min, // prevent overflow
+                      children: [
+                        Icon(
+                          Icons.location_on_rounded,
+                          color: context.cs.secondary,
+                        ),
+                        4.w,
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: size.width * 0.4),
+                          child: Text(
+                            locationText,
+                            style: context.ts.bodyMedium?.copyWith(
+                              color: context.cs.onSurface,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
 
               // ---------- PROFILE BUTTON / LOGIN BUTTON

@@ -10,6 +10,7 @@ class UserProfileEntities extends Equatable{
   final DateTime? dateOfBirth;
   final String ? gender;
   final DateTime updatedAt;
+  final double walletBalance;
   
   const UserProfileEntities({
     required this.userId,
@@ -20,11 +21,12 @@ class UserProfileEntities extends Equatable{
     this.bio,
     this.dateOfBirth,
     this.gender,
-    required this.updatedAt
+    required this.updatedAt,
+    this.walletBalance = 0.0,
   });
 
   @override
   
-  List<Object?> get props => [userId,name,email,phoneNumber,photoUrl,bio,dateOfBirth,gender,updatedAt];
+  List<Object?> get props => [userId,name,email,phoneNumber,photoUrl,bio,dateOfBirth,gender,updatedAt,walletBalance];
 
 }

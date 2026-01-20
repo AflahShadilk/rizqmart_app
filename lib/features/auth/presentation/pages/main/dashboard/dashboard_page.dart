@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_bloc.dart';
@@ -34,6 +36,7 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     context.read<DashBloc>().add(const LoadingProductsEvent());
+    context.read<AddressBloc>().add(GetCurrentLocationEvent());
   }
 
   void _onSearch(String query) {

@@ -16,36 +16,36 @@ void main() async {
         await Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
         );
-        debugPrint('✅ Firebase initialized');
+
       } catch (e) {
-        debugPrint('❌ Firebase error: $e');
+
       }
 
       try {
         await dotenv.load(fileName: ".env");
-        debugPrint('✅ .env loaded');
+
       } catch (e) {
-        debugPrint('❌ .env error: $e');
+
       }
 
       await StripeService.initialize();
 
       try {
         setupLocator();
-        debugPrint('✅ Service locator setup');
+
       } catch (e) {
-        debugPrint('❌ Locator error: $e');
+
       }
 
       runApp(const MyApp());
     },
     (error, stackTrace) {
-      debugPrint('❌ Unhandled error: $error\n$stackTrace');
+
     },
   );
 
   FlutterError.onError = (FlutterErrorDetails details) {
-    debugPrint('❌ Flutter error: ${details.exception}');
+
   };
 }
 

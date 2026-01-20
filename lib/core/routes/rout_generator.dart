@@ -18,6 +18,8 @@ import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/see_all
 import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigation_bar.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/explore_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/product_by_category_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/order/orders_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/order/order_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/order/success_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/payment/payment_processing_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&about&setting/about_us_page.dart';
@@ -166,6 +168,17 @@ case AppRoutes.aboutUs:
     );
   }
   return _error();
+
+      case AppRoutes.orders:
+        return MaterialPageRoute(builder: (_) => const OrdersPage());
+
+      case AppRoutes.orderDetails:
+        if (args is OrderEntities) {
+          return MaterialPageRoute(
+            builder: (_) => OrderDetailsPage(order: args),
+          );
+        }
+        return _error();
 
       default:
         return MaterialPageRoute(

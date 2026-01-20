@@ -26,9 +26,9 @@ class StripeService {
     try {
       Stripe.publishableKey = publishableKey;
       await Stripe.instance.applySettings();
-      debugPrint('✅ Stripe initialized successfully');
+
     } catch (e) {
-      debugPrint('⚠️ Stripe initialization warning: $e');
+
     }
   }
 
@@ -39,8 +39,7 @@ class StripeService {
     required String orderId,
   }) async {
     try {
-      debugPrint('💳 Creating Stripe payment intent...');
-      debugPrint('Amount: $currency ${amount.toStringAsFixed(2)}');
+
       
       // Convert amount to smallest currency unit (paise for INR)
       final amountInSmallestUnit = (amount * 100).toInt();
@@ -62,18 +61,18 @@ class StripeService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        debugPrint('✅ Payment intent created: ${data['id']}');
+
         return {
           'success': true,
           'clientSecret': data['client_secret'],
           'paymentIntentId': data['id'],
         };
       } else {
-        debugPrint('❌ Failed to create payment intent: ${response.body}');
+
         throw Exception('Failed to create payment intent: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('❌ Error creating payment intent: $e');
+
       rethrow;
     }
   }
@@ -84,7 +83,7 @@ class StripeService {
     required String merchantDisplayName,
   }) async {
     try {
-      debugPrint('🎨 Presenting payment sheet...');
+
       
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
@@ -101,16 +100,16 @@ class StripeService {
 
       await Stripe.instance.presentPaymentSheet();
       
-      debugPrint('✅ Payment completed successfully');
+
       return true;
     } on StripeException catch (e) {
-      debugPrint('❌ Stripe error: ${e.error.message}');
+
       if (e.error.code == FailureCode.Canceled) {
-        debugPrint('User cancelled the payment');
+
       }
       return false;
     } catch (e) {
-      debugPrint('❌ Payment sheet error: $e');
+
       return false;
     }
   }
@@ -118,7 +117,7 @@ class StripeService {
   // Confirm payment (retrieve payment intent)
   static Future<Map<String, dynamic>> confirmPayment(String paymentIntentId) async {
     try {
-      debugPrint('🔍 Confirming payment: $paymentIntentId');
+
       
       final response = await http.get(
         Uri.parse('https://api.stripe.com/v1/payment_intents/$paymentIntentId'),
@@ -129,7 +128,7 @@ class StripeService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        debugPrint('✅ Payment status: ${data['status']}');
+
         
         return {
           'success': data['status'] == 'succeeded',
@@ -141,7 +140,7 @@ class StripeService {
         throw Exception('Failed to confirm payment');
       }
     } catch (e) {
-      debugPrint('❌ Error confirming payment: $e');
+
       rethrow;
     }
   }
@@ -149,7 +148,7 @@ class StripeService {
   // Refund payment
   static Future<bool> refundPayment(String paymentIntentId, {double? amount}) async {
     try {
-      debugPrint('🔄 Refunding payment: $paymentIntentId');
+
       
       final body = {
         'payment_intent': paymentIntentId,
@@ -169,14 +168,14 @@ class StripeService {
       );
 
       if (response.statusCode == 200) {
-        debugPrint('✅ Refund successful');
+
         return true;
       } else {
-        debugPrint('❌ Refund failed: ${response.body}');
+
         return false;
       }
     } catch (e) {
-      debugPrint('❌ Refund error: $e');
+
       rethrow;
     }
   }

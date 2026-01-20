@@ -126,6 +126,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
           latitude: locationData['latitude'] as double,
           longitude: locationData['longitude'] as double,
           accuracy: locationData['accuracy'] as double? ?? 0.0,
+          addressName: locationData['addressName'] as String?,
         ),
       );
     } on LocationException catch (e) {

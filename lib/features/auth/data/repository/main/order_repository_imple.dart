@@ -14,12 +14,7 @@ class OrderRepositoryImpl implements OrderRepository {
   Future<String> placeOrder(OrderEntities order) async {
     final currentUser = auth.currentUser;
 
-    print('📦 Placing Order:');
-    print('  - User: ${currentUser?.displayName}');
-    print('  - Email: ${currentUser?.email}');
-    print('  - Phone: ${order.userPhone}');
-    print('  - Address: ${order.deliveryAddress}');
-    print('  - Notes: ${order.deliveryNotes}');
+
 
     final model = OrderFirestoreModel(
       orderId: order.orderId,
@@ -41,7 +36,7 @@ class OrderRepositoryImpl implements OrderRepository {
       deliveryNotes: order.deliveryNotes,
     );
 
-    print('✅ Model created with all fields');
+
     return await dataSource.placeOrder(model);
   }
 

@@ -82,6 +82,13 @@ import 'package:rizqmart/features/auth/presentation/bloc/auth/forgot/forgot_bloc
 import 'package:rizqmart/features/auth/presentation/bloc/auth/google/google_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signUp/signup_bloc.dart';
+import 'package:rizqmart/features/auth/data/data_source/chat/chat_data_source.dart';
+import 'package:rizqmart/features/auth/data/repository/chat/chat_repository_impl.dart';
+import 'package:rizqmart/features/auth/domain/repositories/chat/chat_repository.dart';
+import 'package:rizqmart/features/auth/domain/usecase/chat/get_messages_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/chat/initiate_chat_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/chat/send_message_usecase.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -224,4 +231,17 @@ void setupLocator() {
   sl.registerLazySingleton(()=>RefundOrderUseCase(sl()));
  
 
+  //Chat usecases
+  sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSource(sl()));
+  sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(sl()));
+
+  sl.registerLazySingleton(() => InitiateChatUseCase(sl()));
+  sl.registerLazySingleton(() => GetMessagesUseCase(sl()));
+  sl.registerLazySingleton(() => SendMessageUseCase(sl()));
+
+  sl.registerFactory(() => ChatBloc(
+    initiateChatUseCase: sl(),
+    getMessagesUseCase: sl(),
+    sendMessageUseCase: sl(),
+  ));
 }

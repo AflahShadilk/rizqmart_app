@@ -12,6 +12,7 @@ class UserProfileFirestoreModel extends UserProfileEntities{
     super.dateOfBirth,
     super.gender,
     required super.updatedAt,
+    super.walletBalance,
   });
 
   factory UserProfileFirestoreModel.fromFirestore(DocumentSnapshot doc){
@@ -25,7 +26,8 @@ class UserProfileFirestoreModel extends UserProfileEntities{
       bio: data['bio']??'',
       dateOfBirth: data['dateOfBirth']!=null?DateTime.parse(data['dateOfBirth']):null,
       gender: data['gender']??'',
-      updatedAt: data['updatedAt']!=null?DateTime.parse(data['updatedAt']):DateTime.now()
+      updatedAt: data['updatedAt']!=null?DateTime.parse(data['updatedAt']):DateTime.now(),
+      walletBalance: (data['walletBalance'] ?? 0.0).toDouble(),
     );
   }
 
@@ -40,6 +42,7 @@ class UserProfileFirestoreModel extends UserProfileEntities{
       'dateOfBirth': dateOfBirth?.toIso8601String(),
       'gender': gender,
       'updatedAt': updatedAt.toIso8601String(),
+      'walletBalance': walletBalance,
     };
   }
 
@@ -54,6 +57,7 @@ class UserProfileFirestoreModel extends UserProfileEntities{
       dateOfBirth: entity.dateOfBirth,
       gender: entity.gender,
       updatedAt: entity.updatedAt,
+      walletBalance: entity.walletBalance,
     );
   }
 }
