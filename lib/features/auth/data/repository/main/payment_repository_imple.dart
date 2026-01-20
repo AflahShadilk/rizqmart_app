@@ -6,6 +6,7 @@ import 'package:rizqmart/features/auth/data/model/main/order_firestore_model.dar
 import 'package:rizqmart/features/auth/data/model/main/payment_firestore_model.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/payment_entity.dart';
+import 'package:rizqmart/features/auth/domain/entities/payment/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/payment_repository.dart';
 
 class PaymentRepositoryImpl implements PaymentRepository {
@@ -75,7 +76,7 @@ class PaymentRepositoryImpl implements PaymentRepository {
   }
 
   @override
-  Future<PaymentEntity> payWithStripe(OrderEntities order) async {
+  Future<PaymentEntity> payWithStripe(OrderEntities order, {SavedCardEntity? savedCard}) async {
     try {
       if (order.orderId.isEmpty) {
         throw Exception('Order ID is required for Stripe payment');
@@ -98,28 +99,36 @@ class PaymentRepositoryImpl implements PaymentRepository {
         throw Exception('Failed to create payment intent');
       }
 
-      // Present payment sheet to user
-      final success = await StripeService.presentPaymentSheet(
-        clientSecret: paymentIntent['clientSecret'],
-        merchantDisplayName: 'RizqMart',
-      );
+      Map<String, dynamic> confirmation;
+      final String paymentIntentId = paymentIntent['paymentIntentId'];
 
-      if (!success) {
-        throw Exception('Payment cancelled or failed');
+      if (savedCard != null) {
+         // Use Saved Card Logic
+         confirmation = await StripeService.confirmPaymentWithSavedCard(
+           clientSecret: paymentIntent['clientSecret'],
+           paymentMethodId: savedCard.paymentMethodId,
+         );
+      } else {
+         // Use Regular Payment Sheet Logic
+         final success = await StripeService.presentPaymentSheet(
+           clientSecret: paymentIntent['clientSecret'],
+           merchantDisplayName: 'RizqMart',
+         );
+
+         if (!success) {
+           throw Exception('Payment cancelled or failed');
+         }
+         
+         confirmation = await StripeService.confirmPayment(paymentIntentId);
       }
 
-      // Verify payment was successful
-      final confirmation = await StripeService.confirmPayment(
-        paymentIntent['paymentIntentId'],
-      );
-
-      if (!confirmation['success']) {
+      if (confirmation['success'] != true) {
         throw Exception('Payment verification failed');
       }
 
       // Create payment record
       final payment = PaymentFirestoreModel(
-        paymentId: paymentIntent['paymentIntentId'],
+        paymentId: paymentIntentId,
         orderId: order.orderId,
         userId: authenticatedUserId,
         amount: order.totalCost,

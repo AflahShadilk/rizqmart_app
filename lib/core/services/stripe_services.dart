@@ -179,4 +179,56 @@ class StripeService {
       rethrow;
     }
   }
+  // Create Payment Method (for saving cards)
+  static Future<Map<String, dynamic>> createPaymentMethod({
+    required String number,
+    required String expMonth,
+    required String expYear,
+    required String cvc,
+  }) async {
+    try {
+      final paymentMethod = await Stripe.instance.createPaymentMethod(
+        params: PaymentMethodParams.card(
+          paymentMethodData: PaymentMethodData(
+            billingDetails: const BillingDetails(),
+          ),
+        ),
+      );
+      
+      return {
+        'id': paymentMethod.id,
+        'last4': paymentMethod.card.last4,
+        'brand': paymentMethod.card.brand,
+      };
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Confirm Payment with Saved Card
+  static Future<Map<String, dynamic>> confirmPaymentWithSavedCard({
+    required String clientSecret,
+    required String paymentMethodId,
+  }) async {
+    try {
+      final paymentIntent = await Stripe.instance.confirmPayment(
+        paymentIntentClientSecret: clientSecret,
+        data: PaymentMethodParams.cardFromMethodId(
+          paymentMethodData: PaymentMethodDataCardFromMethod(
+            paymentMethodId: paymentMethodId,
+          ),
+        ),
+      );
+
+      return {
+        'success': paymentIntent.status == PaymentIntentsStatus.Succeeded,
+        'status': paymentIntent.status.name,
+        'amount': paymentIntent.amount,
+        'currency': paymentIntent.currency,
+        'paymentIntentId': paymentIntent.id,
+      };
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

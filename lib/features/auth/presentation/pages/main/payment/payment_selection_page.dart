@@ -9,9 +9,14 @@ import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart'
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/payment_selection_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/payment_selection_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rizqmart/core/services/registeration/register.dart';
+import 'package:rizqmart/features/auth/domain/entities/payment/saved_card_entity.dart';
+import 'package:rizqmart/features/auth/domain/usecase/payment/get_saved_cards_usecase.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/payment/widgets/user_card_widget.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
-class PaymentSelectionPage extends StatelessWidget {
+class PaymentSelectionPage extends StatefulWidget {
   final OrderEntities order;
 
   const PaymentSelectionPage({
@@ -20,49 +25,86 @@ class PaymentSelectionPage extends StatelessWidget {
   });
 
   @override
+  State<PaymentSelectionPage> createState() => _PaymentSelectionPageState();
+}
+
+class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => PaymentSelectionCubit(),
+      create: (context) => PaymentSelectionCubit(
+        getSavedCardsUseCase: sl<GetSavedCardsUseCase>(),
+      )..loadSavedCards(FirebaseAuth.instance.currentUser?.uid ?? ''),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Select Payment Method'),
           elevation: 0,
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              buildOrderSummary(context),
-              32.h,
-              Text(
-                'Payment Method',
-                style: context.ts.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              16.h,
-              buildPaymentOption(
-                context,
-                title: 'Cash on Delivery',
-                subtitle: 'Pay when you receive your order',
-                description: 'No upfront payment required',
-                value: 'cod',
-                icon: Icons.money,
-              ),
-              16.h,
-              buildPaymentOption(
-                context,
-                title: 'Stripe',
-                subtitle: 'Secure online payment',
-                description: 'Fast & secure payment with Stripe',
-                value: 'stripe',
-                icon: Icons.credit_card,
-              ),
-              32.h,
-              BlocBuilder<PaymentSelectionCubit, PaymentSelectionState>(
-                builder: (context, state) {
-                  return SizedBox(
+        body: BlocBuilder<PaymentSelectionCubit, PaymentSelectionState>(
+          builder: (context, state) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildOrderSummary(context),
+                  32.h,
+                  if (state.savedCards.isNotEmpty) ...[
+                    Text(
+                      'Saved Cards',
+                      style: context.ts.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    16.h,
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: state.savedCards.length,
+                      itemBuilder: (context, index) {
+                        final card = state.savedCards[index];
+                        final isSelected = state.selectedPayment == 'saved_card' &&
+                            state.selectedSavedCard == card;
+
+                        return UserCardWidget(
+                          card: card,
+                          isSelected: isSelected,
+                          onTap: () {
+                            context
+                                .read<PaymentSelectionCubit>()
+                                .selectSavedCard(card);
+                          },
+                        );
+                      },
+                    ),
+                    32.h,
+                  ],
+                  Text(
+                    'Other Payment Methods',
+                    style: context.ts.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  16.h,
+                  buildPaymentOption(
+                    context,
+                    title: 'Cash on Delivery',
+                    subtitle: 'Pay when you receive your order',
+                    description: 'No upfront payment required',
+                    value: 'cod',
+                    icon: Icons.money,
+                  ),
+                  16.h,
+                  buildPaymentOption(
+                    context,
+                    title: 'Stripe',
+                    subtitle: 'Secure online payment',
+                    description: 'Enter card details safely',
+                    value: 'stripe',
+                    icon: Icons.credit_card,
+                  ),
+                  32.h,
+                  SizedBox(
                     width: double.infinity,
                     height: 56,
                     child: MainButton(
@@ -71,19 +113,19 @@ class PaymentSelectionPage extends StatelessWidget {
                           : 'Continue to Payment',
                       onPress: !state.isLoading &&
                               state.selectedPayment.isNotEmpty
-                          ? () =>
-                              proceedToPayment(context, state.selectedPayment)
+                          ? () => proceedToPayment(
+                              context, state.selectedPayment, state.selectedSavedCard)
                           : null,
                       color: context.cs.success,
                       textColor: context.cs.surface,
                     ),
-                  );
-                },
+                  ),
+                  16.h,
+                  buildPaymentInfo(context),
+                ],
               ),
-              16.h,
-              buildPaymentInfo(context),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
@@ -117,7 +159,7 @@ class PaymentSelectionPage extends StatelessWidget {
                 style: context.ts.bodyMedium,
               ),
               Text(
-                '₹${order.totalCost.toStringAsFixed(2)}',
+                '₹${widget.order.totalCost.toStringAsFixed(2)}',
                 style: context.ts.bodyMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: context.cs.primary,
@@ -248,13 +290,14 @@ class PaymentSelectionPage extends StatelessWidget {
     );
   }
 
-  void proceedToPayment(BuildContext context, String selectedPayment) {
+  void proceedToPayment(BuildContext context, String selectedPayment, SavedCardEntity? savedCard) {
     Navigator.pushNamed(
       context,
       AppRoutes.paymentProcessing,
       arguments: {
-        'order': order,
+        'order': widget.order,
         'paymentMethod': selectedPayment,
+        'savedCard': savedCard, // Pass the saved card if selected
       },
     );
   }

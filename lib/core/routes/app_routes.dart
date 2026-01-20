@@ -23,6 +23,7 @@ class AppRoutes {
   static const String addAddress = '/addAddress';
   static const String editAddress = '/editAddress';
   static const String paymentProcessing='/paymentProcessing';
+  static const String savedCards = '/savedCards';
    static const String settings = '/settings';
   static const String help = '/help';
   static const String aboutUs = '/aboutUs';

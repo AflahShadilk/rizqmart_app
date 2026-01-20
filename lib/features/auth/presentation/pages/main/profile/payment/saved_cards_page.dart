@@ -1,0 +1,127 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_event.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_state.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/payment/add_card_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/payment/widgets/user_card_widget.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
+
+class SavedCardsPage extends StatefulWidget {
+  const SavedCardsPage({super.key});
+
+  @override
+  State<SavedCardsPage> createState() => _SavedCardsPageState();
+}
+
+class _SavedCardsPageState extends State<SavedCardsPage> {
+  String get currentUserId => FirebaseAuth.instance.currentUser?.uid ?? '';
+
+  @override
+  void initState() {
+    super.initState();
+    if (currentUserId.isNotEmpty) {
+      context.read<SavedCardsBloc>().add(LoadSavedCardsEvent(currentUserId));
+    }
+  }
+
+  void _navigateToAddCard() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddCardPage(userId: currentUserId),
+      ),
+    );
+  }
+
+  void _deleteCard(String cardId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Card'),
+        content: const Text('Are you sure you want to remove this card?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              context.read<SavedCardsBloc>().add(DeleteSavedCardEvent(cardId, currentUserId));
+              Navigator.pop(context);
+            },
+            child: Text('Delete', style: TextStyle(color: context.cs.error)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Payment Methods'),
+        actions: [
+          IconButton(
+            onPressed: _navigateToAddCard,
+            icon: const Icon(Icons.add),
+          ),
+        ],
+      ),
+      body: BlocConsumer<SavedCardsBloc, SavedCardsState>(
+        listener: (context, state) {
+          if (state is SavedCardOperationSuccess) {
+            showToast(context, state.message);
+          }
+          if (state is SavedCardsError) {
+            showToast(context, state.message);
+          }
+        },
+        builder: (context, state) {
+          if (state is SavedCardsLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is SavedCardsLoaded) {
+            if (state.cards.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.credit_card_off, size: 64, color: context.cs.outline),
+                    16.h,
+                    Text('No saved cards found', style: context.ts.titleMedium),
+                    8.h,
+                    TextButton.icon(
+                      onPressed: _navigateToAddCard,
+                      icon: const Icon(Icons.add),
+                      label: const Text('Add New Card'),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: state.cards.length,
+              itemBuilder: (context, index) {
+                final card = state.cards[index];
+                return UserCardWidget(
+                  card: card,
+                  onDelete: () => _deleteCard(card.id),
+                );
+              },
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+}

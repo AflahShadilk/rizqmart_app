@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
-import 'package:rizqmart/core/services/registeration/register.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_bloc.dart';
+import 'package:rizqmart/features/auth/domain/entities/payment/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/address/address_display_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/address/add_edit_address_page.dart';
@@ -25,6 +23,7 @@ import 'package:rizqmart/features/auth/presentation/pages/main/payment/payment_p
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&about&setting/about_us_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&about&setting/help_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&about&setting/settings_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/payment/saved_cards_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/profile_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/show_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/edit_user_details_page.dart';
@@ -99,7 +98,9 @@ class RouteGenerator {
 
       case AppRoutes.profile:
         return MaterialPageRoute(builder: (_) => ProfilePage());
-        case AppRoutes.settings:
+        case AppRoutes.savedCards:
+        return MaterialPageRoute(builder: (_) => const SavedCardsPage());
+      case AppRoutes.settings:
   return MaterialPageRoute(builder: (_) => const SettingsPage());
 
 case AppRoutes.help:
@@ -160,10 +161,12 @@ case AppRoutes.aboutUs:
   if (args is Map<String, dynamic>) {
     final order = args['order'] as OrderEntities;
     final paymentMethod = args['paymentMethod'] as String;
+    final savedCard = args['savedCard'] as SavedCardEntity?;
     return MaterialPageRoute(
       builder: (_) => PaymentProcessingPage(
         order: order,
         paymentMethod: paymentMethod,
+        savedCard: savedCard,
       ),
     );
   }

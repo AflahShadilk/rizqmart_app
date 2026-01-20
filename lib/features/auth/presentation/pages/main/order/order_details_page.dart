@@ -117,6 +117,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     int currentStep = 0;
     final status = widget.order.status.toLowerCase();
     
+    // ignore: curly_braces_in_flow_control_structures
     if (status == 'processed' || status == 'processing') currentStep = 1;
     else if (status == 'shipped') currentStep = 2;
     // else if (status == 'out_for_delivery') currentStep = 3; // "Out" is step 3

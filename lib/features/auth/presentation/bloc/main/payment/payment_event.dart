@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
+import 'package:rizqmart/features/auth/domain/entities/payment/saved_card_entity.dart';
 
 abstract class PaymentEvent extends Equatable {
   const PaymentEvent();
@@ -11,14 +12,16 @@ abstract class PaymentEvent extends Equatable {
 class InitializePaymentEvent extends PaymentEvent {
   final OrderEntities order;
   final String paymentMethod;
+  final SavedCardEntity? savedCard;
 
   const InitializePaymentEvent({
     required this.order,
     required this.paymentMethod,
+    this.savedCard,
   });
 
   @override
-  List<Object?> get props => [order, paymentMethod];
+  List<Object?> get props => [order, paymentMethod, savedCard];
 }
 
 class ProcessPaymentEvent extends PaymentEvent {

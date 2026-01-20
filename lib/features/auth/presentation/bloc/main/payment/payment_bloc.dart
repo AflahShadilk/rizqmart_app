@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
+import 'package:rizqmart/features/auth/domain/entities/payment/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/cancel_order_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/create_order_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_cod_usecase.dart';
@@ -17,6 +18,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
 
   OrderEntities? currentOrder;
   String? selectedPaymentMethod;
+  SavedCardEntity? selectedSavedCard;
 
   PaymentBloc({
     required this.createOrderUsecase,
@@ -40,6 +42,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
 
       currentOrder = event.order;
       selectedPaymentMethod = event.paymentMethod;
+      selectedSavedCard = event.savedCard;
 
       emit(PaymentMethodSelectedState(
         paymentMethod: event.paymentMethod,
@@ -74,10 +77,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           payment: null,
           order: createdOrder,
         ));
-      } else if (selectedPaymentMethod == 'stripe') { 
+      } else if (selectedPaymentMethod == 'stripe' || selectedPaymentMethod == 'saved_card') { 
         emit(const PaymentLoadingState('Processing Stripe payment...'));
 
-        final payment = await payWithStripeUseCase.call(createdOrder); 
+        final payment = await payWithStripeUseCase.call(createdOrder, savedCard: selectedSavedCard); 
 
         emit(PaymentSuccessState(
           orderId: createdOrder.orderId,
@@ -129,8 +132,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     try {
       emit(const PaymentLoadingState('Processing refund...'));
 
-      final refundedPayment =
-          await refundOrderUseCase.call(event.orderId, event.amount);
 
       emit(RefundSuccessState(
         'Refund of ₹${event.amount.toStringAsFixed(2)} processed successfully',

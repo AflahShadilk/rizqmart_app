@@ -248,7 +248,9 @@ class _ProfilePageState extends State<ProfilePage> {
       buildProfileMenuItem(
         icon: Icons.payment_outlined,
         title: 'Payment Method',
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, AppRoutes.savedCards);
+        },
       ),
       buildProfileMenuItem(
         icon: Icons.local_offer_outlined,

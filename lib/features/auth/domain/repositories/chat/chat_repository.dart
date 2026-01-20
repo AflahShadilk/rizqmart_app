@@ -1,4 +1,3 @@
-import 'package:rizqmart/features/auth/domain/entities/chat/chat_entity.dart';
 import 'package:rizqmart/features/auth/domain/entities/chat/message_entity.dart';
 
 abstract class ChatRepository {

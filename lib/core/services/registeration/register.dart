@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:rizqmart/core/services/stripe_services.dart';
 import 'package:rizqmart/features/auth/data/data_source/auth/forgotpass_remote_datasource_impl.dart';
 import 'package:rizqmart/features/auth/data/data_source/auth/google_auth_remote_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/auth/signin_remote_datasource_impl.dart';
@@ -89,6 +88,13 @@ import 'package:rizqmart/features/auth/domain/usecase/chat/get_messages_usecase.
 import 'package:rizqmart/features/auth/domain/usecase/chat/initiate_chat_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/chat/send_message_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_bloc.dart';
+import 'package:rizqmart/features/auth/data/data_source/payment/saved_card_data_source.dart';
+import 'package:rizqmart/features/auth/data/repository/payment/saved_card_repository_impl.dart';
+import 'package:rizqmart/features/auth/domain/repositories/payment/saved_card_repository.dart';
+import 'package:rizqmart/features/auth/domain/usecase/payment/add_saved_card_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/payment/delete_saved_card_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/payment/get_saved_cards_usecase.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -243,5 +249,19 @@ void setupLocator() {
     initiateChatUseCase: sl(),
     getMessagesUseCase: sl(),
     sendMessageUseCase: sl(),
+  ));
+
+  // Saved Cards
+  sl.registerLazySingleton<SavedCardRemoteDataSource>(() => SavedCardRemoteDataSource(sl()));
+  sl.registerLazySingleton<SavedCardRepository>(() => SavedCardRepositoryImpl(sl()));
+
+  sl.registerLazySingleton(() => AddSavedCardUseCase(sl()));
+  sl.registerLazySingleton(() => GetSavedCardsUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteSavedCardUseCase(sl()));
+
+  sl.registerFactory(() => SavedCardsBloc(
+    getSavedCardsUseCase: sl(),
+    addSavedCardUseCase: sl(),
+    deleteSavedCardUseCase: sl(),
   ));
 }

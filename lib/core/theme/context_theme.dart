@@ -9,6 +9,5 @@ extension ContextTheme on BuildContext {
 
   //Brightness
   Brightness get brightness => Theme.of(this).brightness;
-  
-
+  bool get isDarkMode => brightness == Brightness.dark;
 }

@@ -7,6 +7,7 @@ import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/core/services/stripe_services.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
+import 'package:rizqmart/features/auth/domain/entities/payment/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/peyment_terms-cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_event.dart';
@@ -18,11 +19,13 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 class PaymentProcessingPage extends StatefulWidget {
   final OrderEntities order;
   final String paymentMethod;
+  final SavedCardEntity? savedCard;
 
   const PaymentProcessingPage({
     super.key,
     required this.order,
     required this.paymentMethod,
+    this.savedCard,
   });
 
   @override
@@ -47,6 +50,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
             InitializePaymentEvent(
               order: widget.order,
               paymentMethod: widget.paymentMethod,
+              savedCard: widget.savedCard,
             ),
           );
         }
@@ -439,6 +443,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
                         InitializePaymentEvent(
                           order: widget.order,
                           paymentMethod: widget.paymentMethod,
+                          savedCard: widget.savedCard,
                         ),
                       );
                     }
