@@ -67,8 +67,11 @@ class ProductContainer extends StatelessWidget {
 
     final variantName = variant?['unitName'] ?? 'Unknown Variant';
     final price = (variant?['mrp'] ?? 0).toDouble();
+    final discount = cartitems.discount ?? 0;
+    final hasDiscount = discount > 0;
+    final finalPrice = hasDiscount ? price - (price * discount / 100) : price;
     final cartItemId = '${cartitems.id}_variant_${cartitems.variantIndex}';
-    final totalPrice = price * cartitems.count;
+    final totalPrice = finalPrice * cartitems.count;
 
     return Dismissible(
       key: Key(cartItemId),
@@ -156,9 +159,17 @@ class ProductContainer extends StatelessWidget {
                         children: [
                           if (cartitems.count > 1)
                             Text(
-                              '${cartitems.count} × ₹${price.toStringAsFixed(2)}',
+                              '${cartitems.count} × ₹${finalPrice.toStringAsFixed(2)}',
                               style: context.ts.labelSmall?.copyWith(
                                 color: context.cs.secondary.withOpacity(0.6),
+                              ),
+                            ),
+                          if (hasDiscount)
+                            Text(
+                              '₹${(price * cartitems.count).toStringAsFixed(2)}',
+                              style: context.ts.labelSmall?.copyWith(
+                                color: context.cs.onSurface.withOpacity(0.4),
+                                decoration: TextDecoration.lineThrough,
                               ),
                             ),
                           Text(
@@ -347,9 +358,8 @@ Widget checkoutRow(
           ),
         ],
       ),
-    ),
-  );
-}
+    ));
+  }
 
 // cost row
 Widget costRow(

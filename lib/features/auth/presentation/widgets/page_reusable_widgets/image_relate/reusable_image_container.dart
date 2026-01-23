@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_not_support_icon.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_place_holder.dart';
@@ -31,42 +32,37 @@ class ProductImage extends StatelessWidget {
             ? colorScheme.onSurface.withOpacity(0.1)
             : Colors.grey.shade100,
         child: imageUrl != null && imageUrl!.isNotEmpty
-            ? Image.network(
-                imageUrl!,
+            ? CachedNetworkImage(
+                imageUrl: imageUrl!,
                 fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return RectangularShimmerPlaceholder(
-                    height: height,
-                    width: width,
-                    borderRadius: 12,
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.image_not_supported,
-                          color: colorScheme.onSurface.withOpacity(0.4),
-                          size: 24,
-                        ),
-                        if (height > 60) 
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: Text(
-                              'Image unavailable',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: colorScheme.onSurface.withOpacity(0.4),
-                              ),
+                placeholder: (context, url) => RectangularShimmerPlaceholder(
+                  height: height,
+                  width: width,
+                  borderRadius: 12,
+                ),
+                errorWidget: (context, url, error) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.image_not_supported,
+                        color: colorScheme.onSurface.withOpacity(0.4),
+                        size: 24,
+                      ),
+                      if (height > 60)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            'Image unavailable',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: colorScheme.onSurface.withOpacity(0.4),
                             ),
                           ),
-                      ],
-                    ),
-                  );
-                },
+                        ),
+                    ],
+                  ),
+                ),
               )
             : imageNotSupportIcon(colorScheme, 24),
       ),

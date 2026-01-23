@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/core/theme/theme_cubit.dart';
 import 'package:rizqmart/core/theme/theme_state.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 
 class SettingsPage extends StatelessWidget {
@@ -42,7 +43,7 @@ class SettingsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           buildSectionTitle(context, 'Appearance'),
-          const SizedBox(height: 12),
+          12.h,
           buildThemeToggleCard(context),
         ],
       ),
@@ -78,7 +79,7 @@ class SettingsPage extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 4),
+          4.h,
           Text(
             'Switch between light and dark theme',
             style: context.ts.bodySmall?.copyWith(
@@ -112,9 +113,9 @@ class SettingsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           buildSectionTitle(context, 'About'),
-          const SizedBox(height: 12),
+          12.h,
           buildVersionCard(context),
-          const SizedBox(height: 12),
+          12.h,
           buildAboutUsCard(context),
         ],
       ),
@@ -159,7 +160,7 @@ class SettingsPage extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 4),
+        4.h,
         Text(
           'Current version installed',
           style: context.ts.bodySmall?.copyWith(

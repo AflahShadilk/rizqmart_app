@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
-import 'package:rizqmart/core/services/stripe_services.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/payment/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/peyment_terms-cubit.dart';
@@ -686,6 +685,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
   }
 
 
+  // ignore: unused_element
   void _showLoadingDialog(BuildContext context, String message) {
     showDialog(
       context: context,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/icon_and_name.dart';
 
 class CommonAppLogo extends StatelessWidget {
@@ -22,7 +23,7 @@ class CommonAppLogo extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const IconRizq(),
-          const SizedBox(height: 12),
+          12.h,
           const RizqMartName(),
         ],
       ),

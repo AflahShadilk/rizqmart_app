@@ -4,26 +4,17 @@ import 'package:rizqmart/features/auth/domain/entities/main/payment_entity.dart'
 class PaymentFirestoreModel extends PaymentEntity {
   final String? approvalUrl;
   
-  PaymentFirestoreModel({
-    required String paymentId,
-    required String orderId,
-    required String userId,
-    required double amount,
-    required String method,
-    required String status,
-    required DateTime createdAt,
-    String? transactionId,
+  const PaymentFirestoreModel({
+    required super.paymentId,
+    required super.orderId,
+    required super.userId,
+    required super.amount,
+    required super.method,
+    required super.status,
+    required super.createdAt,
+    super.transactionId,
     this.approvalUrl,
-  }) : super(
-          paymentId: paymentId,
-          orderId: orderId,
-          userId: userId,
-          amount: amount,
-          method: method,
-          status: status,
-          createdAt: createdAt,
-          transactionId: transactionId,
-        );
+  });
 
   Map<String, dynamic> toMap() {
     return {

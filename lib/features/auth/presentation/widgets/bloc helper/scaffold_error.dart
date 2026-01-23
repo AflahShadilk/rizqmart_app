@@ -2,6 +2,7 @@
 
   import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_state.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 SnackBar errorMessageScaffold(FailureLoadingProductState state) {
     return SnackBar(
@@ -24,7 +25,7 @@ SnackBar errorMessageScaffold(FailureLoadingProductState state) {
     child: Row(
       children: [
         const Icon(Icons.error_outline, color: Colors.white),
-        const SizedBox(width: 12),
+        12.w,
         Expanded(
           child: Text(
             state.error,

@@ -122,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
               profile.name,
               profile.email,
             ),
-            const SizedBox(height: 32),
+            32.h,
             Expanded(
               child: buildProfileMenuList(context),
             ),

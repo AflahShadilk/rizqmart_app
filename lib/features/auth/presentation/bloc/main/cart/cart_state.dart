@@ -32,12 +32,16 @@ class CartLoadedState extends CartState{
     for(var item in items){
       if(item.variantDetails.isNotEmpty&&item.variantIndex<item.variantDetails.length){
         final variant = item.variantDetails[item.variantIndex];
-        final price=(variant['mrp']??0).toDouble();
-        total+=price*item.count;
-        itemCount+=item.count;
+        double price = (variant['mrp'] ?? 0).toDouble();
+        if (item.discount != null && item.discount! > 0) {
+          price = price - (price * item.discount! / 100);
+        }
+        total += price * item.count;
+        itemCount += item.count;
       }
     }
-    return CartLoadedState(items: items, totalAmount: total, totalItems: itemCount);
+    return CartLoadedState(
+        items: items, totalAmount: total, totalItems: itemCount);
   }
   bool get isEmpty=>items.isEmpty;
 

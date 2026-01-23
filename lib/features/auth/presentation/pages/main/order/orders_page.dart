@@ -1,4 +1,6 @@
 
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -37,7 +39,7 @@ class _OrdersPageState extends State<OrdersPage> {
       child: Scaffold(
         backgroundColor: context.cs.surface,
         appBar: AppBar(
-          automaticallyImplyLeading: false, // We handle leading manually
+          automaticallyImplyLeading: false, 
           leading: canPop
               ? IconButton(
                   icon: const Icon(Icons.arrow_back),

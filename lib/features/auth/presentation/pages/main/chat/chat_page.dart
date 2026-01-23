@@ -1,7 +1,10 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_state.dart';
@@ -168,7 +171,7 @@ class _ChatPageState extends State<ChatPage> {
               textCapitalization: TextCapitalization.sentences,
             ),
           ),
-          const SizedBox(width: 8),
+          8.w,
           IconButton(
             onPressed: _sendMessage,
             icon: Icon(Icons.send_rounded, color: context.cs.primary),

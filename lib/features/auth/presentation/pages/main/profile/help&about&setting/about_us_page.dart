@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 class AboutUsPage extends StatelessWidget {
   const AboutUsPage({super.key});
@@ -34,12 +35,12 @@ class AboutUsPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildAboutSection(context),
-                const SizedBox(height: 24),
+                  buildAboutSection(context),
+                24.h,
                 buildMissionSection(context),
-                const SizedBox(height: 24),
+                24.h,
                 buildValuesSection(context),
-                const SizedBox(height: 24),
+                24.h,
                 buildStatsSection(context),
               ],
             ),
@@ -68,7 +69,7 @@ class AboutUsPage extends StatelessWidget {
             size: 64,
             color: context.cs.primary,
           ),
-          const SizedBox(height: 12),
+          12.h,
           Text(
             'RizqMart',
             style: context.ts.headlineSmall?.copyWith(
@@ -76,7 +77,7 @@ class AboutUsPage extends StatelessWidget {
               color: context.cs.primary,
             ),
           ),
-          const SizedBox(height: 8),
+          8.h,
           Text(
             'Your Trusted Online Marketplace',
             style: context.ts.bodyMedium?.copyWith(
@@ -93,7 +94,7 @@ class AboutUsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         buildSectionTitle(context, 'About RizqMart'),
-        const SizedBox(height: 12),
+        12.h,
         buildSectionContent(
           context,
           'RizqMart is your trusted online marketplace for fresh groceries and everyday essentials. '
@@ -110,7 +111,7 @@ class AboutUsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         buildSectionTitle(context, 'Our Mission'),
-        const SizedBox(height: 12),
+        12.h,
         buildMissionCard(context),
       ],
     );
@@ -135,7 +136,7 @@ class AboutUsPage extends StatelessWidget {
         child: Column(
           children: [
             Icon(Icons.flag, color: context.cs.primary, size: 32),
-            const SizedBox(height: 12),
+            12.h,
             Text(
               'To provide convenient, affordable, and high-quality grocery shopping experience to everyone',
               textAlign: TextAlign.center,
@@ -155,12 +156,12 @@ class AboutUsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         buildSectionTitle(context, 'Our Values'),
-        const SizedBox(height: 12),
+        12.h,
         buildValueItem(
             context, 'Quality', 'We ensure only the finest products'),
-        const SizedBox(height: 12),
+        12.h,
         buildValueItem(context, 'Reliability', 'Fast and dependable delivery'),
-        const SizedBox(height: 12),
+        12.h,
         buildValueItem(
             context, 'Customer First', 'Your satisfaction is our priority'),
       ],
@@ -185,7 +186,7 @@ class AboutUsPage extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
             ),
-            const SizedBox(width: 12),
+            12.w,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +197,7 @@ class AboutUsPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  2.h,
                   Text(
                     description,
                     style: context.ts.bodySmall?.copyWith(
@@ -217,17 +218,17 @@ class AboutUsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         buildSectionTitle(context, 'By The Numbers'),
-        const SizedBox(height: 12),
+        12.h,
         Row(
           children: [
             Expanded(
               child: buildStatCard(context, '50K+', 'Products'),
             ),
-            const SizedBox(width: 12),
+            12.w,
             Expanded(
               child: buildStatCard(context, '100K+', 'Customers'),
             ),
-            const SizedBox(width: 12),
+            12.w,
             Expanded(
               child: buildStatCard(context, '24/7', 'Support'),
             ),
@@ -262,7 +263,7 @@ class AboutUsPage extends StatelessWidget {
                 color: context.cs.primary,
               ),
             ),
-            const SizedBox(height: 4),
+            4.h,
             Text(
               label,
               style: context.ts.bodySmall?.copyWith(

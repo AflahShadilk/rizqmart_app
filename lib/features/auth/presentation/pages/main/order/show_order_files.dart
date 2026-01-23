@@ -25,10 +25,20 @@ Future<dynamic> modelBottomSheet(
   BuildContext context,
   CartLoadedState cartState,
 ) {
+  double totalMrp = 0.0;
+  for (var item in cartState.items) {
+    if (item.variantDetails.isNotEmpty &&
+        item.variantIndex < item.variantDetails.length) {
+      final variant = item.variantDetails[item.variantIndex];
+      final price = (variant['mrp'] ?? 0).toDouble();
+      totalMrp += price * item.count;
+    }
+  }
+
   final subtotal = cartState.totalAmount;
+  final totalSavings = totalMrp - subtotal;
   final deliveryFee = 40.0;
-  final discount = 0.0;
-  final totalCost = subtotal + deliveryFee - discount;
+  final totalCost = subtotal + deliveryFee;
 
   return showModalBottomSheet(
     elevation: 3,
@@ -209,13 +219,8 @@ Future<dynamic> modelBottomSheet(
                   4.h,
                   BlocBuilder<CheckoutCubit, CheckoutState>(
                     builder: (context, checkoutState) {
-                      return checkoutRowCompact(
-                        context,
-                        icon: Icons.local_offer_outlined,
-                        title: 'Promo',
-                        trailing: checkoutState.promoCode ?? 'Add',
-                        onTap: () {},
-                      );
+                      return const SizedBox.shrink(); 
+                      // Removed Promo Code section as per requirements
                     },
                   ),
                   8.h,
@@ -224,12 +229,12 @@ Future<dynamic> modelBottomSheet(
                     color: context.cs.outlineVariant.withOpacity(.3),
                   ),
                   8.h,
-                  _costRowCompact(context, 'Subtotal', subtotal),
+                  _costRowCompact(context, 'Subtotal (MRP)', totalMrp),
                   6.h,
                   _costRowCompact(context, 'Delivery', deliveryFee),
-                  if (discount > 0) ...[
+                  if (totalSavings > 0) ...[
                     6.h,
-                    _costRowCompact(context, 'Discount', -discount,
+                    _costRowCompact(context, 'Discount', -totalSavings,
                         isDiscount: true),
                   ],
                   6.h,
@@ -296,6 +301,7 @@ Future<dynamic> modelBottomSheet(
                                       if (userProfile.email.isNotEmpty) userEmail = userProfile.email;
                                       userPhone = userProfile.phoneNumber ?? 'N/A';
                                       
+                                    // ignore: empty_catches
                                     } catch (e) {
 
                                     }
@@ -306,7 +312,7 @@ Future<dynamic> modelBottomSheet(
                                       items: cartState.items,
                                       subtotal: subtotal,
                                       deliveryFee: deliveryFee,
-                                      discount: discount,
+                                      discount: totalSavings,
                                       totalCost: totalCost,
                                       deliveryMethod:
                                           checkoutState.deliveryMethod!,

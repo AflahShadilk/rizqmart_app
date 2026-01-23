@@ -25,7 +25,7 @@ Container topBarItems(
     width: double.infinity,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(8),
-      color: Theme.of(context).appBarTheme.foregroundColor,
+      color: Theme.of(context).appBarTheme.backgroundColor,
       boxShadow: [
         BoxShadow(
           color: context.cs.primary.withOpacity(0.10),

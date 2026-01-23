@@ -7,6 +7,7 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
 import 'package:rizqmart/core/services/firestore_product/variant_det_getter.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/add_to_cart_button.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 
 class ProductCard extends StatefulWidget {
@@ -70,6 +71,7 @@ class _ProductCardState extends State<ProductCard>
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -81,6 +83,13 @@ class _ProductCardState extends State<ProductCard>
           'product': widget.product,
           'variantIndex': 0,
         });
+
+    // Calculate Discount
+    final double discount = widget.product.discount ?? 0;
+    final bool hasDiscount = discount > 0;
+    final double discountedPrice = hasDiscount 
+        ? variantMrp - (variantMrp * discount / 100) 
+        : variantMrp;
 
     return GestureDetector(
       onTapDown: (_) => _controller.forward(),
@@ -107,83 +116,125 @@ class _ProductCardState extends State<ProductCard>
               borderRadius: BorderRadius.circular(_radiusValue),
               child: Material(
                 color: colorScheme.surface,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Stack(
                   children: [
-                    ProductImage(imageUrl: productImage),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 5, 0, 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ProductImage(imageUrl: productImage),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(5, 5, 0, 0),
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  productName,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.inter(
-                                    textStyle: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge
-                                        ?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                          color: colorScheme.onSurface,
-                                          fontSize: 17,
-                                        ),
-                                  ),
-                                ),
-                                Text(
-                                  variantName,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.inter(
-                                    textStyle: Theme.of(context)
-                                        .textTheme
-                                        .labelSmall
-                                        ?.copyWith(
-                                          fontWeight: FontWeight.w500,
-                                          color: colorScheme.onSurface,
-                                          fontSize: 11,
-                                        ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    '₹${variantMrp.toStringAsFixed(0)}',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.inter(
-                                      textStyle: Theme.of(context)
-                                          .textTheme
-                                          .labelSmall
-                                          ?.copyWith(
-                                            letterSpacing: 1,
-                                            color: context.cs.onSecondary,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      productName,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.inter(
+                                        textStyle: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                              color: colorScheme.onSurface,
+                                              fontSize: 17,
+                                            ),
+                                      ),
                                     ),
-                                  ),
+                                    Text(
+                                      variantName,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.inter(
+                                        textStyle: Theme.of(context)
+                                            .textTheme
+                                            .labelSmall
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w500,
+                                              color: colorScheme.onSurface,
+                                              fontSize: 11,
+                                            ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 5, 5),
-                                  child: AddToCartButton(
-                                    widget: widget.product,
-                                  ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          if (hasDiscount) ...[
+                                            Text(
+                                              '₹${variantMrp.toStringAsFixed(0)}',
+                                              style: GoogleFonts.inter(
+                                                decoration: TextDecoration.lineThrough,
+                                                color: context.cs.onSurface.withOpacity(0.6),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            2.h,
+                                          ],
+                                          Text(
+                                            '₹${discountedPrice.toStringAsFixed(0)}',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.inter(
+                                              textStyle: Theme.of(context)
+                                                  .textTheme
+                                                  .labelSmall
+                                                  ?.copyWith(
+                                                    letterSpacing: 0.5,
+                                                    color: context.cs.onSecondary,
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(0, 0, 5, 5),
+                                      child: AddToCartButton(
+                                        widget: widget.product,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (hasDiscount)
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            '${discount.toStringAsFixed(0)}% OFF',
+                            style: GoogleFonts.inter(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),

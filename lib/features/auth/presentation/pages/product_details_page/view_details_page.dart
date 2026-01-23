@@ -8,6 +8,7 @@ import 'package:rizqmart/core/services/firestore_product/access_product_variant_
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/core/theme/theme_cubit.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_bloc.dart';
@@ -21,6 +22,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/quantity_counter.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/back_button_common.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_not_support_icon.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
@@ -260,7 +262,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                      const SizedBox(height: 6),
+                                      6.h,
                                       Text(
                                           getVariantName(widget.product,
                                               selectedVariantIndex),
@@ -277,7 +279,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     ],
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                12.w,
                                 BlocBuilder<WishListBloc, WishListState>(
                                   builder: (context, state) {
                                     bool isInWishList = false;
@@ -325,13 +327,29 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10, vertical: 12),
                                       child: Center(
-                                        child: Text(
-                                          "₹${(getPrice(widget.product, selectedVariantIndex) * state).toStringAsFixed(2)}",
-                                          style: TextStyle(
-                                            color: context.cs.onSecondary,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            if ((widget.product is ProductEntities) && ((widget.product as ProductEntities).discount ?? 0) > 0)
+                                              Text(
+                                                 "₹${(getPrice(widget.product, selectedVariantIndex) * state).toStringAsFixed(2)}",
+                                                style: TextStyle(
+                                                  decoration: TextDecoration.lineThrough,
+                                                  color: context.cs.onSurface.withOpacity(0.5),
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            Text(
+                                              "₹${((getPrice(widget.product, selectedVariantIndex) - (getPrice(widget.product, selectedVariantIndex) * ((widget.product is ProductEntities ? (widget.product as ProductEntities).discount : 0) ?? 0) / 100)) * state).toStringAsFixed(2)}",
+                                              style: TextStyle(
+                                                color: context.cs.onSecondary,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -354,9 +372,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600),
                                   ),
-                                  const SizedBox(
-                                    height: 12,
-                                  ),
+                                  12.h,
                                   GridView.builder(
                                       shrinkWrap: true,
                                       physics:
@@ -401,7 +417,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 ],
                               ),
                             ),
-                          const SizedBox(height: 28),
+                          28.h,
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: BlocBuilder<DesicriptionCubit, bool>(
@@ -464,7 +480,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               },
                             ),
                           ),
-                          const SizedBox(height: 30),
+                          30.h,
                           Padding(
                             padding: const EdgeInsets.fromLTRB(20, 0, 15, 0),
                             child: Row(
@@ -478,9 +494,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     color: colorScheme.onBackground,
                                   ),
                                 ),
-                                SizedBox(
-                                  width: 50,
-                                ),
+                                50.w,
                                 ...List.generate(5, (index) {
                                   return Icon(
                                     index < rating.floor()
@@ -510,7 +524,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 100),
+                          100.h,
                         ],
                       ),
                     ),
@@ -539,9 +553,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 width: double.infinity,
                 child: BlocBuilder<CounterCubit, int>(
                   builder: (context, state) {
-                    final totalPrice =
-                        (getPrice(widget.product, selectedVariantIndex) * state)
-                            .toStringAsFixed(2);
+                     double price = getPrice(widget.product, selectedVariantIndex);
+                     double discount = (widget.product is ProductEntities) ? ((widget.product as ProductEntities).discount ?? 0) : 0;
+                     if(discount > 0) {
+                        price = price - (price * discount / 100);
+                     }
+                    final totalPrice = (price * state).toStringAsFixed(2);
                     return MainButton(
                         label: 'Add to Cart ₹$totalPrice',
                         icon: Icons.shopping_bag_outlined,
@@ -562,7 +579,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               variantDetails: getVariantDetails(widget.product),
                               count: state,
                               variantIndex: selectedVariantIndex,
-                              userId: '');
+                              userId: '',
+                              discount: (widget.product is ProductEntities)
+                                  ? (widget.product as ProductEntities).discount
+                                  : null);
                           context.read<CartBloc>().add(AddToCartEvent(
                               productId: productId, item: cartItem));
                           final variantName = getVariantName(

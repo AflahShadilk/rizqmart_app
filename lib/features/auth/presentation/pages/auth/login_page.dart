@@ -79,9 +79,9 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Column(
                 children: [
-                  const SizedBox(height: 40),
+                  40.h,
                   Center(child: CommonAppLogo()),
-                  const SizedBox(height: 20),
+                  20.h,
                 ],
               ),
               AnimatedPositioned(

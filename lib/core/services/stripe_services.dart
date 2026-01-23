@@ -27,6 +27,7 @@ class StripeService {
       Stripe.publishableKey = publishableKey;
       await Stripe.instance.applySettings();
 
+    // ignore: empty_catches
     } catch (e) {
 
     }

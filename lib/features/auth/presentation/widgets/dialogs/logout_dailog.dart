@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 void showLoadingDialog(BuildContext context) {
   showDialog(
@@ -12,7 +13,7 @@ void showLoadingDialog(BuildContext context) {
             mainAxisSize: MainAxisSize.min,
             children: [
               CircularProgressIndicator(),
-              SizedBox(width: 16),
+              16.w,
               Text('Signing out...'),
             ],
           ),

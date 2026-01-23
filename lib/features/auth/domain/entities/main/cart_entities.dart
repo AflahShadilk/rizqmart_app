@@ -12,8 +12,30 @@ class CartEntities extends Equatable implements ShowProductEntities{
   final int count;
   final int variantIndex;
   final String userId;
- const CartEntities({required this.id,required this.name,required this.brand,required this.description ,required this.variantDetails,required this.count,required this.variantIndex,required this.userId});
- @override
-  
-  List<Object?> get props =>[id,name,brand,description,variantDetails,count,variantIndex,userId] ;
+  final double? discount;
+
+  const CartEntities({
+    required this.id,
+    required this.name,
+    required this.brand,
+    required this.description,
+    required this.variantDetails,
+    required this.count,
+    required this.variantIndex,
+    required this.userId,
+    this.discount,
+  });
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        brand,
+        description,
+        variantDetails,
+        count,
+        variantIndex,
+        userId,
+        discount
+      ];
 }

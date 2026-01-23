@@ -12,31 +12,36 @@ class CartFirestoreModel extends CartEntities {
       required super.variantDetails,
       required super.count,
       required super.variantIndex,
-      required super.userId});
+      required super.userId,
+      super.discount});
 
-      factory CartFirestoreModel.fromFireStore(DocumentSnapshot snapShot){
-        final data=snapShot.data() as Map<String,dynamic>;
-        return CartFirestoreModel(
-          id: data['id']??'', 
-          name:data['name']??'', 
-          brand: data['brand']??'',
-          description: data['description']??'',
-          variantDetails: List<Map<String,dynamic>>.from(data['variantDetails']??[]), 
-          count: (data['count']??1).toInt(), 
-          variantIndex: (data['variantIndex'] ?? 0).toInt(  ), 
-          userId: data['userId']??''
-          );
-      }
+  factory CartFirestoreModel.fromFireStore(DocumentSnapshot snapShot) {
+    final data = snapShot.data() as Map<String, dynamic>;
+    return CartFirestoreModel(
+        id: data['id'] ?? '',
+        name: data['name'] ?? '',
+        brand: data['brand'] ?? '',
+        description: data['description'] ?? '',
+        variantDetails:
+            List<Map<String, dynamic>>.from(data['variantDetails'] ?? []),
+        count: (data['count'] ?? 1).toInt(),
+        variantIndex: (data['variantIndex'] ?? 0).toInt(),
+        userId: data['userId'] ?? '',
+        discount: (data['discount'] is int)
+            ? (data['discount'] as int).toDouble()
+            : (data['discount'] as double?));
+  }
 
-    Map<String,dynamic>toMap(){
-      return{
-        'id':id,
-        'name': name,
-        'brand':brand,
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'brand': brand,
       'variantDetails': variantDetails,
       'count': count,
       'variantIndex': variantIndex,
       'userId': userId,
-      };
-    }  
+      'discount': discount,
+    };
+  }
 }

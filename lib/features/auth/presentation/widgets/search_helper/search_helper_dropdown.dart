@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
@@ -64,10 +65,11 @@ Widget searchResultsDropdown({
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: getVariantImages(product).isNotEmpty
-                        ? Image.network(
-                            getVariantImages(product).first,
+                        ? CachedNetworkImage(
+                            imageUrl: getVariantImages(product).first,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Icon(
+                            placeholder: (_, __) => Container(color: cs.primary.withOpacity(0.1)),
+                            errorWidget: (_, __, ___) => Icon(
                               Icons.image_not_supported,
                               size: 20,
                               color: cs.primary,

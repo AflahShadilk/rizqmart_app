@@ -17,6 +17,7 @@ void main() async {
           options: DefaultFirebaseOptions.currentPlatform,
         );
 
+      // ignore: empty_catches
       } catch (e) {
 
       }
@@ -24,6 +25,7 @@ void main() async {
       try {
         await dotenv.load(fileName: ".env");
 
+      // ignore: empty_catches
       } catch (e) {
 
       }
@@ -33,6 +35,7 @@ void main() async {
       try {
         setupLocator();
 
+      // ignore: empty_catches
       } catch (e) {
 
       }

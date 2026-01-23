@@ -8,6 +8,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/empty_wish_list.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
@@ -50,9 +51,9 @@ class _FavoritePageState extends State<FavoritePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.error, size: 50, color: context.cs.error),
-                  const SizedBox(height: 16),
+                  16.h,
                   Text('Error: ${state.message}'),
-                  const SizedBox(height: 16),
+                  16.h,
                   ElevatedButton(
                     onPressed: () {
                       context.read<WishListBloc>().add(

@@ -21,6 +21,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/bloc helper/scaffold
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/see_all_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_helper_dropdown.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/offer_banner_widget.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -102,6 +103,11 @@ class _DashboardPageState extends State<DashboardPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  // Added Offer Banner
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: 10, bottom: 6),
+                                    child: OfferBannerWidget(),
+                                  ),
                                   _exclusiveSection(context, products),
                                   _allProductsSection(products),
                                 ],

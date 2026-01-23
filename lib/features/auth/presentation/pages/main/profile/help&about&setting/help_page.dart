@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
@@ -32,9 +33,9 @@ class HelpPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             buildHelpSection(context),
-            const SizedBox(height: 24),
+            24.h,
             buildFaqSection(context),
-            const SizedBox(height: 24),
+            24.h,
             buildContactSection(context),
           ],
         ),
@@ -47,13 +48,13 @@ class HelpPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         buildSectionTitle(context, 'Getting Started'),
-        const SizedBox(height: 12),
+        12.h,
         buildFaqItem(
           context,
           'How do I place an order?',
           '1. Browse products\n2. Add items to cart\n3. Proceed to checkout\n4. Select delivery address\n5. Choose payment method\n6. Confirm order',
         ),
-        const SizedBox(height: 12),
+        12.h,
         buildFaqItem(
           context,
           'What payment methods do you accept?',
@@ -68,25 +69,25 @@ class HelpPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         buildSectionTitle(context, 'Frequently Asked Questions'),
-        const SizedBox(height: 12),
+        12.h,
         buildFaqItem(
           context,
           'How long does delivery take?',
           'Quick Delivery: Within 1 hour\nStandard Delivery: 2-3 business days',
         ),
-        const SizedBox(height: 12),
+        12.h,
         buildFaqItem(
           context,
           'Can I cancel my order?',
           'Orders can be cancelled within 30 minutes of placing. Contact support for assistance.',
         ),
-        const SizedBox(height: 12),
+        12.h,
         buildFaqItem(
           context,
           'How do I return an item?',
           'Items can be returned within 7 days if unopened. Initiate return from Orders section.',
         ),
-        const SizedBox(height: 12),
+        12.h,
         buildFaqItem(
           context,
           'Is my information secure?',
@@ -101,21 +102,21 @@ class HelpPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         buildSectionTitle(context, 'Contact Us'),
-        const SizedBox(height: 12),
+        12.h,
         buildContactItem(
           context,
           Icons.email_outlined,
           'Email',
           'support@rizqmart.com',
         ),
-        const SizedBox(height: 12),
+        12.h,
         buildContactItem(
           context,
           Icons.phone_outlined,
           'Phone',
           '+1 (234) 567-8900',
         ),
-        const SizedBox(height: 12),
+        12.h,
         buildContactItem(
           context,
           Icons.location_on_outlined,
@@ -189,7 +190,7 @@ class HelpPage extends StatelessWidget {
               color: context.cs.primary,
               size: 24,
             ),
-            const SizedBox(width: 16),
+            16.w,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,7 +201,7 @@ class HelpPage extends StatelessWidget {
                       color: context.cs.onSurface.withOpacity(0.6),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  4.h,
                   Text(
                     value,
                     style: context.ts.bodyMedium?.copyWith(
