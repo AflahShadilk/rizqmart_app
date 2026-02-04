@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:rizqmart/core/services/registeration/bloc_providers.dart';
 import 'package:rizqmart/core/services/registeration/register.dart';
+import 'package:rizqmart/core/services/notification_service.dart';
 import 'package:rizqmart/core/services/stripe_services.dart';
 import 'package:rizqmart/firebase_options.dart';
 
@@ -16,28 +17,40 @@ void main() async {
         await Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
         );
-
-      // ignore: empty_catches
+        print('✅ Firebase initialized successfully');
       } catch (e) {
-
+        print('❌ Firebase initialization error: $e');
+        // Don't continue if Firebase fails - it's critical
+        rethrow;
       }
 
       try {
         await dotenv.load(fileName: ".env");
-
-      // ignore: empty_catches
+        print('✅ .env file loaded');
       } catch (e) {
-
+        print('⚠️ .env file load error (this is ok if not using .env): $e');
+        // This can fail safely if you don't have a .env file
       }
 
-      await StripeService.initialize();
+      try {
+        await StripeService.initialize();
+        print('✅ Stripe initialized');
+      } catch (e) {
+        print('❌ Stripe initialization error: $e');
+      }
+
+      try {
+        await NotificationService().initialize();
+        print('✅ Notification service initialized');
+      } catch (e) {
+        print('❌ Notification service error: $e');
+      }
 
       try {
         setupLocator();
-
-      // ignore: empty_catches
+        print('✅ Locator setup complete');
       } catch (e) {
-
+        print('❌ Locator setup error: $e');
       }
 
       runApp(const MyApp());

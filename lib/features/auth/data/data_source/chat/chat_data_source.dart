@@ -75,6 +75,7 @@ class ChatRemoteDataSource {
     batch.update(chatRef, {
       'lastMessage': content,
       'lastMessageTime': FieldValue.serverTimestamp(),
+      'lastSenderId': senderId,
     });
 
     await batch.commit();

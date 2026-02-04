@@ -11,6 +11,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bl
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_bar.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/notification_button.dart';
 
 Container topBarItems(
   BuildContext context,
@@ -93,9 +94,21 @@ Container topBarItems(
               ),
 
               // ---------- PROFILE BUTTON / LOGIN BUTTON
-              isLoggedIn
-                  ? buildProfileButton(context)
-                  : buildLoginButton(context),
+              // Added buildNotificationButton here inline with others if needed, 
+              // but the previous code laid it out as:
+              // buildNotificationButton(context),
+              // 12.w,
+              // isLoggedIn ? ...
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const NotificationButton(),
+                  12.w,
+                  isLoggedIn
+                      ? buildProfileButton(context)
+                      : buildLoginButton(context),
+                ],
+              ),
             ],
           ),
         ),
@@ -186,6 +199,29 @@ Widget buildLoginButton(BuildContext context) {
         style: context.ts.labelMedium?.copyWith(
           color: context.cs.primary,
           fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+  );
+}
+
+Widget buildNotificationButton(BuildContext context) {
+  return GestureDetector(
+    onTap: () {
+      // Future: Navigate to Notification Page
+    },
+    child: Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: context.cs.surfaceContainerHighest, 
+      ),
+      child: Center(
+        child: Icon(
+          Icons.notifications_none_rounded,
+          color: context.cs.onSurfaceVariant,
+          size: 24,
         ),
       ),
     ),

@@ -95,6 +95,9 @@ import 'package:rizqmart/features/auth/domain/usecase/payment/add_saved_card_use
 import 'package:rizqmart/features/auth/domain/usecase/payment/delete_saved_card_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/payment/get_saved_cards_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_bloc.dart';
+import 'package:rizqmart/features/auth/data/data_source/notification_data_source.dart';
+import 'package:rizqmart/features/auth/data/repository/notification_repository.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -264,4 +267,9 @@ void setupLocator() {
     addSavedCardUseCase: sl(),
     deleteSavedCardUseCase: sl(),
   ));
+
+  // Notification
+  sl.registerLazySingleton<NotificationDataSource>(() => NotificationDataSourceImpl(sl()));
+  sl.registerLazySingleton<NotificationRepository>(() => NotificationRepositoryImpl(sl()));
+  sl.registerFactory(() => NotificationBloc(sl()));
 }

@@ -26,7 +26,8 @@ class WishListRepositoryImple implements WishListRepository {
           variantDetails: item.variantDetails,
           variantIndex: item.variantIndex,
           userId: item.userId,
-          addedAt: item.addedAt);
+          addedAt: item.addedAt,
+          discount: item.discount);
       await dataSource.addToWishList(currentUserId, productId, addto);
       return const Right(unit);
     } on FirebaseException catch (e) {
@@ -67,7 +68,8 @@ class WishListRepositoryImple implements WishListRepository {
               variantDetails: m.variantDetails,
               variantIndex: m.variantIndex,
               userId: m.userId,
-              addedAt: m.addedAt))
+              addedAt: m.addedAt,
+              discount: m.discount))
           .toList();
       return Right<Failure, List<WishListEntities>>(entities);
     }).handleError((e) =>
@@ -88,7 +90,8 @@ class WishListRepositoryImple implements WishListRepository {
             variantDetails: item.variantDetails,
             variantIndex: item.variantIndex,
             userId: item.userId,
-            addedAt: item.addedAt);
+            addedAt: item.addedAt,
+            discount: item.discount);
         await dataSource.addToWishList(currentUserId, wishListId, addto);
       }
       return const Right(unit);

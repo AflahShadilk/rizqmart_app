@@ -9,7 +9,8 @@ class WishFireModel extends WishListEntities {
       required super.variantDetails,
       required super.variantIndex,
       required super.userId,
-      super.addedAt});
+      super.addedAt,
+      super.discount});
 
   factory WishFireModel.fromFireStore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
@@ -20,7 +21,11 @@ class WishFireModel extends WishListEntities {
         variantDetails:List<Map<String, dynamic>>.from(data['variantDetails'] ?? []),
         variantIndex: data['variantIndex']??0,
         userId: data['userId']??'',
-        addedAt: (data['addedAt']as Timestamp?)?.toDate());
+        addedAt: (data['addedAt']as Timestamp?)?.toDate(),
+        discount: (data['discount'] is int)
+            ? (data['discount'] as int).toDouble()
+            : (data['discount'] as double?),
+    );
   }
 
   Map<String,dynamic>toMap(){
@@ -30,7 +35,8 @@ class WishFireModel extends WishListEntities {
     'variantDetails':variantDetails,
     'variantIndex': variantIndex,
     'userId'   :userId,
-    'addedAt':addedAt!=null?Timestamp.fromDate(addedAt!):FieldValue.serverTimestamp()
+    'addedAt':addedAt!=null?Timestamp.fromDate(addedAt!):FieldValue.serverTimestamp(),
+    'discount': discount,
     };
   }
 }

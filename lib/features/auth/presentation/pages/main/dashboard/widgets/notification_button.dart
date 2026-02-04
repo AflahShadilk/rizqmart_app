@@ -1,0 +1,92 @@
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_state.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/notification_dropdown.dart';
+
+class NotificationButton extends StatefulWidget {
+  const NotificationButton({super.key});
+
+  @override
+  State<NotificationButton> createState() => _NotificationButtonState();
+}
+
+class _NotificationButtonState extends State<NotificationButton> {
+  final OverlayPortalController _overlayController = OverlayPortalController();
+
+  @override
+  Widget build(BuildContext context) {
+    return OverlayPortal(
+      controller: _overlayController,
+      overlayChildBuilder: (context) {
+        return Positioned(
+          top: 130, // Adjust based on top bar height
+          right: 70, // Adjust based on button position
+          child: const Material(
+            elevation: 8,
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+            child: NotificationDropdown(),
+          ),
+        );
+      },
+      child: GestureDetector(
+        onTap: () {
+          _overlayController.toggle();
+        },
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: context.cs.surfaceContainerHighest,
+          ),
+          child: Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              Icon(
+                Icons.notifications_none_rounded,
+                color: context.cs.primary,
+                size: 24,
+              ),
+              BlocBuilder<NotificationBloc, NotificationState>(
+                builder: (context, state) {
+                  if (state is NotificationLoadedState && state.unreadCount > 0) {
+                    return Positioned(
+                      top: 4,
+                      right: 6,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 8,
+                          minHeight: 8,
+                        ),
+                        child: Text(
+                           state.unreadCount > 9 ? '9+' : state.unreadCount.toString(),
+                           style: const TextStyle(
+                             color: Colors.white,
+                             fontSize: 8,
+                             fontWeight: FontWeight.bold,
+                           ),
+                           textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

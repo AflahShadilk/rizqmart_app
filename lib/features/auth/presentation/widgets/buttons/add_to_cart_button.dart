@@ -60,6 +60,7 @@ class AddToCartButton extends StatelessWidget {
         count: count,
         variantIndex: variantIndex,
         userId: '',
+        discount: widget.discount,
       );
 
       context.read<CartBloc>().add(

@@ -19,7 +19,8 @@ class CartDataSource {
       required List<Map<String, dynamic>> variantDetails,
       required int count,
       required int variantIndex,
-      required String userId}) async {
+      required String userId,
+      double? discount}) async {
     try {
       final cartItemId = '${id}_variant_$variantIndex';
 
@@ -32,6 +33,7 @@ class CartDataSource {
         'count': count,
         'variantIndex': variantIndex,
         'userId': userId,
+        'discount': discount,
         'addedAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp()
       };

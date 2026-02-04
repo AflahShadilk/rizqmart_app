@@ -29,6 +29,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_bl
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_bloc.dart';
 
 class BlocProviders extends StatelessWidget {
   const BlocProviders({super.key});
@@ -145,6 +146,9 @@ class BlocProviders extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => sl<SavedCardsBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<NotificationBloc>(),
         ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(

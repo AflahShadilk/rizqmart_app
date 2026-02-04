@@ -3,6 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rizqmart/core/services/notification_service.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_event.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
@@ -38,6 +42,12 @@ class _DashboardPageState extends State<DashboardPage> {
     super.initState();
     context.read<DashBloc>().add(const LoadingProductsEvent());
     context.read<AddressBloc>().add(GetCurrentLocationEvent());
+    
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      NotificationService().listenToUserUpdates(user.uid);
+      context.read<NotificationBloc>().add(LoadNotificationsEvent(user.uid));
+    }
   }
 
   void _onSearch(String query) {

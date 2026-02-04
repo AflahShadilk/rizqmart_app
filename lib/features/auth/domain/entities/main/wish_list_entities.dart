@@ -15,6 +15,8 @@ class WishListEntities extends Equatable implements ShowProductEntities {
   final int variantIndex;
   final String userId;
   final DateTime? addedAt;
+  @override
+  final double? discount;
   const WishListEntities(
       {required this.id,
       required this.name,
@@ -23,8 +25,9 @@ class WishListEntities extends Equatable implements ShowProductEntities {
       required this.variantDetails,
       required this.variantIndex,
       required this.userId,
-      this.addedAt});
+      this.addedAt,
+      this.discount});
   @override
   List<Object?> get props =>
-      [id, name, brand, description, variantDetails,variantIndex,userId,addedAt];
+      [id, name, brand, description, variantDetails,variantIndex,userId,addedAt, discount];
 }

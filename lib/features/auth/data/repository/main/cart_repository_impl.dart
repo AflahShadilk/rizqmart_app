@@ -19,7 +19,7 @@ Stream<List<CartEntities>>getCartItems(){
 Future<void>addtoCart(String productId,CartEntities item)async{
   final userId=dataSource.currentUserId;
   await dataSource.addToCart(id: productId, name:item.name,brand: item.brand,
-      description: item.description ,variantDetails:item. variantDetails, count:item. count, variantIndex:item. variantIndex, userId:userId);
+      description: item.description ,variantDetails:item. variantDetails, count:item. count, variantIndex:item. variantIndex, userId:userId, discount: item.discount);
 }
 
 @override
