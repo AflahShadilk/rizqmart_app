@@ -1,4 +1,4 @@
-
+import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,73 +16,95 @@ class NotificationDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 320, 
-      constraints: const BoxConstraints(maxHeight: 450),
+      constraints: const BoxConstraints(maxHeight: 380),
       decoration: BoxDecoration(
-        color: context.cs.surface,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.2),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.12),
+            color: Colors.black.withOpacity(0.08),
             blurRadius: 20,
             offset: const Offset(0, 8),
-          ),
-          BoxShadow(
-            color: context.cs.primary.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            spreadRadius: -3,
           ),
         ],
-        border: Border.all(color: context.cs.outlineVariant.withOpacity(0.3)),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildHeader(context),
-            const Divider(height: 1),
-            Flexible(
-              child: BlocBuilder<NotificationBloc, NotificationState>(
-                builder: (context, state) {
-                  if (state is NotificationLoadingState) {
-                    return SizedBox(
-                      height: 150,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: context.cs.primary,
-                        )
-                      ),
-                    );
-                  }
-                  if (state is NotificationLoadedState) {
-                    if (state.notifications.isEmpty) {
-                      return _buildEmptyState(context);
-                    }
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      itemCount: state.notifications.length,
-                      itemBuilder: (context, index) {
-                        final notification = state.notifications[index];
-                        return _buildNotificationItem(context, notification);
-                      },
-                    );
-                  }
-                  if (state is NotificationErrorState) {
-                    return Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Center(child: Text('Failed to load notifications', style: context.ts.bodySmall)),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
+        borderRadius: BorderRadius.circular(14),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  context.cs.surface.withOpacity(0.88),
+                  context.cs.surface.withOpacity(0.78),
+                ],
               ),
+              borderRadius: BorderRadius.circular(14),
             ),
-            const Divider(height: 1),
-            _buildFooter(context),
-          ],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildHeader(context),
+                Divider(height: 1, color: context.cs.outlineVariant.withOpacity(0.12)),
+                Flexible(
+                  child: BlocBuilder<NotificationBloc, NotificationState>(
+                    builder: (context, state) {
+                      if (state is NotificationLoadingState) {
+                        return SizedBox(
+                          height: 100,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: context.cs.primary,
+                            )
+                          ),
+                        );
+                      }
+                      if (state is NotificationLoadedState) {
+                        if (state.notifications.isEmpty) {
+                          return _buildEmptyState(context);
+                        }
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          itemCount: state.notifications.length > 5 ? 5 : state.notifications.length,
+                          itemBuilder: (context, index) {
+                            final notification = state.notifications[index];
+                            return _buildNotificationItem(context, notification);
+                          },
+                        );
+                      }
+                      if (state is NotificationErrorState) {
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Center(
+                            child: Text(
+                              'Failed to load notifications', 
+                              style: context.ts.bodySmall?.copyWith(
+                                color: context.cs.error,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ),
+                Divider(height: 1, color: context.cs.outlineVariant.withOpacity(0.12)),
+                _buildFooter(context),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -92,38 +114,41 @@ class NotificationDropdown extends StatelessWidget {
     final bool isRead = notification.isRead;
     
     return Material(
-      color: isRead ? Colors.transparent : context.cs.primary.withOpacity(0.04),
+      color: isRead ? Colors.transparent : context.cs.primary.withOpacity(0.05),
       child: InkWell(
         onTap: () => _handleNotificationTap(context, notification),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14), // More breathing room
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildIcon(context, notification.type, isRead),
-              12.w,
+              10.w,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Text(
                             notification.title,
-                            style: context.ts.bodyMedium?.copyWith(
+                            style: context.ts.bodySmall?.copyWith(
                               fontWeight: isRead ? FontWeight.w500 : FontWeight.w700,
                               color: context.cs.onSurface,
+                              fontSize: 13,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        4.w,
                         if (!isRead) 
                           Container(
-                            width: 8,
-                            height: 8,
+                            width: 6,
+                            height: 6,
                             decoration: BoxDecoration(
                               color: context.cs.primary,
                               shape: BoxShape.circle,
@@ -131,22 +156,23 @@ class NotificationDropdown extends StatelessWidget {
                           ),
                       ],
                     ),
-                    4.h,
+                    3.h,
                     Text(
                       notification.body,
                       style: context.ts.bodySmall?.copyWith(
                         color: context.cs.onSurfaceVariant,
-                        height: 1.4,
+                        height: 1.35,
+                        fontSize: 12,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    6.h,
+                    4.h,
                     Text(
                       _timeAgo(notification.timestamp),
                       style: context.ts.labelSmall?.copyWith(
                         color: context.cs.outline,
-                        fontSize: 11
+                        fontSize: 10,
                       ),
                     ),
                   ],
@@ -161,32 +187,45 @@ class NotificationDropdown extends StatelessWidget {
 
   Widget _buildIcon(BuildContext context, String type, bool isRead) {
     Color iconColor = isRead ? context.cs.secondary : context.cs.primary;
-    Color bgColor = isRead ? context.cs.secondaryContainer.withOpacity(0.5) : context.cs.primaryContainer;
+    Color bgColor = isRead ? context.cs.secondaryContainer.withOpacity(0.4) : context.cs.primaryContainer.withOpacity(0.6);
     IconData icon = Icons.notifications_rounded;
     
     if (type == 'order') icon = Icons.local_mall_rounded;
     if (type == 'chat') icon = Icons.chat_bubble_rounded;
 
     return Container(
-      width: 42,
-      height: 42,
+      width: 36,
+      height: 36,
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(12), // Squircle shape
+        borderRadius: BorderRadius.circular(10),
       ),
-      child: Icon(icon, size: 20, color: iconColor),
+      child: Icon(icon, size: 18, color: iconColor),
     );
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.white.withOpacity(0.04),
+            Colors.transparent,
+          ],
+        ),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             'Notifications', 
-            style: context.ts.titleMedium?.copyWith(fontWeight: FontWeight.bold)
+            style: context.ts.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            ),
           ),
           InkWell(
             onTap: () {
@@ -195,15 +234,20 @@ class NotificationDropdown extends StatelessWidget {
                  context.read<NotificationBloc>().add(MarkAllAsReadEvent(userId));
                }
             },
-            borderRadius: BorderRadius.circular(8),
-            child: Padding(
+            borderRadius: BorderRadius.circular(6),
+            child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: context.cs.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
               child: Text(
                 'Mark all read', 
-                style: context.ts.labelMedium?.copyWith(
+                style: context.ts.labelSmall?.copyWith(
                   color: context.cs.primary, 
-                  fontWeight: FontWeight.w600
-                )
+                  fontWeight: FontWeight.w600,
+                  fontSize: 11,
+                ),
               ),
             ),
           ),
@@ -218,15 +262,36 @@ class NotificationDropdown extends StatelessWidget {
          // Navigate to full page
        },
        child: Container(
-         padding: const EdgeInsets.symmetric(vertical: 14),
+         padding: const EdgeInsets.symmetric(vertical: 10),
          alignment: Alignment.center,
-         color: context.cs.surface, // Ensure clickable area has color
-         child: Text(
-           'View all notifications',
-           style: context.ts.labelLarge?.copyWith(
-             color: context.cs.primary,
-             fontWeight: FontWeight.w600
-            ),
+         decoration: BoxDecoration(
+           gradient: LinearGradient(
+             begin: Alignment.topCenter,
+             end: Alignment.bottomCenter,
+             colors: [
+               Colors.transparent,
+               Colors.white.withOpacity(0.02),
+             ],
+           ),
+         ),
+         child: Row(
+           mainAxisAlignment: MainAxisAlignment.center,
+           children: [
+             Text(
+               'View all',
+               style: context.ts.labelMedium?.copyWith(
+                 color: context.cs.primary,
+                 fontWeight: FontWeight.w600,
+                 fontSize: 12,
+               ),
+             ),
+             4.w,
+             Icon(
+               Icons.arrow_forward_rounded, 
+               size: 14, 
+               color: context.cs.primary,
+             ),
+           ],
          ),
        ),
      );
@@ -234,27 +299,38 @@ class NotificationDropdown extends StatelessWidget {
 
   Widget _buildEmptyState(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 48.0, horizontal: 32),
+      padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 24),
       child: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: context.cs.surfaceContainerHighest.withOpacity(0.5),
+                color: context.cs.surfaceContainerHighest.withOpacity(0.3),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.notifications_none_rounded, size: 32, color: context.cs.outline),
+              child: Icon(
+                Icons.notifications_none_rounded, 
+                size: 26, 
+                color: context.cs.outline.withOpacity(0.7),
+              ),
             ),
-            16.h,
+            12.h,
             Text(
-              "You're all caught up!", 
-              style: context.ts.titleSmall?.copyWith(fontWeight: FontWeight.w600)
+              "All caught up!", 
+              style: context.ts.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
             4.h,
             Text(
-              'No new notifications at the moment.', 
-              style: context.ts.bodySmall?.copyWith(color: context.cs.outline),
+              'No new notifications', 
+              style: context.ts.bodySmall?.copyWith(
+                color: context.cs.outline,
+                fontSize: 12,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
