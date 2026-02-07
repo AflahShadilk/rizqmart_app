@@ -128,7 +128,9 @@ class BlocProviders extends StatelessWidget {
               payWithStripeUseCase: sl(),
               payWithCODUseCase: sl(),
               cancelOrderUseCase: sl(),
-              refundOrderUseCase: sl()),
+              refundOrderUseCase: sl(),
+              payWithWalletUseCase: sl(),
+          ),
           lazy: true,
         ),
         BlocProvider(

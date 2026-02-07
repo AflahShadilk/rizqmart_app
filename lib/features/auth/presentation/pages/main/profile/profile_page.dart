@@ -19,6 +19,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/dialogs/logout_dailo
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
+import '../wallet/wallet_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -252,6 +253,21 @@ class _ProfilePageState extends State<ProfilePage> {
         title: 'Payment Method',
         onTap: () {
           Navigator.pushNamed(context, AppRoutes.savedCards);
+        },
+      ),
+      buildProfileMenuItem(
+        icon: Icons.account_balance_wallet_outlined,
+        title: 'My Wallet',
+        onTap: () {
+          if (userId.isEmpty) {
+            showToast(context, 'User not authenticated');
+            return;
+          }
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => WalletScreen(userId: userId),
+            ),
+          );
         },
       ),
       buildProfileMenuItem(

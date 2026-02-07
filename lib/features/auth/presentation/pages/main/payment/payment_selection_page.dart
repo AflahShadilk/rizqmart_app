@@ -88,6 +88,15 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                   16.h,
                   buildPaymentOption(
                     context,
+                    title: 'My Wallet',
+                    subtitle: 'Use your wallet balance',
+                    description: 'Fast and secure payment',
+                    value: 'wallet',
+                    icon: Icons.account_balance_wallet,
+                  ),
+                  16.h,
+                  buildPaymentOption(
+                    context,
                     title: 'Cash on Delivery',
                     subtitle: 'Pay when you receive your order',
                     description: 'No upfront payment required',

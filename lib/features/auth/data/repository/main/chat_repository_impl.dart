@@ -1,4 +1,4 @@
-import 'package:rizqmart/features/auth/data/data_source/chat/chat_data_source.dart';
+import 'package:rizqmart/features/auth/data/data_source/main/chat_data_source.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/chat_repository.dart';
 

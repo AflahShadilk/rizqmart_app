@@ -1,6 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rizqmart/features/auth/data/model/notification_model.dart';
+import 'package:rizqmart/features/auth/data/model/main/notification_model.dart';
 
 abstract class NotificationDataSource {
   Stream<List<NotificationModel>> getNotifications(String userId);

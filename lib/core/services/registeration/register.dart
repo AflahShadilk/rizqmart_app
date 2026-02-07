@@ -13,6 +13,7 @@ import 'package:rizqmart/features/auth/data/data_source/main/dashboard_data_sour
 import 'package:rizqmart/features/auth/data/data_source/main/explore_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/order_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/payment_data_source.dart';
+import 'package:rizqmart/features/auth/data/data_source/main/saved_card_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/user_profile_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/wish_list_data_source.dart';
 import 'package:rizqmart/features/auth/data/repository/auth/google_repository_imple.dart';
@@ -81,21 +82,20 @@ import 'package:rizqmart/features/auth/presentation/bloc/auth/forgot/forgot_bloc
 import 'package:rizqmart/features/auth/presentation/bloc/auth/google/google_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signUp/signup_bloc.dart';
-import 'package:rizqmart/features/auth/data/data_source/chat/chat_data_source.dart';
+import 'package:rizqmart/features/auth/data/data_source/main/chat_data_source.dart';
 import 'package:rizqmart/features/auth/data/repository/main/chat_repository_impl.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/chat_repository.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/chat/get_messages_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/chat/initiate_chat_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/chat/send_message_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_bloc.dart';
-import 'package:rizqmart/features/auth/data/data_source/payment/saved_card_data_source.dart';
 import 'package:rizqmart/features/auth/data/repository/main/saved_card_repository_impl.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/saved_card_repository.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/add_saved_card_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/delete_saved_card_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/get_saved_cards_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_bloc.dart';
-import 'package:rizqmart/features/auth/data/data_source/notification_data_source.dart';
+import 'package:rizqmart/features/auth/data/data_source/main/notification_data_source.dart';
 import 'package:rizqmart/features/auth/data/repository/main/notification_repository.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_bloc.dart';
 import 'package:rizqmart/features/auth/data/repository/main/review_repository_impl.dart';
@@ -105,6 +105,14 @@ import 'package:rizqmart/features/auth/domain/usecase/main/review/get_reviews_us
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/dashboard/get_product_by_id_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/product/single_product_bloc.dart';
+import 'package:rizqmart/features/auth/data/data_source/main/wallet_remote_datasource.dart';
+import 'package:rizqmart/features/auth/domain/repositories/main/wallet_repository.dart';
+import 'package:rizqmart/features/auth/data/repository/main/wallet_repository_impl.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/wallet/get_wallet_balance_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/wallet/get_wallet_transactions_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/wallet/withdraw_wallet_amount_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_wallet_usecase.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -224,7 +232,7 @@ void setupLocator() {
   //Order usecase
   sl.registerLazySingleton(()=>PlaceOrderUsecase(sl()));
   sl.registerLazySingleton(()=>GetUserOrdersUsecase(sl()));
-  sl.registerLazySingleton(()=>CancelOrderUsecase(sl()));
+  sl.registerLazySingleton(()=>CancelOrderUsecase(sl(), sl()));
 
   ///User Profile usecase
   sl.registerLazySingleton(()=>GetUserProfileUsecase(sl()));
@@ -292,4 +300,19 @@ void setupLocator() {
   ));
 
   sl.registerFactory(() => SingleProductBloc(getProductByIdUseCase: sl()));
+
+  // Wallet System
+  sl.registerLazySingleton<WalletRemoteDataSource>(() => WalletRemoteDataSourceImpl(sl()));
+  sl.registerLazySingleton<WalletRepository>(() => WalletRepositoryImpl(sl()));
+  
+  sl.registerLazySingleton(() => GetWalletBalanceUseCase(sl()));
+  sl.registerLazySingleton(() => GetWalletTransactionsUseCase(sl()));
+  sl.registerLazySingleton(() => RequestWithdrawalUseCase(sl()));
+  sl.registerLazySingleton(() => PayWithWalletUseCase(sl()));
+
+  sl.registerFactory(() => WalletBloc(
+    getWalletBalance: sl(),
+    getWalletTransactions: sl(),
+    requestWithdrawal: sl(),
+  ));
 }

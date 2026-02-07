@@ -6,15 +6,17 @@ import 'package:rizqmart/features/auth/domain/usecase/main/payment/create_order_
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_cod_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_stripe_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/refund_order_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_wallet_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_state.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   final CreateOrderUsecase createOrderUsecase;
-  final PayWithStripeUseCase payWithStripeUseCase; 
+  final PayWithStripeUseCase payWithStripeUseCase;
   final PayWithCODUseCase payWithCODUseCase;
   final CancelPaymentOrderUseCase cancelOrderUseCase;
   final RefundOrderUseCase refundOrderUseCase;
+  final PayWithWalletUseCase payWithWalletUseCase;
 
   OrderEntities? currentOrder;
   String? selectedPaymentMethod;
@@ -26,6 +28,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     required this.payWithCODUseCase,
     required this.cancelOrderUseCase,
     required this.refundOrderUseCase,
+    required this.payWithWalletUseCase, 
   }) : super(const PaymentInitialState()) {
     on<InitializePaymentEvent>(onInitializePayment);
     on<ProcessPaymentEvent>(onProcessPayment);
@@ -87,6 +90,23 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           payment: payment,
           order: createdOrder,
         ));
+      } else if (selectedPaymentMethod == 'wallet') {
+        emit(const PaymentLoadingState('Processing Wallet payment...'));
+        
+        final result = await payWithWalletUseCase(
+          userId: createdOrder.userId,
+          amount: createdOrder.totalCost,
+          orderId: createdOrder.orderId,
+        );
+
+        result.fold(
+          (failure) => emit(PaymentFailedState(failure)),
+          (transaction) => emit(PaymentSuccessState(
+            orderId: createdOrder.orderId,
+            payment: null, // Wallet doesn't return PaymentEntity yet, acceptable as per COD
+            order: createdOrder,
+          )),
+        );
       } else {
         emit(PaymentFailedState('Unknown payment method: $selectedPaymentMethod'));
       }

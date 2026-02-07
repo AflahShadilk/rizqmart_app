@@ -1,4 +1,4 @@
-import 'package:rizqmart/features/auth/data/model/notification_model.dart';
+import 'package:rizqmart/features/auth/data/model/main/notification_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class NotificationEvent extends Equatable {

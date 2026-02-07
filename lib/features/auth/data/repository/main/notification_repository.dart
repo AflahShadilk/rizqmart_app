@@ -1,6 +1,6 @@
 
-import 'package:rizqmart/features/auth/data/data_source/notification_data_source.dart';
-import 'package:rizqmart/features/auth/data/model/notification_model.dart';
+import 'package:rizqmart/features/auth/data/data_source/main/notification_data_source.dart';
+import 'package:rizqmart/features/auth/data/model/main/notification_model.dart';
 
 abstract class NotificationRepository {
   Stream<List<NotificationModel>> getNotifications(String userId);
