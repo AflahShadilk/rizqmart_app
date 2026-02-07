@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
-import 'package:rizqmart/features/auth/domain/entities/payment/saved_card_entity.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/cancel_order_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/create_order_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_cod_usecase.dart';

@@ -14,6 +14,9 @@ class CartEntities extends Equatable implements ShowProductEntities{
   final String userId;
   final double? discount;
 
+  @override final double rating;
+  @override final int reviewCount;
+
   const CartEntities({
     required this.id,
     required this.name,
@@ -24,6 +27,8 @@ class CartEntities extends Equatable implements ShowProductEntities{
     required this.variantIndex,
     required this.userId,
     this.discount,
+    this.rating = 0.0,
+    this.reviewCount = 0,
   });
 
   @override
@@ -36,6 +41,8 @@ class CartEntities extends Equatable implements ShowProductEntities{
         count,
         variantIndex,
         userId,
-        discount
+        discount,
+        rating,
+        reviewCount,
       ];
 }

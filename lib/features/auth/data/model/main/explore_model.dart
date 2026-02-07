@@ -10,7 +10,9 @@ class ExploreModel extends ExploreEntities {
       required super.categoryImage,
       required super.discount,
       required super.features,
-      required super.variantDetails
+      required super.variantDetails,
+      super.rating,
+      super.reviewCount,
       });
 
   factory ExploreModel.fromFireStore(DocumentSnapshot snapshot) {
@@ -31,7 +33,9 @@ class ExploreModel extends ExploreEntities {
         categoryImage: data['categoryImage'] ?? '',
         discount: (data['discount']??0.0).toDouble(),
         features: data['features']??false,
-        variantDetails: variantDetails
+        variantDetails: variantDetails,
+        rating: (data['rating'] ?? 0).toDouble(),
+        reviewCount: data['reviewCount'] ?? 0,
         );
   }
 }

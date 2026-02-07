@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
-import 'package:rizqmart/features/auth/domain/entities/chat/message_entity.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
 
 class ChatBubble extends StatelessWidget {
   final MessageEntity message;

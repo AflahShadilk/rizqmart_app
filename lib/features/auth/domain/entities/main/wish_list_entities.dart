@@ -17,17 +17,37 @@ class WishListEntities extends Equatable implements ShowProductEntities {
   final DateTime? addedAt;
   @override
   final double? discount;
-  const WishListEntities(
-      {required this.id,
-      required this.name,
-      required this.brand,
-      this.description,
-      required this.variantDetails,
-      required this.variantIndex,
-      required this.userId,
-      this.addedAt,
-      this.discount});
   @override
-  List<Object?> get props =>
-      [id, name, brand, description, variantDetails,variantIndex,userId,addedAt, discount];
+  final double rating;
+  @override
+  final int reviewCount;
+
+  const WishListEntities({
+    required this.id,
+    required this.name,
+    required this.brand,
+    this.description,
+    required this.variantDetails,
+    required this.variantIndex,
+    required this.userId,
+    this.addedAt,
+    this.discount,
+    this.rating = 0.0,
+    this.reviewCount = 0,
+  });
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        brand,
+        description,
+        variantDetails,
+        variantIndex,
+        userId,
+        addedAt,
+        discount,
+        rating,
+        reviewCount
+      ];
 }

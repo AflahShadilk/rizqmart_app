@@ -6,7 +6,7 @@ import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
-import 'package:rizqmart/features/auth/domain/entities/payment/saved_card_entity.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/peyment_terms-cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_event.dart';
@@ -71,7 +71,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
             Navigator.pushReplacementNamed(
               context,
               AppRoutes.orderSuccess,
-              arguments: state.orderId,
+              arguments: widget.order.items,
             );
           } else if (state is PaymentFailedState) {
             ScaffoldMessenger.of(context).showSnackBar(

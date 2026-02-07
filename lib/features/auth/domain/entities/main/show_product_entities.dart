@@ -5,4 +5,6 @@ abstract class ShowProductEntities {
   String? get description;
   List<Map<String,dynamic>> get variantDetails;
   double? get discount;
+  double get rating;
+  int get reviewCount;
 }

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rizqmart/features/auth/domain/entities/chat/chat_entity.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/chat_entity.dart';
 
 class ChatModel extends ChatEntity {
   const ChatModel({

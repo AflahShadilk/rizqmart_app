@@ -9,4 +9,9 @@ class DashboardRepositoryImpl implements DashboardRepository{
   Stream<List<ProductEntities>>getAllProducts(){
     return dataSource.getAllProducts();
   }
-}
+
+  @override
+  Stream<ProductEntities> getProductById(String id) {
+    return dataSource.getProductById(id);
+  }
+  }

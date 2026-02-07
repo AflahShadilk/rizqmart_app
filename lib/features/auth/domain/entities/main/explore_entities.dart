@@ -12,10 +12,37 @@ class ExploreEntities extends Equatable implements ShowProductEntities{
   final bool features;
 @override final List<Map<String,dynamic>>variantDetails;
 
-  const ExploreEntities({required this.id,required this.name,required this.brand, this.description, required this.category,required this.categoryImage,required this.discount,required this.features,required this.variantDetails});
+  @override final double rating;
+  @override final int reviewCount;
+
+  const ExploreEntities({
+    required this.id,
+    required this.name,
+    required this.brand,
+    this.description,
+    required this.category,
+    required this.categoryImage,
+    required this.discount,
+    required this.features,
+    required this.variantDetails,
+    this.rating = 0.0,
+    this.reviewCount = 0,
+  });
+
   @override
-  
-  List<Object?> get props => [id,name,brand,description ,category,categoryImage,discount,features,variantDetails];
+  List<Object?> get props => [
+        id,
+        name,
+        brand,
+        description,
+        category,
+        categoryImage,
+        discount,
+        features,
+        variantDetails,
+        rating,
+        reviewCount,
+      ];
 }
 
 class CategoryEntity extends Equatable{

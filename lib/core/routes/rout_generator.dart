@@ -3,13 +3,14 @@ import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
-import 'package:rizqmart/features/auth/domain/entities/payment/saved_card_entity.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/address/address_display_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/address/add_edit_address_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/forgot_password.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/login_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/auth/sign_up_page.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/cart/cart_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/dashboard_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/see_all_page.dart';
@@ -30,7 +31,7 @@ import 'package:rizqmart/features/auth/presentation/pages/main/profile/edit_user
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/wish_list_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/splash_screen.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/welcome1.dart';
-import 'package:rizqmart/features/auth/presentation/pages/product_details_page/view_details_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/view_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/not_found_page.dart';
 
 class RouteGenerator {
@@ -94,6 +95,11 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => CartPage());
 
       case AppRoutes.orderSuccess:
+        if (args is List<CartEntities>) {
+          return MaterialPageRoute(
+            builder: (_) => SuccessPage(items: args),
+          );
+        }
         return MaterialPageRoute(builder: (_) => SuccessPage());
 
       case AppRoutes.profile:

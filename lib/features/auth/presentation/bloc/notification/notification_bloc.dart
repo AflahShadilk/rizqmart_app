@@ -1,7 +1,7 @@
 
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rizqmart/features/auth/data/repository/notification_repository.dart';
+import 'package:rizqmart/features/auth/data/repository/main/notification_repository.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_state.dart';
 

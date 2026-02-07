@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:responsive_display/responsive_display.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -55,8 +56,8 @@ class _DashboardPageState extends State<DashboardPage> {
           query: query,
           matcher: (item, q) {
             final p = item as ShowProductEntities;
-            return p.name.toLowerCase().contains(q) ||
-                p.brand.toLowerCase().contains(q);
+            return p.name.toLowerCase().contains(q.toLowerCase()) ||
+                p.brand.toLowerCase().contains(q.toLowerCase());
           },
         );
   }
@@ -113,7 +114,6 @@ class _DashboardPageState extends State<DashboardPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Added Offer Banner
                                   const Padding(
                                     padding: EdgeInsets.only(top: 10, bottom: 6),
                                     child: OfferBannerWidget(),
@@ -200,23 +200,24 @@ class _DashboardPageState extends State<DashboardPage> {
           padding: EdgeInsets.fromLTRB(16, 25, 16, 12),
           child: AppHeading('All Products'),
         ),
-        GridView.builder(
+        ResponsiveGrid(
+          xsmallColumns: 2,
+          smallColumns: 2,
+          mediumColumns: 3,
+          largeColumns: 4,
+          xlargeColumns: 4,
+          gap: 12,
+          childAspectRatio: 0.75,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.75,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 16,
-          ),
-          itemCount: products.length,
-          itemBuilder: (_, index) {
-            return ProductCard(
+          children: List.generate(
+            products.length,
+            (index) => ProductCard(
               key: ValueKey(products[index].id),
               product: products[index],
-            );
-          },
+            ),
+          ),
         ),
       ],
     );
@@ -235,7 +236,7 @@ class _DashboardPageState extends State<DashboardPage> {
             child: searchResultsDropdown(
               context: context,
               controller: searchController,
-              items: state.filteredItems.cast<ShowProductEntities>(),
+              items: state.filteredItems.whereType<ShowProductEntities>().toList(),
               onProductSelected: () {
                 context.read<SearchCubit>().clearSearch();
                 searchController.clear();
@@ -243,7 +244,6 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           );
         }
-       
         return const SizedBox();
       },
     );

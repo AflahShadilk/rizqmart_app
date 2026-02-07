@@ -82,22 +82,29 @@ import 'package:rizqmart/features/auth/presentation/bloc/auth/google/google_bloc
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signUp/signup_bloc.dart';
 import 'package:rizqmart/features/auth/data/data_source/chat/chat_data_source.dart';
-import 'package:rizqmart/features/auth/data/repository/chat/chat_repository_impl.dart';
-import 'package:rizqmart/features/auth/domain/repositories/chat/chat_repository.dart';
-import 'package:rizqmart/features/auth/domain/usecase/chat/get_messages_usecase.dart';
-import 'package:rizqmart/features/auth/domain/usecase/chat/initiate_chat_usecase.dart';
-import 'package:rizqmart/features/auth/domain/usecase/chat/send_message_usecase.dart';
+import 'package:rizqmart/features/auth/data/repository/main/chat_repository_impl.dart';
+import 'package:rizqmart/features/auth/domain/repositories/main/chat_repository.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/chat/get_messages_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/chat/initiate_chat_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/chat/send_message_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_bloc.dart';
 import 'package:rizqmart/features/auth/data/data_source/payment/saved_card_data_source.dart';
-import 'package:rizqmart/features/auth/data/repository/payment/saved_card_repository_impl.dart';
-import 'package:rizqmart/features/auth/domain/repositories/payment/saved_card_repository.dart';
-import 'package:rizqmart/features/auth/domain/usecase/payment/add_saved_card_usecase.dart';
-import 'package:rizqmart/features/auth/domain/usecase/payment/delete_saved_card_usecase.dart';
-import 'package:rizqmart/features/auth/domain/usecase/payment/get_saved_cards_usecase.dart';
+import 'package:rizqmart/features/auth/data/repository/main/saved_card_repository_impl.dart';
+import 'package:rizqmart/features/auth/domain/repositories/main/saved_card_repository.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/add_saved_card_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/delete_saved_card_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/get_saved_cards_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_bloc.dart';
 import 'package:rizqmart/features/auth/data/data_source/notification_data_source.dart';
-import 'package:rizqmart/features/auth/data/repository/notification_repository.dart';
+import 'package:rizqmart/features/auth/data/repository/main/notification_repository.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_bloc.dart';
+import 'package:rizqmart/features/auth/data/repository/main/review_repository_impl.dart';
+import 'package:rizqmart/features/auth/domain/repositories/main/review_repository.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/review/add_review_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/review/get_reviews_usecase.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/dashboard/get_product_by_id_usecase.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/product/single_product_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -192,6 +199,7 @@ void setupLocator() {
   //use -------------------------------------------------------------------------------
   //productUsecases
   sl.registerLazySingleton(() => GetProductUsecase(sl()));
+  sl.registerLazySingleton(() => GetProductByIdUseCase(sl()));
   sl.registerLazySingleton(() => GetProductsUsecase(sl()));
   sl.registerLazySingleton(() => GetCategoryUsecase(sl()));
   sl.registerLazySingleton(() => SearchProductsUsecase(sl()));
@@ -272,4 +280,16 @@ void setupLocator() {
   sl.registerLazySingleton<NotificationDataSource>(() => NotificationDataSourceImpl(sl()));
   sl.registerLazySingleton<NotificationRepository>(() => NotificationRepositoryImpl(sl()));
   sl.registerFactory(() => NotificationBloc(sl()));
+
+  // Review System
+  sl.registerLazySingleton<ReviewRepository>(() => ReviewRepositoryImpl(firestore: sl()));
+  sl.registerLazySingleton(() => AddReviewUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetReviewsUseCase(repository: sl()));
+  
+  sl.registerFactory(() => ReviewBloc(
+    addReviewUseCase: sl(),
+    getReviewsUseCase: sl(),
+  ));
+
+  sl.registerFactory(() => SingleProductBloc(getProductByIdUseCase: sl()));
 }

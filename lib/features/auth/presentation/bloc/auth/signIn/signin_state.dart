@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:rizqmart/features/auth/domain/entities/auth/signin_user_entities.dart';
 
 abstract class SignInState extends Equatable{
   @override
@@ -9,9 +10,10 @@ class SignInInitializeState extends SignInState{}
 class SignInLoadingState extends SignInState{}
 class SignInSuccessState extends SignInState{
   final String massage;
-  SignInSuccessState(this.massage);
+  final SigninUserEntities   user;
+  SignInSuccessState(this.massage,{required this.user});
   @override
-  List<Object?> get props => [massage];
+  List<Object?> get props => [massage,user];
 }
 
 class SignInFailureState extends SignInState{

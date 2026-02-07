@@ -15,7 +15,9 @@ class DashFirestoreModel extends ProductEntities {
       // required super.imageUrl,
 
       super.feature,
-     required super.variantDetails
+     required super.variantDetails,
+     super.rating,
+     super.reviewCount,
       });
 
   factory DashFirestoreModel.fromFireStore(DocumentSnapshot doc) {
@@ -40,7 +42,9 @@ class DashFirestoreModel extends ProductEntities {
         // variant: List<String>.from(data['variant'] ?? []),
         // imageUrl: List<String>.from(data['imageUrls'] ?? []),
         feature: data['feature'] ?? false,
-        variantDetails: variantDetails
+        variantDetails: variantDetails,
+        rating: (data['rating'] ?? 0).toDouble(),
+        reviewCount: data['reviewCount'] ?? 0,
         );
   }
 
@@ -58,7 +62,9 @@ class DashFirestoreModel extends ProductEntities {
       // 'variant':variant,
       // 'imageUrl':imageUrl,
       'feature':feature,
-      'variantDetails':variantDetails
+      'variantDetails':variantDetails,
+      'rating': rating,
+      'reviewCount': reviewCount,
     };
   }
 }

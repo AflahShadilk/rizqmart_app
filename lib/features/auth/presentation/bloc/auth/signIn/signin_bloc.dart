@@ -15,7 +15,7 @@ class SigninBloc extends Bloc<SignInEvent,SignInState>{
   emit(SignInLoadingState());
   try{
       final result=await signinUsecase(email: event.emailId,password: event.password);
-      emit(SignInSuccessState('Logged Into ${result.email}',));
+      emit(SignInSuccessState('Logged Into ${result.email}',user: result));
         final pref = await SharedPreferences.getInstance();
     await pref.setBool(saveKey, true);
     

@@ -11,8 +11,8 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/pay
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rizqmart/core/services/registeration/register.dart';
-import 'package:rizqmart/features/auth/domain/entities/payment/saved_card_entity.dart';
-import 'package:rizqmart/features/auth/domain/usecase/payment/get_saved_cards_usecase.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/get_saved_cards_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/payment/widgets/user_card_widget.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 

@@ -13,7 +13,9 @@ class CartFirestoreModel extends CartEntities {
       required super.count,
       required super.variantIndex,
       required super.userId,
-      super.discount});
+      super.discount,
+      super.rating,
+      super.reviewCount});
 
   factory CartFirestoreModel.fromFireStore(DocumentSnapshot snapShot) {
     final data = snapShot.data() as Map<String, dynamic>;
@@ -29,7 +31,9 @@ class CartFirestoreModel extends CartEntities {
         userId: data['userId'] ?? '',
         discount: (data['discount'] is int)
             ? (data['discount'] as int).toDouble()
-            : (data['discount'] as double?));
+            : (data['discount'] as double?),
+        rating: (data['rating'] ?? 0).toDouble(),
+        reviewCount: (data['reviewCount'] ?? 0).toInt());
   }
 
   Map<String, dynamic> toMap() {
@@ -42,6 +46,8 @@ class CartFirestoreModel extends CartEntities {
       'variantIndex': variantIndex,
       'userId': userId,
       'discount': discount,
+      'rating': rating,
+      'reviewCount': reviewCount,
     };
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rizqmart/features/auth/domain/usecase/payment/add_saved_card_usecase.dart';
-import 'package:rizqmart/features/auth/domain/usecase/payment/delete_saved_card_usecase.dart';
-import 'package:rizqmart/features/auth/domain/usecase/payment/get_saved_cards_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/add_saved_card_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/delete_saved_card_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/payment/get_saved_cards_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_state.dart';
 

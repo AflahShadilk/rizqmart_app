@@ -10,33 +10,42 @@ class WishFireModel extends WishListEntities {
       required super.variantIndex,
       required super.userId,
       super.addedAt,
-      super.discount});
+      super.discount,
+      super.rating,
+      super.reviewCount});
 
   factory WishFireModel.fromFireStore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return WishFireModel(
-        id: doc.id,
-        name: data['name'] ?? '',
-        brand: data['brand']??"",
-        variantDetails:List<Map<String, dynamic>>.from(data['variantDetails'] ?? []),
-        variantIndex: data['variantIndex']??0,
-        userId: data['userId']??'',
-        addedAt: (data['addedAt']as Timestamp?)?.toDate(),
-        discount: (data['discount'] is int)
-            ? (data['discount'] as int).toDouble()
-            : (data['discount'] as double?),
+      id: doc.id,
+      name: data['name'] ?? '',
+      brand: data['brand'] ?? "",
+      variantDetails:
+          List<Map<String, dynamic>>.from(data['variantDetails'] ?? []),
+      variantIndex: data['variantIndex'] ?? 0,
+      userId: data['userId'] ?? '',
+      addedAt: (data['addedAt'] as Timestamp?)?.toDate(),
+      discount: (data['discount'] is int)
+          ? (data['discount'] as int).toDouble()
+          : (data['discount'] as double?),
+      rating: (data['rating'] ?? 0).toDouble(),
+      reviewCount: (data['reviewCount'] ?? 0).toInt(),
     );
   }
 
-  Map<String,dynamic>toMap(){
-    return{
-    'name':name,
-    'brand':brand,
-    'variantDetails':variantDetails,
-    'variantIndex': variantIndex,
-    'userId'   :userId,
-    'addedAt':addedAt!=null?Timestamp.fromDate(addedAt!):FieldValue.serverTimestamp(),
-    'discount': discount,
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'brand': brand,
+      'variantDetails': variantDetails,
+      'variantIndex': variantIndex,
+      'userId': userId,
+      'addedAt': addedAt != null
+          ? Timestamp.fromDate(addedAt!)
+          : FieldValue.serverTimestamp(),
+      'discount': discount,
+      'rating': rating,
+      'reviewCount': reviewCount,
     };
   }
 }

@@ -2,4 +2,5 @@ import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dar
 
 abstract class DashboardRepository {
   Stream<List<ProductEntities>>getAllProducts();
+  Stream<ProductEntities> getProductById(String id);
 }

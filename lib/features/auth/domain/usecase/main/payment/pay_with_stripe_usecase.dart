@@ -1,6 +1,6 @@
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/payment_entity.dart';
-import 'package:rizqmart/features/auth/domain/entities/payment/saved_card_entity.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/payment_repository.dart';
 
 class PayWithStripeUseCase {

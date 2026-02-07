@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rizqmart/features/auth/domain/entities/chat/message_entity.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
 
 class MessageModel extends MessageEntity {
   const MessageModel({
