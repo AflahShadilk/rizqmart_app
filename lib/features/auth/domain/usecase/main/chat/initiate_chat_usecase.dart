@@ -1,19 +1,27 @@
 import 'package:rizqmart/features/auth/domain/repositories/main/chat_repository.dart';
 
-class InitiateChatUseCase {
+class CreateChatRoomUseCase {
   final ChatRepository repository;
 
-  InitiateChatUseCase(this.repository);
+  CreateChatRoomUseCase(this.repository);
 
   Future<String> call({
-    required String userId,
-    required String sellerId,
     required String orderId,
+    required String userId,
+    String adminId = 'admin',
+    String? productId,
+    String? productName,
+    String? productImage,
+    String? userFcmToken,
   }) async {
-    return await repository.initiateChat(
-      userId: userId,
-      sellerId: sellerId,
+    return await repository.createChatRoom(
       orderId: orderId,
+      userId: userId,
+      adminId: adminId,
+      productId: productId,
+      productName: productName,
+      productImage: productImage,
+      userFcmToken: userFcmToken,
     );
   }
 }

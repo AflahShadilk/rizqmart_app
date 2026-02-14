@@ -358,10 +358,44 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     ],
                   ),
                 ),
-                Text(
-                  '₹${(item.count * 100).toStringAsFixed(0)}', // Placeholder price calculation
-                  style: context.ts.bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.bold),
+                 // Price and Chat Button
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '₹${(item.count * 100).toStringAsFixed(0)}', // Placeholder price calculation
+                      style: context.ts.bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    4.h,
+                    InkWell(
+                      onTap: () {
+                         Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChatPage(
+                              orderId: widget.order.orderId,
+                              orderDisplayId: widget.order.orderId.substring(0, 8).toUpperCase(),
+                              deliveryPartnerName: 'Product Support', 
+                              productId: item.id,
+                              productName: item.name,
+                              productImage: imageUrl,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text(
+                          'Chat',
+                          style: context.ts.labelSmall?.copyWith(
+                            color: context.cs.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

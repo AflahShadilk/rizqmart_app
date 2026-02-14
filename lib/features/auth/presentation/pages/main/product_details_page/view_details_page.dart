@@ -530,7 +530,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     
     double finalPrice = price;
     if (hasDiscount) {
-      finalPrice = price - (price * discount! / 100);
+      finalPrice = price - (price * discount / 100);
     }
 
     return Column(

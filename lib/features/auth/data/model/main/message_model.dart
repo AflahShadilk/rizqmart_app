@@ -5,30 +5,32 @@ class MessageModel extends MessageEntity {
   const MessageModel({
     required super.id,
     required super.senderId,
-    required super.content,
+    required super.text,
     required super.timestamp,
-    super.type,
+    super.senderRole,
     super.isRead,
   });
 
   factory MessageModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return MessageModel(
-      id: doc.id,
-      senderId: data['senderId'] ?? '',
-      content: data['content'] ?? '',
-      timestamp: (data['timestamp'] as Timestamp).toDate(),
-      type: data['type'] ?? 'text',
-      isRead: data['isRead'] ?? false,
-    );
-  }
+  final data = doc.data() as Map<String, dynamic>;
+  return MessageModel(
+    id: doc.id,
+    senderId: data['senderId'] ?? '',
+    text: data['text'] ?? '',
+    timestamp: data['timestamp'] != null
+        ? (data['timestamp'] as Timestamp).toDate()
+        : DateTime.now(),
+    senderRole: data['senderRole'] ?? 'user',
+    isRead: data['isRead'] ?? false,
+  );
+}
 
   Map<String, dynamic> toJson() {
     return {
       'senderId': senderId,
-      'content': content,
+      'text': text,
       'timestamp': Timestamp.fromDate(timestamp),
-      'type': type,
+      'senderRole': senderRole,
       'isRead': isRead,
     };
   }

@@ -39,7 +39,7 @@ class ChatBubble extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              message.content,
+              message.text,
               style: context.ts.bodyMedium?.copyWith(
                 color: isMe ? context.cs.onPrimary : context.cs.onSurface,
               ),

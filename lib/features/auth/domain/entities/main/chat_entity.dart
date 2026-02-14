@@ -1,24 +1,41 @@
 import 'package:equatable/equatable.dart';
 
 class ChatEntity extends Equatable {
-  final String id;
-  final String userId;
-  final String sellerId;
+  final String id; // Same as orderId
   final String orderId;
+  final String userId;
+  final String adminId;
+  final String? productId;
+  final String? productName;
+  final String? productImage;
   final String lastMessage;
   final DateTime lastMessageTime;
-  final List<String> participants;
+  final DateTime createdAt;
 
   const ChatEntity({
     required this.id,
-    required this.userId,
-    required this.sellerId,
     required this.orderId,
+    required this.userId,
+    required this.adminId,
+    this.productId,
+    this.productName,
+    this.productImage,
     required this.lastMessage,
     required this.lastMessageTime,
-    required this.participants,
+    required this.createdAt,
   });
 
   @override
-  List<Object?> get props => [id, userId, sellerId, orderId, lastMessage, lastMessageTime, participants];
+  List<Object?> get props => [
+        id,
+        orderId,
+        userId,
+        adminId,
+        productId,
+        productName,
+        productImage,
+        lastMessage,
+        lastMessageTime,
+        createdAt,
+      ];
 }

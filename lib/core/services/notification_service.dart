@@ -1,107 +1,130 @@
-
-import 'dart:async';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/chat/chat_page.dart';
 
 class NotificationService {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  // Local state for tracking changes to avoid redundant notifications
-  final Map<String, String> _lastOrderStatuses = {};
-  final Map<String, String> _lastChatMessages = {};
-
-  // Singleton pattern
   static final NotificationService _instance = NotificationService._internal();
-
-  factory NotificationService() {
-    return _instance;
-  }
-
+  factory NotificationService() => _instance;
   NotificationService._internal();
 
-  Future<void> initialize() async {
-    try {
-      // Android initialization
-      const AndroidInitializationSettings initializationSettingsAndroid =
-          AndroidInitializationSettings('@mipmap/ic_launcher');
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-      // iOS initialization
-      const DarwinInitializationSettings initializationSettingsDarwin =
-          DarwinInitializationSettings(
-        requestAlertPermission: true,
-        requestBadgePermission: true,
-        requestSoundPermission: true,
-      );
-      
-      const AndroidNotificationChannel channel = AndroidNotificationChannel(
-        'high_importance_channel',
-        'High Importance Notifications',
-        description: 'This channel is used for important notifications.',
-        importance: Importance.max,
-      );
+  Future<void> initialize(GlobalKey<NavigatorState> navigatorKey) async {
+    // 1. Request Permission
+    await _firebaseMessaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
 
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.createNotificationChannel(channel);
+    // 2. Setup Local Notifications
+    const AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const DarwinInitializationSettings iosSettings = DarwinInitializationSettings();
+    const InitializationSettings initSettings = InitializationSettings(android: androidSettings, iOS: iosSettings);
 
-      const InitializationSettings initializationSettings =
-          InitializationSettings(
-        android: initializationSettingsAndroid,
-        iOS: initializationSettingsDarwin,
-      );
+    await _localNotifications.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: (response) {
+        if (response.payload != null) {
+          _handleNotificationClick(response.payload!, navigatorKey);
+        }
+      },
+    );
 
-      await flutterLocalNotificationsPlugin.initialize(
-        initializationSettings,
-        onDidReceiveNotificationResponse: (NotificationResponse details) async {
-          // Handle notification tap
-        },
-      );
+    // 3. Foreground Messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        _showLocalNotification(message);
+        _saveNotificationToFirestore(
+           title: message.notification!.title ?? 'New Notification',
+           body: message.notification!.body ?? '',
+           type: message.data['type'] ?? 'general',
+           referenceId: message.data['chatId'] ?? message.data['orderId'],
+        );
+      }
+    });
 
-      // Request permissions for Android 13+
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.requestNotificationsPermission();
-          
-    } catch (e) {
-      print('Error initializing NotificationService: $e');
+    // 4. Background/Terminated Messages (User taps notification)
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _handleMessage(message, navigatorKey);
+    });
+
+    // Handle Terminated State (Initial Launch)
+    final initialMessage = await _firebaseMessaging.getInitialMessage();
+    if (initialMessage != null) {
+        _handleMessage(initialMessage, navigatorKey);
     }
   }
 
-  // Show a simple notification
-  Future<void> showNotification({
-    required int id,
-    required String title,
-    required String body,
-    String? payload,
-  }) async {
-    const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-      'high_importance_channel', // channel Id
-      'High Importance Notifications', // channel Name
-      channelDescription: 'This channel is used for important notifications.',
+  Future<String?> getDeviceToken() async {
+    return await _firebaseMessaging.getToken();
+  }
+
+  void _showLocalNotification(RemoteMessage message) {
+    // Create channel for Android
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel', 
+      'High Importance Notifications',
+      description: 'This channel is used for important notifications.',
       importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
     );
 
-    const NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-
-    await flutterLocalNotificationsPlugin.show(
-      id,
-      title,
-      body,
-      notificationDetails,
-      payload: payload,
+    _localNotifications.show(
+      message.notification.hashCode,
+      message.notification?.title,
+      message.notification?.body,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          channel.id,
+          channel.name,
+          channelDescription: channel.description,
+          icon: '@mipmap/ic_launcher',
+          priority: Priority.high,
+        ),
+        iOS: const DarwinNotificationDetails(),
+      ),
+      payload: jsonEncode(message.data),
     );
   }
 
-  // Save notification to Firestore
+  void _handleMessage(RemoteMessage message, GlobalKey<NavigatorState> navigatorKey) {
+     _handleNotificationClick(jsonEncode(message.data), navigatorKey);
+  }
+
+  void _handleNotificationClick(String payload, GlobalKey<NavigatorState> navigatorKey) {
+    try {
+      final data = jsonDecode(payload) as Map<String, dynamic>;
+      // Expecting data: { chatId, orderId, productId ... }
+      if (data.containsKey('chatId') || data.containsKey('orderId')) {
+         // Determine data for ChatPage
+         final orderId = data['orderId'] ?? 'unknown_order'; // Fallback logic
+         final productId = data['productId']; // Can be null
+         
+         navigatorKey.currentState?.push(
+           MaterialPageRoute(
+             builder: (_) => ChatPage(
+               orderId: orderId,
+               orderDisplayId: data['orderDisplayId'] ?? orderId.substring(0, 5), 
+               deliveryPartnerName: data['sellerName'] ?? 'Seller', // Should be in payload
+               productId: productId,
+               productName: data['productName'],
+               productImage: data['productImage'],
+             ),
+           ),
+         );
+      }
+    } catch (e) {
+      debugPrint("Error parsing notification payload: $e");
+    }
+  }
+
+  // Save notification to Firestore (Preserved feature)
   Future<void> _saveNotificationToFirestore({
     required String title,
     required String body,
@@ -125,154 +148,7 @@ class NotificationService {
         });
       }
     } catch (e) {
-      print('Error saving notification to Firestore: $e');
+      debugPrint('Error saving notification to Firestore: $e');
     }
-  }
-
-  // ---------------------------------------------------------------------------
-  // LISTENERS
-  // ---------------------------------------------------------------------------
-
-  StreamSubscription? _orderSubscription;
-  StreamSubscription? _chatSubscription;
-
-  void listenToUserUpdates(String userId) {
-    print("🔔 NotificationService: listenToUserUpdates called for User: $userId");
-    // Cancel existing subscriptions if any
-    dispose();
-
-    listenToOrderUpdates(userId);
-    listenToChatUpdates(userId);
-  }
-
-  void listenToOrderUpdates(String userId) {
-    print("🔔 NotificationService: Subscribing to ORDERS for $userId");
-    _orderSubscription = _firestore
-        .collection('orders')
-        .where('userId', isEqualTo: userId)
-        .snapshots()
-        .listen((snapshot) {
-      print("🔔 NotificationService: Order snapshot received. Changes: ${snapshot.docChanges.length}");
-      for (var change in snapshot.docChanges) {
-        print("🔔 Order Change: Type=${change.type}, ID=${change.doc.id}, Data=${change.doc.data()}");
-        
-        if (change.type == DocumentChangeType.modified || change.type == DocumentChangeType.added) {
-          final data = change.doc.data() as Map<String, dynamic>;
-          final orderId = change.doc.id;
-          final currentStatus = data['status'] as String?;
-          
-          if (currentStatus == null) {
-              print("🔔 Order Status is null for $orderId");
-              continue;
-          }
-
-          // Check against local cache
-          final lastStatus = _lastOrderStatuses[orderId];
-          print("🔔 Order Logic: Last=$lastStatus, Current=$currentStatus");
-
-          // Notify only if status has changed from what we last saw
-          if (lastStatus != null && lastStatus != currentStatus) {
-             print("🔔 Triggering Order Notification: $currentStatus");
-             final title = 'Order Updated';
-             final body = 'Your order #${orderId.substring(0, 5)} is now $currentStatus';
-             
-             showNotification(
-               id: orderId.hashCode,
-               title: title,
-               body: body,
-             );
-             
-             _saveNotificationToFirestore(
-                 title: title, 
-                 body: body, 
-                 type: 'order', 
-                 referenceId: orderId
-             );
-          } else {
-             print("🔔 No status change detected (or first load).");
-          }
-          
-          // Update Cache
-          _lastOrderStatuses[orderId] = currentStatus;
-        }
-      }
-    }, onError: (e) {
-        print("❌ Error listening to order updates: $e");
-    });
-  }
-
-  void listenToChatUpdates(String userId) {
-    print("🔔 NotificationService: Subscribing to CHATS for $userId");
-    _chatSubscription = _firestore
-        .collection('chats')
-        .where('participants', arrayContains: userId)
-        .snapshots()
-        .listen((snapshot) {
-      print("🔔 NotificationService: Chat snapshot received. Changes: ${snapshot.docChanges.length}");
-      for (var change in snapshot.docChanges) {
-        print("🔔 Chat Change: Type=${change.type}, ID=${change.doc.id}");
-        // We only care about Modified (new message in existing chat) or Added (new chat started by someone else?)
-        if (change.type == DocumentChangeType.modified) {
-          final data = change.doc.data() as Map<String, dynamic>;
-          final chatId = change.doc.id;
-          final lastSenderId = data['lastSenderId'] as String?;
-          final lastMessage = data['lastMessage'] as String?;
-          
-          print("🔔 Chat Data: Msg='$lastMessage', Sender='$lastSenderId'");
-
-          // Basic validation
-          if (lastSenderId == null || lastMessage == null || lastMessage.isEmpty) {
-              print("🔔 Chat validation failed (null fields)");
-              continue;
-          }
-
-          // If I sent it, ignore
-          if (lastSenderId == userId) {
-             print("🔔 Ignoring message sent by SELF");
-             _lastChatMessages[chatId] = lastMessage; 
-             continue;
-          }
-
-          // Check if we already notified for this exact message content on this chat
-          final lastCached = _lastChatMessages[chatId];
-          print("🔔 Chat Logic: Cached='$lastCached', New='$lastMessage'");
-          
-          if (lastCached != lastMessage) {
-             print("🔔 Triggering Chat Notification");
-             final title = 'New Message';
-             
-             showNotification(
-               id: chatId.hashCode, 
-               title: title,
-               body: lastMessage,
-             );
-             
-             _saveNotificationToFirestore(
-                 title: title, 
-                 body: lastMessage, 
-                 type: 'chat', 
-                 referenceId: chatId,
-             );
-             
-             // Update Cache
-             _lastChatMessages[chatId] = lastMessage; 
-          } else {
-              print("🔔 Message already processed/cached.");
-          }
-        } else {
-            print("🔔 Ignoring Chat Change Type: ${change.type}");
-        }
-      }
-    }, onError: (e) {
-        print("❌ Error listening to chat updates: $e");
-    });
-  }
-
-  void dispose() {
-    print("🔔 NotificationService: Disposing listeners");
-    _orderSubscription?.cancel();
-    _chatSubscription?.cancel();
-    _lastOrderStatuses.clear();
-    _lastChatMessages.clear();
   }
 }

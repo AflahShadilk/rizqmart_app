@@ -28,3 +28,16 @@ class RequestWithdrawalEvent extends WalletEvent {
   @override
   List<Object?> get props => [userId, amount];
 }
+
+class AddMoneyEvent extends WalletEvent {
+  final String userId;
+  final double amount;
+
+  const AddMoneyEvent({
+    required this.userId,
+    required this.amount,
+  });
+
+  @override
+  List<Object?> get props => [userId, amount];
+}

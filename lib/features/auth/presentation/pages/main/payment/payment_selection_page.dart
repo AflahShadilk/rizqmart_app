@@ -9,6 +9,9 @@ import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart'
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/payment_selection_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/payment_selection_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_event.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rizqmart/core/services/registeration/register.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
@@ -31,10 +34,18 @@ class PaymentSelectionPage extends StatefulWidget {
 class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PaymentSelectionCubit(
-        getSavedCardsUseCase: sl<GetSavedCardsUseCase>(),
-      )..loadSavedCards(FirebaseAuth.instance.currentUser?.uid ?? ''),
+    final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PaymentSelectionCubit(
+            getSavedCardsUseCase: sl<GetSavedCardsUseCase>(),
+          )..loadSavedCards(userId),
+        ),
+        BlocProvider(
+          create: (context) => sl<WalletBloc>()..add(LoadWalletDataEvent(userId)),
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Select Payment Method'),
@@ -189,6 +200,125 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
     required String value,
     required IconData icon,
   }) {
+    if (value == 'wallet') {
+      return BlocBuilder<WalletBloc, WalletState>(
+        builder: (context, walletState) {
+          final balance = walletState.wallet?.balance ?? 0.0;
+          final isInsufficient = balance < widget.order.totalCost;
+          
+          return BlocBuilder<PaymentSelectionCubit, PaymentSelectionState>(
+            builder: (context, state) {
+              final isSelected = state.selectedPayment == value;
+
+              return Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      if (!isInsufficient) {
+                        context.read<PaymentSelectionCubit>().selectPayment(value);
+                      } else {
+                         ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Insufficient wallet balance')),
+                        );
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: isSelected ? context.cs.primary : context.cs.outlineVariant,
+                          width: isSelected ? 2 : 1.5,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        color: isSelected
+                            ? context.cs.primary.withOpacity(0.08)
+                            : (isInsufficient ? Colors.grey.withOpacity(0.05) : Colors.transparent),
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? context.cs.primary.withOpacity(0.15)
+                                  : context.cs.outlineVariant.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              icon,
+                              color: isInsufficient ? Colors.grey : context.cs.primary,
+                              size: 28,
+                            ),
+                          ),
+                          16.w,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  title,
+                                  style: context.ts.bodyLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: isInsufficient ? Colors.grey : null
+                                  ),
+                                ),
+                                4.h,
+                                Text(
+                                  'Balance: ₹${balance.toStringAsFixed(2)}',
+                                  style: context.ts.bodySmall?.copyWith(
+                                    color: isInsufficient ? context.cs.error : context.cs.primary,
+                                    fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                                8.h,
+                                Text(
+                                  description,
+                                  style: context.ts.labelSmall?.copyWith(
+                                    color: (isInsufficient ? Colors.grey : context.cs.primary).withOpacity(0.7),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (!isInsufficient)
+                            Radio<String>(
+                              value: value,
+                              groupValue: state.selectedPayment,
+                              onChanged: (val) {
+                                if (val != null) {
+                                  context.read<PaymentSelectionCubit>().selectPayment(val);
+                                }
+                              },
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (isInsufficient)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () => _showAddMoneyDialog(context),
+                          icon: const Icon(Icons.add),
+                          label: Text('Add Money (₹${(widget.order.totalCost - balance).toStringAsFixed(2)} needed)'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: context.cs.primary,
+                            side: BorderSide(color: context.cs.primary),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
+
     return BlocBuilder<PaymentSelectionCubit, PaymentSelectionState>(
       builder: (context, state) {
         final isSelected = state.selectedPayment == value;
@@ -308,6 +438,68 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
         'paymentMethod': selectedPayment,
         'savedCard': savedCard, // Pass the saved card if selected
       },
+    );
+  }
+  
+  void _showAddMoneyDialog(BuildContext context) {
+    final TextEditingController amountController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          'Add Money to Wallet',
+          style: context.ts.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Amount (₹)',
+                hintText: 'Enter amount to add',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                prefixIcon: const Icon(Icons.currency_rupee),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final amount = double.tryParse(amountController.text);
+              if (amount != null && amount > 0) {
+                 // We need to access WalletBloc from the dialog context, 
+                 // but since the dialog is a new route, it might not have the provider if not passed correctly.
+                 // However, since we are inside the page which has the provider, we can use context.read if we pass the context.
+                 // But wait, the dialog context 'ctx' is different. 
+                 // We should use the 'context' from _showAddMoneyDialog which captures the scope with WalletBloc.
+                 context.read<WalletBloc>().add(AddMoneyEvent(
+                  userId: FirebaseAuth.instance.currentUser?.uid ?? '',
+                  amount: amount,
+                ));
+                Navigator.pop(ctx);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Please enter a valid amount')),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: context.cs.primary,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Add Money'),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -113,6 +113,7 @@ import 'package:rizqmart/features/auth/domain/usecase/main/wallet/get_wallet_tra
 import 'package:rizqmart/features/auth/domain/usecase/main/wallet/withdraw_wallet_amount_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_wallet_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_bloc.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/wallet/credit_wallet_usecase.dart';
 
 final sl = GetIt.instance;
 
@@ -260,12 +261,12 @@ void setupLocator() {
   sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSource(sl()));
   sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(sl()));
 
-  sl.registerLazySingleton(() => InitiateChatUseCase(sl()));
+  sl.registerLazySingleton(() => CreateChatRoomUseCase(sl()));
   sl.registerLazySingleton(() => GetMessagesUseCase(sl()));
   sl.registerLazySingleton(() => SendMessageUseCase(sl()));
 
   sl.registerFactory(() => ChatBloc(
-    initiateChatUseCase: sl(),
+    createChatRoomUseCase: sl(),
     getMessagesUseCase: sl(),
     sendMessageUseCase: sl(),
   ));
@@ -309,10 +310,12 @@ void setupLocator() {
   sl.registerLazySingleton(() => GetWalletTransactionsUseCase(sl()));
   sl.registerLazySingleton(() => RequestWithdrawalUseCase(sl()));
   sl.registerLazySingleton(() => PayWithWalletUseCase(sl()));
+  sl.registerLazySingleton(() => CreditWalletUseCase(sl()));
 
   sl.registerFactory(() => WalletBloc(
     getWalletBalance: sl(),
     getWalletTransactions: sl(),
     requestWithdrawal: sl(),
+    creditWalletUseCase: sl(),
   ));
 }

@@ -5,7 +5,6 @@ import 'package:responsive_display/responsive_display.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:rizqmart/core/services/notification_service.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_event.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
@@ -46,7 +45,6 @@ class _DashboardPageState extends State<DashboardPage> {
     
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      NotificationService().listenToUserUpdates(user.uid);
       context.read<NotificationBloc>().add(LoadNotificationsEvent(user.uid));
     }
   }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rizqmart/features/auth/data/model/main/chat_model.dart';
 import 'package:rizqmart/features/auth/data/model/main/message_model.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
 
@@ -7,39 +8,62 @@ class ChatRemoteDataSource {
 
   ChatRemoteDataSource(this.firestore);
 
-  Future<String> initiateChat({
-    required String userId,
-    required String sellerId,
+  /// Creates or updates a chat room using orderId as the document ID.
+  /// This ensures both user and admin always reference the SAME document.
+  Future<String> createChatRoom({
     required String orderId,
+    required String userId,
+    String adminId = 'admin',
+    String? productId,
+    String? productName,
+    String? productImage,
+    String? userFcmToken,
   }) async {
-    // Check if chat already exists for this order
-    final querySnapshot = await firestore
-        .collection('chats')
-        .where('orderId', isEqualTo: orderId)
-        .where('userId', isEqualTo: userId)
-        .limit(1)
-        .get();
+    final chatRef = firestore.collection('chatRooms').doc(orderId);
 
-    if (querySnapshot.docs.isNotEmpty) {
-      return querySnapshot.docs.first.id;
-    }
-
-    // Create new chat
-    final docRef = await firestore.collection('chats').add({
-      'userId': userId,
-      'sellerId': sellerId,
+    // Use set with merge to create if not exists, or update if exists
+    await chatRef.set({
       'orderId': orderId,
+      'userId': userId,
+      'adminId': adminId,
+      'productId': productId,
+      'productName': productName,
+      'productImage': productImage,
+      'userFcmToken': userFcmToken,
       'lastMessage': '',
       'lastMessageTime': FieldValue.serverTimestamp(),
-      'participants': [userId, sellerId],
-    });
+      'createdAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
 
-    return docRef.id;
+    return orderId; // The chatId IS the orderId
   }
 
+  /// Stream all chat rooms for a specific user
+  Stream<List<ChatModel>> getUserChats(String userId) {
+    return firestore
+        .collection('chatRooms')
+        .where('userId', isEqualTo: userId)
+        .orderBy('lastMessageTime', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) => ChatModel.fromFirestore(doc)).toList();
+    });
+  }
+
+  Stream<List<ChatModel>> getAdminChats(String adminId) {
+  return firestore
+      .collection('chatRooms')
+      .orderBy('lastMessageTime', descending: true)
+      .snapshots()
+      .map((snapshot) {
+    return snapshot.docs.map((doc) => ChatModel.fromFirestore(doc)).toList();
+  });
+}
+
+  /// Stream messages for a chat room (chatId = orderId)
   Stream<List<MessageEntity>> getMessages(String chatId) {
     return firestore
-        .collection('chats')
+        .collection('chatRooms')
         .doc(chatId)
         .collection('messages')
         .orderBy('timestamp', descending: true)
@@ -51,33 +75,32 @@ class ChatRemoteDataSource {
     });
   }
 
-  Future<void> sendMessage({
-    required String chatId,
-    required String senderId,
-    required String content,
-    String type = 'text',
-  }) async {
-    final batch = firestore.batch();
+ Future<void> sendMessage({
+  required String chatId,
+  required String senderId,
+  required String text,
+  required String senderRole,
+}) async {
+  final batch = firestore.batch();
 
-    final chatRef = firestore.collection('chats').doc(chatId);
-    final messageRef = chatRef.collection('messages').doc();
+  final chatRef = firestore.collection('chatRooms').doc(chatId);
+  final messageRef = chatRef.collection('messages').doc();
 
-    final messageData = {
-      'senderId': senderId,
-      'content': content,
-      'timestamp': FieldValue.serverTimestamp(),
-      'type': type,
-      'isRead': false,
-    };
+  final messageData = {
+    'senderId': senderId,
+    'text': text,
+    'timestamp': FieldValue.serverTimestamp(), 
+    'type': 'text', 
+    'senderRole': senderRole,
+  };
 
-    batch.set(messageRef, messageData);
+  batch.set(messageRef, messageData);
 
-    batch.update(chatRef, {
-      'lastMessage': content,
-      'lastMessageTime': FieldValue.serverTimestamp(),
-      'lastSenderId': senderId,
-    });
+  batch.update(chatRef, {
+    'lastMessage': text,
+    'timestamp': FieldValue.serverTimestamp(),
+  });
 
-    await batch.commit();
-  }
+  await batch.commit();
+}
 }

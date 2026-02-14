@@ -8,6 +8,9 @@ import 'package:rizqmart/core/services/notification_service.dart';
 import 'package:rizqmart/core/services/stripe_services.dart';
 import 'package:rizqmart/firebase_options.dart';
 
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   runZonedGuarded(
     () async {
@@ -40,7 +43,7 @@ void main() async {
       }
 
       try {
-        await NotificationService().initialize();
+        await NotificationService().initialize(navigatorKey);
         print('✅ Notification service initialized');
       } catch (e) {
         print('❌ Notification service error: $e');
@@ -53,7 +56,7 @@ void main() async {
         print('❌ Locator setup error: $e');
       }
 
-      runApp(const MyApp());
+      runApp(MyApp(navigatorKey: navigatorKey));
     },
     (error, stackTrace) {
 
@@ -66,10 +69,11 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final GlobalKey<NavigatorState> navigatorKey;
+  const MyApp({super.key, required this.navigatorKey});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProviders();
+    return BlocProviders(navigatorKey: navigatorKey);
   }
 }

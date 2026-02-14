@@ -8,14 +8,14 @@ class SendMessageUseCase {
   Future<void> call({
     required String chatId,
     required String senderId,
-    required String content,
-    String type = 'text',
+    required String text,
+    required String senderRole,
   }) async {
     await repository.sendMessage(
       chatId: chatId,
       senderId: senderId,
-      content: content,
-      type: type,
+      text: text,
+      senderRole: senderRole,
     );
   }
 }

@@ -33,7 +33,8 @@ import 'package:rizqmart/features/auth/presentation/bloc/notification/notificati
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
 
 class BlocProviders extends StatelessWidget {
-  const BlocProviders({super.key});
+  final GlobalKey<NavigatorState>? navigatorKey;
+  const BlocProviders({super.key, this.navigatorKey});
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +161,7 @@ class BlocProviders extends StatelessWidget {
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
           return MaterialApp(
+            navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
             title: 'RizqMart',
             theme: ThemeCubit.lightTheme,

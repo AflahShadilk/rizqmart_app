@@ -14,12 +14,20 @@ class ChatPage extends StatefulWidget {
   final String orderId;
   final String orderDisplayId;
   final String deliveryPartnerName;
+  final String? productId;
+  final String? productName;
+  final String? productImage;
+  final String? sellerId;
 
   const ChatPage({
     super.key,
     required this.orderId,
     required this.orderDisplayId,
     required this.deliveryPartnerName,
+    this.productId,
+    this.productName,
+    this.productImage,
+    this.sellerId,
   });
 
   @override
@@ -29,17 +37,23 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  String? _currentChatId;
-  final String _currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  late final String _currentUserId;
+  late final String _chatId; // chatId = orderId (deterministic)
 
   @override
   void initState() {
     super.initState();
-    // Initiate chat on load
-    context.read<ChatBloc>().add(InitiateChatEvent(
-      userId: _currentUserId,
-      sellerId: 'admin', // Hardcoded for now
+    _currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    _chatId = widget.orderId; // The chatId IS the orderId
+
+    // Create/ensure chat room exists and start loading messages
+    context.read<ChatBloc>().add(CreateChatRoomEvent(
       orderId: widget.orderId,
+      userId: _currentUserId,
+      adminId: widget.sellerId ?? 'admin',
+      productId: widget.productId,
+      productName: widget.productName,
+      productImage: widget.productImage,
     ));
   }
 
@@ -54,12 +68,13 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _sendMessage() {
-    if (_messageController.text.trim().isEmpty || _currentChatId == null) return;
+    if (_messageController.text.trim().isEmpty) return;
 
     context.read<ChatBloc>().add(SendMessageEvent(
-      chatId: _currentChatId!,
+      chatId: _chatId,
       senderId: _currentUserId,
-      content: _messageController.text.trim(),
+      text: _messageController.text.trim(),
+      senderRole: 'user',
     ));
 
     _messageController.clear();
@@ -83,11 +98,7 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
-          if (state is ChatInitiatedState) {
-            _currentChatId = state.chatId;
-          }
           if (state is ChatMessagesLoadedState) {
-            // Scroll to bottom when new messages arrive
             WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
           }
         },
@@ -113,11 +124,6 @@ class _ChatPageState extends State<ChatPage> {
                          controller: _scrollController,
                          itemCount: state.messages.length,
                          padding: const EdgeInsets.symmetric(vertical: 16),
-                         // Messages come descending (newest first), so we should reverse or handle accordingly.
-                         // But ChatDataSource sends desc. Let's create bubble list.
-                         // For chat UI it's better to reverse the list view or sort messages as asc.
-                         // Let's check DataSource query: `orderBy('timestamp', descending: true)`.
-                         // So index 0 is NEWEST.
                          reverse: true, 
                          itemBuilder: (context, index) {
                            final message = state.messages[index];

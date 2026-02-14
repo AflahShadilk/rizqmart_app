@@ -1,0 +1,503 @@
+
+Support for Android x86 targets will be removed in the next stable release after 3.27. See https://github.com/flutter/flutter/issues/157543 for details.
+Running Gradle task 'assembleDebug'...                          
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+e: Daemon compilation failed: Connection to the Kotlin daemon has been unexpectedly lost. This might be caused by the daemon being killed by another process or the operating system, or by JVM crash.
+org.jetbrains.kotlin.gradle.tasks.DaemonCrashedException: Connection to the Kotlin daemon has been unexpectedly lost. This might be caused by the daemon being killed by another process or the operating system, or by JVM crash.
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemon(GradleKotlinCompilerWork.kt:253)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemonOrFallbackImpl(GradleKotlinCompilerWork.kt:178)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.run(GradleKotlinCompilerWork.kt:138)
+	at org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction.execute(GradleCompilerRunnerWithWorkers.kt:76)
+	at org.gradle.workers.internal.DefaultWorkerServer.execute(DefaultWorkerServer.java:63)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:66)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:62)
+	at org.gradle.internal.classloader.ClassLoaderUtils.executeInClassloader(ClassLoaderUtils.java:100)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.lambda$execute$0(NoIsolationWorkerFactory.java:62)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:44)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:41)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:200)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:195)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOperationExecutor.java:73)
+	at org.gradle.workers.internal.AbstractWorker.executeWrappedInBuildOperation(AbstractWorker.java:41)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.execute(NoIsolationWorkerFactory.java:59)
+	at org.gradle.workers.internal.DefaultWorkerExecutor.lambda$submitWork$0(DefaultWorkerExecutor.java:174)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runExecution(DefaultConditionalExecutionQueue.java:187)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.access$700(DefaultConditionalExecutionQueue.java:120)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner$1.run(DefaultConditionalExecutionQueue.java:162)
+	at org.gradle.internal.Factories$1.create(Factories.java:31)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:264)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:128)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:133)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runBatch(DefaultConditionalExecutionQueue.java:157)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.run(DefaultConditionalExecutionQueue.java:126)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:577)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1589)
+Caused by: java.rmi.UnmarshalException: Error unmarshaling return header; nested exception is: 
+	java.net.SocketException: Connection reset
+	at java.rmi/sun.rmi.transport.StreamRemoteCall.executeCall(StreamRemoteCall.java:255)
+	at java.rmi/sun.rmi.server.UnicastRef.invoke(UnicastRef.java:166)
+	at java.rmi/java.rmi.server.RemoteObjectInvocationHandler.invokeRemoteMethod(RemoteObjectInvocationHandler.java:215)
+	at java.rmi/java.rmi.server.RemoteObjectInvocationHandler.invoke(RemoteObjectInvocationHandler.java:160)
+	at jdk.proxy4/jdk.proxy4.$Proxy145.compile(Unknown Source)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.incrementalCompilationWithDaemon(GradleKotlinCompilerWork.kt:343)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemon(GradleKotlinCompilerWork.kt:242)
+	... 38 more
+Caused by: java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:313)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:340)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:789)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:1025)
+	at java.base/java.io.BufferedInputStream.fill(BufferedInputStream.java:255)
+	at java.base/java.io.BufferedInputStream.implRead(BufferedInputStream.java:289)
+	at java.base/java.io.BufferedInputStream.read(BufferedInputStream.java:276)
+	at java.base/java.io.DataInputStream.readByte(DataInputStream.java:271)
+	at java.rmi/sun.rmi.transport.StreamRemoteCall.executeCall(StreamRemoteCall.java:241)
+	... 44 more
+
+e: Daemon compilation failed: Connection to the Kotlin daemon has been unexpectedly lost. This might be caused by the daemon being killed by another process or the operating system, or by JVM crash.
+org.jetbrains.kotlin.gradle.tasks.DaemonCrashedException: Connection to the Kotlin daemon has been unexpectedly lost. This might be caused by the daemon being killed by another process or the operating system, or by JVM crash.
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemon(GradleKotlinCompilerWork.kt:253)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemonOrFallbackImpl(GradleKotlinCompilerWork.kt:178)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.run(GradleKotlinCompilerWork.kt:138)
+	at org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction.execute(GradleCompilerRunnerWithWorkers.kt:76)
+	at org.gradle.workers.internal.DefaultWorkerServer.execute(DefaultWorkerServer.java:63)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:66)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:62)
+	at org.gradle.internal.classloader.ClassLoaderUtils.executeInClassloader(ClassLoaderUtils.java:100)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.lambda$execute$0(NoIsolationWorkerFactory.java:62)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:44)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:41)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:200)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:195)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOperationExecutor.java:73)
+	at org.gradle.workers.internal.AbstractWorker.executeWrappedInBuildOperation(AbstractWorker.java:41)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.execute(NoIsolationWorkerFactory.java:59)
+	at org.gradle.workers.internal.DefaultWorkerExecutor.lambda$submitWork$0(DefaultWorkerExecutor.java:174)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runExecution(DefaultConditionalExecutionQueue.java:187)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.access$700(DefaultConditionalExecutionQueue.java:120)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner$1.run(DefaultConditionalExecutionQueue.java:162)
+	at org.gradle.internal.Factories$1.create(Factories.java:31)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:264)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:128)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:133)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runBatch(DefaultConditionalExecutionQueue.java:157)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.run(DefaultConditionalExecutionQueue.java:126)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:577)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1589)
+Caused by: java.rmi.UnmarshalException: Error unmarshaling return header; nested exception is: 
+	java.net.SocketException: Connection reset
+	at java.rmi/sun.rmi.transport.StreamRemoteCall.executeCall(StreamRemoteCall.java:255)
+	at java.rmi/sun.rmi.server.UnicastRef.invoke(UnicastRef.java:166)
+	at java.rmi/java.rmi.server.RemoteObjectInvocationHandler.invokeRemoteMethod(RemoteObjectInvocationHandler.java:215)
+	at java.rmi/java.rmi.server.RemoteObjectInvocationHandler.invoke(RemoteObjectInvocationHandler.java:160)
+	at jdk.proxy4/jdk.proxy4.$Proxy145.compile(Unknown Source)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.incrementalCompilationWithDaemon(GradleKotlinCompilerWork.kt:343)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemon(GradleKotlinCompilerWork.kt:242)
+	... 38 more
+Caused by: java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:313)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:340)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:789)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:1025)
+	at java.base/java.io.BufferedInputStream.fill(BufferedInputStream.java:255)
+	at java.base/java.io.BufferedInputStream.implRead(BufferedInputStream.java:289)
+	at java.base/java.io.BufferedInputStream.read(BufferedInputStream.java:276)
+	at java.base/java.io.DataInputStream.readByte(DataInputStream.java:271)
+	at java.rmi/sun.rmi.transport.StreamRemoteCall.executeCall(StreamRemoteCall.java:241)
+	... 44 more
+
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.4.11\android\src\main\kotlin\io\flutter\plugins\sharedpreferences\SharedPreferencesPlugin.kt:451:52: warning: unnecessary non-null assertion (!!) on a non-null receiver of type String
+exception:       if (value!!.startsWith(LIST_PREFIX) && !value!!.startsWith(JSON_LIST_PREFIX)) {
+exception:                                                    ^
+Errors were stored into C:\flutterDev\projects\rizqmart\android\.gradle\kotlin\errors\errors-1771077147635.log
+Errors were stored into C:\flutterDev\projects\rizqmart\android\.gradle\kotlin\errors\errors-1771077147653.log
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':stripe_android:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 5m 10s
+Running Gradle task 'assembleDebug'...                            313.4s
+[!] Gradle threw an error while downloading artifacts from the network.
+Retrying Gradle Build: #1, wait time: 100ms
+Support for Android x86 targets will be removed in the next stable release after 3.27. See https://github.com/flutter/flutter/issues/157543 for details.
+Running Gradle task 'assembleDebug'...                          
+e: Daemon compilation failed: Connection to the Kotlin daemon has been unexpectedly lost. This might be caused by the daemon being killed by another process or the operating system, or by JVM crash.
+org.jetbrains.kotlin.gradle.tasks.DaemonCrashedException: Connection to the Kotlin daemon has been unexpectedly lost. This might be caused by the daemon being killed by another process or the operating system, or by JVM crash.
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemon(GradleKotlinCompilerWork.kt:253)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemonOrFallbackImpl(GradleKotlinCompilerWork.kt:178)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.run(GradleKotlinCompilerWork.kt:138)
+	at org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction.execute(GradleCompilerRunnerWithWorkers.kt:76)
+	at org.gradle.workers.internal.DefaultWorkerServer.execute(DefaultWorkerServer.java:63)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:66)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:62)
+	at org.gradle.internal.classloader.ClassLoaderUtils.executeInClassloader(ClassLoaderUtils.java:100)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.lambda$execute$0(NoIsolationWorkerFactory.java:62)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:44)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:41)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:200)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:195)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOperationExecutor.java:73)
+	at org.gradle.workers.internal.AbstractWorker.executeWrappedInBuildOperation(AbstractWorker.java:41)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.execute(NoIsolationWorkerFactory.java:59)
+	at org.gradle.workers.internal.DefaultWorkerExecutor.lambda$submitWork$0(DefaultWorkerExecutor.java:174)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runExecution(DefaultConditionalExecutionQueue.java:187)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.access$700(DefaultConditionalExecutionQueue.java:120)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner$1.run(DefaultConditionalExecutionQueue.java:162)
+	at org.gradle.internal.Factories$1.create(Factories.java:31)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:264)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:128)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:133)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runBatch(DefaultConditionalExecutionQueue.java:157)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.run(DefaultConditionalExecutionQueue.java:126)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:577)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1589)
+Caused by: java.rmi.UnmarshalException: Error unmarshaling return header; nested exception is: 
+	java.net.SocketException: Connection reset
+	at java.rmi/sun.rmi.transport.StreamRemoteCall.executeCall(StreamRemoteCall.java:255)
+	at java.rmi/sun.rmi.server.UnicastRef.invoke(UnicastRef.java:166)
+	at java.rmi/java.rmi.server.RemoteObjectInvocationHandler.invokeRemoteMethod(RemoteObjectInvocationHandler.java:215)
+	at java.rmi/java.rmi.server.RemoteObjectInvocationHandler.invoke(RemoteObjectInvocationHandler.java:160)
+	at jdk.proxy4/jdk.proxy4.$Proxy145.compile(Unknown Source)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.incrementalCompilationWithDaemon(GradleKotlinCompilerWork.kt:343)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemon(GradleKotlinCompilerWork.kt:242)
+	... 38 more
+Caused by: java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:313)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:340)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:789)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:1025)
+	at java.base/java.io.BufferedInputStream.fill(BufferedInputStream.java:255)
+	at java.base/java.io.BufferedInputStream.implRead(BufferedInputStream.java:289)
+	at java.base/java.io.BufferedInputStream.read(BufferedInputStream.java:276)
+	at java.base/java.io.DataInputStream.readByte(DataInputStream.java:271)
+	at java.rmi/sun.rmi.transport.StreamRemoteCall.executeCall(StreamRemoteCall.java:241)
+	... 44 more
+
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\facebook\react\bridge\ReactContext.kt:20:25: warning: parameter 'clazz' is never used
+exception:     fun getNativeModule(clazz: Class<UIManagerModule>): UIManagerModule {
+exception:                         ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\facebook\react\bridge\ReactContext.kt:24:25: warning: parameter 'clazz' is never used
+exception:     fun getNativeModule(clazz: Class<StripeSdkModule>): StripeSdkModule {
+exception:                         ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\facebook\react\bridge\ReactContext.kt:28:21: warning: parameter 'clazz' is never used
+exception:     fun getJSModule(clazz: Any): DeviceEventManagerModule.RCTDeviceEventEmitter {
+exception:                     ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\facebook\react\uimanager\events\RCTEventEmitter.kt:8:22: warning: parameter 'viewTag' is never used
+exception:     fun receiveEvent(viewTag: Any, eventName: String, serializeEventData: WritableMap?) {
+exception:                      ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeAddToWalletPlatformView.kt:17:5: warning: parameter 'id' is never used
+exception:     id: Int,
+exception:     ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeAddToWalletPlatformView.kt:23:5: warning: lateinit is unnecessary: definitely initialized in constructors
+exception:     lateinit var nativeView: AddToWalletButtonView
+exception:     ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeAddToWalletPlatformView.kt:40:66: warning: unchecked cast: Any? to Map<String, Any>
+exception:                 ReadableMap(creationParams["androidAssetSource"] as Map<String, Any>)
+exception:                                                                  ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeAddToWalletPlatformView.kt:47:59: warning: unchecked cast: Any? to Map<String, Any>
+exception:                 ReadableMap(creationParams["cardDetails"] as Map<String, Any>)
+exception:                                                           ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeAddToWalletPlatformViewFactory.kt:21:35: warning: unchecked cast: Any? to Map<String?, Any?>?
+exception:         val creationParams = args as? Map<String?, Any?>?
+exception:                                   ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeAubecsDebitPlatformView.kt:17:5: warning: parameter 'id' is never used
+exception:     id: Int,
+exception:     ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeAubecsDebitPlatformView.kt:23:5: warning: lateinit is unnecessary: definitely initialized in constructors
+exception:     lateinit var aubecsView: AuBECSDebitFormView
+exception:     ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeAubecsDebitPlatformView.kt:40:57: warning: unchecked cast: Any? to Map<String, Any>
+exception:                 ReadableMap(creationParams["formStyle"] as Map<String, Any>)
+exception:                                                         ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeAubecsDebitPlatformView.kt:68:60: warning: unchecked cast: Any! to Map<String, Any>
+exception:                 val arguments = ReadableMap(call.arguments as Map<String, Any>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeAubecsDebitPlatformViewFactory.kt:21:35: warning: unchecked cast: Any? to Map<String?, Any?>?
+exception:         val creationParams = args as? Map<String?, Any?>?
+exception:                                   ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardFormPlatformView.kt:27:9: warning: parameter 'id' is never used
+exception:         id: Int,
+exception:         ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardFormPlatformView.kt:40:96: warning: unchecked cast: Any? to Map<String, Any>
+exception:             cardFormViewManager.setCardStyle(cardView, ReadableMap(creationParams["cardStyle"] as Map<String, Any>))
+exception:                                                                                                ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardFormPlatformView.kt:43:104: warning: unchecked cast: Any? to Map<String, Any>
+exception:             cardFormViewManager.setDefaultValues(cardView, ReadableMap(creationParams["defaultValues"] as Map<String, Any>))
+exception:                                                                                                        ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardFormPlatformView.kt:58:114: warning: unchecked cast: Any? to List<Any>
+exception:             cardFormViewManager.setPreferredNetworks(cardView, ReadableArray(creationParams["preferredNetworks"] as List<Any>))
+exception:                                                                                                                  ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardFormPlatformView.kt:61:67: warning: unchecked cast: Any? to Map<String, Any>
+exception:             val value = ReadableMap(creationParams["cardDetails"] as Map<String, Any>)
+exception:                                                                   ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardFormPlatformView.kt:94:60: warning: unchecked cast: Any! to Map<String, Any>
+exception:                 val arguments = ReadableMap(call.arguments as Map<String, Any>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardFormPlatformView.kt:99:60: warning: unchecked cast: Any! to Map<String, Any>
+exception:                 val arguments = ReadableMap(call.arguments as Map<String, Any>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardFormPlatformView.kt:104:60: warning: unchecked cast: Any! to Map<String, Any>
+exception:                 val arguments = ReadableMap(call.arguments as Map<String, Any>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardFormPlatformView.kt:109:60: warning: unchecked cast: Any! to Map<String, Any>
+exception:                 val arguments = ReadableMap(call.arguments as Map<String, Any>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardFormPlatformView.kt:114:60: warning: unchecked cast: Any! to Map<String, Any>
+exception:                 val arguments = ReadableMap(call.arguments as Map<String, Any>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardFormPlatformView.kt:122:21: warning: 'toggleSoftInput(Int, Int): Unit' is deprecated. Deprecated in Java
+exception:                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+exception:                     ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardFormPlatformView.kt:122:56: warning: 'SHOW_FORCED: Int' is deprecated. Deprecated in Java
+exception:                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+exception:                                                        ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardFormPlatformViewFactory.kt:20:35: warning: unchecked cast: Any? to Map<String?, Any?>?
+exception:         val creationParams = args as? Map<String?, Any?>?
+exception:                                   ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:22:9: warning: parameter 'id' is never used
+exception:         id: Int,
+exception:         ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:36:101: warning: unchecked cast: Any? to Map<String, Any>
+exception:             stripeSdkCardViewManager.setCardStyle(cardView, ReadableMap(creationParams["cardStyle"] as Map<String, Any>))
+exception:                                                                                                     ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:45:106: warning: unchecked cast: Any? to Map<String, Any>
+exception:             stripeSdkCardViewManager.setPlaceHolders(cardView, ReadableMap(creationParams["placeholder"] as Map<String, Any>))
+exception:                                                                                                          ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:51:119: warning: unchecked cast: Any? to List<Any>
+exception:             stripeSdkCardViewManager.setPreferredNetworks(cardView, ReadableArray(creationParams["preferredNetworks"] as List<Any>))
+exception:                                                                                                                       ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:60:67: warning: unchecked cast: Any? to Map<String, Any>
+exception:             val value = ReadableMap(creationParams["cardDetails"] as Map<String, Any>)
+exception:                                                                   ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:99:60: warning: unchecked cast: Any! to Map<String, Any>
+exception:                 val arguments = ReadableMap(call.arguments as Map<String, Any>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:104:60: warning: unchecked cast: Any! to Map<String, Any>
+exception:                 val arguments = ReadableMap(call.arguments as Map<String, Any>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:109:60: warning: unchecked cast: Any! to Map<String, Any>
+exception:                 val arguments = ReadableMap(call.arguments as Map<String, Any>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:114:60: warning: unchecked cast: Any! to Map<String, Any>
+exception:                 val arguments = ReadableMap(call.arguments as Map<String, Any>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:119:60: warning: unchecked cast: Any! to Map<String, Any>
+exception:                 val arguments = ReadableMap(call.arguments as Map<String, Any>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:124:60: warning: unchecked cast: Any! to Map<String, Any>
+exception:                 val arguments = ReadableMap(call.arguments as Map<String, Any>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:129:60: warning: unchecked cast: Any! to Map<String, Any>
+exception:                 val arguments = ReadableMap(call.arguments as Map<String, Any>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:137:21: warning: 'toggleSoftInput(Int, Int): Unit' is deprecated. Deprecated in Java
+exception:                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+exception:                     ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformView.kt:137:56: warning: 'SHOW_FORCED: Int' is deprecated. Deprecated in Java
+exception:                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+exception:                                                        ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkCardPlatformViewFactory.kt:20:35: warning: unchecked cast: Any? to Map<String?, Any?>?
+exception:         val creationParams = args as? Map<String?, Any?>?
+exception:                                   ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkGooglePayButtonPlatformView.kt:14:5: warning: parameter 'context' is never used
+exception:     context: Context,
+exception:     ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkGooglePayButtonPlatformView.kt:16:5: warning: parameter 'id' is never used
+exception:     id: Int,
+exception:     ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkGooglePayButtonPlatformViewFactory.kt:20:35: warning: unchecked cast: Any? to Map<String?, Any?>?
+exception:         val creationParams = args as? Map<String?, Any?>?
+exception:                                   ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkModuleExtensions.kt:32:24: warning: parameter 'requestCode' is never used
+exception:     fun dispatchResult(requestCode: Int, resultCode: Int, data: Intent?) {}
+exception:                        ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkModuleExtensions.kt:32:42: warning: parameter 'resultCode' is never used
+exception:     fun dispatchResult(requestCode: Int, resultCode: Int, data: Intent?) {}
+exception:                                          ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\flutter\stripe\StripeSdkModuleExtensions.kt:32:59: warning: parameter 'data' is never used
+exception:     fun dispatchResult(requestCode: Int, resultCode: Int, data: Intent?) {}
+exception:                                                           ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\AuBECSDebitFormView.kt:22:104: warning: unnecessary safe call on a non-null receiver of type UIManagerModule
+exception:   private var mEventDispatcher: EventDispatcher? = context.getNativeModule(UIManagerModule::class.java)?.eventDispatcher
+exception:                                                                                                        ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\CardFieldView.kt:41:104: warning: unnecessary safe call on a non-null receiver of type UIManagerModule
+exception:   private var mEventDispatcher: EventDispatcher? = context.getNativeModule(UIManagerModule::class.java)?.eventDispatcher
+exception:                                                                                                        ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\CardFormView.kt:35:104: warning: unnecessary safe call on a non-null receiver of type UIManagerModule
+exception:   private var mEventDispatcher: EventDispatcher? = context.getNativeModule(UIManagerModule::class.java)?.eventDispatcher
+exception:                                                                                                        ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\FinancialConnectionsSheetFragment.kt:270:9: warning: duplicate label in when
+exception:         FinancialConnectionsAccount.Permissions.ACCOUNT_NUMBERS -> "accountNumbers"
+exception:         ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\GooglePayFragment.kt:143:16: warning: 'present(String, Int, String? = ...): Unit' is deprecated. Use the present method that takes a Long as the amount instead.
+exception:       launcher.present(
+exception:                ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\GooglePayRequestHelper.kt:96:25: warning: 'resolveTask(Task<TResult!>, Activity, Int): Unit' is deprecated. Deprecated in Java
+exception:       AutoResolveHelper.resolveTask(
+exception:                         ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\PaymentSheetAppearance.kt:112:37: warning: 'get(String!): Any?' is deprecated. Deprecated in Java
+exception:     val valueOfUnknownType = bundle.get(key)
+exception:                                     ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\PaymentSheetAppearance.kt:127:37: warning: 'get(String!): Any?' is deprecated. Deprecated in Java
+exception:     val valueOfUnknownType = bundle.get(key)
+exception:                                     ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\PaymentSheetAppearance.kt:142:37: warning: 'get(String!): Any?' is deprecated. Deprecated in Java
+exception:     val valueOfUnknownType = bundle.get(key)
+exception:                                     ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\PaymentSheetFragment.kt:95:62: warning: 'drawableResourceId: Int' is deprecated. Please use icon() instead.
+exception:         val bitmap = getBitmapFromVectorDrawable(context, it.drawableResourceId)
+exception:                                                              ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\PaymentSheetFragment.kt:285:32: warning: unnecessary safe call on a non-null receiver of type FragmentActivity
+exception:         context.currentActivity?.application?.unregisterActivityLifecycleCallbacks(this)
+exception:                                ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\PaymentSheetFragment.kt:296:28: warning: unnecessary safe call on a non-null receiver of type FragmentActivity
+exception:     context.currentActivity?.application?.registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
+exception:                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\PaymentSheetFragment.kt:309:62: warning: 'drawableResourceId: Int' is deprecated. Please use icon() instead.
+exception:         val bitmap = getBitmapFromVectorDrawable(context, it.drawableResourceId)
+exception:                                                              ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\StripeSdkModule.kt:84:25: warning: 'getParcelableExtra(String!): T?' is deprecated. Deprecated in Java
+exception:               if (data?.getParcelableExtra<Parcelable>("extra_activity_result") != null) {
+exception:                         ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\StripeSdkModule.kt:944:19: warning: parameter 'eventName' is never used
+exception:   fun addListener(eventName: String) {
+exception:                   ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\addresssheet\AddressSheetView.kt:24:103: warning: unnecessary safe call on a non-null receiver of type UIManagerModule
+exception:   private var eventDispatcher: EventDispatcher? = context.getNativeModule(UIManagerModule::class.java)?.eventDispatcher
+exception:                                                                                                       ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\customersheet\CustomerSheetFragment.kt:155:9: warning: variable 'customerSheetActivity' is assigned but never accessed
+exception:     var customerSheetActivity: Activity? = null
+exception:         ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\pushprovisioning\AddToWalletButtonView.kt:30:103: warning: unnecessary safe call on a non-null receiver of type UIManagerModule
+exception:   private var eventDispatcher: EventDispatcher? = context.getNativeModule(UIManagerModule::class.java)?.eventDispatcher
+exception:                                                                                                       ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\pushprovisioning\PushProvisioningProxy.kt:54:30: warning: unnecessary safe call on a non-null receiver of type FragmentActivity
+exception:       context.currentActivity?.let {
+exception:                              ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\pushprovisioning\PushProvisioningProxy.kt:60:9: warning: elvis operator (?:) always returns the left operand of non-nullable type Unit
+exception:       } ?: run {
+exception:         ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\pushprovisioning\TapAndPayProxy.kt:29:39: warning: unchecked cast: Any! to Task<List<Any>>
+exception:       listTokensMethod.invoke(client) as Task<List<Any>>
+exception:                                       ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\utils\Mappers.kt:393:64: warning: 'linkedAccount: String?' is deprecated. Renamed to 'financialConnectionsAccount', 'linkedAccount' will be removed in a future major update
+exception:     it.putString("linkedAccount", paymentMethod.usBankAccount?.linkedAccount)
+exception:                                                                ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\utils\Mappers.kt:899:62: warning: unchecked cast: ArrayList<Any!>? to ArrayList<String>
+exception:             is String -> result.putStringArrayList(key, list as java.util.ArrayList<String>)
+exception:                                                              ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\utils\Mappers.kt:900:60: warning: unchecked cast: ArrayList<Any!>? to ArrayList<Int>
+exception:             is Int -> result.putIntegerArrayList(key, list as java.util.ArrayList<Int>)
+exception:                                                            ^
+exception: c:\Users\SHADIL\AppData\Local\Pub\Cache\hosted\pub.dev\stripe_android-10.2.1\android\src\main\kotlin\com\reactnativestripesdk\utils\Mappers.kt:905:7: warning: 'when' is exhaustive so 'else' is redundant here
+exception:       else -> Log.e("toBundleException", "Could not convert object with key: $key.")
+exception:       ^
+Errors were stored into C:\flutterDev\projects\rizqmart\android\.gradle\kotlin\errors\errors-1771077433541.log
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+e: Daemon compilation failed: Could not connect to Kotlin compile daemon
+java.lang.RuntimeException: Could not connect to Kotlin compile daemon
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemon(GradleKotlinCompilerWork.kt:221)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.compileWithDaemonOrFallbackImpl(GradleKotlinCompilerWork.kt:178)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.run(GradleKotlinCompilerWork.kt:138)
+	at org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction.execute(GradleCompilerRunnerWithWorkers.kt:76)
+	at org.gradle.workers.internal.DefaultWorkerServer.execute(DefaultWorkerServer.java:63)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:66)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:62)
+	at org.gradle.internal.classloader.ClassLoaderUtils.executeInClassloader(ClassLoaderUtils.java:100)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.lambda$execute$0(NoIsolationWorkerFactory.java:62)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:44)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:41)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:200)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:195)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOperationExecutor.java:73)
+	at org.gradle.workers.internal.AbstractWorker.executeWrappedInBuildOperation(AbstractWorker.java:41)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.execute(NoIsolationWorkerFactory.java:59)
+	at org.gradle.workers.internal.DefaultWorkerExecutor.lambda$submitWork$0(DefaultWorkerExecutor.java:174)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runExecution(DefaultConditionalExecutionQueue.java:187)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.access$700(DefaultConditionalExecutionQueue.java:120)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner$1.run(DefaultConditionalExecutionQueue.java:162)
+	at org.gradle.internal.Factories$1.create(Factories.java:31)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:264)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:128)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:133)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runBatch(DefaultConditionalExecutionQueue.java:157)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.run(DefaultConditionalExecutionQueue.java:126)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:577)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1589)
+
+exception: Java HotSpot(TM) 64-Bit Server VM warning: INFO: os::commit_memory(0x0000000084e00000, 130023424, 0) failed; error='The paging file is too small for this operation to complete' (DOS error/errno=1455)
+Errors were stored into C:\flutterDev\projects\rizqmart\android\.gradle\kotlin\errors\errors-1771077432254.log
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 3m 13s
+Running Gradle task 'assembleDebug'...                            200.1s
+[!] Gradle threw an error while downloading artifacts from the network.
+Gradle task assembleDebug failed with exit code 1

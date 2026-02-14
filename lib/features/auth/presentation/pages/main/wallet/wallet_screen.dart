@@ -90,30 +90,50 @@ class WalletScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 24),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => WithdrawScreen(userId: userId),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => WithdrawScreen(userId: userId),
+                                    ),
+                                  ).then((_) {
+                                    // Refresh on return
+                                    context.read<WalletBloc>().add(LoadWalletDataEvent(userId));
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: context.cs.primary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
                                 ),
-                              ).then((_) {
-                                // Refresh on return
-                                context.read<WalletBloc>().add(LoadWalletDataEvent(userId));
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: context.cs.primary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                child: const Text('Withdraw', style: TextStyle(fontWeight: FontWeight.bold)),
                               ),
-                              padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
-                            child: const Text('Withdraw Funds', style: TextStyle(fontWeight: FontWeight.bold)),
-                          ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => _showAddMoneyDialog(context),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white.withOpacity(0.2),
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                  side: const BorderSide(color: Colors.white),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                                child: const Text('Add Money', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -206,5 +226,62 @@ class WalletScreen extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
+  }
+
+  void _showAddMoneyDialog(BuildContext context) {
+    final TextEditingController amountController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          'Add Money to Wallet',
+          style: context.ts.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Amount (₹)',
+                hintText: 'Enter amount to add',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                prefixIcon: const Icon(Icons.currency_rupee),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final amount = double.tryParse(amountController.text);
+              if (amount != null && amount > 0) {
+                context.read<WalletBloc>().add(AddMoneyEvent(
+                  userId: userId,
+                  amount: amount,
+                ));
+                Navigator.pop(ctx);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Please enter a valid amount')),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: context.cs.primary,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Add Money'),
+          ),
+        ],
+      ),
+    );
   }
 }

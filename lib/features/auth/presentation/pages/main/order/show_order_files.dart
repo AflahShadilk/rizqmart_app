@@ -37,7 +37,7 @@ Future<dynamic> modelBottomSheet(
 
   final subtotal = cartState.totalAmount;
   final totalSavings = totalMrp - subtotal;
-  final deliveryFee = 40.0;
+  final deliveryFee = subtotal > 150 ? 0.0 : 40.0;
   final totalCost = subtotal + deliveryFee;
 
   return showModalBottomSheet(
