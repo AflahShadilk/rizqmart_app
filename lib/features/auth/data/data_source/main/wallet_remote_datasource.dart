@@ -28,7 +28,7 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
     if (doc.exists) {
       return WalletModel.fromMap(doc.data()!, doc.id);
     } else {
-      
+      // Create empty wallet if not exists
       final newWallet = WalletModel(
         userId: userId,
         balance: 0.0,

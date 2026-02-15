@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_event.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_event.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/chat/widgets/chat_bubble.dart';
 
 class ChatPage extends StatefulWidget {
