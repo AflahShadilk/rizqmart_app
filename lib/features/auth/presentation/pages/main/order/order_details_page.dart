@@ -538,8 +538,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         builder: (context) => ChatPage(
           orderId: widget.order.orderId,
           orderDisplayId: widget.order.orderId.substring(0, 8).toUpperCase(),
-          deliveryPartnerName: 'RizqMart Support', // Or specific seller name
+          deliveryPartnerName: 'RizqMart Support', 
+          orderStatus: widget.order.status,
         ),
+
       ),
     );
   }

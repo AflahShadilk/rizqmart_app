@@ -103,13 +103,12 @@ class PaymentRepositoryImpl implements PaymentRepository {
       final String paymentIntentId = paymentIntent['paymentIntentId'];
 
       if (savedCard != null) {
-         // Use Saved Card Logic
+        
          confirmation = await StripeService.confirmPaymentWithSavedCard(
            clientSecret: paymentIntent['clientSecret'],
            paymentMethodId: savedCard.paymentMethodId,
          );
       } else {
-         // Use Regular Payment Sheet Logic
          final success = await StripeService.presentPaymentSheet(
            clientSecret: paymentIntent['clientSecret'],
            merchantDisplayName: 'RizqMart',
@@ -126,7 +125,6 @@ class PaymentRepositoryImpl implements PaymentRepository {
         throw Exception('Payment verification failed');
       }
 
-      // Create payment record
       final payment = PaymentFirestoreModel(
         paymentId: paymentIntentId,
         orderId: order.orderId,
@@ -139,7 +137,6 @@ class PaymentRepositoryImpl implements PaymentRepository {
 
       await paymentDataSource.createPayment(payment);
 
-      // Update order status to confirmed
       await orderDataSource.firestore
           .collection('orders')
           .doc(order.orderId)

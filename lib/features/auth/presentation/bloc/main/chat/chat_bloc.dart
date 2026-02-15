@@ -5,8 +5,8 @@ import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart'
 import 'package:rizqmart/features/auth/domain/usecase/main/chat/get_messages_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/chat/initiate_chat_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/chat/send_message_usecase.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_event.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_event.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final CreateChatRoomUseCase createChatRoomUseCase;

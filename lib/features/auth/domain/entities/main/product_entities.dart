@@ -10,7 +10,8 @@ class ProductEntities extends Equatable implements ShowProductEntities{
  final String category;
 @override final String brand;
 
- final double? discount;
+ @override
+  final double? discount;
  final bool? feature;
 @override final List<Map<String,dynamic>> variantDetails;
  @override final double rating;

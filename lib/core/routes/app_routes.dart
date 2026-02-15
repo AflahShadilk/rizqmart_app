@@ -28,4 +28,5 @@ class AppRoutes {
   static const String help = '/help';
   static const String aboutUs = '/aboutUs';
 
+  static const String chat = '/chat';
 }

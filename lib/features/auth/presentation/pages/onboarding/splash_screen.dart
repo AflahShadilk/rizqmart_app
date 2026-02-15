@@ -1,8 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:rizqmart/core/constants.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
+import 'package:rizqmart/core/services/notification_service.dart';
+import 'package:rizqmart/main.dart'; // for navigatorKey
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -27,6 +32,8 @@ class _SplashScreenState extends State<SplashScreen>
     final haseen = pref.getBool('welcome') ?? false;
 
     if (!mounted) return;
+
+    await NotificationService().checkInitialMessage(navigatorKey);
 
     if (!haseen) {
       Navigator.pushReplacementNamed(context, AppRoutes.welcome);

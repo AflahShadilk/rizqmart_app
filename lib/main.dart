@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:rizqmart/core/services/registeration/bloc_providers.dart';
 import 'package:rizqmart/core/services/registeration/register.dart';
-import 'package:rizqmart/core/services/notification_service.dart';
+import 'package:rizqmart/core/services/notification_service.dart'; // Ensure this exposes the handler
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:rizqmart/core/services/stripe_services.dart';
 import 'package:rizqmart/firebase_options.dart';
-
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -15,57 +16,40 @@ void main() async {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-      
+
       try {
         await Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
         );
-        print('✅ Firebase initialized successfully');
+        
+        FirebaseMessaging.onBackgroundMessage(
+            firebaseMessagingBackgroundHandler);
       } catch (e) {
-        print('❌ Firebase initialization error: $e');
-        // Don't continue if Firebase fails - it's critical
         rethrow;
       }
 
       try {
         await dotenv.load(fileName: ".env");
-        print('✅ .env file loaded');
-      } catch (e) {
-        print('⚠️ .env file load error (this is ok if not using .env): $e');
-        // This can fail safely if you don't have a .env file
-      }
+      } catch (e) {}
 
       try {
         await StripeService.initialize();
-        print('✅ Stripe initialized');
-      } catch (e) {
-        print('❌ Stripe initialization error: $e');
-      }
+      } catch (e) {}
 
       try {
         await NotificationService().initialize(navigatorKey);
-        print('✅ Notification service initialized');
-      } catch (e) {
-        print('❌ Notification service error: $e');
-      }
+      } catch (e) {}
 
       try {
         setupLocator();
-        print('✅ Locator setup complete');
-      } catch (e) {
-        print('❌ Locator setup error: $e');
-      }
+      } catch (e) {}
 
       runApp(MyApp(navigatorKey: navigatorKey));
     },
-    (error, stackTrace) {
-
-    },
+    (error, stackTrace) {},
   );
 
-  FlutterError.onError = (FlutterErrorDetails details) {
-
-  };
+  FlutterError.onError = (FlutterErrorDetails details) {};
 }
 
 class MyApp extends StatelessWidget {

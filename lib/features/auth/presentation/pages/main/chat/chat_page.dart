@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_event.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_event.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/chat/widgets/chat_bubble.dart';
 
 class ChatPage extends StatefulWidget {
@@ -28,7 +28,11 @@ class ChatPage extends StatefulWidget {
     this.productName,
     this.productImage,
     this.sellerId,
+    this.orderStatus = 'active', // Default to active if not provided
   });
+
+  final String orderStatus;
+
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -138,10 +142,33 @@ class _ChatPageState extends State<ChatPage> {
                   },
                 ),
               ),
-              _buildInputArea(context),
+              if (widget.orderStatus.toLowerCase() == 'cancelled')
+                _buildCancelledMessage(context)
+              else
+                _buildInputArea(context),
             ],
           );
+
         },
+      ),
+    );
+  }
+
+  Widget _buildCancelledMessage(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      color: Colors.red.withOpacity(0.1),
+      child: Column(
+        children: [
+          Icon(Icons.block, color: Colors.red.withOpacity(0.7)),
+          const SizedBox(height: 8),
+          Text(
+            'This chat is closed because the order was cancelled.',
+            style: context.ts.bodyMedium?.copyWith(color: Colors.red),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
@@ -191,3 +218,4 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 }
+

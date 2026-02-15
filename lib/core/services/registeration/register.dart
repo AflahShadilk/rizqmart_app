@@ -88,7 +88,7 @@ import 'package:rizqmart/features/auth/domain/repositories/main/chat_repository.
 import 'package:rizqmart/features/auth/domain/usecase/main/chat/get_messages_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/chat/initiate_chat_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/chat/send_message_usecase.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_bloc.dart';
 import 'package:rizqmart/features/auth/data/repository/main/saved_card_repository_impl.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/saved_card_repository.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/add_saved_card_usecase.dart';

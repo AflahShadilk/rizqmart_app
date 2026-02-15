@@ -8,6 +8,7 @@ class ExploreEntities extends Equatable implements ShowProductEntities{
  @override final String? description;
   final String category;
   final String categoryImage;
+  @override
   final double discount;
   final bool features;
 @override final List<Map<String,dynamic>>variantDetails;

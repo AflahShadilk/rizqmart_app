@@ -15,7 +15,6 @@ class OrderDataSource {
       final docRef = await firestore.collection('orders').add({
         ...order.toMap(),
         'paymentStatus': 'succeeded',
-        // ✅ ENSURE THESE ARE SAVED
         'userName': order.userName,
         'userEmail': order.userEmail,
         'userPhone': order.userPhone,
@@ -101,9 +100,6 @@ class OrderDataSource {
         final userRef = firestore.collection('users').doc(userId);
         final userDoc = await transaction.get(userRef);
 
-        // NOW DO WRITES
-        
-        // 1. Update Order Status
         transaction.update(orderRef, {
           'status': 'cancelled',
           'cancelledAt': FieldValue.serverTimestamp(),

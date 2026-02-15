@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/chat/chat_page.dart';
+
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
@@ -180,6 +182,25 @@ case AppRoutes.aboutUs:
 
       case AppRoutes.orders:
         return MaterialPageRoute(builder: (_) => const OrdersPage());
+
+      case AppRoutes.chat:
+        if (args is Map<String, dynamic>) {
+          return MaterialPageRoute(
+            builder: (_) => ChatPage(
+              orderId: args['orderId'],
+              orderDisplayId: args['orderDisplayId'],
+              deliveryPartnerName: args['deliveryPartnerName'],
+              productId: args['productId'],
+              productName: args['productName'],
+              productImage: args['productImage'],
+              sellerId: args['sellerId'],
+              orderStatus: args['orderStatus'] ?? 'active',
+            ),
+          );
+        }
+        return _error();
+
+
 
       case AppRoutes.orderDetails:
         if (args is OrderEntities) {

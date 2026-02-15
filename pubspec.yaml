@@ -71,6 +71,7 @@ dependencies:
   firebase_messaging: ^16.1.1
   flutter_rating_bar: ^4.0.1
   responsive_display: ^1.0.0
+  bloc: ^9.2.0
 
   
 dev_dependencies:

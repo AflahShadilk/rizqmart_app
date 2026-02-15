@@ -12,6 +12,7 @@ class CartEntities extends Equatable implements ShowProductEntities{
   final int count;
   final int variantIndex;
   final String userId;
+  @override
   final double? discount;
 
   @override final double rating;

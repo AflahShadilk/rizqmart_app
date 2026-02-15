@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'package:firebase_core/firebase_core.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/chat/chat_page.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
+// import 'package:rizqmart/features/auth/presentation/pages/main/chat/chat_page.dart'; // No longer needed directly
+
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -32,14 +36,29 @@ class NotificationService {
       initSettings,
       onDidReceiveNotificationResponse: (response) {
         if (response.payload != null) {
+          debugPrint("🔔 Notification Tapped: ${response.payload}");
           _handleNotificationClick(response.payload!, navigatorKey);
         }
       },
     );
 
+    // Create Channel Explicitly
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel', 
+      'High Importance Notifications',
+      description: 'This channel is used for important notifications.',
+      importance: Importance.max,
+    );
+    
+    await _localNotifications
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
     // 3. Foreground Messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      debugPrint("🔔 Foreground Message Received: ${message.notification?.title}");
       if (message.notification != null) {
+
         _showLocalNotification(message);
         _saveNotificationToFirestore(
            title: message.notification!.title ?? 'New Notification',
@@ -54,13 +73,17 @@ class NotificationService {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       _handleMessage(message, navigatorKey);
     });
+  }
 
-    // Handle Terminated State (Initial Launch)
-    final initialMessage = await _firebaseMessaging.getInitialMessage();
+  // Call this from SplashScreen or Main Layout after verifying auth
+  Future<void> checkInitialMessage(GlobalKey<NavigatorState> navigatorKey) async {
+     final initialMessage = await _firebaseMessaging.getInitialMessage();
     if (initialMessage != null) {
+        debugPrint("🔔 App Launched from Notification: ${initialMessage.data}");
         _handleMessage(initialMessage, navigatorKey);
     }
   }
+
 
   Future<String?> getDeviceToken() async {
     return await _firebaseMessaging.getToken();
@@ -106,17 +129,19 @@ class NotificationService {
          final orderId = data['orderId'] ?? 'unknown_order'; // Fallback logic
          final productId = data['productId']; // Can be null
          
-         navigatorKey.currentState?.push(
-           MaterialPageRoute(
-             builder: (_) => ChatPage(
-               orderId: orderId,
-               orderDisplayId: data['orderDisplayId'] ?? orderId.substring(0, 5), 
-               deliveryPartnerName: data['sellerName'] ?? 'Seller', // Should be in payload
-               productId: productId,
-               productName: data['productName'],
-               productImage: data['productImage'],
-             ),
-           ),
+         navigatorKey.currentState?.pushNamed(
+           AppRoutes.chat,
+           arguments: {
+             'orderId': orderId,
+             'orderDisplayId': data['orderDisplayId'] ?? orderId.substring(0, 5),
+             'deliveryPartnerName': data['sellerName'] ?? 'Seller',
+             'orderStatus': data['orderStatus'] ?? 'active', // Pass status
+             'productId': productId,
+
+             'productName': data['productName'],
+             'productImage': data['productImage'],
+             'sellerId': data['sellerId'],
+           },
          );
       }
     } catch (e) {
@@ -152,3 +177,10 @@ class NotificationService {
     }
   }
 }
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+}
+
+

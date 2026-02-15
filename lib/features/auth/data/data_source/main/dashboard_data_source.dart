@@ -22,9 +22,7 @@ class DashboardDataSource {
         if (doc.exists) {
           return DashFirestoreModel.fromFireStore(doc);
         } else {
-             // Handle case where document doesn't exist, though typically it should if we are on details page
-             // Returning a default/empty model or throwing might be options.
-             // For stream, we can just return what we have or handle error downstream.
+             
              throw Exception("Product not found");
         }
       });

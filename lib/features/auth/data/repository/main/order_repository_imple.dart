@@ -32,7 +32,7 @@ class OrderRepositoryImpl implements OrderRepository {
       deliveryAddress: order.deliveryAddress ?? '',
       userName: currentUser?.displayName ?? order.userName ?? 'Customer',
       userEmail: currentUser?.email ?? order.userEmail ?? 'no-email@example.com',
-      userPhone: order.userPhone ?? 'N/A',  // ✅ FIXED: Use order.userPhone
+      userPhone: order.userPhone ?? 'N/A',  
       deliveryNotes: order.deliveryNotes,
     );
 

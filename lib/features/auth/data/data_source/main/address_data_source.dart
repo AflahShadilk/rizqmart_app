@@ -5,19 +5,16 @@ import 'package:rizqmart/features/auth/data/model/main/address_fire_store_model.
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
 
 class AddressRemoteDataSource {
-  // Firestore database instance for handling database operations
   final FirebaseFirestore firestore;
 
   AddressRemoteDataSource({
     required this.firestore,
   });
 
-  // Helper method to get the addresses collection reference for a specific user
   CollectionReference addressCollection(String userId) {
     return firestore.collection('users').doc(userId).collection('addresses');
   }
 
-  // Fetches all addresses for a user, ordered by creation date in descending order
   Future<List<AddressFireStoreModel>> getAddresses(String userId) async {
     try {
       final snapshot = await addressCollection(userId)
@@ -34,23 +31,18 @@ class AddressRemoteDataSource {
     }
   }
 
-  // Adds a new address for a user and sets it as default if specified
   Future<AddressFireStoreModel> addAddress(AddressEntities address) async {
     try {
-      // Get the addresses collection for the user
       final userAddressCollection = addressCollection(address.userId);
 
-      // If this address is marked as default, unset all other default addresses
       if (address.isDefault) {
         await unsetAllDefaultAddresses(address.userId);
       }
 
-      // Convert entity to Firestore model and prepare data for storage
       final model = AddressFireStoreModel.fromEntity(address);
       final dataToAdd = model.toJson();
       dataToAdd.remove('id');
 
-      // Add the new address document and return the created model
       final docRef = await userAddressCollection.add(dataToAdd);
       final newDoc = await docRef.get();
       return AddressFireStoreModel.fromFirestore(newDoc);
@@ -61,18 +53,14 @@ class AddressRemoteDataSource {
     }
   }
 
-  // Updates an existing address and handles default address logic
   Future<AddressFireStoreModel> updateAddress(AddressEntities address) async {
     try {
-      // Get the addresses collection for the user
       final userAddressCollection = addressCollection(address.userId);
 
-      // If this address is marked as default, unset all other default addresses except this one
       if (address.isDefault) {
         await unsetAllDefaultAddresses(address.userId, excludeId: address.id);
       }
 
-      // Convert entity to Firestore model and prepare data for update
       final model = AddressFireStoreModel.fromEntity(address);
       final dataToUpdate = model.toJson();
       dataToUpdate.remove('id');

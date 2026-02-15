@@ -22,20 +22,14 @@ class ReviewRepositoryImpl implements ReviewRepository {
           createdAt: review.createdAt,
           variantName: review.variantName);
 
-      // 1. Add review to subcollection
       final reviewRef = firestore
           .collection('products')
           .doc(review.productId)
           .collection('reviews')
           .doc(); // Auto-ID
 
-      // We need to save the model, but the model needs the ID if we want to store it inside.
-      // Or we just store the data. The model toFirestore doesn't include ID usually for update,
-      // but here we are creating.
-      // Let's create a map to save.
       await reviewRef.set(reviewModel.toFirestore());
 
-      // 2. Update product aggregation
       final productRef =
           firestore.collection('products').doc(review.productId);
           
@@ -43,11 +37,9 @@ class ReviewRepositoryImpl implements ReviewRepository {
         final productDoc = await transaction.get(productRef);
         
         if (!productDoc.exists) {
-           // If product doc doesn't exist, we can't update rating, but we shouldn't fail the review add.
-           // Ideally we should create the product doc, but we might not have all data.
-           // For now, let's just log or ignore the aggregation update to prevent crash.
-           // print("Product document not found for aggregation update: ${review.productId}");
+          
            return; 
+ 
         }
         
         final data = productDoc.data() as Map<String, dynamic>;
@@ -62,7 +54,6 @@ class ReviewRepositoryImpl implements ReviewRepository {
         });
       });
 
-      // return const Right(null); // Removed standard return
     } catch (e) {
       throw Exception(e.toString());
     }
