@@ -568,7 +568,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  '-${discount.toStringAsFixed(0)}%',
+                  '-${discount!.toStringAsFixed(0)}%',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,

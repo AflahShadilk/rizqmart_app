@@ -27,7 +27,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_bl
 import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/chat/chat_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
