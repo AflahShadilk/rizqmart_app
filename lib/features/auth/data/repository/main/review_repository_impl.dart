@@ -26,7 +26,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
           .collection('products')
           .doc(review.productId)
           .collection('reviews')
-          .doc(); // Auto-ID
+          .doc(); 
 
       await reviewRef.set(reviewModel.toFirestore());
 

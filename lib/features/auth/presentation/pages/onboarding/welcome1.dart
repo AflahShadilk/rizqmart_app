@@ -1,20 +1,35 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/widget/welcome_page_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/auth/welcome_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/auth/welcome_state.dart';
 
-class WelcomeFlow extends StatefulWidget {
+class WelcomeFlow extends StatelessWidget {
   const WelcomeFlow({super.key});
 
   @override
-  State<WelcomeFlow> createState() => _WelcomeFlowState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => WelcomeCubit(),
+      child: const _WelcomeView(),
+    );
+  }
 }
 
-class _WelcomeFlowState extends State<WelcomeFlow> with TickerProviderStateMixin {
+class _WelcomeView extends StatefulWidget {
+  const _WelcomeView();
+
+  @override
+  State<_WelcomeView> createState() => _WelcomeViewState();
+}
+
+class _WelcomeViewState extends State<_WelcomeView> with TickerProviderStateMixin {
   final PageController _pageController = PageController();
-  int _currentPage = 0;
   late AnimationController _animationController;
 
   @override
@@ -31,19 +46,6 @@ class _WelcomeFlowState extends State<WelcomeFlow> with TickerProviderStateMixin
     await pref.setBool('welcome', true);
     if (mounted) {
       Navigator.pushReplacementNamed(context, AppRoutes.login);
-    }
-  }
-
-  // ignore: unused_element
-  void _nextPage() {
-    if (_currentPage < 2) {
-      _animationController.forward(from: 0.0);
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.easeInOut,
-      );
-    } else {
-      completeOnboarding();
     }
   }
 
@@ -64,47 +66,49 @@ class _WelcomeFlowState extends State<WelcomeFlow> with TickerProviderStateMixin
     return Scaffold(
       body: Stack(
         children: [
-          PageView(
-            controller: _pageController,
-            physics: const BouncingScrollPhysics(),
-            onPageChanged: (index) {
-              setState(() {
-                _currentPage = index;
-              });
+          BlocListener<WelcomeCubit, WelcomeState>(
+            listener: (context, state) {
               _animationController.forward(from: 0.0);
             },
-            children: [
-              buildPage(
-                title: 'Fresh & Organic',
-                subtitle: 'Get your groceries straight from farms to your doorstep.',
-                imagePath: 'assets/icons_and_images/leeficon.png',
-                bgColor: const Color(0xFF81C784),
-                onpress: () {
-                  completeOnboarding();
-                },
-              ),
-              buildPage(
-                title: 'Lightning Fast Delivery',
-                subtitle: 'Delivered in as fast as one hour, right when you need it.',
-                imagePath: 'assets/icons_and_images/deliveryIcon.png',
-                bgColor: const Color(0xFF4DB6AC),
-                onpress: () {
-                  completeOnboarding();
-                },
-              ),
-              buildPage(
-                title: 'Easy, Secure & Refundable',
-                subtitle: 'Shop with confidence. Easy returns and secure payments.',
-                imagePath: 'assets/icons_and_images/secureicon.png',
-                bgColor: const Color(0xFF7986CB),
-                showButton: true,
-                onpress: () {
-                  completeOnboarding();
-                },
-              ),
-            ],
+            child: PageView(
+              controller: _pageController,
+              physics: const BouncingScrollPhysics(),
+              onPageChanged: (index) {
+                context.read<WelcomeCubit>().setPage(index);
+              },
+              children: [
+                buildPage(
+                  title: 'Fresh & Organic',
+                  subtitle: 'Get your groceries straight from farms to your doorstep.',
+                  imagePath: 'assets/icons_and_images/leeficon.png',
+                  bgColor: const Color(0xFF81C784),
+                  onpress: () {
+                    completeOnboarding();
+                  },
+                ),
+                buildPage(
+                  title: 'Lightning Fast Delivery',
+                  subtitle: 'Delivered in as fast as one hour, right when you need it.',
+                  imagePath: 'assets/icons_and_images/deliveryIcon.png',
+                  bgColor: const Color(0xFF4DB6AC),
+                  onpress: () {
+                    completeOnboarding();
+                  },
+                ),
+                buildPage(
+                  title: 'Easy, Secure & Refundable',
+                  subtitle: 'Shop with confidence. Easy returns and secure payments.',
+                  imagePath: 'assets/icons_and_images/secureicon.png',
+                  bgColor: const Color(0xFF7986CB),
+                  showButton: true,
+                  onpress: () {
+                    completeOnboarding();
+                  },
+                ),
+              ],
+            ),
           ),
-          // Skip Button
+          
           Positioned(
             top: 50,
             right: 20,
@@ -120,40 +124,45 @@ class _WelcomeFlowState extends State<WelcomeFlow> with TickerProviderStateMixin
               ),
             ),
           ),
-          // Next and Page 
+          
           Positioned(
             bottom: 30,
             left: 20,
             right: 20,
             child: Column(
               children: [
-                // Page Indicator Dots
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    3,
-                    (index) => ScaleTransition(
-                      scale: Tween<double>(begin: 1.0, end: 1.3).animate(
-                        CurvedAnimation(
-                          parent: _animationController,
-                          curve: Curves.elasticOut,
+                
+                BlocBuilder<WelcomeCubit, WelcomeState>(
+                  builder: (context, state) {
+                    final currentPage = (state is WelcomePageUpdated) ? state.currentPage : 0;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        3,
+                        (index) => ScaleTransition(
+                          scale: Tween<double>(begin: 1.0, end: 1.3).animate(
+                            CurvedAnimation(
+                              parent: _animationController,
+                              curve: Curves.elasticOut,
+                            ),
+                          ),
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 6),
+                            width: currentPage == index ? 28 : 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: currentPage == index
+                                  ? Colors.white
+                                  : Colors.white.withValues(alpha: 0.5),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
                         ),
                       ),
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 6),
-                        width: _currentPage == index ? 28 : 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                          color: _currentPage == index
-                              ? Colors.white
-                              : Colors.white.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
-                const SizedBox(height: 25),
+                25.h,
               ],
             ),
           ),

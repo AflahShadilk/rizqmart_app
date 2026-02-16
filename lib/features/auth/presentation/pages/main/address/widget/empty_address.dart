@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
@@ -23,7 +23,7 @@ class EmptyAddressView extends StatelessWidget {
             Icon(
               Icons.location_on_outlined,
               size: 120,
-              color: context.cs.onSurfaceVariant.withOpacity(0.5),
+              color: context.cs.onSurfaceVariant.withValues(alpha: 0.5),
             ),
             24.h,
             Text(

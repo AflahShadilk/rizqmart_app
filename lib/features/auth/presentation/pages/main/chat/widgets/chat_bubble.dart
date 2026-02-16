@@ -1,9 +1,10 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 class ChatBubble extends StatelessWidget {
   final MessageEntity message;
@@ -44,11 +45,11 @@ class ChatBubble extends StatelessWidget {
                 color: isMe ? context.cs.onPrimary : context.cs.onSurface,
               ),
             ),
-            const SizedBox(height: 4),
+            4.h,
             Text(
               DateFormat('hh:mm a').format(message.timestamp),
               style: context.ts.bodySmall?.copyWith(
-                color: isMe ? context.cs.onPrimary.withOpacity(0.7) : context.cs.onSurfaceVariant,
+                color: isMe ? context.cs.onPrimary.withValues(alpha: 0.7) : context.cs.onSurfaceVariant,
                 fontSize: 10,
               ),
             ),

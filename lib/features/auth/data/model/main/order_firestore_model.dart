@@ -32,7 +32,7 @@ class OrderFirestoreModel extends OrderEntities {
       userId: data['userId'] ?? '',
       items: (data['items'] as List<dynamic>?)?.map((item) {
         final itemMap = item as Map<String, dynamic>;
-        // Create CartEntities (or CartFirestoreModel)
+        
         return CartEntities(
           id: itemMap['id'] ?? '',
           name: itemMap['name'] ?? '',

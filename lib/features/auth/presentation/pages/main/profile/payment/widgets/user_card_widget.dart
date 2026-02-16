@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
@@ -31,14 +31,14 @@ class UserCardWidget extends StatelessWidget {
           gradient: LinearGradient(
             colors: [
               Color(card.cardColor),
-              Color(card.cardColor).withOpacity(0.8),
+              Color(card.cardColor).withValues(alpha: 0.8),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           boxShadow: [
             BoxShadow(
-              color: Color(card.cardColor).withOpacity(0.3),
+              color: Color(card.cardColor).withValues(alpha: 0.3),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),

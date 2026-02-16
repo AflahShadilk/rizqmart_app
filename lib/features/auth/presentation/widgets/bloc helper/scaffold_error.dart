@@ -1,4 +1,4 @@
-  // ignore_for_file: deprecated_member_use
+  
 
   import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_state.dart';
@@ -12,11 +12,11 @@ SnackBar errorMessageScaffold(FailureLoadingProductState state) {
   content: Container(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
-      color: Colors.redAccent.withOpacity(0.9),
+      color: Colors.redAccent.withValues(alpha: 0.9),
       borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
-          color: Colors.redAccent.withOpacity(0.4),
+          color: Colors.redAccent.withValues(alpha: 0.4),
           blurRadius: 10,
           offset: const Offset(0, 4),
         ),

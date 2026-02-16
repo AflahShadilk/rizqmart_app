@@ -40,12 +40,12 @@ class BlocProviders extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        // Theme
+        
         BlocProvider(
           create: (_) => ThemeCubit(),
         ),
 
-        // Auth BLoCs
+        
         BlocProvider(
           create: (context) => SignupBloc(sl()),
         ),
@@ -65,7 +65,7 @@ class BlocProviders extends StatelessWidget {
           lazy: true,
         ),
 
-        // Main Feature BLoCs
+        
         BlocProvider(
           create: (context) => DashBloc(usecase: sl()),
         ),
@@ -100,7 +100,7 @@ class BlocProviders extends StatelessWidget {
           lazy: true,
         ),
 
-        // Cart BLoC
+        
         BlocProvider(
           create: (context) => CartBloc(
             getCartItemsUsecase: GetCartItemsUsecase(sl()),
@@ -114,7 +114,7 @@ class BlocProviders extends StatelessWidget {
           lazy: true,
         ),
 
-        //Order BLoC
+        
         BlocProvider(
           create: (context) => OrderBloc(
             placeOrderUsecase: sl(),

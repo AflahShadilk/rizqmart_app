@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'dart:ui';
 
@@ -43,7 +43,7 @@ class _SearchFieldState extends State<SearchField> {
           hintText: '   ${widget.hint}',
           hintStyle: TextStyle(
             fontSize: 15,
-            color: colorScheme.onSurface.withOpacity(0.5),
+            color: colorScheme.onSurface.withValues(alpha: 0.5),
           ),
 
           suffixIcon: Icon(
@@ -59,15 +59,15 @@ class _SearchFieldState extends State<SearchField> {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(18),
             borderSide: BorderSide(
-              color: colorScheme.primary.withOpacity(0.5),
+              color: colorScheme.primary.withValues(alpha: 0.5),
               width: 1.8,
             ),
           ),
            contentPadding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
           filled: true,
           fillColor: Theme.of(context).brightness == Brightness.dark
-              ? colorScheme.surface.withOpacity(0.14)
-              : colorScheme.primary.withOpacity(0.05),
+              ? colorScheme.surface.withValues(alpha: 0.14)
+              : colorScheme.primary.withValues(alpha: 0.05),
 
         ),
 

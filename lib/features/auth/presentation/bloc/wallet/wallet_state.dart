@@ -30,8 +30,8 @@ class WalletState extends Equatable {
       status: status ?? this.status,
       wallet: wallet ?? this.wallet,
       transactions: transactions ?? this.transactions,
-      errorMessage: errorMessage, // Don't persist error message
-      successMessage: successMessage, // Don't persist success message
+      errorMessage: errorMessage, 
+      successMessage: successMessage, 
     );
   }
 

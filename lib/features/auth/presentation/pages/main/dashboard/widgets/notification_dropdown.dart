@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,12 +22,12 @@ class NotificationDropdown extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: const Offset(0, 8),
             spreadRadius: -3,
@@ -44,8 +44,8 @@ class NotificationDropdown extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  context.cs.surface.withOpacity(0.88),
-                  context.cs.surface.withOpacity(0.78),
+                  context.cs.surface.withValues(alpha: 0.88),
+                  context.cs.surface.withValues(alpha: 0.78),
                 ],
               ),
               borderRadius: BorderRadius.circular(14),
@@ -55,7 +55,7 @@ class NotificationDropdown extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _buildHeader(context),
-                Divider(height: 1, color: context.cs.outlineVariant.withOpacity(0.12)),
+                Divider(height: 1, color: context.cs.outlineVariant.withValues(alpha: 0.12)),
                 Flexible(
                   child: BlocBuilder<NotificationBloc, NotificationState>(
                     builder: (context, state) {
@@ -102,7 +102,7 @@ class NotificationDropdown extends StatelessWidget {
                     },
                   ),
                 ),
-                Divider(height: 1, color: context.cs.outlineVariant.withOpacity(0.12)),
+                Divider(height: 1, color: context.cs.outlineVariant.withValues(alpha: 0.12)),
                 _buildFooter(context),
               ],
             ),
@@ -116,7 +116,7 @@ class NotificationDropdown extends StatelessWidget {
     final bool isRead = notification.isRead;
     
     return Material(
-      color: isRead ? Colors.transparent : context.cs.primary.withOpacity(0.05),
+      color: isRead ? Colors.transparent : context.cs.primary.withValues(alpha: 0.05),
       child: InkWell(
         onTap: () => _handleNotificationTap(context, notification),
         child: Padding(
@@ -189,7 +189,7 @@ class NotificationDropdown extends StatelessWidget {
 
   Widget _buildIcon(BuildContext context, String type, bool isRead) {
     Color iconColor = isRead ? context.cs.secondary : context.cs.primary;
-    Color bgColor = isRead ? context.cs.secondaryContainer.withOpacity(0.4) : context.cs.primaryContainer.withOpacity(0.6);
+    Color bgColor = isRead ? context.cs.secondaryContainer.withValues(alpha: 0.4) : context.cs.primaryContainer.withValues(alpha: 0.6);
     IconData icon = Icons.notifications_rounded;
     
     if (type == 'order') icon = Icons.local_mall_rounded;
@@ -214,7 +214,7 @@ class NotificationDropdown extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.white.withOpacity(0.04),
+            Colors.white.withValues(alpha: 0.04),
             Colors.transparent,
           ],
         ),
@@ -240,7 +240,7 @@ class NotificationDropdown extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: context.cs.primary.withOpacity(0.1),
+                color: context.cs.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
@@ -261,7 +261,7 @@ class NotificationDropdown extends StatelessWidget {
   Widget _buildFooter(BuildContext context) {
      return InkWell(
        onTap: () {
-         // Navigate to full page
+         
        },
        child: Container(
          padding: const EdgeInsets.symmetric(vertical: 10),
@@ -272,7 +272,7 @@ class NotificationDropdown extends StatelessWidget {
              end: Alignment.bottomCenter,
              colors: [
                Colors.transparent,
-               Colors.white.withOpacity(0.02),
+               Colors.white.withValues(alpha: 0.02),
              ],
            ),
          ),
@@ -309,13 +309,13 @@ class NotificationDropdown extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: context.cs.surfaceContainerHighest.withOpacity(0.3),
+                color: context.cs.surfaceContainerHighest.withValues(alpha: 0.3),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.notifications_none_rounded, 
                 size: 26, 
-                color: context.cs.outline.withOpacity(0.7),
+                color: context.cs.outline.withValues(alpha: 0.7),
               ),
             ),
             12.h,

@@ -1,6 +1,7 @@
   import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigation_bar.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 Widget buildEmptyState(BuildContext context) {
     return Center(
@@ -12,14 +13,14 @@ Widget buildEmptyState(BuildContext context) {
             size: 80,
             color: AppColors.grey400,
           ),
-          const SizedBox(height: 16),
+          16.h,
           Text(
             'No Favorites Yet',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
+          8.h,
           Text(
             'Add products to your favorites to see them here',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -27,7 +28,7 @@ Widget buildEmptyState(BuildContext context) {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 24),
+          24.h,
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>NavigationBarPage()));

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 
 import 'package:flutter/material.dart';
@@ -32,6 +32,7 @@ import 'package:rizqmart/core/services/registeration/register.dart';
 import '../../../widgets/buttons/like_button.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/review_card.dart';
 import 'reviews_page.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final ShowProductEntities product;
@@ -99,22 +100,22 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           final images = getImages(widget.product, selectedVariantIndex);
           final variantCount = getVariantDetails(widget.product).length;
 
-          return Scaffold(
+          return ResponsiveWrapper(child: Scaffold(
             backgroundColor: colorScheme.surface,
             body: SafeArea(
               child: ResponsiveLayoutBuilder(
                 builder: (context, constraints, deviceType) {
-                  // Check if we should use desktop layout (medium and above)
+                  
                   bool isDesktop = deviceType == DeviceType.medium || 
                                    deviceType == DeviceType.large ||
                                    deviceType == DeviceType.xlarge;
 
                   if (isDesktop) {
-                    // Desktop Layout: Row with 2 columns
+                    
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Left Column: Images (Expanded)
+                        
                         Expanded(
                           flex: 1,
                           child: SingleChildScrollView(
@@ -122,7 +123,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               padding: const EdgeInsets.all(20.0),
                               child: Column(
                                 children: [
-                                   // Back Button for Desktop
+                                   
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
@@ -134,9 +135,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     ],
                                   ),
                                   20.h,
-                                  // Image Stack (reused logic but adapted sizing)
+                                  
                                   SizedBox(
-                                    height: 400, // Taller image for desktop
+                                    height: 400, 
                                     child: _buildImageStack(context, images, isDark, colorScheme),
                                   ),
                                 ],
@@ -144,7 +145,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             ),
                           ),
                         ),
-                        // Right Column: Details (Expanded)
+                        
                         Expanded(
                           flex: 1,
                           child: SingleChildScrollView(
@@ -153,21 +154,21 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Title, Variant, Wishlist
+                                  
                                   _buildTitleSection(context, selectedVariantIndex),
                                   
-                                  // Price & Quantity
+                                  
                                   _buildPriceSection(context, colorScheme),
 
-                                  // Variants Grid
+                                  
                                   if (variantCount > 1) _buildVariantsSection(context, variantCount, selectedVariantIndex, colorScheme),
                                   
                                   28.h,
-                                  // Description
+                                  
                                   _buildDescriptionSection(context, colorScheme),
                                   
                                   30.h,
-                                  // Reviews
+                                  
                                   _buildReviewSection(context, colorScheme, productId),
                                   
                                   100.h,
@@ -179,7 +180,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       ],
                     );
                   } else {
-                    // Mobile Layout (Original Column)
+                    
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -191,11 +192,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 color: isDark
-                                    ? colorScheme.onSurface.withOpacity(0.1)
-                                    : context.cs.onSurface.withOpacity(0.05),
+                                    ? colorScheme.onSurface.withValues(alpha: 0.1)
+                                    : context.cs.onSurface.withValues(alpha: 0.05),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: colorScheme.primary.withOpacity(0.1),
+                                    color: colorScheme.primary.withValues(alpha: 0.1),
                                     blurRadius: 15,
                                     spreadRadius: 3,
                                   )
@@ -212,11 +213,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   child: Container(
                                     margin: EdgeInsets.only(top: 20, left: 8),
                                     decoration: BoxDecoration(
-                                      color: colorScheme.surface.withOpacity(0.05),
+                                      color: colorScheme.surface.withValues(alpha: 0.05),
                                       shape: BoxShape.circle,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
+                                          color: Colors.black.withValues(alpha: 0.1),
                                           blurRadius: 10,
                                           spreadRadius: 2,
                                         )
@@ -231,11 +232,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   child: Container(
                                      margin: EdgeInsets.only(top: 20, right: 8),
                                     decoration: BoxDecoration(
-                                      color: colorScheme.surface.withOpacity(0.05),
+                                      color: colorScheme.surface.withValues(alpha: 0.05),
                                       shape: BoxShape.circle,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
+                                          color: Colors.black.withValues(alpha: 0.05),
                                           blurRadius: 10,
                                           spreadRadius: 2,
                                         )
@@ -341,10 +342,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             ),
             bottomSheet: Container(
               decoration: BoxDecoration(
-                color: context.cs.surface.withOpacity(0.1),
+                color: context.cs.surface.withValues(alpha: 0.1),
                 boxShadow: [
                   BoxShadow(
-                    color: context.cs.onSecondary.withOpacity(0.1),
+                    color: context.cs.onSecondary.withValues(alpha: 0.1),
                     blurRadius: 20,
                     spreadRadius: 5,
                   )
@@ -402,7 +403,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 ),
               ),
             ),
-          );
+          ));
         },
       ),
     );
@@ -447,7 +448,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     decoration: BoxDecoration(
                       color: state == index
                           ? colorScheme.primary
-                          : colorScheme.onSurface.withOpacity(0.2),
+                          : colorScheme.onSurface.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   );
@@ -478,7 +479,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   color: context.cs.primary,
                 ),
               ),
-              const SizedBox(height: 4),
+              4.h,
               Text(
                 getName(widget.product),
                 style: GoogleFonts.poppins(
@@ -487,11 +488,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   height: 1.2,
                 ),
               ),
-              const SizedBox(height: 8),
+              8.h,
               Row(
                 children: [
                   Icon(Icons.star_rounded, color: Colors.amber, size: 20),
-                  const SizedBox(width: 4),
+                  4.w,
                   Text(
                     widget.product.rating.toStringAsFixed(1),
                     style: GoogleFonts.poppins(
@@ -499,11 +500,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  4.w,
                   Text(
                     '(${widget.product.reviewCount} reviews)',
                     style: GoogleFonts.poppins(
-                      color: context.cs.onSurface.withOpacity(0.6),
+                      color: context.cs.onSurface.withValues(alpha: 0.6),
                       fontSize: 12,
                     ),
                   ),
@@ -536,7 +537,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 16),
+        16.h,
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -549,26 +550,26 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               ),
             ),
             if (hasDiscount) ...[
-              const SizedBox(width: 12),
+              12.w,
               Text(
                 '₹${price.toStringAsFixed(2)}',
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: colorScheme.onSurface.withOpacity(0.5),
+                  color: colorScheme.onSurface.withValues(alpha: 0.5),
                   decoration: TextDecoration.lineThrough,
-                  decorationColor: colorScheme.onSurface.withOpacity(0.5),
+                  decorationColor: colorScheme.onSurface.withValues(alpha: 0.5),
                 ),
               ),
-              const SizedBox(width: 8),
+              8.w,
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: colorScheme.error.withOpacity(0.1),
+                  color: colorScheme.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  '-${discount!.toStringAsFixed(0)}%',
+                  '-${discount.toStringAsFixed(0)}%',
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -595,7 +596,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 12),
+        12.h,
         Wrap(
           spacing: 12,
           runSpacing: 12,
@@ -610,10 +611,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: isSelected ? colorScheme.primary.withOpacity(0.1) : colorScheme.surface,
+                  color: isSelected ? colorScheme.primary.withValues(alpha: 0.1) : colorScheme.surface,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: isSelected ? colorScheme.primary : colorScheme.outline.withOpacity(0.3),
+                    color: isSelected ? colorScheme.primary : colorScheme.outline.withValues(alpha: 0.3),
                     width: isSelected ? 2 : 1,
                   ),
                 ),
@@ -645,7 +646,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 8),
+        8.h,
         BlocBuilder<DesicriptionCubit, bool>(
           builder: (context, isExpanded) {
             return Column(
@@ -655,7 +656,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   description,
                   style: GoogleFonts.poppins(
                     fontSize: 14,
-                    color: colorScheme.onSurface.withOpacity(0.7),
+                    color: colorScheme.onSurface.withValues(alpha: 0.7),
                     height: 1.5,
                   ),
                   maxLines: isExpanded ? null : 3,
@@ -722,7 +723,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           ],
         ),
         if (showList) ...[
-          const SizedBox(height: 12),
+          12.h,
            BlocBuilder<ReviewBloc, ReviewState>(
             builder: (context, state) {
               if (state is ReviewLoading) {
@@ -732,7 +733,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   return Text(
                     "No reviews yet",
                     style: GoogleFonts.poppins(
-                      color: context.cs.onSurface.withOpacity(0.6),
+                      color: context.cs.onSurface.withValues(alpha: 0.6),
                     ),
                   );
                 }
@@ -740,7 +741,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: state.reviews.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 16),
+                  separatorBuilder: (context, index) => 16.h,
                   itemBuilder: (context, index) {
                     return ReviewCard(review: state.reviews[index]);
                   },

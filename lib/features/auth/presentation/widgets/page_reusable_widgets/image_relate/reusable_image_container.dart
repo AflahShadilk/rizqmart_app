@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -29,12 +29,14 @@ class ProductImage extends StatelessWidget {
         height: height,
         width: width,
         color: Theme.of(context).brightness == Brightness.dark
-            ? colorScheme.onSurface.withOpacity(0.1)
+            ? colorScheme.onSurface.withValues(alpha: 0.1)
             : Colors.grey.shade100,
         child: imageUrl != null && imageUrl!.isNotEmpty
             ? CachedNetworkImage(
                 imageUrl: imageUrl!,
                 fit: BoxFit.cover,
+                memCacheHeight: (height * 3).toInt(), 
+                memCacheWidth: width != double.infinity ? (width * 3).toInt() : null,
                 placeholder: (context, url) => RectangularShimmerPlaceholder(
                   height: height,
                   width: width,
@@ -46,7 +48,7 @@ class ProductImage extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.image_not_supported,
-                        color: colorScheme.onSurface.withOpacity(0.4),
+                        color: colorScheme.onSurface.withValues(alpha: 0.4),
                         size: 24,
                       ),
                       if (height > 60)
@@ -56,7 +58,7 @@ class ProductImage extends StatelessWidget {
                             'Image unavailable',
                             style: TextStyle(
                               fontSize: 10,
-                              color: colorScheme.onSurface.withOpacity(0.4),
+                              color: colorScheme.onSurface.withValues(alpha: 0.4),
                             ),
                           ),
                         ),

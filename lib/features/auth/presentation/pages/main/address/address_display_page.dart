@@ -1,4 +1,6 @@
-// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+
+
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +17,7 @@ import 'package:rizqmart/features/auth/presentation/pages/main/address/address_l
 import 'package:rizqmart/features/auth/presentation/pages/main/address/widget/empty_address.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 class AddressDisplayPage extends StatelessWidget {
   final String userId;
@@ -177,7 +180,7 @@ class AddressDisplayPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     buildAddressTypeLabel(context, address),
-                    const SizedBox(height: 8),
+                    8.h,
                     buildAddressDetailsText(context, address),
                   ],
                 ),
@@ -205,7 +208,7 @@ class AddressDisplayPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: context.cs.primary.withOpacity(0.1),
+        color: context.cs.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(

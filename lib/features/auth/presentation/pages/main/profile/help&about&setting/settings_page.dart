@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +6,7 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/core/theme/theme_cubit.dart';
 import 'package:rizqmart/core/theme/theme_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 
 class SettingsPage extends StatelessWidget {
@@ -13,8 +14,8 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.cs.background,
+    return ResponsiveWrapper(child: Scaffold(
+      backgroundColor: context.cs.surface,
       appBar: AppBar(
         title: Text(
           'Settings',
@@ -33,7 +34,7 @@ class SettingsPage extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget buildThemeSection(BuildContext context) {
@@ -83,7 +84,7 @@ class SettingsPage extends StatelessWidget {
           Text(
             'Switch between light and dark theme',
             style: context.ts.bodySmall?.copyWith(
-              color: context.cs.onSurface.withOpacity(0.6),
+              color: context.cs.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ],
@@ -164,7 +165,7 @@ class SettingsPage extends StatelessWidget {
         Text(
           'Current version installed',
           style: context.ts.bodySmall?.copyWith(
-            color: context.cs.onSurface.withOpacity(0.6),
+            color: context.cs.onSurface.withValues(alpha: 0.6),
           ),
         ),
       ],
@@ -213,11 +214,11 @@ class SettingsPage extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 4),
+        4.h,
         Text(
           'Learn more about RizqMart',
           style: context.ts.bodySmall?.copyWith(
-            color: context.cs.onSurface.withOpacity(0.6),
+            color: context.cs.onSurface.withValues(alpha: 0.6),
           ),
         ),
       ],
@@ -228,7 +229,7 @@ class SettingsPage extends StatelessWidget {
     return Icon(
       Icons.arrow_forward_ios,
       size: 16,
-      color: context.cs.onSurface.withOpacity(0.5),
+      color: context.cs.onSurface.withValues(alpha: 0.5),
     );
   }
 
@@ -253,13 +254,13 @@ class SettingsPage extends StatelessWidget {
                   'About Us',
                   'RizqMart is your trusted online marketplace for fresh groceries and essentials. We deliver quality products to your doorstep with care and reliability.',
                 ),
-                const SizedBox(height: 16),
+                16.h,
                 buildAboutDialogSection(
                   context,
                   'Our Mission',
                   'To provide convenient, affordable, and high-quality grocery shopping experience to everyone.',
                 ),
-                const SizedBox(height: 16),
+                16.h,
                 buildAboutDialogSection(
                   context,
                   'Contact',
@@ -299,11 +300,11 @@ class SettingsPage extends StatelessWidget {
             color: context.cs.primary,
           ),
         ),
-        const SizedBox(height: 6),
+        6.h,
         Text(
           content,
           style: context.ts.bodySmall?.copyWith(
-            color: context.cs.onSurface.withOpacity(0.7),
+            color: context.cs.onSurface.withValues(alpha: 0.7),
             height: 1.5,
           ),
         ),

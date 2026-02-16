@@ -8,7 +8,7 @@ class PaymentDataSource {
 
   String get currentUserId => auth.currentUser?.uid ?? '';
 
-  // Create new payment record
+  
   Future<String> createPayment(PaymentFirestoreModel payment) async {
     try {
       final docRef = await firestore.collection('payments').add(payment.toMap());
@@ -18,7 +18,7 @@ class PaymentDataSource {
     }
   }
 
-  // Get payment by paymentId
+  
   Future<PaymentFirestoreModel?> getPaymentById(String paymentId) async {
     try {
       final doc = await firestore.collection('payments').doc(paymentId).get();
@@ -45,7 +45,7 @@ class PaymentDataSource {
     }
   }
 
-  // Update payment status
+  
   Future<void> updatePaymentStatus(
     String paymentId,
     String status, {
@@ -65,7 +65,7 @@ class PaymentDataSource {
     }
   }
 
-  // Mark payment as refunded
+  
   Future<void> refundPayment(String paymentId, String reason) async {
     try {
       await firestore.collection('payments').doc(paymentId).update({
@@ -78,7 +78,7 @@ class PaymentDataSource {
     }
   }
 
-  // Get all payments for user
+  
   Future<List<PaymentFirestoreModel>> getUserPayments() async {
     try {
       final query = await firestore

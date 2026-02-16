@@ -8,7 +8,7 @@ class SavedCardEntity extends Equatable {
   final int expiryMonth;
   final int expiryYear;
   final String cardHolderName;
-  final int cardColor; // To display visual card gradient
+  final int cardColor; 
 
   const SavedCardEntity({
     required this.id,

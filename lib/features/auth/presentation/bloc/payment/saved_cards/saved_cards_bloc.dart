@@ -37,7 +37,7 @@ class SavedCardsBloc extends Bloc<SavedCardsEvent, SavedCardsState> {
     try {
       await addSavedCardUseCase(event.card, event.userId);
       emit(const SavedCardOperationSuccess('Card added successfully'));
-      add(LoadSavedCardsEvent(event.userId)); // Reload
+      add(LoadSavedCardsEvent(event.userId)); 
     } catch (e) {
       emit(SavedCardsError(e.toString()));
     }
@@ -49,7 +49,7 @@ class SavedCardsBloc extends Bloc<SavedCardsEvent, SavedCardsState> {
     try {
       await deleteSavedCardUseCase(event.cardId, event.userId);
       emit(const SavedCardOperationSuccess('Card removed successfully'));
-      add(LoadSavedCardsEvent(event.userId)); // Reload
+      add(LoadSavedCardsEvent(event.userId)); 
     } catch (e) {
       emit(SavedCardsError(e.toString()));
     }

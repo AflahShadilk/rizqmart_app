@@ -1,4 +1,6 @@
 
+
+
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
@@ -73,7 +75,7 @@ class _OrdersPageState extends State<OrdersPage> {
           if (state is OrderLoadingState) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is OrderSuccessState) {
-             // Order cancelled successfully, reload data
+             
              context.read<OrderBloc>().add(const GetUserOrdersEvent());
              return const Center(child: CircularProgressIndicator());
           } else if (state is OrderErrorState) {
@@ -102,7 +104,7 @@ class _OrdersPageState extends State<OrdersPage> {
                     Icon(
                       Icons.shopping_bag_outlined,
                       size: 64,
-                      color: context.cs.onSurface.withAlpha(77), // 0.3 opacity
+                      color: context.cs.onSurface.withAlpha(77), 
                     ),
                     16.h,
                     Text(
@@ -113,7 +115,7 @@ class _OrdersPageState extends State<OrdersPage> {
                     Text(
                       'Start shopping to see your orders here',
                       style: context.ts.bodySmall?.copyWith(
-                        color: context.cs.onSurface.withAlpha(128), // 0.5 opacity
+                        color: context.cs.onSurface.withAlpha(128), 
                       ),
                     ),
                   ],
@@ -169,7 +171,7 @@ class _OrderCard extends StatelessWidget {
                    Container(
                      padding: const EdgeInsets.all(8),
                      decoration: BoxDecoration(
-                       color: context.cs.primaryContainer.withOpacity(0.4),
+                       color: context.cs.primaryContainer.withValues(alpha: 0.4),
                        borderRadius: BorderRadius.circular(8),
                      ),
                      child: Icon(Icons.inventory_2_outlined, color: context.cs.primary),
@@ -190,7 +192,7 @@ class _OrderCard extends StatelessWidget {
                            DateFormat('MMM dd, yyyy • hh:mm a')
                                .format(order.createdAt),
                            style: context.ts.bodySmall?.copyWith(
-                             color: context.cs.onSurface.withOpacity(0.6),
+                             color: context.cs.onSurface.withValues(alpha: 0.6),
                            ),
                          ),
                        ],
@@ -200,14 +202,14 @@ class _OrderCard extends StatelessWidget {
                 ],
               ),
               16.h,
-              Divider(color: context.cs.outlineVariant.withOpacity(0.2)),
+              Divider(color: context.cs.outlineVariant.withValues(alpha: 0.2)),
               16.h,
               Row(
                 children: [
                   Text(
                     '${order.items.length} Items',
                     style: context.ts.bodyMedium?.copyWith(
-                       color: context.cs.onSurface.withOpacity(0.7),
+                       color: context.cs.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                   const Spacer(),
@@ -278,12 +280,12 @@ class _StatusChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withAlpha(26), // 0.1 opacity
+        color: color.withAlpha(26), 
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withAlpha(128)), // 0.5 opacity
+        border: Border.all(color: color.withAlpha(128)), 
       ),
       child: Text(
-        label, // Use the mapped label
+        label, 
         style: context.ts.labelSmall?.copyWith(
           color: color,
           fontWeight: FontWeight.bold,

@@ -5,13 +5,13 @@ import 'package:rizqmart/features/auth/domain/entities/main/wallet_transaction_e
 
 abstract class WalletRepository {
   Future<Either<String, WalletEntity>> getWalletBalance(String userId);
-  Either<String, Stream<WalletEntity>> getWalletStream(String userId); // Real-time balance
+  Either<String, Stream<WalletEntity>> getWalletStream(String userId); 
   
   Future<Either<String, WalletTransactionEntity>> creditWallet({
     required String userId,
     required double amount,
     required String description,
-    required String referenceId, // e.g. OrderID
+    required String referenceId, 
     required TransactionType type,
   });
 

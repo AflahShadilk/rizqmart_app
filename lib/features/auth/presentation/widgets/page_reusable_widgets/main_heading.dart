@@ -14,8 +14,8 @@ class AppHeading extends StatelessWidget {
       style: GoogleFonts.poppins(textStyle: context.ts.titleLarge?.copyWith(
         fontWeight: FontWeight.bold,
         fontSize: 17,
-        // ignore: deprecated_member_use
-        color: context.cs.onBackground,
+        
+        color: context.cs.onSurface,
       ),)
     );
   }

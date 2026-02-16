@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +15,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/reusable_text.dart';
 
-//Empty cart
+
 Widget emptyCart(BuildContext context) {
   return Center(
     child: Column(
@@ -24,20 +24,20 @@ Widget emptyCart(BuildContext context) {
         Icon(
           Icons.shopping_cart_outlined,
           size: 100,
-          color: context.cs.onSurface.withOpacity(.3),
+          color: context.cs.onSurface.withValues(alpha: .3),
         ),
         16.h,
         ReusableText(
           texts: 'Your cart is empty',
           titleSize: context.ts.titleLarge?.copyWith(
-            color: context.cs.onSurface.withOpacity(0.6),
+            color: context.cs.onSurface.withValues(alpha: 0.6),
           ),
         ),
         8.h,
         ReusableText(
           texts: 'Add items to get started',
           titleSize: context.ts.bodyMedium?.copyWith(
-            color: context.cs.onSurface.withOpacity(0.4),
+            color: context.cs.onSurface.withValues(alpha: 0.4),
           ),
         ),
       ],
@@ -45,7 +45,7 @@ Widget emptyCart(BuildContext context) {
   );
 }
 
-//main product card
+
 class ProductContainer extends StatelessWidget {
   const ProductContainer({super.key, required this.cartitems});
   final CartEntities cartitems;
@@ -56,7 +56,7 @@ class ProductContainer extends StatelessWidget {
         ? cartitems.variantDetails[cartitems.variantIndex]
         : null;
 
-    // Set image
+    
     String imageUrl = '';
     if (variant != null) {
       final imageUrls = variant['imageUrls'];
@@ -96,7 +96,7 @@ class ProductContainer extends StatelessWidget {
           color: context.cs.surface,
           border: Border(
             bottom: BorderSide(
-              color: context.cs.outlineVariant.withOpacity(0.5),
+              color: context.cs.outlineVariant.withValues(alpha: 0.5),
               width: 1,
             ),
           ),
@@ -105,7 +105,7 @@ class ProductContainer extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product Image
+            
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: ProductImage(
@@ -115,13 +115,13 @@ class ProductContainer extends StatelessWidget {
               ),
             ),
             12.w,
-            // Product De tails
+            
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Product Name
+                  
                   Text(
                     cartitems.name,
                     style: context.ts.titleMedium?.copyWith(
@@ -132,28 +132,28 @@ class ProductContainer extends StatelessWidget {
                   ),
                   4.h,
 
-                  // Variant Name
+                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         variantName,
                         style: context.ts.labelMedium?.copyWith(
-                          color: context.cs.onSurface.withOpacity(0.6),
+                          color: context.cs.onSurface.withValues(alpha: 0.6),
                         ),
                       ),
                     ],
                   ),
                   12.h,
 
-                  // Quantity Counter
+                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       quantityCounter(context, cartItemId, cartitems.count),
 
-                      // Total Price
+                      
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -161,14 +161,14 @@ class ProductContainer extends StatelessWidget {
                             Text(
                               '${cartitems.count} × ₹${finalPrice.toStringAsFixed(2)}',
                               style: context.ts.labelSmall?.copyWith(
-                                color: context.cs.secondary.withOpacity(0.6),
+                                color: context.cs.secondary.withValues(alpha: 0.6),
                               ),
                             ),
                           if (hasDiscount)
                             Text(
                               '₹${(price * cartitems.count).toStringAsFixed(2)}',
                               style: context.ts.labelSmall?.copyWith(
-                                color: context.cs.onSurface.withOpacity(0.4),
+                                color: context.cs.onSurface.withValues(alpha: 0.4),
                                 decoration: TextDecoration.lineThrough,
                               ),
                             ),
@@ -196,7 +196,7 @@ class ProductContainer extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: context.cs.primary.withOpacity(0.3),
+          color: context.cs.primary.withValues(alpha: 0.3),
           width: 1.5,
         ),
         borderRadius: BorderRadius.circular(8),
@@ -204,7 +204,7 @@ class ProductContainer extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Decrement Button
+          
           InkWell(
             onTap: () {
               if (count > 1) {
@@ -227,7 +227,7 @@ class ProductContainer extends StatelessWidget {
             ),
           ),
 
-          // Count Display
+          
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             child: Text(
@@ -235,12 +235,12 @@ class ProductContainer extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: context.cs.onBackground,
+                color: context.cs.onSurface,
               ),
             ),
           ),
 
-          // Increment Button
+          
           InkWell(
             onTap: () {
               context.read<CartBloc>().add(IncrementQuantityEvent(cartItemId));
@@ -274,7 +274,7 @@ class ProductContainer extends StatelessWidget {
         content: Text(
             'Are you sure you want to remove this item from your cart?',
             style: context.ts.bodyMedium
-                ?.copyWith(color: context.cs.onSecondary.withOpacity(0.4))),
+                ?.copyWith(color: context.cs.onSecondary.withValues(alpha: 0.4))),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
@@ -300,7 +300,7 @@ class ProductContainer extends StatelessWidget {
   }
 }
 
-// summery
+
 Widget cardSummery(BuildContext context, CartLoadedState state) {
   final size = MediaQuery.of(context).size;
   return SizedBox(
@@ -318,7 +318,7 @@ Widget cardSummery(BuildContext context, CartLoadedState state) {
 
 
 
-// checkout row
+
 Widget checkoutRow(
   BuildContext context, {
   IconData? icon,
@@ -343,7 +343,7 @@ Widget checkoutRow(
             title,
             style: context.ts.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
-                color: context.cs.onSurface.withOpacity(0.5)),
+                color: context.cs.onSurface.withValues(alpha: 0.5)),
           ),
           const Spacer(),
           Text(
@@ -354,14 +354,14 @@ Widget checkoutRow(
           Icon(
             Icons.arrow_forward_ios,
             size: 16,
-            color: context.cs.onSurface.withOpacity(0.4),
+            color: context.cs.onSurface.withValues(alpha: 0.4),
           ),
         ],
       ),
     ));
   }
 
-// cost row
+
 Widget costRow(
   BuildContext context,
   String label,

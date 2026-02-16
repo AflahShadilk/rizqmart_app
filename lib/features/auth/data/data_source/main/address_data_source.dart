@@ -65,7 +65,7 @@ class AddressRemoteDataSource {
       final dataToUpdate = model.toJson();
       dataToUpdate.remove('id');
 
-      // Update the address document and return the updated model
+      
       await userAddressCollection.doc(address.id).update(dataToUpdate);
       final updatedDoc = await userAddressCollection.doc(address.id).get();
       return AddressFireStoreModel.fromFirestore(updatedDoc);
@@ -76,7 +76,7 @@ class AddressRemoteDataSource {
     }
   }
 
-  // Deletes a specific address document from Firestore
+  
   Future<void> deleteAddress(String userId, String addressId) async {
     try {
       await addressCollection(userId).doc(addressId).delete();
@@ -87,12 +87,12 @@ class AddressRemoteDataSource {
     }
   }
 
-  // Sets a specific address as the default address for delivery
+  
   Future<void> setDefaultAddress(String userId, String addressId) async {
     try {
-      // Unset all previous default addresses
+      
       await unsetAllDefaultAddresses(userId);
-      // Set the selected address as default
+      
       await addressCollection(userId).doc(addressId).update({
         'isDefault': true,
       });
@@ -103,15 +103,15 @@ class AddressRemoteDataSource {
     }
   }
 
-  // Unsets the default status from all addresses, with optional exclusion for a specific address
+  
   Future<void> unsetAllDefaultAddresses(String userId, {String? excludeId}) async {
     try {
-      // Query all addresses marked as default for the user
+      
       final snapshot = await addressCollection(userId)
           .where('isDefault', isEqualTo: true)
           .get();
 
-      // Use batch operation to update multiple documents in a single transaction
+      
       final batch = firestore.batch();
 
       for (var doc in snapshot.docs) {
@@ -124,19 +124,19 @@ class AddressRemoteDataSource {
     }
   }
 
-  // Retrieves the current location coordinates from the device using Geolocator service
+  
   Future<Map<String, dynamic>> getCurrentLocation() async {
     try {
-      // Check if location services are enabled on the device
+      
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         throw Exception('Location services are disabled. Please enable them in settings.');
       }
 
-      // Check the current location permission status
+      
       LocationPermission permission = await Geolocator.checkPermission();
 
-      // Request permission if not already granted
+      
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
@@ -144,17 +144,18 @@ class AddressRemoteDataSource {
         }
       }
 
-      // Handle permanently denied permissions
+      
       if (permission == LocationPermission.deniedForever) {
         throw Exception(
           'Location permissions are permanently denied. Please enable them in app settings.'
         );
       }
 
-      // Get the current device position with high accuracy
+      
       Position position = await Geolocator.getCurrentPosition(
-        // ignore: deprecated_member_use
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
 
       String addressName = "Unknown Location";
@@ -165,18 +166,18 @@ class AddressRemoteDataSource {
         );
         if (placemarks.isNotEmpty) {
           Placemark place = placemarks[0];
-          // Construct address string: Locality, SubLocality or Area
+          
           addressName = "${place.subLocality ?? ''} ${place.locality ?? ''}".trim();
           if (addressName.isEmpty) {
             addressName = place.administrativeArea ?? "Unknown Location";
           }
         }
       } catch (e) {
-        // Fallback or ignore geocoding error, just return coords
+        
         addressName = "${position.latitude.toStringAsFixed(2)}, ${position.longitude.toStringAsFixed(2)}";
       }
 
-      // Return location data as a map
+      
       return {
         'latitude': position.latitude,
         'longitude': position.longitude,

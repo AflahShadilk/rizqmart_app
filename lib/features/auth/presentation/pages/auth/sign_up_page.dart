@@ -1,3 +1,5 @@
+
+
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
@@ -17,6 +19,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/buttons/elevated_but
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/text_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_responsive.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -105,7 +108,7 @@ class _SignUpPageState extends State<SignUpPage> {
       builder: (context, state) {
         final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
         final isKeyboardVisible = keyboardHeight > 0;
-        return Scaffold(
+        return ResponsiveWrapper(child: Scaffold(
           backgroundColor: Colors.green.shade100,
           resizeToAvoidBottomInset: true,
           body: SafeArea(
@@ -230,7 +233,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ],
             ),
           ),
-        );
+        ));
       },
     );
   }

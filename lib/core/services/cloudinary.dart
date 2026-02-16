@@ -15,7 +15,7 @@ Future<String?> uploadToCloudinary(FilePickerResult? filePickerResult) async {
     var fileName = file.name;
 
 
-    // If bytes is null, try to read from path
+    
     if (bytes == null) {
       
       if (file.path == null) {
@@ -39,7 +39,7 @@ Future<String?> uploadToCloudinary(FilePickerResult? filePickerResult) async {
     String preset = dotenv.env['PRESET_NAME'] ?? '';
 
 
-    //  Validate credentials
+    
     if (cloudName.isEmpty) {
       return null;
     }

@@ -23,7 +23,7 @@ class OrderDataSource {
       
 
       
-      // Clear cart after order
+      
       await clearUserCart(order.userId);
       
       return docRef.id;
@@ -96,7 +96,7 @@ class OrderDataSource {
         final userId = orderData['userId'] as String;
         final totalCost = (orderData['totalCost'] as num).toDouble();
 
-        // 2. Refund to User Wallet - READ FIRST
+        
         final userRef = firestore.collection('users').doc(userId);
         final userDoc = await transaction.get(userRef);
 

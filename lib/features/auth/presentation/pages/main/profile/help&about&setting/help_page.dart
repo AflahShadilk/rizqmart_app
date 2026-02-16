@@ -1,16 +1,17 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.cs.background,
+    return ResponsiveWrapper(child: Scaffold(
+      backgroundColor: context.cs.surface,
       appBar: AppBar(
         title: Text(
           'Help & Support',
@@ -22,7 +23,7 @@ class HelpPage extends StatelessWidget {
         elevation: 0,
       ),
       body: buildHelpContent(context),
-    );
+    ));
   }
 
   Widget buildHelpContent(BuildContext context) {
@@ -161,7 +162,7 @@ class HelpPage extends StatelessWidget {
             child: Text(
               answer,
               style: context.ts.bodySmall?.copyWith(
-                color: context.cs.onSurface.withOpacity(0.7),
+                color: context.cs.onSurface.withValues(alpha: 0.7),
                 height: 1.6,
               ),
             ),
@@ -198,7 +199,7 @@ class HelpPage extends StatelessWidget {
                   Text(
                     label,
                     style: context.ts.bodySmall?.copyWith(
-                      color: context.cs.onSurface.withOpacity(0.6),
+                      color: context.cs.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                   4.h,

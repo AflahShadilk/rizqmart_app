@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -158,7 +158,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
         color: context.cs.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: context.cs.outlineVariant.withOpacity(0.3),
+          color: context.cs.outlineVariant.withValues(alpha: 0.3),
         ),
       ),
       child: Column(
@@ -167,7 +167,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
           Text(
             'Order Summary',
             style: context.ts.bodySmall?.copyWith(
-              color: context.cs.onSurface.withOpacity(0.6),
+              color: context.cs.onSurface.withValues(alpha: 0.6),
             ),
           ),
           8.h,
@@ -231,8 +231,8 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                         ),
                         borderRadius: BorderRadius.circular(12),
                         color: isSelected
-                            ? context.cs.primary.withOpacity(0.08)
-                            : (isInsufficient ? Colors.grey.withOpacity(0.05) : Colors.transparent),
+                            ? context.cs.primary.withValues(alpha: 0.08)
+                            : (isInsufficient ? Colors.grey.withValues(alpha: 0.05) : Colors.transparent),
                       ),
                       padding: const EdgeInsets.all(16),
                       child: Row(
@@ -241,8 +241,8 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? context.cs.primary.withOpacity(0.15)
-                                  : context.cs.outlineVariant.withOpacity(0.1),
+                                  ? context.cs.primary.withValues(alpha: 0.15)
+                                  : context.cs.outlineVariant.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Icon(
@@ -275,7 +275,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                                 Text(
                                   description,
                                   style: context.ts.labelSmall?.copyWith(
-                                    color: (isInsufficient ? Colors.grey : context.cs.primary).withOpacity(0.7),
+                                    color: (isInsufficient ? Colors.grey : context.cs.primary).withValues(alpha: 0.7),
                                   ),
                                 ),
                               ],
@@ -337,7 +337,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
               ),
               borderRadius: BorderRadius.circular(12),
               color: isSelected
-                  ? context.cs.primary.withOpacity(0.08)
+                  ? context.cs.primary.withValues(alpha: 0.08)
                   : Colors.transparent,
             ),
             padding: const EdgeInsets.all(16),
@@ -347,8 +347,8 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? context.cs.primary.withOpacity(0.15)
-                        : context.cs.outlineVariant.withOpacity(0.1),
+                        ? context.cs.primary.withValues(alpha: 0.15)
+                        : context.cs.outlineVariant.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -371,14 +371,14 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                       Text(
                         subtitle,
                         style: context.ts.bodySmall?.copyWith(
-                          color: context.cs.onSurface.withOpacity(0.6),
+                          color: context.cs.onSurface.withValues(alpha: 0.6),
                         ),
                       ),
                       8.h,
                       Text(
                         description,
                         style: context.ts.labelSmall?.copyWith(
-                          color: context.cs.primary.withOpacity(0.7),
+                          color: context.cs.primary.withValues(alpha: 0.7),
                         ),
                       ),
                     ],
@@ -405,7 +405,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: context.cs.primary.withOpacity(0.1),
+        color: context.cs.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -436,7 +436,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
       arguments: {
         'order': widget.order,
         'paymentMethod': selectedPayment,
-        'savedCard': savedCard, // Pass the saved card if selected
+        'savedCard': savedCard, 
       },
     );
   }
@@ -476,11 +476,11 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
             onPressed: () {
               final amount = double.tryParse(amountController.text);
               if (amount != null && amount > 0) {
-                 // We need to access WalletBloc from the dialog context, 
-                 // but since the dialog is a new route, it might not have the provider if not passed correctly.
-                 // However, since we are inside the page which has the provider, we can use context.read if we pass the context.
-                 // But wait, the dialog context 'ctx' is different. 
-                 // We should use the 'context' from _showAddMoneyDialog which captures the scope with WalletBloc.
+                 
+                 
+                 
+                 
+                 
                  context.read<WalletBloc>().add(AddMoneyEvent(
                   userId: FirebaseAuth.instance.currentUser?.uid ?? '',
                   amount: amount,

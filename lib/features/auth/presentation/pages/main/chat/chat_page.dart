@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +9,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_bloc.dar
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/chat/widgets/chat_bubble.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class ChatPage extends StatefulWidget {
   final String orderId;
@@ -28,7 +29,7 @@ class ChatPage extends StatefulWidget {
     this.productName,
     this.productImage,
     this.sellerId,
-    this.orderStatus = 'active', // Default to active if not provided
+    this.orderStatus = 'active', 
   });
 
   final String orderStatus;
@@ -42,15 +43,15 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   late final String _currentUserId;
-  late final String _chatId; // chatId = orderId (deterministic)
+  late final String _chatId; 
 
   @override
   void initState() {
     super.initState();
     _currentUserId = FirebaseAuth.instance.currentUser!.uid;
-    _chatId = widget.orderId; // The chatId IS the orderId
+    _chatId = widget.orderId; 
 
-    // Create/ensure chat room exists and start loading messages
+    
     context.read<ChatBloc>().add(CreateChatRoomEvent(
       orderId: widget.orderId,
       userId: _currentUserId,
@@ -86,7 +87,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ResponsiveWrapper(child: Scaffold(
       backgroundColor: context.cs.surface,
       appBar: AppBar(
         title: Column(
@@ -98,7 +99,7 @@ class _ChatPageState extends State<ChatPage> {
         ),
         backgroundColor: context.cs.surface,
         elevation: 1,
-        shadowColor: context.cs.shadow.withOpacity(0.1),
+        shadowColor: context.cs.shadow.withValues(alpha: 0.1),
       ),
       body: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
@@ -151,18 +152,18 @@ class _ChatPageState extends State<ChatPage> {
 
         },
       ),
-    );
+    ));
   }
 
   Widget _buildCancelledMessage(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
-      color: Colors.red.withOpacity(0.1),
+      color: Colors.red.withValues(alpha: 0.1),
       child: Column(
         children: [
-          Icon(Icons.block, color: Colors.red.withOpacity(0.7)),
-          const SizedBox(height: 8),
+          Icon(Icons.block, color: Colors.red.withValues(alpha: 0.7)),
+          8.h,
           Text(
             'This chat is closed because the order was cancelled.',
             style: context.ts.bodyMedium?.copyWith(color: Colors.red),
@@ -180,7 +181,7 @@ class _ChatPageState extends State<ChatPage> {
         color: context.cs.surface,
         boxShadow: [
           BoxShadow(
-            color: context.cs.shadow.withOpacity(0.1),
+            color: context.cs.shadow.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, -2),
           )
@@ -194,7 +195,7 @@ class _ChatPageState extends State<ChatPage> {
               decoration: InputDecoration(
                 hintText: 'Type a message...',
                 filled: true,
-                fillColor: context.cs.surfaceContainerHighest.withOpacity(0.5),
+                fillColor: context.cs.surfaceContainerHighest.withValues(alpha: 0.5),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
                   borderSide: BorderSide.none,
@@ -209,7 +210,7 @@ class _ChatPageState extends State<ChatPage> {
             onPressed: _sendMessage,
             icon: Icon(Icons.send_rounded, color: context.cs.primary),
             style: IconButton.styleFrom(
-              backgroundColor: context.cs.primary.withOpacity(0.1),
+              backgroundColor: context.cs.primary.withValues(alpha: 0.1),
               padding: const EdgeInsets.all(12),
             ),
           ),
@@ -218,4 +219,3 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 }
-

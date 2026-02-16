@@ -5,7 +5,7 @@ class MessageEntity extends Equatable {
   final String senderId;
   final String text;
   final DateTime timestamp;
-  final String senderRole; // 'user' or 'admin'
+  final String senderRole; 
   final bool isRead;
 
   const MessageEntity({

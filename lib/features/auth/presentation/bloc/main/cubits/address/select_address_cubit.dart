@@ -5,22 +5,22 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/address/add
 class AddressSelectionCubit extends Cubit<AddressSelectionState> {
   AddressSelectionCubit() : super(const AddressSelectionState());
 
-  /// Select an address
+  
   void selectAddress(AddressEntities address) {
     emit(AddressSelectionState(selectedAddress: address));
   }
 
-  /// Clear the selected address
+  
   void clearSelection() {
     emit(const AddressSelectionState());
   }
 
-  /// Get currently selected address (if any)
+  
   AddressEntities? getSelectedAddress() {
     return state.selectedAddress;
   }
 
-  /// Check if an address is selected
+  
   bool isAddressSelected(String addressId) {
     return state.selectedAddress?.id == addressId;
   }

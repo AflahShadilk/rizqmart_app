@@ -49,6 +49,6 @@ class CategoryModel extends CategoryEntity {
     return CategoryModel(
         id: doc.id,
         categoryName: data['name'] ?? '',
-        logoUrl: data['logoUrl'] ?? '');
+        logoUrl: data['logoUrl'] ?? data['image'] ?? data['imageUrl'] ?? '');
   }
 }

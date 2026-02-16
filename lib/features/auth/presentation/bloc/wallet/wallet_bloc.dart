@@ -43,8 +43,8 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
           (failure) => emit(state.copyWith(
             status: WalletStatus.loaded,
             wallet: wallet,
-            // Keep existing transactions or empty if failed? 
-            // Better to show balance even if transactions fail, but let's just log error
+            
+            
             errorMessage: "Failed to load transactions: $failure", 
           )),
           (transactions) => emit(state.copyWith(
@@ -78,7 +78,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
           status: WalletStatus.success,
           successMessage: 'Withdrawal request submitted successfully',
         ));
-        add(LoadWalletDataEvent(event.userId)); // Refresh data
+        add(LoadWalletDataEvent(event.userId)); 
       },
     );
   }
@@ -89,7 +89,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   ) async {
     emit(state.copyWith(status: WalletStatus.loading));
     
-    // Create a unique reference ID for the transaction
+    
     final referenceId = 'dep_${DateTime.now().millisecondsSinceEpoch}';
     
     final result = await creditWalletUseCase(
@@ -110,7 +110,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
           status: WalletStatus.success,
           successMessage: '₹${event.amount} added to wallet successfully',
         ));
-        add(LoadWalletDataEvent(event.userId)); // Refresh data
+        add(LoadWalletDataEvent(event.userId)); 
       },
     );
   }

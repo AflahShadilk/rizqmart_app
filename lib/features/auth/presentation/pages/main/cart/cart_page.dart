@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
@@ -9,6 +11,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/bloc%20helper/circul
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -22,14 +25,14 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      // ignore: use_build_context_synchronously
+      
       context.read<CartBloc>().add(const GetCartItemsEvent());
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ResponsiveWrapper(child: Scaffold(
       backgroundColor: context.cs.surface,
       appBar: AppBar(
         title: const AppHeading('My Cart'),
@@ -80,6 +83,6 @@ class _CartPageState extends State<CartPage> {
           return const SizedBox.shrink();
         },
       ),
-    );
+    ));
   }
 }

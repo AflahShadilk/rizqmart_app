@@ -1,16 +1,17 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class AboutUsPage extends StatelessWidget {
   const AboutUsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.cs.background,
+    return ResponsiveWrapper(child: Scaffold(
+      backgroundColor: context.cs.surface,
       appBar: AppBar(
         title: Text(
           'About Us',
@@ -22,7 +23,7 @@ class AboutUsPage extends StatelessWidget {
         elevation: 0,
       ),
       body: buildAboutContent(context),
-    );
+    ));
   }
 
   Widget buildAboutContent(BuildContext context) {
@@ -55,10 +56,10 @@ class AboutUsPage extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: context.cs.primary.withOpacity(0.1),
+        color: context.cs.primary.withValues(alpha: 0.1),
         border: Border(
           bottom: BorderSide(
-            color: context.cs.primary.withOpacity(0.2),
+            color: context.cs.primary.withValues(alpha: 0.2),
           ),
         ),
       ),
@@ -81,7 +82,7 @@ class AboutUsPage extends StatelessWidget {
           Text(
             'Your Trusted Online Marketplace',
             style: context.ts.bodyMedium?.copyWith(
-              color: context.cs.onSurface.withOpacity(0.7),
+              color: context.cs.onSurface.withValues(alpha: 0.7),
             ),
           ),
         ],
@@ -128,8 +129,8 @@ class AboutUsPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           gradient: LinearGradient(
             colors: [
-              context.cs.primary.withOpacity(0.05),
-              context.cs.primary.withOpacity(0.02),
+              context.cs.primary.withValues(alpha: 0.05),
+              context.cs.primary.withValues(alpha: 0.02),
             ],
           ),
         ),
@@ -201,7 +202,7 @@ class AboutUsPage extends StatelessWidget {
                   Text(
                     description,
                     style: context.ts.bodySmall?.copyWith(
-                      color: context.cs.onSurface.withOpacity(0.6),
+                      color: context.cs.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                 ],
@@ -249,8 +250,8 @@ class AboutUsPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           gradient: LinearGradient(
             colors: [
-              context.cs.primary.withOpacity(0.1),
-              context.cs.primary.withOpacity(0.05),
+              context.cs.primary.withValues(alpha: 0.1),
+              context.cs.primary.withValues(alpha: 0.05),
             ],
           ),
         ),
@@ -267,7 +268,7 @@ class AboutUsPage extends StatelessWidget {
             Text(
               label,
               style: context.ts.bodySmall?.copyWith(
-                color: context.cs.onSurface.withOpacity(0.6),
+                color: context.cs.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ],
@@ -290,7 +291,7 @@ class AboutUsPage extends StatelessWidget {
     return Text(
       content,
       style: context.ts.bodyMedium?.copyWith(
-        color: context.cs.onSurface.withOpacity(0.7),
+        color: context.cs.onSurface.withValues(alpha: 0.7),
         height: 1.6,
       ),
     );

@@ -1,4 +1,6 @@
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
+
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +11,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_bloc.dart
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_state.dart';
 import 'withdraw_screen.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 class WalletScreen extends StatelessWidget {
   final String userId;
@@ -19,7 +22,7 @@ class WalletScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<WalletBloc>()..add(LoadWalletDataEvent(userId)),
       child: Scaffold(
-        backgroundColor: context.cs.background,
+        backgroundColor: context.cs.surface,
         appBar: AppBar(
           title: Text(
             'My Wallet',
@@ -52,20 +55,20 @@ class WalletScreen extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.all(16.0),
                 children: [
-                  // Balance Card
+                  
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(24.0),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [context.cs.primary, context.cs.primary.withOpacity(0.8)],
+                        colors: [context.cs.primary, context.cs.primary.withValues(alpha: 0.8)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(16.0),
                       boxShadow: [
                         BoxShadow(
-                          color: context.cs.primary.withOpacity(0.3),
+                          color: context.cs.primary.withValues(alpha: 0.3),
                           blurRadius: 10,
                           offset: const Offset(0, 5),
                         ),
@@ -77,11 +80,11 @@ class WalletScreen extends StatelessWidget {
                         Text(
                           'Available Balance',
                           style: context.ts.bodyLarge?.copyWith(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        8.h,
                         Text(
                           '₹ ${(state.wallet?.balance ?? 0.0).toStringAsFixed(2)}',
                           style: context.ts.displaySmall?.copyWith(
@@ -89,7 +92,7 @@ class WalletScreen extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        24.h,
                         Row(
                           children: [
                             Expanded(
@@ -101,7 +104,7 @@ class WalletScreen extends StatelessWidget {
                                       builder: (context) => WithdrawScreen(userId: userId),
                                     ),
                                   ).then((_) {
-                                    // Refresh on return
+                                    
                                     context.read<WalletBloc>().add(LoadWalletDataEvent(userId));
                                   });
                                 },
@@ -116,12 +119,12 @@ class WalletScreen extends StatelessWidget {
                                 child: const Text('Withdraw', style: TextStyle(fontWeight: FontWeight.bold)),
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            12.w,
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () => _showAddMoneyDialog(context),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white.withOpacity(0.2),
+                                  backgroundColor: Colors.white.withValues(alpha: 0.2),
                                   foregroundColor: Colors.white,
                                   elevation: 0,
                                   side: const BorderSide(color: Colors.white),
@@ -139,16 +142,16 @@ class WalletScreen extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  24.h,
 
-                  // Transactions Header
+                  
                   Text(
                     'Transaction History',
                     style: context.ts.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 12),
+                  12.h,
 
-                  // Transactions List
+                  
                   if (state.transactions.isEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 30),
@@ -156,7 +159,7 @@ class WalletScreen extends StatelessWidget {
                         child: Text(
                           'No transactions yet',
                           style: context.ts.bodyMedium?.copyWith(
-                            color: context.cs.onSurface.withOpacity(0.6),
+                            color: context.cs.onSurface.withValues(alpha: 0.6),
                           ),
                         ),
                       ),
@@ -171,13 +174,13 @@ class WalletScreen extends StatelessWidget {
                         margin: const EdgeInsets.only(bottom: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(color: context.cs.outline.withOpacity(0.1)),
+                          side: BorderSide(color: context.cs.outline.withValues(alpha: 0.1)),
                         ),
                         child: ListTile(
                           leading: CircleAvatar(
                             backgroundColor: isCredit 
-                                ? Colors.green.withOpacity(0.1) 
-                                : Colors.red.withOpacity(0.1),
+                                ? Colors.green.withValues(alpha: 0.1) 
+                                : Colors.red.withValues(alpha: 0.1),
                             child: Icon(
                               isCredit ? Icons.arrow_downward : Icons.arrow_upward,
                               color: isCredit ? Colors.green : Colors.red,

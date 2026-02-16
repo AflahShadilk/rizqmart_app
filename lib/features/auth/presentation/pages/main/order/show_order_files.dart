@@ -1,4 +1,6 @@
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
+
+// ignore_for_file: use_build_context_synchronously, empty_catches
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +53,7 @@ Future<dynamic> modelBottomSheet(
         create: (context) => CheckoutCubit(),
         child: Container(
           decoration: BoxDecoration(
-            color: context.cs.background,
+            color: context.cs.surface,
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(30),
             ),
@@ -87,17 +89,17 @@ Future<dynamic> modelBottomSheet(
                   8.h,
                   context.divider(
                     thickness: 1,
-                    color: context.cs.outlineVariant.withOpacity(0.3),
+                    color: context.cs.outlineVariant.withValues(alpha: 0.3),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.08),
+                        color: Colors.orange.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: Colors.orange.withOpacity(0.2),
+                          color: Colors.orange.withValues(alpha: 0.2),
                         ),
                       ),
                       child: Row(
@@ -123,7 +125,7 @@ Future<dynamic> modelBottomSheet(
                                 Text(
                                   'Within 1 hour',
                                   style: context.ts.labelSmall?.copyWith(
-                                    color: Colors.orange.withOpacity(0.8),
+                                    color: Colors.orange.withValues(alpha: 0.8),
                                   ),
                                 ),
                               ],
@@ -136,7 +138,7 @@ Future<dynamic> modelBottomSheet(
                   8.h,
                   context.divider(
                     thickness: 1,
-                    color: context.cs.outlineVariant.withOpacity(0.3),
+                    color: context.cs.outlineVariant.withValues(alpha: 0.3),
                   ),
                   8.h,
                   BlocBuilder<CheckoutCubit, CheckoutState>(
@@ -156,7 +158,7 @@ Future<dynamic> modelBottomSheet(
                   4.h,
                   context.divider(
                     thickness: 1,
-                    color: context.cs.outlineVariant.withOpacity(0.3),
+                    color: context.cs.outlineVariant.withValues(alpha: 0.3),
                   ),
                   4.h,
                   BlocBuilder<CheckoutCubit, CheckoutState>(
@@ -180,7 +182,7 @@ Future<dynamic> modelBottomSheet(
                               if (result is String) {
                                 addressToStore = result;
                               } else if (result is AddressEntities) {
-                                // Construct full address string
+                                
                                 addressToStore = 
                                     '${result.fullName}, ${result.address1}, ${result.address2}, ${result.city}, ${result.state} - ${result.pincode}, Phone: ${result.phoneNumber}';
                               }
@@ -197,7 +199,7 @@ Future<dynamic> modelBottomSheet(
                   4.h,
                   context.divider(
                     thickness: 1,
-                    color: context.cs.outlineVariant.withOpacity(0.3),
+                    color: context.cs.outlineVariant.withValues(alpha: 0.3),
                   ),
                   4.h,
                   BlocBuilder<CheckoutCubit, CheckoutState>(
@@ -214,19 +216,19 @@ Future<dynamic> modelBottomSheet(
                   4.h,
                   context.divider(
                     thickness: 1,
-                    color: context.cs.outlineVariant.withOpacity(0.3),
+                    color: context.cs.outlineVariant.withValues(alpha: 0.3),
                   ),
                   4.h,
                   BlocBuilder<CheckoutCubit, CheckoutState>(
                     builder: (context, checkoutState) {
                       return const SizedBox.shrink(); 
-                      // Removed Promo Code section as per requirements
+                      
                     },
                   ),
                   8.h,
                   context.divider(
                     thickness: 1,
-                    color: context.cs.outlineVariant.withOpacity(.3),
+                    color: context.cs.outlineVariant.withValues(alpha: .3),
                   ),
                   8.h,
                   _costRowCompact(context, 'Subtotal (MRP)', totalMrp),
@@ -240,7 +242,7 @@ Future<dynamic> modelBottomSheet(
                   6.h,
                   context.divider(
                     thickness: 1,
-                    color: context.cs.outlineVariant.withOpacity(.3),
+                    color: context.cs.outlineVariant.withValues(alpha: .3),
                   ),
                   6.h,
                   Row(
@@ -265,7 +267,7 @@ Future<dynamic> modelBottomSheet(
                   Text(
                     'By placing an order you agree to our Terms and Conditions',
                     style: context.ts.labelSmall?.copyWith(
-                      color: context.cs.onSurface.withOpacity(0.5),
+                      color: context.cs.onSurface.withValues(alpha: 0.5),
                     ),
                   ),
                   12.h,
@@ -284,24 +286,24 @@ Future<dynamic> modelBottomSheet(
                               : 'Complete all fields',
                           onPress: canProceed
                               ? () async {
-                                  // Fetch user profile data
+                                  
                                   try {
-                                    // Default values from Auth
+                                    
                                     String userName = FirebaseAuth.instance.currentUser?.displayName ?? 'Customer';
                                     String userEmail = FirebaseAuth.instance.currentUser?.email ?? 'no-email@example.com';
                                     String userPhone = 'N/A';
                                     
-                                    // Try to fetch from repository using sl
+                                    
                                     try {
                                       final userProfileRepo = sl<UserProfileRepository>();
                                       final userProfile = await userProfileRepo.getUserProfile(userId);
                                       
-                                      // Update with profile data if available
+                                      
                                       if (userProfile.name.isNotEmpty) userName = userProfile.name;
                                       if (userProfile.email.isNotEmpty) userEmail = userProfile.email;
                                       userPhone = userProfile.phoneNumber ?? 'N/A';
                                       
-                                    // ignore: empty_catches
+                                    
                                     } catch (e) {
 
                                     }
@@ -323,7 +325,7 @@ Future<dynamic> modelBottomSheet(
                                       createdAt: DateTime.now(),
                                       deliveryAddress:
                                           checkoutState.deliveryAddress!,
-                                      // Fetch from user profile or Firebase Auth
+                                      
                                       userName: userName,
                                       userEmail: userEmail,
                                       userPhone: userPhone,
@@ -385,15 +387,15 @@ Widget checkoutRowCompact(
       child: Row(
         children: [
           Icon(icon, color: context.cs.primary, size: 18),
-          const SizedBox(width: 8),
+          8.w,
           Text(title, style: context.ts.bodyMedium),
           const Spacer(),
           Text(trailing, style: context.ts.bodySmall),
-          const SizedBox(width: 6),
+          6.w,
           Icon(
             Icons.arrow_forward_ios,
             size: 14,
-            color: context.cs.onSurface.withOpacity(0.4),
+            color: context.cs.onSurface.withValues(alpha: 0.4),
           ),
         ],
       ),
@@ -506,7 +508,7 @@ Widget _paymentOptionCompact(
                 Text(
                   subtitle,
                   style: context.ts.labelSmall?.copyWith(
-                    color: context.cs.onSurface.withOpacity(0.6),
+                    color: context.cs.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ],

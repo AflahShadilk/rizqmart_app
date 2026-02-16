@@ -142,7 +142,7 @@ void setupLocator() {
     ),
   );
 
-  // Repository implementations registered as their interfaces
+  
   sl.registerLazySingleton<CreateAccountAuthrepository>(
     () => SignupRepositoryImpl(sl()),
   );
@@ -152,7 +152,7 @@ void setupLocator() {
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(sl()),
   );
-  //usecaseas
+  
   sl.registerLazySingleton(() => SignoutUsecase(sl(), sl()));
   sl.registerLazySingleton(
     () => SignupUsecase(sl()),
@@ -179,7 +179,7 @@ void setupLocator() {
     () => GooogleAuthBloc(signInWithGoogle: sl()),
   );
 
-  //main part data source------------------------------------------------------------
+  
   sl.registerLazySingleton<DashboardDataSource>(() => DashboardDataSource());
   sl.registerLazySingleton<ExploreDataSources>(() => ExploreDataSources());
   sl.registerLazySingleton<WishListDataSource>(() => WishListDataSource());
@@ -189,10 +189,10 @@ void setupLocator() {
   sl.registerLazySingleton<AddressRemoteDataSource>(()=>AddressRemoteDataSource(firestore: sl()));
   sl.registerLazySingleton<PaymentDataSource>(()=>PaymentDataSource());
   
-  // ========== Services ==========
-  // sl.registerLazySingleton<StripeService>(() => StripeService());
+  
+  
 
-  //main part repos-------------------------------------------------------------------
+  
   sl.registerLazySingleton<DashboardRepository>(
       () => DashboardRepositoryImpl(dataSource: sl()));
   sl.registerLazySingleton<ExploreRepository>(
@@ -205,8 +205,8 @@ void setupLocator() {
   sl.registerLazySingleton<AddressRepository>(()=>AddressRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<PaymentRepository>(()=>PaymentRepositoryImpl(paymentDataSource: sl(), orderDataSource: sl(), cartDataSource: sl(),));
 
-  //use -------------------------------------------------------------------------------
-  //productUsecases
+  
+  
   sl.registerLazySingleton(() => GetProductUsecase(sl()));
   sl.registerLazySingleton(() => GetProductByIdUseCase(sl()));
   sl.registerLazySingleton(() => GetProductsUsecase(sl()));
@@ -214,13 +214,13 @@ void setupLocator() {
   sl.registerLazySingleton(() => SearchProductsUsecase(sl()));
   sl.registerLazySingleton(() => GetProductbycategoryUsecase(sl()));
 
-  //WishListUsecases
+  
   sl.registerLazySingleton(() => AddToWishListUsecase(sl()));
   sl.registerLazySingleton(() => DeleteFrmWishListUsecase(sl()));
   sl.registerLazySingleton(() => GetAllWishListUsecase(sl()));
   sl.registerLazySingleton(() => WishListToggleUsecase(sl(), sl(), sl()));
 
-  //cart usecases
+  
 
   sl.registerLazySingleton(()=>AddToCartUsecase(sl()));
   sl.registerLazySingleton(()=>GetCartItemsUsecase(sl()));
@@ -230,18 +230,18 @@ void setupLocator() {
   sl.registerLazySingleton(()=>RemoveFromCartUsecase(sl()));
   sl.registerLazySingleton(()=>ClearCartItemUsecase(sl()));
 
-  //Order usecase
+  
   sl.registerLazySingleton(()=>PlaceOrderUsecase(sl()));
   sl.registerLazySingleton(()=>GetUserOrdersUsecase(sl()));
   sl.registerLazySingleton(()=>CancelOrderUsecase(sl(), sl()));
 
-  ///User Profile usecase
+  
   sl.registerLazySingleton(()=>GetUserProfileUsecase(sl()));
   sl.registerLazySingleton(()=>UpdateProfileUsecase(sl()));
   sl.registerLazySingleton(()=>UploadProfilePhotoUsecase(sl()));
   sl.registerLazySingleton(()=>DeleteProfilePhotoUsecase(sl()));
 
-  //User address usecase
+  
   sl.registerLazySingleton(()=>GetAddressUsecase(sl()));
   sl.registerLazySingleton(()=>AddAddressUsecase(sl()));
   sl.registerLazySingleton(()=>UpdateAddressUsecase(sl()));
@@ -249,7 +249,7 @@ void setupLocator() {
   sl.registerLazySingleton(()=>DeleteAddressUsecase(sl()));
   sl.registerLazySingleton(()=>GetCurrentLocationUsecase(sl()));
   
-  //Payment usecases
+  
   sl.registerLazySingleton(()=>CreateOrderUsecase(sl()));
   sl.registerLazySingleton(()=>PayWithStripeUseCase(sl()));
   sl.registerLazySingleton(()=>PayWithCODUseCase(sl()));
@@ -257,7 +257,7 @@ void setupLocator() {
   sl.registerLazySingleton(()=>RefundOrderUseCase(sl()));
  
 
-  //Chat usecases
+  
   sl.registerLazySingleton<ChatRemoteDataSource>(() => ChatRemoteDataSource(sl()));
   sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(sl()));
 
@@ -271,7 +271,7 @@ void setupLocator() {
     sendMessageUseCase: sl(),
   ));
 
-  // Saved Cards
+  
   sl.registerLazySingleton<SavedCardRemoteDataSource>(() => SavedCardRemoteDataSource(sl()));
   sl.registerLazySingleton<SavedCardRepository>(() => SavedCardRepositoryImpl(sl()));
 
@@ -285,12 +285,12 @@ void setupLocator() {
     deleteSavedCardUseCase: sl(),
   ));
 
-  // Notification
+  
   sl.registerLazySingleton<NotificationDataSource>(() => NotificationDataSourceImpl(sl()));
   sl.registerLazySingleton<NotificationRepository>(() => NotificationRepositoryImpl(sl()));
   sl.registerFactory(() => NotificationBloc(sl()));
 
-  // Review System
+  
   sl.registerLazySingleton<ReviewRepository>(() => ReviewRepositoryImpl(firestore: sl()));
   sl.registerLazySingleton(() => AddReviewUseCase(repository: sl()));
   sl.registerLazySingleton(() => GetReviewsUseCase(repository: sl()));
@@ -302,7 +302,7 @@ void setupLocator() {
 
   sl.registerFactory(() => SingleProductBloc(getProductByIdUseCase: sl()));
 
-  // Wallet System
+  
   sl.registerLazySingleton<WalletRemoteDataSource>(() => WalletRemoteDataSourceImpl(sl()));
   sl.registerLazySingleton<WalletRepository>(() => WalletRepositoryImpl(sl()));
   

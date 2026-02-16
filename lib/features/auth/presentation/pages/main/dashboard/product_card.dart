@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -77,14 +77,14 @@ class _ProductCardState extends State<ProductCard>
     super.build(context);
 
     final colorScheme = Theme.of(context).colorScheme;
-    // ignore: prefer_function_declarations_over_variables
-    final onTapNav = () =>
+    
+    onTapNav() =>
         Navigator.pushNamed(context, AppRoutes.productDetails, arguments: {
           'product': widget.product,
           'variantIndex': 0,
         });
 
-    // Calculate Discount
+    
     final double discount = widget.product.discount ?? 0;
     final bool hasDiscount = discount > 0;
     final double discountedPrice = hasDiscount 
@@ -106,7 +106,7 @@ class _ProductCardState extends State<ProductCard>
               borderRadius: BorderRadius.circular(_radiusValue),
               boxShadow: [
                 BoxShadow(
-                  color: colorScheme.onBackground.withOpacity(0.03),
+                  color: colorScheme.onSurface.withValues(alpha: 0.03),
                   blurRadius: 4,
                   offset: const Offset(0, 3),
                 ),
@@ -175,7 +175,7 @@ class _ProductCardState extends State<ProductCard>
                                               '₹${variantMrp.toStringAsFixed(0)}',
                                               style: GoogleFonts.inter(
                                                 decoration: TextDecoration.lineThrough,
-                                                color: context.cs.onSurface.withOpacity(0.6),
+                                                color: context.cs.onSurface.withValues(alpha: 0.6),
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w500,
                                               ),
@@ -222,7 +222,7 @@ class _ProductCardState extends State<ProductCard>
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                           decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.9),
+                            color: Colors.red.withValues(alpha: 0.9),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(

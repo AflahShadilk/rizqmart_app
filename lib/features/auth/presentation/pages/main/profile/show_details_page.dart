@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,7 +56,7 @@ class ShowDetailsPage extends StatelessWidget {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: context.cs.primary.withOpacity(0.1),
+                      color: context.cs.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
@@ -215,10 +215,10 @@ class _UserDetailsViewContent extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: context.cs.surfaceContainerHighest.withOpacity(0.5),
+        color: context.cs.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: context.cs.outlineVariant.withOpacity(0.5),
+          color: context.cs.outlineVariant.withValues(alpha: 0.5),
           width: 1,
         ),
       ),

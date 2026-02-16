@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,7 +44,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: AppColors.success500.withOpacity(.2),
+              backgroundColor: AppColors.success500.withValues(alpha: .2),
             ),
           );
           emailcontroll.clear();
@@ -53,7 +53,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error),
-              backgroundColor: AppColors.error500.withOpacity(.2),
+              backgroundColor: AppColors.error500.withValues(alpha: .2),
             ),
           );
         }

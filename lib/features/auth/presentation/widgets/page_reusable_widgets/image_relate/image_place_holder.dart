@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-/// main image 
+
 class ShimmerPlaceholder extends StatelessWidget {
   final double height;
   final double width;
@@ -35,7 +35,7 @@ class ShimmerPlaceholder extends StatelessWidget {
     );
   }
 }
-///for avatar profile
+
 class CircularShimmerPlaceholder extends StatelessWidget {
   final double size;
 
@@ -54,7 +54,7 @@ class CircularShimmerPlaceholder extends StatelessWidget {
   }
 }
 
-///common
+
 class RectangularShimmerPlaceholder extends StatelessWidget {
   final double height;
   final double width;

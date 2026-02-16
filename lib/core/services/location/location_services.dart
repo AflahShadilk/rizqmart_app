@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
@@ -54,8 +54,10 @@ class LocationService {
 
       try {
         final position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.best,
-          timeLimit: const Duration(seconds: 30),
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.best,
+            timeLimit: Duration(seconds: 30),
+          ),
         ).timeout(
           const Duration(seconds: 35),
           onTimeout: () {
@@ -76,8 +78,10 @@ class LocationService {
       } on TimeoutException {
         try {
           final position = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.medium,
-            timeLimit: const Duration(seconds: 15),
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.medium,
+              timeLimit: Duration(seconds: 15),
+            ),
           ).timeout(
             const Duration(seconds: 20),
             onTimeout: () {

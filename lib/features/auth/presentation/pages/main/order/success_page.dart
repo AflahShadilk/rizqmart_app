@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +12,7 @@ import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/add_review_dialog.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 
 class SuccessPage extends StatelessWidget {
@@ -20,7 +21,7 @@ class SuccessPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ResponsiveWrapper(child: Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -53,7 +54,7 @@ class SuccessPage extends StatelessWidget {
                     texts:
                         'Your items has been placed and is on\n        its way to being processed',
                     titleSize: context.ts.bodyMedium?.copyWith(
-                      color: context.cs.onSurface.withOpacity(0.6),
+                      color: context.cs.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                 ),
@@ -152,6 +153,6 @@ class SuccessPage extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 }

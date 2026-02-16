@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,13 +75,13 @@ class AddressLabelOption extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         decoration: BoxDecoration(
           color: isSelected
-              ? context.cs.primary.withOpacity(0.08)
+              ? context.cs.primary.withValues(alpha: 0.08)
               : context.cs.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isSelected
-                ? context.cs.primary.withOpacity(0.4)
-                : context.cs.outlineVariant.withOpacity(0.3),
+                ? context.cs.primary.withValues(alpha: 0.4)
+                : context.cs.outlineVariant.withValues(alpha: 0.3),
             width: 1.2,
           ),
         ),

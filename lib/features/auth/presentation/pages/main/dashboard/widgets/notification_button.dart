@@ -22,8 +22,8 @@ class _NotificationButtonState extends State<NotificationButton> {
       controller: _overlayController,
       overlayChildBuilder: (context) {
         return Positioned(
-          top: 130, // Adjust based on top bar height
-          right: 70, // Adjust based on button position
+          top: 130, 
+          right: 70, 
           child: const Material(
             elevation: 8,
             borderRadius: BorderRadius.all(Radius.circular(12)),

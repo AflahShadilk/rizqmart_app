@@ -5,6 +5,7 @@ import '../../../../../../../core/theme/context_theme.dart';
 import '../../../bloc/wallet/wallet_bloc.dart';
 import '../../../bloc/wallet/wallet_event.dart';
 import '../../../bloc/wallet/wallet_state.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 class WithdrawScreen extends StatefulWidget {
   final String userId;
@@ -51,7 +52,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                       'Enter Amount to Withdraw',
                       style: context.ts.titleMedium,
                     ),
-                    const SizedBox(height: 8),
+                    8.h,
                     TextFormField(
                       controller: _amountController,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -74,7 +75,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 16),
+                    16.h,
                     if (state.wallet != null)
                       Text(
                         'Available Balance: ₹${state.wallet!.balance.toStringAsFixed(2)}',

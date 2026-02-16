@@ -12,7 +12,7 @@ StreamSubscription<List<ProductEntities>>? subscription;
  DashBloc({required this.usecase}):super(const DashInitialState()){
 on<LoadingProductsEvent>(loadingProduct);
 on<LoadedProductEvent>(loadedProducts);
-// Removed: add(LoadingProductsEvent()); - Let page trigger load
+
 }
 
  Future<void>loadingProduct(LoadingProductsEvent event,Emitter<DashState>emit)async{

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +12,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
@@ -29,8 +30,8 @@ class _FavoritePageState extends State<FavoritePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+    return ResponsiveWrapper(child: Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         title: AppHeading('My Favorites'),
         centerTitle: true,
@@ -127,11 +128,11 @@ class _FavoritePageState extends State<FavoritePage> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: context.cs.onBackground.withOpacity(0.08),
+                        color: context.cs.onSurface.withValues(alpha: 0.08),
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: context.cs.onSecondary.withOpacity(0.08),
+                            color: context.cs.onSecondary.withValues(alpha: 0.08),
                             blurRadius: 4,
                           ),
                         ],
@@ -152,6 +153,6 @@ class _FavoritePageState extends State<FavoritePage> {
           return buildEmptyState(context);
         },
       ),
-    );
+    ));
   }
 }

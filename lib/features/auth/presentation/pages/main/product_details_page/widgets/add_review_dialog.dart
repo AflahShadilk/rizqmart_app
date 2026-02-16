@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/review_entity.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/product/review_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/product/review_state.dart';
 
-
-class AddReviewDialog extends StatefulWidget {
+class AddReviewDialog extends StatelessWidget {
   final String productId;
   final String userId;
   final String userName;
@@ -22,44 +25,84 @@ class AddReviewDialog extends StatefulWidget {
   });
 
   @override
-  State<AddReviewDialog> createState() => _AddReviewDialogState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => ReviewCubit(),
+      child: _AddReviewDialogBody(
+        productId: productId,
+        userId: userId,
+        userName: userName,
+        userImage: userImage,
+        variantName: variantName,
+        onSubmit: onSubmit,
+      ),
+    );
+  }
 }
 
-class _AddReviewDialogState extends State<AddReviewDialog> {
-  double _rating = 5.0;
+class _AddReviewDialogBody extends StatefulWidget {
+  final String productId;
+  final String userId;
+  final String userName;
+  final String? userImage;
+  final String? variantName;
+  final Function(ReviewEntity) onSubmit;
+
+  const _AddReviewDialogBody({
+    required this.productId,
+    required this.userId,
+    required this.userName,
+    this.userImage,
+    this.variantName,
+    required this.onSubmit,
+  });
+
+  @override
+  State<_AddReviewDialogBody> createState() => _AddReviewDialogBodyState();
+}
+
+class _AddReviewDialogBodyState extends State<_AddReviewDialogBody> {
   final TextEditingController _commentController = TextEditingController();
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Rate Product'),
+      title: const Text('Rate Product'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            RatingBar.builder(
-              initialRating: 5,
-              minRating: 1,
-              direction: Axis.horizontal,
-              allowHalfRating: true,
-              itemCount: 5,
-              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-              itemBuilder: (context, _) => Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-              onRatingUpdate: (rating) {
-                setState(() {
-                  _rating = rating;
-                });
+            BlocBuilder<ReviewCubit, ReviewState>(
+              builder: (context, state) {
+                return RatingBar.builder(
+                  initialRating: state.rating,
+                  minRating: 1,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  itemBuilder: (context, _) => const Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  onRatingUpdate: (rating) {
+                    context.read<ReviewCubit>().setRating(rating);
+                  },
+                );
               },
             ),
-            SizedBox(height: 20),
+            20.h,
             TextField(
               controller: _commentController,
               maxLines: 4,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Write your review here...',
                 border: OutlineInputBorder(),
               ),
@@ -70,19 +113,18 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         TextButton(
           onPressed: () {
-
-
+            final double rating = context.read<ReviewCubit>().state.rating;
             final review = ReviewEntity(
-              id: '', // Will be ignored by repo
+              id: '', 
               productId: widget.productId,
               userId: widget.userId,
               userName: widget.userName,
               userImage: widget.userImage,
-              rating: _rating,
+              rating: rating,
               comment: _commentController.text.trim(),
               createdAt: DateTime.now(),
               variantName: widget.variantName,
@@ -90,7 +132,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
             widget.onSubmit(review);
             Navigator.pop(context);
           },
-          child: Text('Submit'),
+          child: const Text('Submit'),
         ),
       ],
     );

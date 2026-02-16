@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,13 +75,13 @@ class AddressCardItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: address.isDefault
-              ? context.cs.primary.withOpacity(0.15)
-              : context.cs.outlineVariant.withOpacity(0.2),
+              ? context.cs.primary.withValues(alpha: 0.15)
+              : context.cs.outlineVariant.withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 1),
           ),
@@ -132,7 +132,7 @@ class AddressCardItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
@@ -150,7 +150,7 @@ class AddressCardItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: context.cs.primary.withOpacity(0.1),
+        color: context.cs.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
@@ -202,8 +202,8 @@ class AddressCardItem extends StatelessWidget {
 
   Widget _buildAddressText(BuildContext context, AddressEntities address) {
     final fullAddress =
-        // ignore: unnecessary_null_comparison
-        '${address.address1}${address.address2 != null && address.address2!.isNotEmpty ? ', ${address.address2}' : ''}, ${address.city}, ${address.state} ${address.pincode}';
+        
+        '${address.address1}${address.address2.isNotEmpty ? ', ${address.address2}' : ''}, ${address.city}, ${address.state} ${address.pincode}';
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -284,8 +284,8 @@ class AddressCardItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
           decoration: BoxDecoration(
             color: isPrimary
-                ? context.cs.primary.withOpacity(0.08)
-                : context.cs.error.withOpacity(0.08),
+                ? context.cs.primary.withValues(alpha: 0.08)
+                : context.cs.error.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(

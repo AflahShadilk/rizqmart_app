@@ -118,7 +118,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     try {
       emit(LocationLoadingState());
 
-      // Call the usecase without NoParams
+      
       final locationData = await getCurrentLocationUsecase.call();
 
       emit(
@@ -130,14 +130,14 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         ),
       );
     } on LocationException catch (e) {
-      // Handle LocationException directly
+      
       emit(
         AddressErrorState(
           message: e.getUserFriendlyMessage(),
         ),
       );
     } catch (e) {
-      // Handle wrapped exceptions
+      
       String errorMessage = 'An unexpected error occurred. Please try again.';
 
       final errorStr = e.toString();

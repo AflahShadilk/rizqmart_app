@@ -9,7 +9,7 @@ class SavedCardRemoteDataSource {
 
   Future<void> addSavedCard(SavedCardEntity card, String userId) async {
     final model = SavedCardModel(
-      id: '', // Firestore generates ID
+      id: '', 
       paymentMethodId: card.paymentMethodId,
       last4: card.last4,
       brand: card.brand,

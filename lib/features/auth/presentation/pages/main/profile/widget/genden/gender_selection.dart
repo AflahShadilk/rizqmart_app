@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
@@ -18,15 +18,15 @@ class GenderSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // If not in edit mode, show only the selected gender
+    
     if (!enabled) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: context.cs.surfaceContainerHighest.withOpacity(0.5),
+          color: context.cs.surfaceContainerHighest.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: context.cs.outlineVariant.withOpacity(0.5),
+            color: context.cs.outlineVariant.withValues(alpha: 0.5),
             width: 1,
           ),
         ),
@@ -64,14 +64,14 @@ class GenderSelector extends StatelessWidget {
       );
     }
 
-    // In edit mode, show all gender options
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
         color: context.cs.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: context.cs.primary.withOpacity(0.2),
+          color: context.cs.primary.withValues(alpha: 0.2),
           width: 1.5,
         ),
       ),
@@ -160,20 +160,20 @@ class GenderOption extends StatelessWidget {
       child: InkWell(
         onTap: enabled ? onTap : null,
         borderRadius: BorderRadius.circular(10),
-        highlightColor: context.cs.primary.withOpacity(0.1),
-        splashColor: context.cs.primary.withOpacity(0.15),
+        highlightColor: context.cs.primary.withValues(alpha: 0.1),
+        splashColor: context.cs.primary.withValues(alpha: 0.15),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
           decoration: BoxDecoration(
             color: isSelected
-                ? context.cs.primary.withOpacity(0.12)
+                ? context.cs.primary.withValues(alpha: 0.12)
                 : context.cs.surface,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: isSelected
                   ? context.cs.primary
-                  : context.cs.outlineVariant.withOpacity(0.5),
+                  : context.cs.outlineVariant.withValues(alpha: 0.5),
               width: isSelected ? 2 : 1.5,
             ),
           ),

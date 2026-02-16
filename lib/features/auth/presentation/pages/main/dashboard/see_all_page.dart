@@ -1,10 +1,11 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/product_card.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class AllProductsPage extends StatelessWidget {
   final List<ProductEntities> products;
@@ -16,10 +17,10 @@ class AllProductsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.cs.background,
+    return ResponsiveWrapper(child: Scaffold(
+      backgroundColor: context.cs.surface,
       appBar: AppBar(
-        backgroundColor: context.cs.background,
+        backgroundColor: context.cs.surface,
         title: AppHeading('All Products'),
         centerTitle: true,
       ),
@@ -39,6 +40,6 @@ class AllProductsPage extends StatelessWidget {
           );
         },
       ),
-    );
+    ));
   }
 }

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +94,7 @@ class _LikeButtonState extends State<LikeButton>
                   isFavorite ? Icons.favorite : Icons.favorite_border_outlined,
                   color: isFavorite
                       ? context.cs.error
-                      : colorScheme.onSurface.withOpacity(0.6),
+                      : colorScheme.onSurface.withValues(alpha: 0.6),
                   size: 28,
                 ),
                 onPressed: () {

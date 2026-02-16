@@ -1,4 +1,6 @@
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
+
+// ignore_for_file: unused_element
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -141,7 +143,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
           Text(
             'Please do not close this screen',
             style: context.ts.bodySmall?.copyWith(
-              color: context.cs.onSurface.withOpacity(0.6),
+              color: context.cs.onSurface.withValues(alpha: 0.6),
             ),
             textAlign: TextAlign.center,
           ),
@@ -178,7 +180,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
               child: Text(
                 'Supports Cards, UPI, Wallets & Net Banking',
                 style: context.ts.bodySmall?.copyWith(
-                  color: context.cs.onSurface.withOpacity(0.6),
+                  color: context.cs.onSurface.withValues(alpha: 0.6),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -226,92 +228,92 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
   }
 }
 
-  // Future<void> _processStripePayment(
-  //   BuildContext context,
-  //   PaymentMethodSelectedState state,
-  // ) async {
-  //   try {
-  //     // Show loading dialog
-  //     _showLoadingDialog(context, 'Creating payment intent...');
+  
+  
+  
+  
+  
+  
+  
 
-  //     // Create payment intent
-  //     final paymentIntentResult = await StripeService.createPaymentIntent(
-  //       amount: state.order.totalCost,
-  //       currency: 'INR',
-  //       orderId: state.order.orderId,
-  //     );
+  
+  
+  
+  
+  
+  
 
-  //     if (!mounted) return;
-  //     Navigator.pop(context); // Close loading dialog
+  
+  
 
-  //     if (!paymentIntentResult['success']) {
-  //       throw Exception('Failed to create payment intent');
-  //     }
+  
+  
+  
 
-  //     final clientSecret = paymentIntentResult['clientSecret'] as String;
-  //     final paymentIntentId = paymentIntentResult['paymentIntentId'] as String;
+  
+  
 
-  //     // Present Stripe payment sheet
-  //     final paymentSuccess = await StripeService.presentPaymentSheet(
-  //       clientSecret: clientSecret,
-  //       merchantDisplayName: 'RizqMart',
-  //     );
+  
+  
+  
+  
+  
 
-  //     if (!mounted) return;
+  
 
-  //     if (paymentSuccess) {
-  //       // Show confirmation dialog
-  //       _showLoadingDialog(context, 'Confirming payment...');
+  
+  
+  
 
-  //       // Confirm payment with Stripe
-  //       final confirmation = await StripeService.confirmPayment(paymentIntentId);
+  
+  
 
-  //       if (!mounted) return;
-  //       Navigator.pop(context); // Close loading dialog
+  
+  
 
-  //       if (confirmation['success'] == true) {
-  //         // Payment successful - process order
-  //         if (context.mounted) {
-  //           context.read<PaymentBloc>().add(
-  //             ProcessPaymentEvent(state.paymentMethod),
-  //           );
-  //         }
-  //       } else {
-  //         throw Exception(
-  //           'Payment status: ${confirmation['status'] ?? 'unknown'}',
-  //         );
-  //       }
-  //     } else {
-  //       // User cancelled payment
-  //       if (context.mounted) {
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(
-  //             content: const Text('Payment was cancelled'),
-  //             backgroundColor: context.cs.error,
-  //             duration: const Duration(seconds: 3),
-  //           ),
-  //         );
-  //       }
-  //     }
-  //   } catch (e) {
-  //     if (!mounted) return;
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
-  //     // Close any open dialogs
-  //     if (Navigator.of(context).canPop()) {
-  //       Navigator.pop(context);
-  //     }
+  
+  
+  
+  
 
-  //     // Show error
+  
 
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('Payment error: ${e.toString()}'),
-  //         backgroundColor: context.cs.error,
-  //         duration: const Duration(seconds: 4),
-  //       ),
-  //     );
-  //   }
-  // }
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   Widget _buildSuccess(
     BuildContext context,
@@ -326,7 +328,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: context.cs.success.withOpacity(0.1),
+                color: context.cs.success.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -347,7 +349,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
             Text(
               'Your order has been placed',
               style: context.ts.bodyMedium?.copyWith(
-                color: context.cs.onSurface.withOpacity(0.7),
+                color: context.cs.onSurface.withValues(alpha: 0.7),
               ),
             ),
             16.h,
@@ -365,7 +367,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
                   Text(
                     'Order ID',
                     style: context.ts.labelSmall?.copyWith(
-                      color: context.cs.onSurface.withOpacity(0.6),
+                      color: context.cs.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                   4.h,
@@ -396,7 +398,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: context.cs.error.withOpacity(0.1),
+                  color: context.cs.error.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -417,10 +419,10 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: context.cs.error.withOpacity(0.1),
+                  color: context.cs.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: context.cs.error.withOpacity(0.3),
+                    color: context.cs.error.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Text(
@@ -561,7 +563,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: context.cs.primary.withOpacity(0.1),
+                color: context.cs.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -578,7 +580,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
                   Text(
                     'Payment Method',
                     style: context.ts.labelSmall?.copyWith(
-                      color: context.cs.onSurface.withOpacity(0.6),
+                      color: context.cs.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                   4.h,
@@ -592,7 +594,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
                   Text(
                     subtitle,
                     style: context.ts.bodySmall?.copyWith(
-                      color: context.cs.onSurface.withOpacity(0.6),
+                      color: context.cs.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                 ],
@@ -608,10 +610,10 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: context.cs.primary.withOpacity(0.1),
+        color: context.cs.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: context.cs.primary.withOpacity(0.3),
+          color: context.cs.primary.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -637,7 +639,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
                 Text(
                   'Your payment is processed securely via Stripe',
                   style: context.ts.bodySmall?.copyWith(
-                    color: context.cs.onSurface.withOpacity(0.7),
+                    color: context.cs.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -685,7 +687,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
   }
 
 
-  // ignore: unused_element
+  
   void _showLoadingDialog(BuildContext context, String message) {
     showDialog(
       context: context,

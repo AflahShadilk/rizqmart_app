@@ -7,6 +7,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/buttons/back_button_
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/review_card.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/add_review_dialog.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 
 class ReviewsPage extends StatefulWidget {
@@ -46,7 +47,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
         ),
       );
     } else {
-        // Handle guest user or not logged in - though app structure implies auth required
+        
        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Please login to add a review')),
         );
@@ -55,7 +56,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ResponsiveWrapper(child: Scaffold(
       backgroundColor: context.cs.surface,
       appBar: AppBar(
         leading: Padding(
@@ -108,6 +109,6 @@ class _ReviewsPageState extends State<ReviewsPage> {
           return const SizedBox();
         },
       ),
-    );
+    ));
   }
 }

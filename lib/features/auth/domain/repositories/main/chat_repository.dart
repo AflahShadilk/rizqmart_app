@@ -2,7 +2,7 @@ import 'package:rizqmart/features/auth/domain/entities/main/chat_entity.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
 
 abstract class ChatRepository {
-  /// Create or get a chat room for an order (uses orderId as doc ID)
+  
   Future<String> createChatRoom({
     required String orderId,
     required String userId,

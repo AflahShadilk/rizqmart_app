@@ -1,10 +1,12 @@
+// ignore_for_file: empty_catches
+
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:rizqmart/core/services/registeration/bloc_providers.dart';
 import 'package:rizqmart/core/services/registeration/register.dart';
-import 'package:rizqmart/core/services/notification_service.dart'; // Ensure this exposes the handler
+import 'package:rizqmart/core/services/notification_service.dart'; 
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:rizqmart/core/services/stripe_services.dart';

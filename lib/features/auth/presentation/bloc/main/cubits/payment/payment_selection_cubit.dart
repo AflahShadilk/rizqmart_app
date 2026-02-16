@@ -21,11 +21,11 @@ class PaymentSelectionCubit extends Cubit<PaymentSelectionState> {
   }
 
   void selectPayment(String paymentMethod) {
-    // If switching to a non-saved-card method, clear the selectedSavedCard
+    
     if (paymentMethod != 'saved_card') {
       emit(state.copyWith(
         selectedPayment: paymentMethod,
-        selectedSavedCard: null, // explicit null
+        selectedSavedCard: null, 
       ));
     } else {
        emit(state.copyWith(selectedPayment: paymentMethod));

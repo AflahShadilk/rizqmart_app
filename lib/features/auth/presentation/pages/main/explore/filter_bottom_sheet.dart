@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,6 +7,7 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/productbycategory/filteritem/filter_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/productbycategory/filteritem/filter_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 class FilterBottomSheet extends StatelessWidget {
   final List<String> brands;
@@ -60,7 +61,7 @@ class FilterBottomSheet extends StatelessWidget {
                       style: GoogleFonts.poppins(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: theme.onBackground,
+                        color: theme.onSurface,
                       ),
                     ),
                     TextButton(
@@ -73,7 +74,7 @@ class FilterBottomSheet extends StatelessWidget {
                   ],
                 ),
                 const Divider(),
-                const SizedBox(height: 10),
+                10.h,
 
                 Expanded(
                   child: SingleChildScrollView(
@@ -86,7 +87,7 @@ class FilterBottomSheet extends StatelessWidget {
                           selectedValue: state.selectedBrand,
                           onChanged: (value) => filterCubit.updateBrand(value),
                         ),
-                        const SizedBox(height: 20),
+                        20.h,
 
                         FilterSection(
                           title: 'Category',
@@ -94,7 +95,7 @@ class FilterBottomSheet extends StatelessWidget {
                           selectedValue: state.selectedCategory,
                           onChanged: (value) => filterCubit.updateCategory(value),
                         ),
-                        const SizedBox(height: 20),
+                        20.h,
 
                         FilterSection(
                           title: 'Variant',
@@ -107,7 +108,7 @@ class FilterBottomSheet extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                16.h,
                 SizedBox(
                   width: double.infinity,
                   height: 55,
@@ -123,7 +124,7 @@ class FilterBottomSheet extends StatelessWidget {
                       Navigator.pop(context);
                     },
                     color: context.cs.primary,
-                    textColor: context.cs.background,
+                    textColor: context.cs.surface,
                   ),
                 ),
               ],
@@ -161,10 +162,10 @@ class FilterSection extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: theme.onBackground,
+            color: theme.onSurface,
           ),
         ),
-        const SizedBox(height: 10),
+        10.h,
         Wrap(
           spacing: 8,
           runSpacing: 8,
@@ -176,10 +177,10 @@ class FilterSection extends StatelessWidget {
               onSelected: (selected) {
                 onChanged(selected ? item : null);
               },
-              selectedColor: theme.primary.withOpacity(0.2),
+              selectedColor: theme.primary.withValues(alpha: 0.2),
               checkmarkColor: theme.primary,
               labelStyle: TextStyle(
-                color: isSelected ? theme.primary : theme.onBackground,
+                color: isSelected ? theme.primary : theme.onSurface,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
               side: BorderSide(

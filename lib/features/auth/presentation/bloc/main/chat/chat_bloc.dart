@@ -47,7 +47,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         productImage: event.productImage,
         userFcmToken: token,
       );
-      emit(ChatInitiatedState(chatId)); // chatId == orderId
+      emit(ChatInitiatedState(chatId)); 
       add(LoadMessagesEvent(chatId));
     } catch (e) {
       emit(ChatErrorState(e.toString()));
@@ -89,7 +89,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 }
 
-// Internal event to handle stream updates
+
 class _UpdateMessagesEvent extends ChatEvent {
   final List<MessageEntity> messages;
   const _UpdateMessagesEvent(this.messages);

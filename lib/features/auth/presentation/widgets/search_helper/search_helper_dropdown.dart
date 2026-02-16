@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +27,7 @@ Widget searchResultsDropdown({
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: cs.primary.withOpacity(0.2),
+              color: cs.primary.withValues(alpha: 0.2),
               width: 1,
             ),
           ),
@@ -36,7 +36,7 @@ Widget searchResultsDropdown({
             itemCount: items.length > 5 ? 5 : items.length,
             separatorBuilder: (context, index) => Divider(
               height: 1,
-              color: cs.onBackground.withOpacity(0.1),
+              color: cs.onSurface.withValues(alpha: 0.1),
               indent: 12,
               endIndent: 12,
             ),
@@ -60,7 +60,7 @@ Widget searchResultsDropdown({
                   height: 40,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: cs.primary.withOpacity(0.1),
+                    color: cs.primary.withValues(alpha: 0.1),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
@@ -68,7 +68,7 @@ Widget searchResultsDropdown({
                         ? CachedNetworkImage(
                             imageUrl: getVariantImages(product).first,
                             fit: BoxFit.cover,
-                            placeholder: (_, __) => Container(color: cs.primary.withOpacity(0.1)),
+                            placeholder: (_, __) => Container(color: cs.primary.withValues(alpha: 0.1)),
                             errorWidget: (_, __, ___) => Icon(
                               Icons.image_not_supported,
                               size: 20,
@@ -97,14 +97,14 @@ Widget searchResultsDropdown({
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: cs.onSurface.withOpacity(0.6),
+                    color: cs.onSurface.withValues(alpha: 0.6),
                     fontSize: 12,
                   ),
                 ),
                 trailing: Icon(
                   Icons.arrow_forward_ios,
                   size: 14,
-                  color: cs.primary.withOpacity(0.5),
+                  color: cs.primary.withValues(alpha: 0.5),
                 ),
               );
             },
@@ -122,7 +122,7 @@ Widget searchResultsDropdown({
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: cs.primary.withOpacity(0.1),
+                color: cs.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(

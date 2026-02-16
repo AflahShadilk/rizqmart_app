@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/color_getter.dart';
@@ -36,7 +36,7 @@ class VariantCard extends StatelessWidget {
         decoration: BoxDecoration(
           border: isSelected
               ? Border.all(
-                  color: colorScheme.primary.withOpacity(0.4),
+                  color: colorScheme.primary.withValues(alpha: 0.4),
                   width: 2,
                 )
               : null,
@@ -44,8 +44,8 @@ class VariantCard extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: isSelected
-                  ? colorScheme.primary.withOpacity(0.1)
-                  : colorScheme.onSecondary.withOpacity(0.1),
+                  ? colorScheme.primary.withValues(alpha: 0.1)
+                  : colorScheme.onSecondary.withValues(alpha: 0.1),
               blurRadius: isSelected ? 10 : 6,
               spreadRadius: isSelected ? 2 : 0,
             )
@@ -57,8 +57,8 @@ class VariantCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
           ),
           color: isSelected
-              ? colorScheme.warning.withOpacity(0.08)
-              : context.cs.background,
+              ? colorScheme.warning.withValues(alpha: 0.08)
+              : context.cs.surface,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -76,7 +76,7 @@ class VariantCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Product Name
+                      
                       Text(
                         productName,
                         style: context.ts.titleMedium?.copyWith(fontWeight: FontWeight.bold,
@@ -90,11 +90,11 @@ class VariantCard extends StatelessWidget {
                         variantName,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               fontSize: 11,
-                              color: colorScheme.onSurface.withOpacity(0.6),
+                              color: colorScheme.onSurface.withValues(alpha: 0.6),
                             ),
                       ),
                       const Spacer(),
-                      // Price and Action Button
+                      
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

@@ -1,4 +1,6 @@
-// ignore_for_file: deprecated_member_use, invalid_use_of_visible_for_testing_member
+
+
+// ignore_for_file: deprecated_member_use, invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,7 +53,7 @@ class LocationPickerButton extends StatelessWidget {
                   border: Border.all(
                     color: formState.latitude != null &&
                             formState.longitude != null
-                        ? context.cs.primary.withOpacity(0.5)
+                        ? context.cs.primary.withValues(alpha: 0.5)
                         : context.cs.outlineVariant,
                   ),
                 ),
@@ -80,7 +82,7 @@ class LocationPickerButton extends StatelessWidget {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color:
-                              context.cs.primaryContainer.withOpacity(0.3),
+                              context.cs.primaryContainer.withValues(alpha: 0.3),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
@@ -110,7 +112,7 @@ class LocationPickerButton extends StatelessWidget {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color:
-                              context.cs.primaryContainer.withOpacity(0.5),
+                              context.cs.primaryContainer.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
@@ -243,33 +245,33 @@ class LocationPickerButton extends StatelessWidget {
     final formCubit = context.read<AddressFormCubit>();
 
     try {
-      // Perform reverse geocoding
+      
       final placemarks = await placemarkFromCoordinates(latitude, longitude);
 
       if (placemarks.isNotEmpty) {
         final place = placemarks[0];
 
-        // Extract city/locality and state/administrative area
+        
         final city = place.locality ?? place.administrativeArea ?? '';
         final state = place.administrativeArea ?? '';
         final country = place.country ?? 'India';
 
-        // Update city if empty
+        
         if (formCubit.state.city.isEmpty && city.isNotEmpty) {
           formCubit.updateCity(city);
         }
 
-        // Update state if empty
+        
         if (formCubit.state.state.isEmpty && state.isNotEmpty) {
           formCubit.updateState(state);
         }
 
-        // Update country if empty
+        
         if (formCubit.state.country.isEmpty && country.isNotEmpty) {
           formCubit.updateCountry(country);
         }
       } else {
-        // Fallback to default values if no placemarks found
+        
         if (formCubit.state.city.isEmpty) {
           formCubit.updateCity('');
         }
@@ -281,7 +283,7 @@ class LocationPickerButton extends StatelessWidget {
         }
       }
     } catch (e) {
-      // Fallback to default values on error
+      
       if (formCubit.state.country.isEmpty) {
         formCubit.updateCountry('India');
       }
@@ -291,12 +293,12 @@ class LocationPickerButton extends StatelessWidget {
 
 extension AddressFormCubitExtension on AddressFormCubit {
   void clearLocation() {
-    // ignore: invalid_use_of_protected_member
+    
     emit(state.copyWith(latitude: null, longitude: null));
   }
 
   void updateCountry(String country) {
-    // ignore: invalid_use_of_protected_member
+    
     emit(state.copyWith(country: country));
   }
 }

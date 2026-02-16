@@ -11,7 +11,7 @@ class WalletTransactionEntity extends Equatable {
   final TransactionStatus status;
   final String description;
   final DateTime timestamp;
-  final String? referenceId; // orderId or paymentId
+  final String? referenceId; 
 
   const WalletTransactionEntity({
     required this.id,

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +18,7 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
 import 'filter_bottom_sheet.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class ProductByCategoryPage extends StatefulWidget {
   final String categoryName;
@@ -78,7 +79,7 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
           selectedVariant: filterCubit.state.selectedVariant,
           onApply: (brand, category, variant) {
             filterCubit.applyFilter(brand, category, variant);
-            // Navigator.pop(context);
+            
           },
         ),
       ),
@@ -122,14 +123,14 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme;
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+    return ResponsiveWrapper(child: Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: theme.background,
+        backgroundColor: theme.surface,
         title: Text(
           widget.categoryName,
           style: GoogleFonts.poppins(
-            color: theme.onBackground,
+            color: theme.onSurface,
             fontSize: 20,
             fontWeight: FontWeight.w900,
           ),
@@ -155,7 +156,7 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   circularProgressIndicators(),
-                  const SizedBox(height: 16),
+                  16.h,
                   const Text('Loading products...'),
                 ],
               ),
@@ -257,6 +258,6 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
           return const Center(child: Text('Loading...'));
         },
       ),
-    );
+    ));
   }
 }

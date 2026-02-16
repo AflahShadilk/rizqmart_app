@@ -7,8 +7,8 @@ class NotificationModel {
   final String body;
   final DateTime timestamp;
   final bool isRead;
-  final String type; // 'order', 'chat', 'general'
-  final String? referenceId; // orderId or chatId
+  final String type; 
+  final String? referenceId; 
 
   NotificationModel({
     required this.id,

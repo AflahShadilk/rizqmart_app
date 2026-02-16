@@ -27,7 +27,7 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
     try {
       await addReviewUseCase(event.review);
       emit(ReviewAddedSuccess());
-      // Refresh reviews after adding
+      
       add(GetReviewsEvent(productId: event.review.productId));
     } catch (e) {
       emit(ReviewError(message: e.toString()));

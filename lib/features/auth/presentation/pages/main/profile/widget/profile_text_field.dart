@@ -39,8 +39,8 @@ class ProfileTextField extends StatelessWidget {
         filled: true,
         fillColor: enabled
             ? context.cs.surfaceContainerHighest
-            // ignore: deprecated_member_use
-            : context.cs.surfaceContainerHighest.withOpacity(0.5),
+            
+            : context.cs.surfaceContainerHighest.withValues(alpha: 0.5),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,

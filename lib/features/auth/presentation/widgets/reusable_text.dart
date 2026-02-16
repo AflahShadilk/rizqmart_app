@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class ReusableText extends StatelessWidget {
   
-   // ignore: prefer_const_constructors_in_immutables
-   ReusableText({
+   
+   const ReusableText({
     super.key,
     required this.texts,
     required this.titleSize,

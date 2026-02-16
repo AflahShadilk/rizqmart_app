@@ -1,4 +1,6 @@
 
+// ignore_for_file: empty_catches
+
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/data/repository/main/notification_repository.dart';
@@ -28,8 +30,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         add(NotificationsUpdatedEvent(notifications));
       },
       onError: (error) {
-        // Handle stream error if needed, for instance dispatching an error state
-        // For now, we rely on the updated event or could add an Error event
+        
+        
       },
     );
   }
@@ -39,11 +41,11 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     Emitter<NotificationState> emit,
   ) {
     final notifications = event.notifications;
-    // Actually event.notifications is List<dynamic> in definition but Repository returns List<NotificationModel>
-    // Let's fix the event definition or just cast here. 
-    // In event file I put List<dynamic>, better to fix that import but casting works.
     
-    // Calculate unread count
+    
+    
+    
+    
     final unreadCount = notifications.where((n) => !n.isRead).length;
     
     emit(NotificationLoadedState(
@@ -59,7 +61,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     try {
       await repository.markAsRead(event.userId, event.notificationId);
     } catch (e) {
-      // Handle error
+      
     }
   }
 
@@ -70,7 +72,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     try {
       await repository.markAllAsRead(event.userId);
     } catch (e) {
-      // Handle error
+      
     }
   }
 

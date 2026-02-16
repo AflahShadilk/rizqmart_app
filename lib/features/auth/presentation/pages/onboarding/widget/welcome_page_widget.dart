@@ -1,5 +1,6 @@
  import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 Widget buildPage({
    required void Function()?onpress,
@@ -22,7 +23,7 @@ Widget buildPage({
             height: 180,
             child: Image.asset(imagePath),
           ),
-          const SizedBox(height: 32),
+          32.h,
           Text(
             title,
             textAlign: TextAlign.center,
@@ -32,7 +33,7 @@ Widget buildPage({
               color: Colors.white,
             ),
           ),
-          const SizedBox(height: 16),
+          16.h,
           Text(
             subtitle,
             textAlign: TextAlign.center,
@@ -59,7 +60,7 @@ Widget buildPage({
                 ),
               ),
             ),
-          const SizedBox(height: 20),
+          20.h,
         ],
       ),
     );

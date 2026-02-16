@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -27,7 +27,7 @@ Future<dynamic> orderErrorDialog(BuildContext context, String message) {
                     onPressed: () => Navigator.pop(context),
                     icon: Icon(
                       Icons.close,
-                      color: context.cs.onSurface.withOpacity(0.6),
+                      color: context.cs.onSurface.withValues(alpha: 0.6),
                     ),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
@@ -51,7 +51,7 @@ Future<dynamic> orderErrorDialog(BuildContext context, String message) {
                 ReusableText(
                   texts: message,
                   titleSize: context.ts.bodyMedium?.copyWith(
-                    color: context.cs.onSurface.withOpacity(0.5),
+                    color: context.cs.onSurface.withValues(alpha: 0.5),
                   ),
                 ),
                 24.h,

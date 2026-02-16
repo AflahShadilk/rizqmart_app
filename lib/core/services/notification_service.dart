@@ -7,7 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
-// import 'package:rizqmart/features/auth/presentation/pages/main/chat/chat_page.dart'; // No longer needed directly
+
 
 
 class NotificationService {
@@ -20,14 +20,14 @@ class NotificationService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> initialize(GlobalKey<NavigatorState> navigatorKey) async {
-    // 1. Request Permission
+    
     await _firebaseMessaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
 
-    // 2. Setup Local Notifications
+    
     const AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
     const DarwinInitializationSettings iosSettings = DarwinInitializationSettings();
     const InitializationSettings initSettings = InitializationSettings(android: androidSettings, iOS: iosSettings);
@@ -42,7 +42,7 @@ class NotificationService {
       },
     );
 
-    // Create Channel Explicitly
+    
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'high_importance_channel', 
       'High Importance Notifications',
@@ -54,7 +54,7 @@ class NotificationService {
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
-    // 3. Foreground Messages
+    
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       debugPrint("🔔 Foreground Message Received: ${message.notification?.title}");
       if (message.notification != null) {
@@ -69,13 +69,13 @@ class NotificationService {
       }
     });
 
-    // 4. Background/Terminated Messages (User taps notification)
+    
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       _handleMessage(message, navigatorKey);
     });
   }
 
-  // Call this from SplashScreen or Main Layout after verifying auth
+  
   Future<void> checkInitialMessage(GlobalKey<NavigatorState> navigatorKey) async {
      final initialMessage = await _firebaseMessaging.getInitialMessage();
     if (initialMessage != null) {
@@ -90,7 +90,7 @@ class NotificationService {
   }
 
   void _showLocalNotification(RemoteMessage message) {
-    // Create channel for Android
+    
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'high_importance_channel', 
       'High Importance Notifications',
@@ -123,11 +123,11 @@ class NotificationService {
   void _handleNotificationClick(String payload, GlobalKey<NavigatorState> navigatorKey) {
     try {
       final data = jsonDecode(payload) as Map<String, dynamic>;
-      // Expecting data: { chatId, orderId, productId ... }
+      
       if (data.containsKey('chatId') || data.containsKey('orderId')) {
-         // Determine data for ChatPage
-         final orderId = data['orderId'] ?? 'unknown_order'; // Fallback logic
-         final productId = data['productId']; // Can be null
+         
+         final orderId = data['orderId'] ?? 'unknown_order'; 
+         final productId = data['productId']; 
          
          navigatorKey.currentState?.pushNamed(
            AppRoutes.chat,
@@ -135,7 +135,7 @@ class NotificationService {
              'orderId': orderId,
              'orderDisplayId': data['orderDisplayId'] ?? orderId.substring(0, 5),
              'deliveryPartnerName': data['sellerName'] ?? 'Seller',
-             'orderStatus': data['orderStatus'] ?? 'active', // Pass status
+             'orderStatus': data['orderStatus'] ?? 'active', 
              'productId': productId,
 
              'productName': data['productName'],
@@ -149,7 +149,7 @@ class NotificationService {
     }
   }
 
-  // Save notification to Firestore (Preserved feature)
+  
   Future<void> _saveNotificationToFirestore({
     required String title,
     required String body,

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
@@ -35,7 +35,7 @@ class DateOfBirthField extends StatelessWidget {
         decoration: BoxDecoration(
           color: enabled
               ? context.cs.surfaceContainerHighest
-              : context.cs.surfaceContainerHighest.withOpacity(0.5),
+              : context.cs.surfaceContainerHighest.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(

@@ -1,3 +1,5 @@
+// ignore_for_file: empty_catches
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -21,19 +23,19 @@ class StripeService {
     return key;
   }
 
-  // Initialize Stripe 
+  
   static Future<void> initialize() async {
     try {
       Stripe.publishableKey = publishableKey;
       await Stripe.instance.applySettings();
 
-    // ignore: empty_catches
+    
     } catch (e) {
 
     }
   }
 
-  // Create Payment Intent on your backend
+  
   static Future<Map<String, dynamic>> createPaymentIntent({
     required double amount,
     required String currency,
@@ -42,7 +44,7 @@ class StripeService {
     try {
 
       
-      // Convert amount to smallest currency unit (paise for INR)
+      
       final amountInSmallestUnit = (amount * 100).toInt();
 
       final response = await http.post(
@@ -78,7 +80,7 @@ class StripeService {
     }
   }
 
-  // Present Payment Sheet
+  
   static Future<bool> presentPaymentSheet({
     required String clientSecret,
     required String merchantDisplayName,
@@ -115,7 +117,7 @@ class StripeService {
     }
   }
 
-  // Confirm payment (retrieve payment intent)
+  
   static Future<Map<String, dynamic>> confirmPayment(String paymentIntentId) async {
     try {
 
@@ -146,7 +148,7 @@ class StripeService {
     }
   }
 
-  // Refund payment
+  
   static Future<bool> refundPayment(String paymentIntentId, {double? amount}) async {
     try {
 
@@ -180,7 +182,7 @@ class StripeService {
       rethrow;
     }
   }
-  // Create Payment Method (for saving cards)
+  
   static Future<Map<String, dynamic>> createPaymentMethod({
     required String number,
     required String expMonth,
@@ -206,7 +208,7 @@ class StripeService {
     }
   }
 
-  // Confirm Payment with Saved Card
+  
   static Future<Map<String, dynamic>> confirmPaymentWithSavedCard({
     required String clientSecret,
     required String paymentMethodId,

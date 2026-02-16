@@ -1,30 +1,23 @@
-// ignore_for_file: deprecated_member_use
 
-import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/dashboard/banner_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/dashboard/banner_state.dart';
 
-class OfferBannerWidget extends StatefulWidget {
+class OfferBannerWidget extends StatelessWidget {
   const OfferBannerWidget({super.key});
 
-  @override
-  State<OfferBannerWidget> createState() => _OfferBannerWidgetState();
-}
-
-class _OfferBannerWidgetState extends State<OfferBannerWidget> {
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
-  Timer? _timer;
-
-  final List<Map<String, dynamic>> _demoOffers = [
+  static final List<Map<String, dynamic>> _demoOffers = [
     {
       "title": "Fresh Vegetables",
       "subtitle": "Farm Fresh Quality",
       "discount": "50% OFF",
       "color": const Color(0xFF4CAF50),
       "icon": Icons.eco,
-      "image": "assets/icons_and_images/vegetables.png" // Placeholder logic
+      "image": "assets/icons_and_images/vegetables.png"
     },
     {
       "title": "Cool Drinks",
@@ -42,7 +35,7 @@ class _OfferBannerWidgetState extends State<OfferBannerWidget> {
       "icon": Icons.shopping_basket,
       "image": "assets/icons_and_images/grocery.png"
     },
-     {
+    {
       "title": "Special Deal",
       "subtitle": "Limited Time Offer",
       "discount": "Flat ₹100 OFF",
@@ -53,52 +46,64 @@ class _OfferBannerWidgetState extends State<OfferBannerWidget> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    _startAutoScroll();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => BannerCubit(totalItems: _demoOffers.length)..startAutoScroll(),
+      child: _BannerBody(offers: _demoOffers),
+    );
   }
+}
 
-  void _startAutoScroll() {
-    _timer = Timer.periodic(const Duration(seconds: 4), (Timer timer) {
-      if (_currentPage < _demoOffers.length - 1) {
-        _currentPage++;
-      } else {
-        _currentPage = 0;
-      }
+class _BannerBody extends StatefulWidget {
+  final List<Map<String, dynamic>> offers;
+  const _BannerBody({required this.offers});
 
-      if (_pageController.hasClients) {
-        _pageController.animateToPage(
-          _currentPage,
-          duration: const Duration(milliseconds: 600),
-          curve: Curves.easeInOut,
-        );
-      }
-    });
-  }
+  @override
+  State<_BannerBody> createState() => _BannerBodyState();
+}
+
+class _BannerBodyState extends State<_BannerBody> {
+  final PageController _pageController = PageController();
 
   @override
   void dispose() {
-    _timer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 240,
-      child: PageView.builder(
-        controller: _pageController,
-        itemCount: _demoOffers.length,
-        onPageChanged: (int page) {
-          setState(() {
-            _currentPage = page;
-          });
-        },
-        itemBuilder: (context, index) {
-          final offer = _demoOffers[index];
-          return _buildBannerCard(context, offer);
-        },
+    return BlocListener<BannerCubit, BannerState>(
+      listener: (context, state) {
+        if (state is BannerPageUpdated) {
+          // Verify we aren't already on the page (to avoid conflict with gesture swipe)
+          // or just animate always if it comes from timer.
+          // Since updatePage resets timer, manual swipe won't fight timer immediately.
+          if (_pageController.hasClients) {
+             // Calculate difference to decide animation (optional)
+             // Simple animateToPage handles it well usually.
+             _pageController.animateToPage(
+               state.currentPage,
+               duration: const Duration(milliseconds: 600),
+               curve: Curves.easeInOut,
+             );
+          }
+        }
+      },
+      child: SizedBox(
+        height: 240,
+        child: PageView.builder(
+          controller: _pageController,
+          itemCount: widget.offers.length,
+          onPageChanged: (int page) {
+            // Update cubit state, which also resets timer
+            context.read<BannerCubit>().updatePage(page);
+          },
+          itemBuilder: (context, index) {
+            final offer = widget.offers[index];
+            return _buildBannerCard(context, offer);
+          },
+        ),
       ),
     );
   }
@@ -111,14 +116,14 @@ class _OfferBannerWidgetState extends State<OfferBannerWidget> {
         gradient: LinearGradient(
           colors: [
             offer['color'] as Color,
-            (offer['color'] as Color).withOpacity(0.8),
+            (offer['color'] as Color).withValues(alpha: 0.8),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: (offer['color'] as Color).withOpacity(0.3),
+            color: (offer['color'] as Color).withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -126,17 +131,15 @@ class _OfferBannerWidgetState extends State<OfferBannerWidget> {
       ),
       child: Stack(
         children: [
-          // Background Icon Pattern (Optional decoration)
           Positioned(
             right: -20,
             bottom: -20,
             child: Icon(
               offer['icon'] as IconData,
               size: 150,
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
             ),
           ),
-          
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -153,7 +156,7 @@ class _OfferBannerWidgetState extends State<OfferBannerWidget> {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
@@ -213,8 +216,6 @@ class _OfferBannerWidgetState extends State<OfferBannerWidget> {
                       size: 80,
                       color: Colors.white,
                     ),
-                    // Note: Replace Icon with Image.asset if assets exist
-                    // child: Image.asset(offer['image'], height: 100), 
                   ),
                 ),
               ],

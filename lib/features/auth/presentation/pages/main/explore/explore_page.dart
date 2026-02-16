@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,6 +17,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_bar.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/empty_product_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_helper_dropdown.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -54,13 +55,12 @@ class _ExplorePageState extends State<ExplorePage> {
   @override
   void initState() {
     super.initState();
-    context.read<ExploreBloc>().add(GetCategoriesEvent());
     context.read<ExploreBloc>().add(GetAllProductsEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ResponsiveWrapper(child: Scaffold(
       body: Stack(
         children: [
           SafeArea(
@@ -79,71 +79,73 @@ class _ExplorePageState extends State<ExplorePage> {
                 ),
                 16.h,
                 Expanded(
-                  child: BlocBuilder<ExploreBloc, ExploreState>(
-                    builder: (context, state) {
-                      if (state is ExploreLoadingState) {
-                        return Center(child: circularProgressIndicators());
-                      }
-
-                      if (state is ExploreFailureState) {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Error: ${state.message}'),
-                              IconButton(
-                                onPressed: () {
-                                  context
-                                      .read<ExploreBloc>()
-                                      .add(GetCategoriesEvent());
-                                  context
-                                      .read<ExploreBloc>()
-                                      .add(GetAllProductsEvent());
-                                },
-                                icon: const Icon(Icons.refresh),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-
+                  child: BlocListener<ExploreBloc, ExploreState>(
+                    listener: (context, state) {
                       if (state is ExploreLoadedState) {
                         context.read<SearchCubit>().setItems(state.products);
+                      }
+                    },
+                    child: BlocBuilder<ExploreBloc, ExploreState>(
+                      builder: (context, state) {
+                        if (state is ExploreLoadingState) {
+                          return Center(child: circularProgressIndicators());
+                        }
 
-                        return BlocBuilder<SearchCubit, SearchState>(
-                          builder: (context, searchState) {
-                            final isSearching =
-                                searchState is SearchReasultState &&
-                                    _searchController.text.isNotEmpty;
+                        if (state is ExploreFailureState) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Error: ${state.message}'),
+                                IconButton(
+                                  onPressed: () {
+                                    context
+                                        .read<ExploreBloc>()
+                                        .add(GetAllProductsEvent());
+                                  },
+                                  icon: const Icon(Icons.refresh),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
 
-                            if (isSearching &&
-                                searchState.filteredItems.isEmpty) {
-                              return buildEmpty(
-                                context,
-                                true,
-                                _searchController,
-                                () {
-                                  context.read<SearchCubit>().clearSearch();
-                                  _searchController.clear();
-                                },
-                              );
-                            }
-                            if (!isSearching) {
+                        if (state is ExploreLoadedState) {
+                          return BlocBuilder<SearchCubit, SearchState>(
+                            builder: (context, searchState) {
+                              final isSearching =
+                                  searchState is SearchReasultState &&
+                                      _searchController.text.isNotEmpty;
+
+                              if (isSearching &&
+                                  searchState.filteredItems.isEmpty) {
+                                return buildEmpty(
+                                  context,
+                                  true,
+                                  _searchController,
+                                  () {
+                                    context.read<SearchCubit>().clearSearch();
+                                    _searchController.clear();
+                                  },
+                                );
+                              }
+                              if (!isSearching) {
+                                return _categoriesGrid(
+                                  context,
+                                  state.categories,
+                                );
+                              }
                               return _categoriesGrid(
                                 context,
                                 state.categories,
                               );
-                            }
-                            return _categoriesGrid(
-                              context,
-                              state.categories,
-                            );
-                          },
-                        );
-                      }
+                            },
+                          );
+                        }
 
-                      return const SizedBox();
-                    },
+                        return const SizedBox();
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -152,7 +154,7 @@ class _ExplorePageState extends State<ExplorePage> {
           _searchDropdown(context),
         ],
       ),
-    );
+    ));
   }
 
   Widget _categoriesGrid(BuildContext context, List<dynamic> categories) {
@@ -180,7 +182,7 @@ class _ExplorePageState extends State<ExplorePage> {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: context.cs.onSecondary.withOpacity(0.08),
+                  color: context.cs.onSecondary.withValues(alpha: 0.08),
                   blurRadius: 12,
                   offset: const Offset(0, 6),
                 ),

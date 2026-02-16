@@ -9,6 +9,7 @@ import 'package:rizqmart/features/auth/presentation/pages/main/profile/payment/a
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/payment/widgets/user_card_widget.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class SavedCardsPage extends StatefulWidget {
   const SavedCardsPage({super.key});
@@ -62,7 +63,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ResponsiveWrapper(child: Scaffold(
       appBar: AppBar(
         title: const Text('Payment Methods'),
         actions: [
@@ -122,6 +123,6 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
           return const SizedBox.shrink();
         },
       ),
-    );
+    ));
   }
 }

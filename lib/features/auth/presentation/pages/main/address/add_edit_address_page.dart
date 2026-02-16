@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -286,10 +286,10 @@ class AddressFormContent extends StatelessWidget {
   Widget _buildDefaultAddressSection(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.cs.primary.withOpacity(0.04),
+        color: context.cs.primary.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: context.cs.primary.withOpacity(0.1),
+          color: context.cs.primary.withValues(alpha: 0.1),
           width: 1,
         ),
       ),
@@ -455,19 +455,19 @@ class AddressTextField extends StatelessWidget {
           size: 18,
         ),
         filled: true,
-        fillColor: context.cs.surfaceContainerHighest.withOpacity(0.5),
+        fillColor: context.cs.surfaceContainerHighest.withValues(alpha: 0.5),
         contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(
-            color: context.cs.outlineVariant.withOpacity(0.3),
+            color: context.cs.outlineVariant.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(
-            color: context.cs.outlineVariant.withOpacity(0.2),
+            color: context.cs.outlineVariant.withValues(alpha: 0.2),
             width: 1,
           ),
         ),
@@ -481,7 +481,7 @@ class AddressTextField extends StatelessWidget {
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(
-            color: context.cs.error.withOpacity(0.6),
+            color: context.cs.error.withValues(alpha: 0.6),
             width: 1,
           ),
         ),

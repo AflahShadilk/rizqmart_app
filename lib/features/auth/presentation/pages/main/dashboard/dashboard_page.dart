@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:responsive_display/responsive_display.dart';
@@ -26,6 +26,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/see_all_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_helper_dropdown.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/offer_banner_widget.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -62,8 +63,8 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.cs.background,
+    return ResponsiveWrapper(child: Scaffold(
+      backgroundColor: context.cs.surface,
       body: Stack(
         children: [
           Column(
@@ -144,7 +145,7 @@ class _DashboardPageState extends State<DashboardPage> {
           _searchDropdown(context),
         ],
       ),
-    );
+    ));
   }
 
   Widget _exclusiveSection(

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class ChatEntity extends Equatable {
-  final String id; // Same as orderId
+  final String id; 
   final String orderId;
   final String userId;
   final String adminId;

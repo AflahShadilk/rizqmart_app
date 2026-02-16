@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_interpolation_to_compose_strings
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/data/model/main/explore_model.dart';
@@ -37,7 +37,7 @@ class ExploreDataSources {
       return store
           .collection('products')
           .where('name', isGreaterThanOrEqualTo: produtct)
-          .where('name', isLessThan: produtct + 'z')
+          .where('name', isLessThan: '${produtct}z')
           .snapshots()
           .map((snap) => snap.docs.map((doc) {
                 return ExploreModel.fromFireStore(doc);

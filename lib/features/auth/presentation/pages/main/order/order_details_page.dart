@@ -1,4 +1,6 @@
-// ignore_for_file: curly_braces_in_flow_control_structures
+
+
+// ignore_for_file: deprecated_member_use, curly_braces_in_flow_control_structures
 
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -16,6 +18,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/chat/chat_page.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   final OrderEntities order;
@@ -28,13 +31,14 @@ class OrderDetailsPage extends StatefulWidget {
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
   late String _deliveryBoyName;
+  
   // ignore: unused_field
   late int _deliveryBoyAvatarIndex;
 
   @override
   void initState() {
     super.initState();
-    // Generate random delivery boy details once
+    
     final random = Random();
     final names = [
       'Rahul Kumar',
@@ -44,12 +48,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       'Mohd. Ali'
     ];
     _deliveryBoyName = names[random.nextInt(names.length)];
-    _deliveryBoyAvatarIndex = random.nextInt(5) + 1; // Assuming 5 avatars
+    _deliveryBoyAvatarIndex = random.nextInt(5) + 1; 
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ResponsiveWrapper(child: Scaffold(
       backgroundColor: context.cs.surface,
       appBar: AppBar(
         title: Text(
@@ -82,14 +86,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildOrderHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: context.cs.surfaceContainerHighest.withAlpha(77), // 0.3
+        color: context.cs.surfaceContainerHighest.withAlpha(77), 
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: context.cs.outlineVariant),
       ),
@@ -124,22 +128,22 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   Widget _buildTrackingStepper(BuildContext context) {
-    // Determine current step based on status
+    
     int currentStep = 0;
     final status = widget.order.status.toLowerCase();
 
-    // ignore: duplicate_ignore
-    // ignore: curly_braces_in_flow_control_structures
-    if (status == 'processed' || status == 'processing')
+    
+    
+    if (status == 'processed' || status == 'processing') {
       currentStep = 1;
-    else if (status == 'shipped')
+    } else if (status == 'shipped')
       currentStep = 2;
-    // else if (status == 'out_for_delivery') currentStep = 3; // "Out" is step 3
+    
     else if (status.contains('out'))
       currentStep = 3;
     else if (status == 'delivered')
       currentStep = 4;
-    else if (status == 'cancelled') currentStep = -1; // Handle separately
+    else if (status == 'cancelled') currentStep = -1; 
 
     final steps = ['Placed', 'Processing', 'Shipped', 'Out', 'Delivered'];
 
@@ -148,9 +152,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         padding: const EdgeInsets.all(16),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.red.withAlpha(26), // 0.1
+          color: Colors.red.withAlpha(26), 
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.red.withAlpha(77)), // 0.3
+          border: Border.all(color: Colors.red.withAlpha(77)), 
         ),
         child: Center(
           child: Text(
@@ -227,7 +231,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     style: context.ts.labelSmall?.copyWith(
                         color: isCompleted
                             ? context.cs.primary
-                            : context.cs.onSurface.withAlpha(128), // 0.5
+                            : context.cs.onSurface.withAlpha(128), 
                         fontWeight:
                             isCompleted ? FontWeight.bold : FontWeight.normal),
                     textAlign: TextAlign.center,
@@ -245,7 +249,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   Widget _buildDeliveryBoySection(BuildContext context) {
     if (widget.order.status.toLowerCase() == 'pending' ||
         widget.order.status.toLowerCase() == 'cancelled') {
-      return const SizedBox.shrink(); // Hide if not assigned
+      return const SizedBox.shrink(); 
     }
 
     return Column(
@@ -258,16 +262,16 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: context.cs.surfaceContainerHighest.withAlpha(77), // 0.3
+            color: context.cs.surfaceContainerHighest.withAlpha(77), 
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-                color: context.cs.outlineVariant.withAlpha(128)), // 0.5
+                color: context.cs.outlineVariant.withAlpha(128)), 
           ),
           child: Row(
             children: [
               CircleAvatar(
-                radius: 20, // Smaller
-                backgroundColor: context.cs.primary.withAlpha(26), // 0.1
+                radius: 20, 
+                backgroundColor: context.cs.primary.withAlpha(26), 
                 child: Text(_deliveryBoyName[0],
                     style: TextStyle(
                         color: context.cs.primary,
@@ -316,11 +320,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           String? imageUrl;
           List<String> details = [];
 
-          // Extract Image URL and clean details
+          
           if (item.variantDetails.isNotEmpty &&
               item.variantIndex < item.variantDetails.length) {
             final variant = item.variantDetails[item.variantIndex];
-            // Find URL
+            
             for (var value in variant.values) {
               if (value.toString().contains('http')) {
                 imageUrl = value.toString();
@@ -358,12 +362,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     ],
                   ),
                 ),
-                 // Price and Chat Button
+                 
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '₹${(item.count * 100).toStringAsFixed(0)}', // Placeholder price calculation
+                      '₹${(item.count * 100).toStringAsFixed(0)}', 
                       style: context.ts.bodyMedium
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
@@ -470,7 +474,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 side: const BorderSide(color: Colors.red),
                 foregroundColor: Colors.red,
                 padding: const EdgeInsets.symmetric(
-                    vertical: 16), // Match MainButton height
+                    vertical: 16), 
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14)),
               ),
@@ -480,7 +484,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           ),
         if (!isCancelled && !isDelivered) 16.h,
 
-        // Use MainButton for Invoice
+        
         SizedBox(
           width: double.infinity,
           child: MainButton(
@@ -563,9 +567,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       context
                           .read<OrderBloc>()
                           .add(CancelOrderEvent(widget.order.orderId));
-                      // Pop handled by listener in OrdersPage, or we pop here.
-                      // Letting the Bloc listener handle the success state is better, but since we are in Details page,
-                      // we can just pop back to list.
+                      
+                      
+                      
                       Navigator.pop(context);
                     },
                     child: const Text('Yes, Cancel',
@@ -594,9 +598,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         pageTheme: pw.PageTheme(
           theme: pw.ThemeData.withFont(base: font, bold: boldFont),
         ),
-        build: (pw.Context context) {
+        build: (pw.Context _) {
           return [
-            // Header
+            
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
@@ -630,7 +634,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             ),
             pw.SizedBox(height: 30),
 
-            // Bill To
+            
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
@@ -663,14 +667,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             ),
             pw.SizedBox(height: 30),
 
-            // Items Table
-            // ignore: deprecated_member_use
+            
+            
             pw.Table.fromTextArray(
               headers: ['Item', 'Qty', 'Unit Price', 'Total'],
               data: widget.order.items.map((item) {
-                // Approximate unit price since we store count and total might be derived
-                // Use a generic placeholder logic or calculate if total per item was stored
-                // Assuming item.totalPrice is not in Entity but we can calc 100 * count as per existing UI
+                
+                
+                
                 final price = 100.0;
                 final total = price * item.count;
                 return [
@@ -692,7 +696,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             ),
             pw.SizedBox(height: 20),
 
-            // Summary
+            
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.end,
               children: [
@@ -718,7 +722,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             ),
             pw.SizedBox(height: 40),
 
-            // Footer
+            
             pw.Divider(color: PdfColors.grey300),
             pw.Center(
               child: pw.Text('Thank you for shopping with RizqMart!',

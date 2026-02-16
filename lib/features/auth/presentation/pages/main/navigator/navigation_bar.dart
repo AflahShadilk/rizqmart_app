@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,7 +36,7 @@ class NavigationBarPage extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 20,
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
           ),
         ],
       ),
@@ -52,7 +52,7 @@ class NavigationBarPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             duration: const Duration(milliseconds: 300),
             tabBackgroundColor: context.cs.primary,
-            color: context.cs.onBackground,
+            color: context.cs.onSurface,
             tabs: const [
               GButton(icon: Icons.dashboard, text: 'Home'),
               GButton(icon: Icons.search, text: 'Explore'),

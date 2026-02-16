@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,7 @@ Container topBarItems(
       color: Theme.of(context).appBarTheme.foregroundColor,
       boxShadow: [
         BoxShadow(
-          color: context.cs.primary.withOpacity(0.10),
+          color: context.cs.primary.withValues(alpha: 0.10),
           blurRadius: 6,
           offset: const Offset(0, 2),
         ),
@@ -43,7 +43,7 @@ Container topBarItems(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // ---------- LOGO
+              
               SizedBox(
                 width: size.width * 0.1,
                 child: const ClipRRect(
@@ -53,7 +53,7 @@ Container topBarItems(
                 ),
               ),
 
-              // ---------- LOCATION
+              
               GestureDetector(
                 onTap: () {
                    context.read<AddressBloc>().add(GetCurrentLocationEvent());
@@ -68,7 +68,7 @@ Container topBarItems(
                     }
                 
                     return Row(
-                      mainAxisSize: MainAxisSize.min, // prevent overflow
+                      mainAxisSize: MainAxisSize.min, 
                       children: [
                         Icon(
                           Icons.location_on_rounded,
@@ -93,12 +93,12 @@ Container topBarItems(
                 ),
               ),
 
-              // ---------- PROFILE BUTTON / LOGIN BUTTON
-              // Added buildNotificationButton here inline with others if needed, 
-              // but the previous code laid it out as:
-              // buildNotificationButton(context),
-              // 12.w,
-              // isLoggedIn ? ...
+              
+              
+              
+              
+              
+              
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -143,7 +143,7 @@ Widget buildProfileButton(BuildContext context) {
         ),
         boxShadow: [
           BoxShadow(
-            color: context.cs.secondary.withOpacity(0.3),
+            color: context.cs.secondary.withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -163,7 +163,7 @@ Widget buildProfileButton(BuildContext context) {
                   gradient: LinearGradient(
                     colors: [
                       context.cs.secondary,
-                      context.cs.secondary.withOpacity(0.7),
+                      context.cs.secondary.withValues(alpha: 0.7),
                     ],
                   ),
                 ),
@@ -208,7 +208,7 @@ Widget buildLoginButton(BuildContext context) {
 Widget buildNotificationButton(BuildContext context) {
   return GestureDetector(
     onTap: () {
-      // Future: Navigate to Notification Page
+      
     },
     child: Container(
       width: 40,

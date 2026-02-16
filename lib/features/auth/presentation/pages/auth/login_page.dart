@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +21,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/buttons/google_sign_
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/text_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_responsive.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -55,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
         if (state is SignInSuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(state.massage),
-            backgroundColor: AppColors.success500.withOpacity(.2),
+            backgroundColor: AppColors.success500.withValues(alpha: .2),
           ));
           Navigator.pushReplacementNamed(context,AppRoutes.navigationBar);
 
@@ -64,14 +65,14 @@ class _LoginPageState extends State<LoginPage> {
         } else if (state is SignInFailureState) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(state.error),
-              backgroundColor: AppColors.error500.withOpacity(0.3)));
+              backgroundColor: AppColors.error500.withValues(alpha: 0.3)));
         }
       },
       builder: (context, state) {
         final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
         final isKeyboardVisible = keyboardHeight > 0;
 
-        return Scaffold(
+        return ResponsiveWrapper(child: Scaffold(
           backgroundColor: Colors.green,
           resizeToAvoidBottomInset: true,
           body: SafeArea(
@@ -145,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.of(context).pushNamed(AppRoutes.forgot);
                           }, content: "Forgot Password?", color: AppColors.black),
 
-                          //Login button
+                          
                           Center(
                             child: elevatedButton(fontSize, onpress: () async {
                               if (createAccount.currentState!.validate()) {
@@ -196,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                                         .read<GooogleAuthBloc>()
                                         .add(SignInWithGoogleEvent());
                                     
-                                    //------------------------------------------------------------------------------------
+                                    
                                   },
                                 );
                               },
@@ -218,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
           )),
-        );
+        ));
       },
     );
   }

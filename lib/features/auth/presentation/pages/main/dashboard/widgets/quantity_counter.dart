@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +18,7 @@ Widget quantityButton(ColorScheme colorScheme) {
             onPressed: () {
               context.read<CounterCubit>().decreament();
             },
-            icon: Icon(Icons.remove, color: colorScheme.primary.withOpacity(0.5), size: 25),
+            icon: Icon(Icons.remove, color: colorScheme.primary.withValues(alpha: 0.5), size: 25),
             splashRadius: 10,
             constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
           ),
@@ -26,7 +26,7 @@ Widget quantityButton(ColorScheme colorScheme) {
           Container(
             decoration: BoxDecoration(
               border: Border.all(
-          color: colorScheme.primary.withOpacity(0.3),
+          color: colorScheme.primary.withValues(alpha: 0.3),
           width: 2,
         ),
         borderRadius: BorderRadius.circular(14),
@@ -37,7 +37,7 @@ Widget quantityButton(ColorScheme colorScheme) {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: colorScheme.onBackground,
+                color: colorScheme.onSurface,
               ),
             ),
           ),

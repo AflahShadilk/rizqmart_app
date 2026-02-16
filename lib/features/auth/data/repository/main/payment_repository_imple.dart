@@ -88,7 +88,7 @@ class PaymentRepositoryImpl implements PaymentRepository {
         throw Exception('User not authenticated');
       }
 
-      // Create payment intent
+      
       final paymentIntent = await StripeService.createPaymentIntent(
         amount: order.totalCost,
         currency: 'INR',

@@ -8,8 +8,8 @@ class ChatRemoteDataSource {
 
   ChatRemoteDataSource(this.firestore);
 
-  /// Creates or updates a chat room using orderId as the document ID.
-  /// This ensures both user and admin always reference the SAME document.
+  
+  
   Future<String> createChatRoom({
     required String orderId,
     required String userId,
@@ -21,7 +21,7 @@ class ChatRemoteDataSource {
   }) async {
     final chatRef = firestore.collection('chatRooms').doc(orderId);
 
-    // Use set with merge to create if not exists, or update if exists
+    
     await chatRef.set({
       'orderId': orderId,
       'userId': userId,
@@ -35,10 +35,10 @@ class ChatRemoteDataSource {
       'createdAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
 
-    return orderId; // The chatId IS the orderId
+    return orderId; 
   }
 
-  /// Stream all chat rooms for a specific user
+  
   Stream<List<ChatModel>> getUserChats(String userId) {
     return firestore
         .collection('chatRooms')
@@ -60,7 +60,7 @@ class ChatRemoteDataSource {
   });
 }
 
-  /// Stream messages for a chat room (chatId = orderId)
+  
   Stream<List<MessageEntity>> getMessages(String chatId) {
     return firestore
         .collection('chatRooms')

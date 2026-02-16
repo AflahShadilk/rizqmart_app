@@ -103,7 +103,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           (failure) => emit(PaymentFailedState(failure)),
           (transaction) => emit(PaymentSuccessState(
             orderId: createdOrder.orderId,
-            payment: null, // Wallet doesn't return PaymentEntity yet, acceptable as per COD
+            payment: null, 
             order: createdOrder,
           )),
         );

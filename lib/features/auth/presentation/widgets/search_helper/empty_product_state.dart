@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+
 
 import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
@@ -16,13 +16,13 @@ Widget buildEmpty(BuildContext context, bool isSearching, dynamic searchControll
             decoration: BoxDecoration(
               shape: BoxShape.circle,
             
-              color: colorScheme.primary.withOpacity(0.1),
+              color: colorScheme.primary.withValues(alpha: 0.1),
             ),
             child: Center(
               child: Icon(
                 Icons.shopping_bag_outlined,
                 size: 60,
-                color: colorScheme.primary.withOpacity(0.5),
+                color: colorScheme.primary.withValues(alpha: 0.5),
               ),
             ),
           ),
@@ -30,7 +30,7 @@ Widget buildEmpty(BuildContext context, bool isSearching, dynamic searchControll
           Text(
             'No Products Found',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: colorScheme.onBackground,
+                  color: colorScheme.onSurface,
                 ),
           ),
           8.h,
@@ -39,7 +39,7 @@ Widget buildEmpty(BuildContext context, bool isSearching, dynamic searchControll
                 ? 'No products match "${searchController.text}"'
                 : 'No products available at the moment',
             style: TextStyle(
-              color: colorScheme.onBackground.withOpacity(0.6),
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
               fontSize: 14,
             ),
             textAlign: TextAlign.center,

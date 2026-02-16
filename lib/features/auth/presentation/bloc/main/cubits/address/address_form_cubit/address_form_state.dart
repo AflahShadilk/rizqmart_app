@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_if_null_operators
+
 
 import 'package:equatable/equatable.dart';
 
@@ -46,18 +46,18 @@ class AddressFormState extends Equatable {
     bool? isDefault,
   }) {
     return AddressFormState(
-      label: label != null ? label : this.label,
-      fullName: fullName != null ? fullName : this.fullName,
-      phoneNumber: phoneNumber != null ? phoneNumber : this.phoneNumber,
-      address1: address1 != null ? address1 : this.address1,
-      address2: address2 != null ? address2 : this.address2,
-      city: city != null ? city : this.city,
-      state: state != null ? state : this.state,
-      country: country != null ? country : this.country,
-      pincode: pincode != null ? pincode : this.pincode,
-      latitude: latitude != null ? latitude : this.latitude,
-      longitude: longitude != null ? longitude : this.longitude,
-      isDefault: isDefault != null ? isDefault : this.isDefault,
+      label: label ?? this.label,
+      fullName: fullName ?? this.fullName,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      address1: address1 ?? this.address1,
+      address2: address2 ?? this.address2,
+      city: city ?? this.city,
+      state: state ?? this.state,
+      country: country ?? this.country,
+      pincode: pincode ?? this.pincode,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      isDefault: isDefault ?? this.isDefault,
     );
   }
 
