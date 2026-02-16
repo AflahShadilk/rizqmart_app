@@ -78,9 +78,9 @@ dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icons_and_images/logo_launch.jpeg"
+  image_path: "assets/icons_and_images/Gemini_Generated_Image_7up8eo7up8eo7up8.png"
   adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "assets/icons_and_images/logo_launch.jpeg"
+  adaptive_icon_foreground: "assets/icons_and_images/Gemini_Generated_Image_7up8eo7up8eo7up8.png"
 
 dev_dependencies:
   flutter_test:
