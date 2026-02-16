@@ -72,8 +72,16 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   responsive_display: ^1.0.0
   bloc: ^9.2.0
+  flutter_launcher_icons: ^0.14.4
 
-  
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons_and_images/logo_launch.jpeg"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/icons_and_images/logo_launch.jpeg"
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
