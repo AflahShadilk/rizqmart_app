@@ -4,7 +4,7 @@ abstract class ReviewState extends Equatable {
   const ReviewState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class ReviewInitial extends ReviewState {}
@@ -19,7 +19,22 @@ class ReviewsLoaded extends ReviewState {
   const ReviewsLoaded({required this.reviews});
 
   @override
-  List<Object> get props => [reviews];
+  List<Object?> get props => [reviews];
+}
+
+class ReviewsWithPurchaseStatus extends ReviewState {
+  final List<ReviewEntity> reviews;
+  final bool hasPurchased;
+  final ReviewEntity? existingReview;
+
+  const ReviewsWithPurchaseStatus({
+    required this.reviews,
+    required this.hasPurchased,
+    this.existingReview,
+  });
+
+  @override
+  List<Object?> get props => [reviews, hasPurchased, existingReview];
 }
 
 class ReviewError extends ReviewState {
@@ -28,5 +43,5 @@ class ReviewError extends ReviewState {
   const ReviewError({required this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }

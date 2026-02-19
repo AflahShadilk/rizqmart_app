@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/review_entity.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/back_button_common.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
@@ -31,7 +32,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
     context.read<ReviewBloc>().add(GetReviewsEvent(productId: widget.productId));
   }
 
-  void _showAddReviewDialog() {
+  void _showAddReviewDialog({ReviewEntity? existingReview}) {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       showDialog(
@@ -41,15 +42,15 @@ class _ReviewsPageState extends State<ReviewsPage> {
           userId: user.uid,
           userName: user.displayName ?? 'User',
           userImage: user.photoURL,
+          existingReview: existingReview,
           onSubmit: (review) {
-            context.read<ReviewBloc>().add(AddReviewEvent(review: review));
+            this.context.read<ReviewBloc>().add(AddReviewEvent(review: review));
           },
         ),
       );
     } else {
-        
        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please login to add a review')),
+          const SnackBar(content: Text('Please login to add a review')),
         );
     }
   }
@@ -66,12 +67,23 @@ class _ReviewsPageState extends State<ReviewsPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _showAddReviewDialog,
-        label: Text('Write a Review'),
-        icon: Icon(Icons.rate_review),
-        backgroundColor: context.cs.primary,
-        foregroundColor: context.cs.onPrimary,
+      floatingActionButton: BlocBuilder<ReviewBloc, ReviewState>(
+        builder: (context, state) {
+          if (state is ReviewsWithPurchaseStatus && state.hasPurchased) {
+            final isEdit = state.existingReview != null;
+            return FloatingActionButton.extended(
+              onPressed: () => _showAddReviewDialog(
+                existingReview: state.existingReview,
+              ),
+              label: Text(isEdit ? 'Edit Your Review' : 'Write a Review'),
+              icon: Icon(isEdit ? Icons.edit : Icons.rate_review),
+              backgroundColor: context.cs.primary,
+              foregroundColor: context.cs.onPrimary,
+            );
+          }
+          // Non-purchased users or still loading — no FAB
+          return const SizedBox.shrink();
+        },
       ),
       body: BlocBuilder<ReviewBloc, ReviewState>(
         builder: (context, state) {
@@ -79,7 +91,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
             return const Center(child: CircularProgressIndicator());
           } else if (state is ReviewError) {
             return Center(child: Text(state.message));
-          } else if (state is ReviewsLoaded) {
+          } else if (state is ReviewsWithPurchaseStatus) {
             if (state.reviews.isEmpty) {
               return Center(
                 child: Column(
@@ -90,7 +102,38 @@ class _ReviewsPageState extends State<ReviewsPage> {
                     16.h,
                     Text('No reviews yet', style: context.ts.titleMedium),
                     8.h,
-                    Text('Be the first to review this product!',
+                    Text(
+                      state.hasPurchased
+                          ? 'Be the first to review this product!'
+                          : 'No reviews yet for this product.',
+                      style: context.ts.bodyMedium,
+                    ),
+                  ],
+                ),
+              );
+            }
+            return ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemCount: state.reviews.length,
+              separatorBuilder: (context, index) => const Divider(height: 32),
+              itemBuilder: (context, index) {
+                final review = state.reviews[index];
+                return ReviewCard(review: review);
+              },
+            );
+          } else if (state is ReviewsLoaded) {
+            // Fallback for legacy state (shouldn't normally reach here)
+            if (state.reviews.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.rate_review_outlined,
+                        size: 64, color: context.cs.outline),
+                    16.h,
+                    Text('No reviews yet', style: context.ts.titleMedium),
+                    8.h,
+                    Text('No reviews yet for this product.',
                         style: context.ts.bodyMedium),
                   ],
                 ),
@@ -99,7 +142,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
             return ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: state.reviews.length,
-              separatorBuilder: (context, index) => Divider(height: 32),
+              separatorBuilder: (context, index) => const Divider(height: 32),
               itemBuilder: (context, index) {
                 final review = state.reviews[index];
                 return ReviewCard(review: review);

@@ -12,6 +12,7 @@ class AddReviewDialog extends StatelessWidget {
   final String userName;
   final String? userImage;
   final String? variantName;
+  final ReviewEntity? existingReview;
   final Function(ReviewEntity) onSubmit;
 
   const AddReviewDialog({
@@ -21,19 +22,22 @@ class AddReviewDialog extends StatelessWidget {
     required this.userName,
     this.userImage,
     this.variantName,
+    this.existingReview,
     required this.onSubmit,
   });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ReviewCubit(),
+      create: (context) => ReviewCubit()
+        ..setRating(existingReview?.rating ?? 5.0),
       child: _AddReviewDialogBody(
         productId: productId,
         userId: userId,
         userName: userName,
         userImage: userImage,
         variantName: variantName,
+        existingReview: existingReview,
         onSubmit: onSubmit,
       ),
     );
@@ -46,6 +50,7 @@ class _AddReviewDialogBody extends StatefulWidget {
   final String userName;
   final String? userImage;
   final String? variantName;
+  final ReviewEntity? existingReview;
   final Function(ReviewEntity) onSubmit;
 
   const _AddReviewDialogBody({
@@ -54,6 +59,7 @@ class _AddReviewDialogBody extends StatefulWidget {
     required this.userName,
     this.userImage,
     this.variantName,
+    this.existingReview,
     required this.onSubmit,
   });
 
@@ -65,6 +71,15 @@ class _AddReviewDialogBodyState extends State<_AddReviewDialogBody> {
   final TextEditingController _commentController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    // Pre-populate fields when editing an existing review
+    if (widget.existingReview != null) {
+      _commentController.text = widget.existingReview!.comment;
+    }
+  }
+
+  @override
   void dispose() {
     _commentController.dispose();
     super.dispose();
@@ -72,8 +87,9 @@ class _AddReviewDialogBodyState extends State<_AddReviewDialogBody> {
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.existingReview != null;
     return AlertDialog(
-      title: const Text('Rate Product'),
+      title: Text(isEditing ? 'Edit Your Review' : 'Rate Product'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -117,22 +133,29 @@ class _AddReviewDialogBodyState extends State<_AddReviewDialogBody> {
         ),
         TextButton(
           onPressed: () {
+            final String comment = _commentController.text.trim();
+            if (comment.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Please write a review comment')),
+              );
+              return;
+            }
             final double rating = context.read<ReviewCubit>().state.rating;
             final review = ReviewEntity(
-              id: '', 
+              id: widget.existingReview?.id ?? '',
               productId: widget.productId,
               userId: widget.userId,
               userName: widget.userName,
               userImage: widget.userImage,
               rating: rating,
-              comment: _commentController.text.trim(),
+              comment: comment,
               createdAt: DateTime.now(),
               variantName: widget.variantName,
             );
             widget.onSubmit(review);
             Navigator.pop(context);
           },
-          child: const Text('Submit'),
+          child: Text(isEditing ? 'Update' : 'Submit'),
         ),
       ],
     );

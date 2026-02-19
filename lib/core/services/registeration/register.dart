@@ -101,7 +101,9 @@ import 'package:rizqmart/features/auth/presentation/bloc/notification/notificati
 import 'package:rizqmart/features/auth/data/repository/main/review_repository_impl.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/review_repository.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/review/add_review_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/review/check_purchase_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/review/get_reviews_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/review/get_user_review_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/dashboard/get_product_by_id_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/product/single_product_bloc.dart';
@@ -294,10 +296,14 @@ void setupLocator() {
   sl.registerLazySingleton<ReviewRepository>(() => ReviewRepositoryImpl(firestore: sl()));
   sl.registerLazySingleton(() => AddReviewUseCase(repository: sl()));
   sl.registerLazySingleton(() => GetReviewsUseCase(repository: sl()));
+  sl.registerLazySingleton(() => CheckPurchaseUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetUserReviewUseCase(repository: sl()));
   
   sl.registerFactory(() => ReviewBloc(
     addReviewUseCase: sl(),
     getReviewsUseCase: sl(),
+    checkPurchaseUseCase: sl(),
+    getUserReviewUseCase: sl(),
   ));
 
   sl.registerFactory(() => SingleProductBloc(getProductByIdUseCase: sl()));

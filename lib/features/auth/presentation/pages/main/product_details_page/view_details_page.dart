@@ -10,6 +10,7 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/core/theme/theme_cubit.dart';
 
 import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/review_entity.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
 import 'package:responsive_display/responsive_display.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_bloc.dart';
@@ -288,8 +289,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                                   child: BlocBuilder<ReviewBloc, ReviewState>(
                                     builder: (context, state) {
-                                      if (state is ReviewsLoaded && state.reviews.isNotEmpty) {
-                                        final displayReviews = state.reviews.take(3).toList();
+                                      List<ReviewEntity>? reviews;
+                                      if (state is ReviewsWithPurchaseStatus) {
+                                        reviews = state.reviews;
+                                      } else if (state is ReviewsLoaded) {
+                                        reviews = state.reviews;
+                                      }
+                                      if (reviews != null && reviews.isNotEmpty) {
+                                        final displayReviews = reviews.take(3).toList();
                                         return Column(
                                           children: [
                                             ListView.separated(
@@ -301,7 +308,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                                 return ReviewCard(review: displayReviews[index]);
                                               },
                                             ),
-                                            if (state.reviews.length > 3)
+                                            if (reviews.length > 3)
                                               TextButton(
                                                 onPressed: () {
                                                   final reviewBloc = context.read<ReviewBloc>();
@@ -318,7 +325,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                                      reviewBloc.add(GetReviewsEvent(productId: productId));
                                                   });
                                                 },
-                                                child: Text('See All ${state.reviews.length} Reviews'),
+                                                child: Text('See All ${reviews.length} Reviews'),
                                               ),
                                           ],
                                         );
@@ -728,8 +735,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             builder: (context, state) {
               if (state is ReviewLoading) {
                 return const Center(child: CircularProgressIndicator());
+              }
+              List<ReviewEntity>? reviews;
+              if (state is ReviewsWithPurchaseStatus) {
+                reviews = state.reviews;
               } else if (state is ReviewsLoaded) {
-                if (state.reviews.isEmpty) {
+                reviews = state.reviews;
+              }
+              if (reviews != null) {
+                if (reviews.isEmpty) {
                   return Text(
                     "No reviews yet",
                     style: GoogleFonts.poppins(
@@ -740,10 +754,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 return ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.reviews.length,
+                  itemCount: reviews.length,
                   separatorBuilder: (context, index) => 16.h,
                   itemBuilder: (context, index) {
-                    return ReviewCard(review: state.reviews[index]);
+                    return ReviewCard(review: reviews![index]);
                   },
                 );
               } else if (state is ReviewError) {

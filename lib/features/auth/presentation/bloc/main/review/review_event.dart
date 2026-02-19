@@ -24,3 +24,16 @@ class GetReviewsEvent extends ReviewEvent {
   @override
   List<Object> get props => [productId];
 }
+
+class CheckPurchaseStatusEvent extends ReviewEvent {
+  final String userId;
+  final String productId;
+
+  const CheckPurchaseStatusEvent({
+    required this.userId,
+    required this.productId,
+  });
+
+  @override
+  List<Object> get props => [userId, productId];
+}
