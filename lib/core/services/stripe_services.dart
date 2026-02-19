@@ -1,4 +1,5 @@
-// ignore_for_file: empty_catches
+
+
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -30,8 +31,7 @@ class StripeService {
       await Stripe.instance.applySettings();
 
     
-    } catch (e) {
-
+    } catch (_) {
     }
   }
 

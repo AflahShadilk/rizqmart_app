@@ -1,5 +1,5 @@
 
-// ignore_for_file: empty_catches
+
 
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,8 +60,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) async {
     try {
       await repository.markAsRead(event.userId, event.notificationId);
-    } catch (e) {
-      
+    } catch (_) {
     }
   }
 
@@ -71,8 +70,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) async {
     try {
       await repository.markAllAsRead(event.userId);
-    } catch (e) {
-      
+    } catch (_) {
     }
   }
 

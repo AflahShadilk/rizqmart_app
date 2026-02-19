@@ -1,4 +1,4 @@
-// ignore_for_file: empty_catches
+
 
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,26 +32,30 @@ void main() async {
 
       try {
         await dotenv.load(fileName: ".env");
-      } catch (e) {}
+      } catch (_) {}
 
       try {
         await StripeService.initialize();
-      } catch (e) {}
+      } catch (_) {}
 
       try {
         await NotificationService().initialize(navigatorKey);
-      } catch (e) {}
+      } catch (_) {}
 
       try {
         setupLocator();
-      } catch (e) {}
+      } catch (_) {}
 
       runApp(MyApp(navigatorKey: navigatorKey));
     },
-    (error, stackTrace) {},
+    (error, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(exception: error, stack: stackTrace),
+      );
+    },
   );
 
-  FlutterError.onError = (FlutterErrorDetails details) {};
+  FlutterError.onError = FlutterError.presentError;
 }
 
 class MyApp extends StatelessWidget {

@@ -124,7 +124,7 @@ class _ProductCardState extends State<ProductCard>
                         ProductImage(imageUrl: productImage),
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(5, 5, 0, 0),
+                            padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -143,7 +143,7 @@ class _ProductCardState extends State<ProductCard>
                                             ?.copyWith(
                                               fontWeight: FontWeight.w600,
                                               color: colorScheme.onSurface,
-                                              fontSize: 17,
+                                              fontSize: 14,
                                             ),
                                       ),
                                     ),
@@ -191,7 +191,7 @@ class _ProductCardState extends State<ProductCard>
                                                   .labelSmall
                                                   ?.copyWith(
                                                     letterSpacing: 0.5,
-                                                    color: context.cs.onSecondary,
+                                                    color: colorScheme.primary,
                                                     fontSize: 15,
                                                     fontWeight: FontWeight.w700,
                                                   ),
@@ -222,7 +222,7 @@ class _ProductCardState extends State<ProductCard>
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                           decoration: BoxDecoration(
-                            color: Colors.red.withValues(alpha: 0.9),
+                            color: colorScheme.error,
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(

@@ -130,7 +130,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                       BackButtonCommon(colorScheme: colorScheme),
                                        IconButton(
                                         onPressed: () {},
-                                        icon: Icon(Icons.ios_share_outlined, color: context.cs.onSecondary),
+                                        icon: Icon(Icons.ios_share_outlined, color: context.cs.onSurface),
                                       ),
                                     ],
                                   ),
@@ -207,13 +207,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                              Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Positioned(
+                                 Positioned(
                                   top: 20,
                                   left: 8,
                                   child: Container(
                                     margin: EdgeInsets.only(top: 20, left: 8),
                                     decoration: BoxDecoration(
-                                      color: colorScheme.surface.withValues(alpha: 0.05),
+                                      color: colorScheme.surface.withValues(alpha: 0.85),
                                       shape: BoxShape.circle,
                                       boxShadow: [
                                         BoxShadow(
@@ -232,7 +232,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   child: Container(
                                      margin: EdgeInsets.only(top: 20, right: 8),
                                     decoration: BoxDecoration(
-                                      color: colorScheme.surface.withValues(alpha: 0.05),
+                                      color: colorScheme.surface.withValues(alpha: 0.85),
                                       shape: BoxShape.circle,
                                       boxShadow: [
                                         BoxShadow(
@@ -246,7 +246,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                         onPressed: () {},
                                         icon: Icon(
                                           Icons.ios_share_outlined,
-                                          color: context.cs.onSecondary,
+                                          color: context.cs.onSurface,
                                           size: 20,
                                         )),
                                   ),
@@ -342,10 +342,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             ),
             bottomSheet: Container(
               decoration: BoxDecoration(
-                color: context.cs.surface.withValues(alpha: 0.1),
+                color: context.cs.surface,
                 boxShadow: [
                   BoxShadow(
-                    color: context.cs.onSecondary.withValues(alpha: 0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 20,
                     spreadRadius: 5,
                   )

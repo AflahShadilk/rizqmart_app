@@ -36,7 +36,6 @@ class NotificationService {
       initSettings,
       onDidReceiveNotificationResponse: (response) {
         if (response.payload != null) {
-          debugPrint("🔔 Notification Tapped: ${response.payload}");
           _handleNotificationClick(response.payload!, navigatorKey);
         }
       },
@@ -56,7 +55,6 @@ class NotificationService {
 
     
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      debugPrint("🔔 Foreground Message Received: ${message.notification?.title}");
       if (message.notification != null) {
 
         _showLocalNotification(message);
@@ -79,7 +77,6 @@ class NotificationService {
   Future<void> checkInitialMessage(GlobalKey<NavigatorState> navigatorKey) async {
      final initialMessage = await _firebaseMessaging.getInitialMessage();
     if (initialMessage != null) {
-        debugPrint("🔔 App Launched from Notification: ${initialMessage.data}");
         _handleMessage(initialMessage, navigatorKey);
     }
   }
@@ -144,8 +141,7 @@ class NotificationService {
            },
          );
       }
-    } catch (e) {
-      debugPrint("Error parsing notification payload: $e");
+    } catch (_) {
     }
   }
 
@@ -172,8 +168,7 @@ class NotificationService {
           'referenceId': referenceId,
         });
       }
-    } catch (e) {
-      debugPrint('Error saving notification to Firestore: $e');
+    } catch (_) {
     }
   }
 }

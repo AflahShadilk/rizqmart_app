@@ -29,7 +29,7 @@ class ExplorePage extends StatefulWidget {
 class _ExplorePageState extends State<ExplorePage> {
   final TextEditingController _searchController = TextEditingController();
 
-  final List<Color> cardColors = [
+  final List<Color> lightCardColors = [
     Color(0xFFFFF3E0),
     Color(0xFFE8F5E8),
     Color(0xFFE3F2FD),
@@ -38,6 +38,17 @@ class _ExplorePageState extends State<ExplorePage> {
     Color(0xFFFFFDE7),
     Color(0xFFE0F7FA),
     Color(0xFFFCE4EC),
+  ];
+
+  final List<Color> darkCardColors = [
+    Color(0xFF332800),
+    Color(0xFF0A2B0A),
+    Color(0xFF0A1929),
+    Color(0xFF2D0A0A),
+    Color(0xFF1A0A2B),
+    Color(0xFF2B2800),
+    Color(0xFF002B2B),
+    Color(0xFF2B0A14),
   ];
 
   void _onSearch(String query) {
@@ -129,12 +140,6 @@ class _ExplorePageState extends State<ExplorePage> {
                                   },
                                 );
                               }
-                              if (!isSearching) {
-                                return _categoriesGrid(
-                                  context,
-                                  state.categories,
-                                );
-                              }
                               return _categoriesGrid(
                                 context,
                                 state.categories,
@@ -169,7 +174,10 @@ class _ExplorePageState extends State<ExplorePage> {
       itemCount: categories.length,
       itemBuilder: (context, index) {
         final cat = categories[index];
-        final color = cardColors[index % cardColors.length];
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final color = isDark
+            ? darkCardColors[index % darkCardColors.length]
+            : lightCardColors[index % lightCardColors.length];
 
         return GestureDetector(
           onTap: () {
@@ -182,7 +190,7 @@ class _ExplorePageState extends State<ExplorePage> {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: context.cs.onSecondary.withValues(alpha: 0.08),
+                  color: Colors.black.withValues(alpha: 0.08),
                   blurRadius: 12,
                   offset: const Offset(0, 6),
                 ),
@@ -202,10 +210,10 @@ class _ExplorePageState extends State<ExplorePage> {
                 ),
                 Text(
                   cat.categoryName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Colors.black87,
+                    color: context.cs.onSurface,
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 2,

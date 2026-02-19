@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/navigation/navigation_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/cart/cart_page.dart';
@@ -44,10 +43,10 @@ class NavigationBarPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           child: GNav(
-            rippleColor: AppColors.grey300,
-            hoverColor: AppColors.grey100,
+            rippleColor: context.cs.onSurface.withValues(alpha: 0.08),
+            hoverColor: context.cs.onSurface.withValues(alpha: 0.05),
             gap: 4,
-            activeColor: AppColors.white,
+            activeColor: Colors.white,
             iconSize: 22,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             duration: const Duration(milliseconds: 300),

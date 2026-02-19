@@ -1,6 +1,7 @@
 
 
-// ignore_for_file: unused_element
+
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -687,29 +688,6 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
   }
 
 
-  
-  void _showLoadingDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => PopScope(
-        canPop: false,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(color: context.cs.primary),
-              16.h,
-              Text(
-                message,
-                style: context.ts.bodyMedium,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _costRow(
     BuildContext context,
