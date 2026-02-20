@@ -1,13 +1,12 @@
+// ignore_for_file: unnecessary_cast
 
-
-// ignore_for_file: deprecated_member_use, curly_braces_in_flow_control_structures
-
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/delivery/delivery_partner_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/delivery/delivery_partner_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_event.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
@@ -20,80 +19,70 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/pages/main/chat/chat_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
-class OrderDetailsPage extends StatefulWidget {
+class OrderDetailsPage extends StatelessWidget {
   final OrderEntities order;
 
   const OrderDetailsPage({super.key, required this.order});
 
   @override
-  State<OrderDetailsPage> createState() => _OrderDetailsPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => DeliveryPartnerCubit(),
+      child: _OrderDetailsView(order: order),
+    );
+  }
 }
 
-class _OrderDetailsPageState extends State<OrderDetailsPage> {
-  late String _deliveryBoyName;
-  
-  // ignore: unused_field
-  late int _deliveryBoyAvatarIndex;
+class _OrderDetailsView extends StatelessWidget {
+  final OrderEntities order;
 
-  @override
-  void initState() {
-    super.initState();
-    
-    final random = Random();
-    final names = [
-      'Rahul Kumar',
-      'Amit Singh',
-      'Vikram Patel',
-      'Suresh Reddy',
-      'Mohd. Ali'
-    ];
-    _deliveryBoyName = names[random.nextInt(names.length)];
-    _deliveryBoyAvatarIndex = random.nextInt(5) + 1; 
-  }
+  const _OrderDetailsView({required this.order});
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveWrapper(child: Scaffold(
-      backgroundColor: context.cs.surface,
-      appBar: AppBar(
-        title: Text(
-          'Order Details',
-          style: context.ts.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
+    return ResponsiveWrapper(
+      child: Scaffold(
         backgroundColor: context.cs.surface,
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildOrderHeader(context),
-              24.h,
-              _buildTrackingStepper(context),
-              24.h,
-              _buildDeliveryBoySection(context),
-              24.h,
-              _buildOrderItemsList(context),
-              24.h,
-              _buildOrderSummary(context),
-              32.h,
-              _buildActionButtons(context),
-              40.h,
-            ],
+        appBar: AppBar(
+          title: Text(
+            'Order Details',
+            style: context.ts.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
+          backgroundColor: context.cs.surface,
+          elevation: 0,
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildOrderHeader(context),
+                24.h,
+                _buildTrackingStepper(context),
+                24.h,
+                _buildDeliveryBoySection(context),
+                24.h,
+                _buildOrderItemsList(context),
+                24.h,
+                _buildOrderSummary(context),
+                32.h,
+                _buildActionButtons(context),
+                40.h,
+              ],
+            ),
           ),
         ),
       ),
-    ));
+    );
   }
 
   Widget _buildOrderHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: context.cs.surfaceContainerHighest.withAlpha(77), 
+        color: context.cs.surfaceContainerHighest.withAlpha(77),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: context.cs.outlineVariant),
       ),
@@ -104,7 +93,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             children: [
               Text('Order ID', style: context.ts.bodyMedium),
               Text(
-                '#${widget.order.orderId.substring(0, 8).toUpperCase()}',
+                '#${order.orderId.substring(0, 8).toUpperCase()}',
                 style: context.ts.titleMedium
                     ?.copyWith(fontWeight: FontWeight.bold),
               ),
@@ -116,7 +105,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             children: [
               Text('Date', style: context.ts.bodyMedium),
               Text(
-                DateFormat('dd MMM, yyyy').format(widget.order.createdAt),
+                DateFormat('dd MMM, yyyy').format(order.createdAt),
                 style: context.ts.bodyMedium
                     ?.copyWith(fontWeight: FontWeight.bold),
               ),
@@ -128,22 +117,20 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   Widget _buildTrackingStepper(BuildContext context) {
-    
     int currentStep = 0;
-    final status = widget.order.status.toLowerCase();
+    final status = order.status.toLowerCase();
 
-    
-    
     if (status == 'processed' || status == 'processing') {
       currentStep = 1;
-    } else if (status == 'shipped')
+    } else if (status == 'shipped') {
       currentStep = 2;
-    
-    else if (status.contains('out'))
+    } else if (status.contains('out')) {
       currentStep = 3;
-    else if (status == 'delivered')
+    } else if (status == 'delivered') {
       currentStep = 4;
-    else if (status == 'cancelled') currentStep = -1; 
+    } else if (status == 'cancelled') {
+      currentStep = -1;
+    }
 
     final steps = ['Placed', 'Processing', 'Shipped', 'Out', 'Delivered'];
 
@@ -152,9 +139,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         padding: const EdgeInsets.all(16),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.red.withAlpha(26), 
+          color: Colors.red.withAlpha(26),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.red.withAlpha(77)), 
+          border: Border.all(color: Colors.red.withAlpha(77)),
         ),
         child: Center(
           child: Text(
@@ -231,7 +218,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     style: context.ts.labelSmall?.copyWith(
                         color: isCompleted
                             ? context.cs.primary
-                            : context.cs.onSurface.withAlpha(128), 
+                            : context.cs.onSurface.withAlpha(128),
                         fontWeight:
                             isCompleted ? FontWeight.bold : FontWeight.normal),
                     textAlign: TextAlign.center,
@@ -247,64 +234,68 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   Widget _buildDeliveryBoySection(BuildContext context) {
-    if (widget.order.status.toLowerCase() == 'pending' ||
-        widget.order.status.toLowerCase() == 'cancelled') {
-      return const SizedBox.shrink(); 
+    if (order.status.toLowerCase() == 'pending' ||
+        order.status.toLowerCase() == 'cancelled') {
+      return const SizedBox.shrink();
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Delivery Partner',
-            style:
-                context.ts.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-        12.h,
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: context.cs.surfaceContainerHighest.withAlpha(77), 
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-                color: context.cs.outlineVariant.withAlpha(128)), 
-          ),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 20, 
-                backgroundColor: context.cs.primary.withAlpha(26), 
-                child: Text(_deliveryBoyName[0],
-                    style: TextStyle(
-                        color: context.cs.primary,
-                        fontWeight: FontWeight.bold)),
+    return BlocBuilder<DeliveryPartnerCubit, DeliveryPartnerState>(
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Delivery Partner',
+                style: context.ts.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold)),
+            12.h,
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: context.cs.surfaceContainerHighest.withAlpha(77),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                    color: context.cs.outlineVariant.withAlpha(128)),
               ),
-              12.w,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(_deliveryBoyName,
-                        style: context.ts.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                    Text('Flutter Express • 4.8 ★',
-                        style: context.ts.bodySmall),
-                  ],
-                ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: context.cs.primary.withAlpha(26),
+                    child: Text(state.name[0],
+                        style: TextStyle(
+                            color: context.cs.primary,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                  12.w,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(state.name,
+                            style: context.ts.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text('RizqMaster Partner • 4.8 ★',
+                            style: context.ts.bodySmall),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => _navigateToChat(context),
+                    icon: const Icon(Icons.chat_bubble_outline, size: 20),
+                    style: IconButton.styleFrom(
+                      backgroundColor: context.cs.primary,
+                      foregroundColor: context.cs.surface,
+                      padding: const EdgeInsets.all(8),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  )
+                ],
               ),
-              IconButton(
-                onPressed: () => _navigateToChat(context),
-                icon: const Icon(Icons.chat_bubble_outline, size: 20),
-                style: IconButton.styleFrom(
-                  backgroundColor: context.cs.primary,
-                  foregroundColor: context.cs.surface,
-                  padding: const EdgeInsets.all(8),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-              )
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -316,27 +307,39 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             style:
                 context.ts.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
         12.h,
-        ...widget.order.items.map((item) {
+        ...order.items.map((item) {
           String? imageUrl;
           List<String> details = [];
 
-          
+          double unitPrice = 0.0;
+
           if (item.variantDetails.isNotEmpty &&
               item.variantIndex < item.variantDetails.length) {
             final variant = item.variantDetails[item.variantIndex];
-            
-            for (var value in variant.values) {
-              if (value.toString().contains('http')) {
-                imageUrl = value.toString();
-              } else {
-                details.add(value.toString());
-              }
+
+            final imageUrlsRaw = variant['imageUrls'];
+            if (imageUrlsRaw is List) {
+              final firstUrl = (imageUrlsRaw as List)
+                  .map((e) => e?.toString() ?? '')
+                  .firstWhere((e) => e.isNotEmpty, orElse: () => '');
+              if (firstUrl.isNotEmpty) imageUrl = firstUrl;
             }
+
+            final priceRaw = variant['price'];
+            if (priceRaw != null) {
+              unitPrice = (priceRaw as num).toDouble();
+            }
+
+            final unitName = variant['unitName']?.toString() ?? '';
+            if (unitName.isNotEmpty) details.add(unitName);
           }
 
+          final double totalPrice = unitPrice * item.count;
+
           return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.only(bottom: 16),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ProductImage(
                   imageUrl: imageUrl,
@@ -352,6 +355,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       Text(item.name,
                           style: context.ts.bodyMedium
                               ?.copyWith(fontWeight: FontWeight.bold)),
+                      4.h,
                       if (details.isNotEmpty)
                         Text(
                           '${item.count}x  •  ${details.join(", ")}',
@@ -362,44 +366,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     ],
                   ),
                 ),
-                 
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '₹${(item.count * 100).toStringAsFixed(0)}', 
-                      style: context.ts.bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    4.h,
-                    InkWell(
-                      onTap: () {
-                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ChatPage(
-                              orderId: widget.order.orderId,
-                              orderDisplayId: widget.order.orderId.substring(0, 8).toUpperCase(),
-                              deliveryPartnerName: 'Product Support', 
-                              productId: item.id,
-                              productName: item.name,
-                              productImage: imageUrl,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Text(
-                          'Chat',
-                          style: context.ts.labelSmall?.copyWith(
-                            color: context.cs.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                8.w,
+                Text(
+                  '₹${totalPrice.toStringAsFixed(2)}',
+                  style: context.ts.bodyMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -417,12 +388,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             style:
                 context.ts.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
         12.h,
-        _summaryRow(context, 'Subtotal', widget.order.subtotal),
+        _summaryRow(context, 'Subtotal', order.subtotal),
         8.h,
-        _summaryRow(context, 'Delivery Fee', widget.order.deliveryFee),
+        _summaryRow(context, 'Delivery Fee', order.deliveryFee),
         8.h,
-        _summaryRow(context, 'Discount', -widget.order.discount,
-            isDiscount: true),
+        _summaryRow(context, 'Discount', -order.discount, isDiscount: true),
         12.h,
         Divider(color: context.cs.outlineVariant),
         12.h,
@@ -433,7 +403,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 style: context.ts.titleMedium
                     ?.copyWith(fontWeight: FontWeight.bold)),
             Text(
-              '₹${widget.order.totalCost.toStringAsFixed(2)}',
+              '₹${order.totalCost.toStringAsFixed(2)}',
               style: context.ts.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold, color: context.cs.primary),
             ),
@@ -460,8 +430,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   Widget _buildActionButtons(BuildContext context) {
-    final isCancelled = widget.order.status.toLowerCase() == 'cancelled';
-    final isDelivered = widget.order.status.toLowerCase() == 'delivered';
+    final isCancelled = order.status.toLowerCase() == 'cancelled';
+    final isDelivered = order.status.toLowerCase() == 'delivered';
 
     return Column(
       children: [
@@ -473,8 +443,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: Colors.red),
                 foregroundColor: Colors.red,
-                padding: const EdgeInsets.symmetric(
-                    vertical: 16), 
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14)),
               ),
@@ -483,8 +452,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             ),
           ),
         if (!isCancelled && !isDelivered) 16.h,
-
-        
         SizedBox(
           width: double.infinity,
           child: MainButton(
@@ -540,49 +507,46 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       context,
       MaterialPageRoute(
         builder: (context) => ChatPage(
-          orderId: widget.order.orderId,
-          orderDisplayId: widget.order.orderId.substring(0, 8).toUpperCase(),
-          deliveryPartnerName: 'RizqMart Support', 
-          orderStatus: widget.order.status,
+          orderId: order.orderId,
+          orderDisplayId: order.orderId.substring(0, 8).toUpperCase(),
+          deliveryPartnerName: 'RizqMart Support',
+          orderStatus: order.status,
         ),
-
       ),
     );
   }
 
   void _showCancelDialog(BuildContext context) {
     showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: const Text('Cancel Order?'),
-              content: const Text(
-                  'Are you sure you want to cancel this order? This action cannot be undone and the amount will be refunded to your wallet.'),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(ctx),
-                    child: const Text('No')),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(ctx);
-                      context
-                          .read<OrderBloc>()
-                          .add(CancelOrderEvent(widget.order.orderId));
-                      
-                      
-                      
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Yes, Cancel',
-                        style: TextStyle(color: Colors.red))),
-              ],
-            ));
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Cancel Order?'),
+        content: const Text(
+            'Are you sure you want to cancel this order? This action cannot be undone and the amount will be refunded to your wallet.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('No')),
+          TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                context
+                    .read<OrderBloc>()
+                    .add(CancelOrderEvent(order.orderId));
+                Navigator.pop(context);
+              },
+              child: const Text('Yes, Cancel',
+                  style: TextStyle(color: Colors.red))),
+        ],
+      ),
+    );
   }
 
   Future<void> _launchSupport() async {
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
       path: 'support@rizqmart.com',
-      query: 'subject=Help with Order #${widget.order.orderId}',
+      query: 'subject=Help with Order #${order.orderId}',
     );
     if (!await launchUrl(emailLaunchUri)) {}
   }
@@ -600,7 +564,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         ),
         build: (pw.Context _) {
           return [
-            
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
@@ -627,14 +590,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     pw.Text(
                         'Date: ${DateFormat('dd MMM yyyy').format(DateTime.now())}'),
                     pw.Text(
-                        'Order ID: #${widget.order.orderId.substring(0, 8).toUpperCase()}'),
+                        'Order ID: #${order.orderId.substring(0, 8).toUpperCase()}'),
                   ],
                 ),
               ],
             ),
             pw.SizedBox(height: 30),
-
-            
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
@@ -644,10 +605,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     pw.Text('Bill To:',
                         style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                     pw.SizedBox(height: 4),
-                    pw.Text(widget.order.userName ?? 'Customer'),
-                    pw.Text(widget.order.userEmail ?? ''),
-                    if (widget.order.userPhone != null)
-                      pw.Text(widget.order.userPhone!),
+                    pw.Text(order.userName ?? 'Customer'),
+                    pw.Text(order.userEmail ?? ''),
+                    if (order.userPhone != null) pw.Text(order.userPhone!),
                   ],
                 ),
                 pw.Column(
@@ -658,7 +618,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     pw.SizedBox(height: 4),
                     pw.SizedBox(
                       width: 200,
-                      child: pw.Text(widget.order.deliveryAddress ?? '',
+                      child: pw.Text(order.deliveryAddress ?? '',
                           textAlign: pw.TextAlign.right),
                     ),
                   ],
@@ -666,21 +626,23 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               ],
             ),
             pw.SizedBox(height: 30),
-
-            
-            
             pw.Table.fromTextArray(
               headers: ['Item', 'Qty', 'Unit Price', 'Total'],
-              data: widget.order.items.map((item) {
-                
-                
-                
-                final price = 100.0;
-                final total = price * item.count;
+              data: order.items.map((item) {
+                double unitPrice = 0.0;
+                if (item.variantDetails.isNotEmpty &&
+                    item.variantIndex < item.variantDetails.length) {
+                  final variant = item.variantDetails[item.variantIndex];
+                  final priceRaw = variant['price'];
+                  if (priceRaw != null) {
+                    unitPrice = (priceRaw as num).toDouble();
+                  }
+                }
+                final double total = unitPrice * item.count;
                 return [
                   item.name,
                   '${item.count}',
-                  'INR ${price.toStringAsFixed(2)}',
+                  'INR ${unitPrice.toStringAsFixed(2)}',
                   'INR ${total.toStringAsFixed(2)}',
                 ];
               }).toList(),
@@ -695,8 +657,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               },
             ),
             pw.SizedBox(height: 20),
-
-            
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.end,
               children: [
@@ -704,15 +664,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   crossAxisAlignment: pw.CrossAxisAlignment.end,
                   children: [
                     pw.Text(
-                        'Subtotal:   INR ${widget.order.subtotal.toStringAsFixed(2)}'),
+                        'Subtotal:   INR ${order.subtotal.toStringAsFixed(2)}'),
                     pw.Text(
-                        'Delivery Fee:   INR ${widget.order.deliveryFee.toStringAsFixed(2)}'),
+                        'Delivery Fee:   INR ${order.deliveryFee.toStringAsFixed(2)}'),
                     pw.Text(
-                        'Discount:   - INR ${widget.order.discount.toStringAsFixed(2)}',
+                        'Discount:   - INR ${order.discount.toStringAsFixed(2)}',
                         style: const pw.TextStyle(color: PdfColors.green)),
                     pw.Divider(),
                     pw.Text(
-                      'Grand Total:   INR ${widget.order.totalCost.toStringAsFixed(2)}',
+                      'Grand Total:   INR ${order.totalCost.toStringAsFixed(2)}',
                       style: pw.TextStyle(
                           fontWeight: pw.FontWeight.bold, fontSize: 14),
                     ),
@@ -721,8 +681,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               ],
             ),
             pw.SizedBox(height: 40),
-
-            
             pw.Divider(color: PdfColors.grey300),
             pw.Center(
               child: pw.Text('Thank you for shopping with RizqMart!',
@@ -740,7 +698,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
     await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => pdf.save(),
-      name: 'RizqMart_Invoice_${widget.order.orderId.substring(0, 8)}.pdf',
+      name: 'RizqMart_Invoice_${order.orderId.substring(0, 8)}.pdf',
     );
   }
 }
