@@ -141,115 +141,13 @@ class AddressDisplayPage extends StatelessWidget {
         return BlocBuilder<AddressSelectionCubit, AddressSelectionState>(
           builder: (context, state) {
             final isSelected = state.selectedAddress?.id == address.id;
-            return buildSelectableAddressCard(context, address, isSelected);
+            return _SelectableAddressCard(
+              address: address,
+              isSelected: isSelected,
+            );
           },
         );
       },
-    );
-  }
-
-  Widget buildSelectableAddressCard(
-    BuildContext context,
-    AddressEntities address,
-    bool isSelected,
-  ) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: isSelected ? context.cs.primary : Colors.transparent,
-          width: 2,
-        ),
-      ),
-      child: InkWell(
-        onTap: () {
-          context.read<AddressSelectionCubit>().selectAddress(address);
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildAddressTypeLabel(context, address),
-                    8.h,
-                    buildAddressDetailsText(context, address),
-                  ],
-                ),
-              ),
-              Radio<bool>(
-                value: true,
-                groupValue: isSelected,
-                onChanged: (value) {
-                  if (value == true) {
-                    context.read<AddressSelectionCubit>().selectAddress(address);
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildAddressTypeLabel(
-    BuildContext context,
-    AddressEntities address,
-  ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: context.cs.primary.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        address.label,
-        style: context.ts.labelSmall?.copyWith(
-          color: context.cs.primary,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget buildAddressDetailsText(
-    BuildContext context,
-    AddressEntities address,
-  ) {
-    return Text(
-      '${address.city}, ${address.state}',
-      style: context.ts.bodyMedium?.copyWith(
-        fontWeight: FontWeight.w500,
-      ),
-    );
-  }
-
-  Widget buildConfirmAddressButton(
-    BuildContext context,
-    AddressEntities selectedAddress,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.pop(context, selectedAddress);
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: context.cs.primary,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-        ),
-        child: Text(
-          'Confirm Address',
-          style: context.ts.labelLarge?.copyWith(
-            color: context.cs.onPrimary,
-          ),
-        ),
-      ),
     );
   }
 
@@ -306,6 +204,199 @@ class AddressDisplayPage extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Widget buildConfirmAddressButton(
+    BuildContext context,
+    AddressEntities selectedAddress,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.pop(context, selectedAddress);
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: context.cs.primary,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+        ),
+        child: Text(
+          'Confirm Address',
+          style: context.ts.labelLarge?.copyWith(
+            color: context.cs.onPrimary,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SelectableAddressCard extends StatefulWidget {
+  final AddressEntities address;
+  final bool isSelected;
+
+  const _SelectableAddressCard({
+    required this.address,
+    required this.isSelected,
+  });
+
+  @override
+  State<_SelectableAddressCard> createState() => _SelectableAddressCardState();
+}
+
+class _SelectableAddressCardState extends State<_SelectableAddressCard> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: widget.isSelected ? context.cs.primary : Colors.transparent,
+          width: 2,
+        ),
+      ),
+      child: InkWell(
+        onTap: () {
+          context.read<AddressSelectionCubit>().selectAddress(widget.address);
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildAddressTypeLabel(context),
+                        8.h,
+                        _buildMainAddressInfo(context),
+                        if (_isExpanded) _buildExpandedAddressInfo(context),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      Radio<bool>(
+                        value: true,
+                        groupValue: widget.isSelected,
+                        onChanged: (value) {
+                          if (value == true) {
+                            context
+                                .read<AddressSelectionCubit>()
+                                .selectAddress(widget.address);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const Divider(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _isExpanded = !_isExpanded;
+                    });
+                  },
+                  icon: Icon(
+                    _isExpanded ? Icons.expand_less : Icons.expand_more,
+                    size: 18,
+                  ),
+                  label: Text(_isExpanded ? 'Show Less' : 'Show More'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: context.cs.primary,
+                    padding: EdgeInsets.zero,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddressTypeLabel(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: context.cs.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        widget.address.label,
+        style: context.ts.labelSmall?.copyWith(
+          color: context.cs.primary,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMainAddressInfo(BuildContext context) {
+    return Text(
+      '${widget.address.city}, ${widget.address.state}',
+      style: context.ts.bodyMedium?.copyWith(
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+
+  Widget _buildExpandedAddressInfo(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        12.h,
+        _buildInfoText(context, 'Name', widget.address.fullName),
+        4.h,
+        _buildInfoText(context, 'Phone', widget.address.phoneNumber),
+        4.h,
+        _buildInfoText(context, 'Address', widget.address.address1),
+        if (widget.address.address2.isNotEmpty) ...[
+          2.h,
+          _buildInfoText(context, '', widget.address.address2),
+        ],
+        4.h,
+        _buildInfoText(context, 'Pincode', widget.address.pincode),
+      ],
+    );
+  }
+
+  Widget _buildInfoText(BuildContext context, String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (label.isNotEmpty)
+          SizedBox(
+            width: 70,
+            child: Text(
+              '$label:',
+              style: context.ts.bodySmall?.copyWith(
+                color: context.cs.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        Expanded(
+          child: Text(
+            value,
+            style: context.ts.bodySmall?.copyWith(
+              color: context.cs.onSurface,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
