@@ -161,7 +161,7 @@ Future<dynamic> modelBottomSheet(
                     color: context.cs.outlineVariant.withValues(alpha: 0.3),
                   ),
                   4.h,
-                  BlocBuilder<CheckoutCubit, CheckoutState>(
+                  BlocBuilder<CheckoutCubit, CheckoutState>(//-----------------------------------------------------------------
                     builder: (context, checkoutState) {
                       return checkoutRowCompact(
                         context,

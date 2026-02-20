@@ -6,6 +6,7 @@ import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_event.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
 class AddToCartButton extends StatelessWidget {
@@ -50,7 +51,14 @@ class AddToCartButton extends StatelessWidget {
         );
         return;
       }
-
+      final cartState=context.read<CartBloc>().state;
+      final itemExists= _isItemInCart(cartState);
+      if(itemExists){
+        final variantName=widget.variantDetails[variantIndex]['variant']??widget.variantDetails[variantIndex]['unitName']??'';
+      showToast(context, '${widget.name}${variantName.isNotEmpty ? ' ($variantName)' : ''} already in cart!',
+          type: ToastType.warning,);
+      return ;
+      }
       final cartItem = CartEntities(
         id: widget.id,
         name: widget.name,
@@ -86,5 +94,12 @@ class AddToCartButton extends StatelessWidget {
         type: ToastType.error,
       );
     }
+  }
+  bool _isItemInCart(dynamic cartState){
+    // ignore: unnecessary_null_comparison
+    if(cartState is CartLoadedState && cartState.items!=null){
+      return cartState.items.any((item)=>item.id==widget.id&&item.variantIndex==variantIndex);
+    }
+    return false;
   }
 }

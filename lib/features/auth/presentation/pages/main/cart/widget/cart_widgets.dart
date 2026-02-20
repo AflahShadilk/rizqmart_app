@@ -192,76 +192,80 @@ class ProductContainer extends StatelessWidget {
     );
   }
 
-  Widget quantityCounter(BuildContext context, String cartItemId, int count) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: context.cs.primary.withValues(alpha: 0.3),
-          width: 1.5,
+Widget quantityCounter(BuildContext context, String cartItemId, int count) {
+  final isMinusDisabled = count <= 1;
+
+  return Container(
+    decoration: BoxDecoration(
+      border: Border.all(
+        color: context.cs.primary.withValues(alpha: 0.3),
+        width: 1.5,
+      ),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Minus Button - Disabled when count is 1 or less
+        InkWell(
+          onTap: isMinusDisabled
+              ? null
+              : () {
+                  context
+                      .read<CartBloc>()
+                      .add(DecrementQuantityEvent(cartItemId));
+                },
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(7),
+            bottomLeft: Radius.circular(7),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(6),
+            child: Icon(
+              Icons.remove,
+              color: isMinusDisabled
+                  ? context.cs.primary.withValues(alpha: 0.3) // Disabled color
+                  : context.cs.error, // Active color
+              size: 18,
+            ),
+          ),
         ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          
-          InkWell(
-            onTap: () {
-              if (count > 1) {
-                context
-                    .read<CartBloc>()
-                    .add(DecrementQuantityEvent(cartItemId));
-              }
-            },
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(7),
-              bottomLeft: Radius.circular(7),
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(6),
-              child: Icon(
-                Icons.remove,
-                color: context.cs.error,
-                size: 18,
-              ),
-            ),
-          ),
 
-          
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: Text(
-              '$count',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: context.cs.onSurface,
-              ),
+        // Count Display
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          child: Text(
+            '$count',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: context.cs.onSurface,
             ),
           ),
+        ),
 
-          
-          InkWell(
-            onTap: () {
-              context.read<CartBloc>().add(IncrementQuantityEvent(cartItemId));
-            },
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(7),
-              bottomRight: Radius.circular(7),
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(6),
-              child: Icon(
-                Icons.add,
-                color: context.cs.success,
-                size: 18,
-              ),
+        // Plus Button
+        InkWell(
+          onTap: () {
+            context.read<CartBloc>().add(IncrementQuantityEvent(cartItemId));
+          },
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(7),
+            bottomRight: Radius.circular(7),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(6),
+            child: Icon(
+              Icons.add,
+              color: context.cs.success,
+              size: 18,
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
   Future<bool?> showRemoveDialog(BuildContext context, String cartItemId) {
     return showDialog<bool>(

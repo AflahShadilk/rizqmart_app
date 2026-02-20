@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +12,7 @@ import 'package:rizqmart/features/auth/domain/entities/main/show_product_entitie
 import 'package:responsive_display/responsive_display.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_event.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/product/single_product_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/counter/counter_cubit.dart';
@@ -82,7 +80,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => CounterCubit()),
@@ -92,8 +89,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         ),
         BlocProvider(create: (_) => ImageIndexCubit()),
         BlocProvider(create: (_) => DesicriptionCubit()),
-        BlocProvider(create: (_) => sl<ReviewBloc>()..add(GetReviewsEvent(productId: productId))),
-        BlocProvider(create: (_) => sl<SingleProductBloc>()..add(GetSingleProductEvent(productId))),
+        BlocProvider(
+            create: (_) =>
+                sl<ReviewBloc>()..add(GetReviewsEvent(productId: productId))),
+        BlocProvider(
+            create: (_) =>
+                sl<SingleProductBloc>()..add(GetSingleProductEvent(productId))),
       ],
       child: BlocBuilder<VariantSelectionCubit, int>(
         builder: (context, variantState) {
@@ -101,22 +102,20 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           final images = getImages(widget.product, selectedVariantIndex);
           final variantCount = getVariantDetails(widget.product).length;
 
-          return ResponsiveWrapper(child: Scaffold(
+          return ResponsiveWrapper(
+              child: Scaffold(
             backgroundColor: colorScheme.surface,
             body: SafeArea(
               child: ResponsiveLayoutBuilder(
                 builder: (context, constraints, deviceType) {
-                  
-                  bool isDesktop = deviceType == DeviceType.medium || 
-                                   deviceType == DeviceType.large ||
-                                   deviceType == DeviceType.xlarge;
+                  bool isDesktop = deviceType == DeviceType.medium ||
+                      deviceType == DeviceType.large ||
+                      deviceType == DeviceType.xlarge;
 
                   if (isDesktop) {
-                    
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        
                         Expanded(
                           flex: 1,
                           child: SingleChildScrollView(
@@ -124,54 +123,51 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               padding: const EdgeInsets.all(20.0),
                               child: Column(
                                 children: [
-                                   
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      BackButtonCommon(colorScheme: colorScheme),
-                                       IconButton(
+                                      BackButtonCommon(
+                                          colorScheme: colorScheme),
+                                      IconButton(
                                         onPressed: () {},
-                                        icon: Icon(Icons.ios_share_outlined, color: context.cs.onSurface),
+                                        icon: Icon(Icons.ios_share_outlined,
+                                            color: context.cs.onSurface),
                                       ),
                                     ],
                                   ),
                                   20.h,
-                                  
                                   SizedBox(
-                                    height: 400, 
-                                    child: _buildImageStack(context, images, isDark, colorScheme),
+                                    height: 400,
+                                    child: _buildImageStack(
+                                        context, images, isDark, colorScheme),
                                   ),
                                 ],
                               ),
                             ),
                           ),
                         ),
-                        
                         Expanded(
                           flex: 1,
                           child: SingleChildScrollView(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 20),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  
-                                  _buildTitleSection(context, selectedVariantIndex),
-                                  
-                                  
+                                  _buildTitleSection(
+                                      context, selectedVariantIndex),
                                   _buildPriceSection(context, colorScheme),
-
-                                  
-                                  if (variantCount > 1) _buildVariantsSection(context, variantCount, selectedVariantIndex, colorScheme),
-                                  
+                                  if (variantCount > 1)
+                                    _buildVariantsSection(context, variantCount,
+                                        selectedVariantIndex, colorScheme),
                                   28.h,
-                                  
-                                  _buildDescriptionSection(context, colorScheme),
-                                  
+                                  _buildDescriptionSection(
+                                      context, colorScheme),
                                   30.h,
-                                  
-                                  _buildReviewSection(context, colorScheme, productId),
-                                  
+                                  _buildReviewSection(
+                                      context, colorScheme, productId),
                                   100.h,
                                 ],
                               ),
@@ -181,7 +177,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       ],
                     );
                   } else {
-                    
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -193,66 +188,71 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 color: isDark
-                                    ? colorScheme.onSurface.withValues(alpha: 0.1)
-                                    : context.cs.onSurface.withValues(alpha: 0.05),
+                                    ? colorScheme.onSurface
+                                        .withValues(alpha: 0.1)
+                                    : context.cs.onSurface
+                                        .withValues(alpha: 0.05),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: colorScheme.primary.withValues(alpha: 0.1),
+                                    color: colorScheme.primary
+                                        .withValues(alpha: 0.1),
                                     blurRadius: 15,
                                     spreadRadius: 3,
                                   )
                                 ],
                               ),
-                              child: _buildImageStack(context, images, isDark, colorScheme, height: 280),
+                              child: _buildImageStack(
+                                  context, images, isDark, colorScheme,
+                                  height: 280),
                             ),
-                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                 Positioned(
-                                  top: 20,
-                                  left: 8,
-                                  child: Container(
-                                    margin: EdgeInsets.only(top: 20, left: 8),
-                                    decoration: BoxDecoration(
-                                      color: colorScheme.surface.withValues(alpha: 0.85),
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.1),
-                                          blurRadius: 10,
-                                          spreadRadius: 2,
-                                        )
-                                      ],
-                                    ),
-                                    child: BackButtonCommon(colorScheme: colorScheme),
-                                  ),
+                            Positioned(
+                              top: 20,
+                              left: 8,
+                              child: Container(
+                                margin: EdgeInsets.only(top: 20, left: 8),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.surface
+                                      .withValues(alpha: 0.85),
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black
+                                          .withValues(alpha: 0.1),
+                                      blurRadius: 10,
+                                      spreadRadius: 2,
+                                    )
+                                  ],
                                 ),
-                                Positioned(
-                                  top: 20,
-                                  right: 8,
-                                  child: Container(
-                                     margin: EdgeInsets.only(top: 20, right: 8),
-                                    decoration: BoxDecoration(
-                                      color: colorScheme.surface.withValues(alpha: 0.85),
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.05),
-                                          blurRadius: 10,
-                                          spreadRadius: 2,
-                                        )
-                                      ],
-                                    ),
-                                    child: IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(
-                                          Icons.ios_share_outlined,
-                                          color: context.cs.onSurface,
-                                          size: 20,
-                                        )),
-                                  ),
+                                child: BackButtonCommon(
+                                    colorScheme: colorScheme),
+                              ),
+                            ),
+                            Positioned(
+                              top: 20,
+                              right: 8,
+                              child: Container(
+                                margin: EdgeInsets.only(top: 20, right: 8),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.surface
+                                      .withValues(alpha: 0.85),
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black
+                                          .withValues(alpha: 0.05),
+                                      blurRadius: 10,
+                                      spreadRadius: 2,
+                                    )
+                                  ],
                                 ),
-                              ],
+                                child: IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.ios_share_outlined,
+                                      color: context.cs.onSurface,
+                                      size: 20,
+                                    )),
+                              ),
                             ),
                           ],
                         ),
@@ -262,31 +262,45 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-                                  child: _buildTitleSection(context, selectedVariantIndex),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 16, 20, 12),
+                                  child: _buildTitleSection(
+                                      context, selectedVariantIndex),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                                  child: _buildPriceSection(context, colorScheme),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  child:
+                                      _buildPriceSection(context, colorScheme),
                                 ),
                                 if (variantCount > 1)
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(20, 24, 20, 16),
-                                    child: _buildVariantsSection(context, variantCount, selectedVariantIndex, colorScheme),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        20, 24, 20, 16),
+                                    child: _buildVariantsSection(
+                                        context,
+                                        variantCount,
+                                        selectedVariantIndex,
+                                        colorScheme),
                                   ),
                                 28.h,
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                                  child: _buildDescriptionSection(context, colorScheme),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  child: _buildDescriptionSection(
+                                      context, colorScheme),
                                 ),
                                 30.h,
                                 Padding(
-                                  padding: const EdgeInsets.fromLTRB(20, 0, 15, 0),
-                                  child: _buildReviewSection(context, colorScheme, productId, showList: false),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 0, 15, 0),
+                                  child: _buildReviewSection(
+                                      context, colorScheme, productId,
+                                      showList: false),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
                                   child: BlocBuilder<ReviewBloc, ReviewState>(
                                     builder: (context, state) {
                                       List<ReviewEntity>? reviews;
@@ -295,48 +309,63 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                       } else if (state is ReviewsLoaded) {
                                         reviews = state.reviews;
                                       }
-                                      if (reviews != null && reviews.isNotEmpty) {
-                                        final displayReviews = reviews.take(3).toList();
+                                      if (reviews != null &&
+                                          reviews.isNotEmpty) {
+                                        final displayReviews =
+                                            reviews.take(3).toList();
                                         return Column(
                                           children: [
                                             ListView.separated(
                                               shrinkWrap: true,
-                                              physics: NeverScrollableScrollPhysics(),
+                                              physics:
+                                                  NeverScrollableScrollPhysics(),
                                               itemCount: displayReviews.length,
-                                              separatorBuilder: (context, index) => Divider(height: 24),
+                                              separatorBuilder:
+                                                  (context, index) =>
+                                                      Divider(height: 24),
                                               itemBuilder: (context, index) {
-                                                return ReviewCard(review: displayReviews[index]);
+                                                return ReviewCard(
+                                                    review:
+                                                        displayReviews[index]);
                                               },
                                             ),
                                             if (reviews.length > 3)
                                               TextButton(
                                                 onPressed: () {
-                                                  final reviewBloc = context.read<ReviewBloc>();
+                                                  final reviewBloc = context
+                                                      .read<ReviewBloc>();
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                      builder: (context) => ReviewsPage(
+                                                      builder: (context) =>
+                                                          ReviewsPage(
                                                         productId: productId,
-                                                        productName: getName(widget.product),
+                                                        productName: getName(
+                                                            widget.product),
                                                       ),
                                                     ),
                                                   ).then((_) {
-                                                     if(!mounted) return;
-                                                     reviewBloc.add(GetReviewsEvent(productId: productId));
+                                                    if (!mounted) return;
+                                                    reviewBloc.add(
+                                                        GetReviewsEvent(
+                                                            productId:
+                                                                productId));
                                                   });
                                                 },
-                                                child: Text('See All ${reviews.length} Reviews'),
+                                                child: Text(
+                                                    'See All ${reviews.length} Reviews'),
                                               ),
                                           ],
                                         );
                                       } else if (state is ReviewLoading) {
-                                         return Center(child: CircularProgressIndicator());
+                                        return Center(
+                                            child: CircularProgressIndicator());
                                       }
                                       return SizedBox.shrink();
                                     },
                                   ),
                                 ),
-                               100.h, 
+                                100.h,
                               ],
                             ),
                           ),
@@ -368,44 +397,81 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 width: double.infinity,
                 child: BlocBuilder<CounterCubit, int>(
                   builder: (context, state) {
-                     double price = getPrice(widget.product, selectedVariantIndex);
-                     double discount = widget.product.discount ?? 0;
-                     if(discount > 0) {
-                        price = price - (price * discount / 100);
-                     }
+                    double price =
+                        getPrice(widget.product, selectedVariantIndex);
+                    double discount = widget.product.discount ?? 0;
+                    if (discount > 0) {
+                      price = price - (price * discount / 100);
+                    }
                     final totalPrice = (price * state).toStringAsFixed(2);
+
                     return MainButton(
-                        label: 'Add to Cart ₹$totalPrice',
-                        icon: Icons.shopping_bag_outlined,
-                        onPress: () {
-                          if (state < 1) {
-                            showToast(
-                              context,
-                              'Please select at least 1 item',
-                              type: ToastType.error,
-                            );
-                            return;
-                          }
-                          final cartItem = CartEntities(
-                              id: productId,
-                              name: getName(widget.product),
-                              brand: getBrand(widget.product),
-                              description: getDescription(widget.product),
-                              variantDetails: getVariantDetails(widget.product),
-                              count: state,
-                              variantIndex: selectedVariantIndex,
-                              userId: '',
-                              discount: widget.product.discount);
-                          context.read<CartBloc>().add(AddToCartEvent(
-                              productId: productId, item: cartItem));
+                      label: 'Add to Cart ₹$totalPrice',
+                      icon: Icons.shopping_bag_outlined,
+                      onPress: () {
+                        if (state < 1) {
+                          showToast(
+                            context,
+                            'Please select at least 1 item',
+                            type: ToastType.error,
+                          );
+                          return;
+                        }
+
+                        // Check if item already exists in cart
+                        final cartState = context.read<CartBloc>().state;
+                        final itemExists = _isItemInCart(
+                          cartState,
+                          productId,
+                          selectedVariantIndex,
+                        );
+
+                        if (itemExists) {
                           final variantName = getVariantName(
-                              widget.product, selectedVariantIndex);
-                          showToast(context,
-                              'Added $state x ${getName(widget.product)} ($variantName) to cart!',
-                              type: ToastType.success);
-                        },
-                        color: context.cs.success,
-                        textColor: ThemeCubit.textSecondaryDark);
+                            widget.product,
+                            selectedVariantIndex,
+                          );
+                          showToast(
+                            context,
+                            '${getName(widget.product)} ($variantName) already in cart!',
+                            type: ToastType.warning,
+                          );
+                          return;
+                        }
+
+                        final cartItem = CartEntities(
+                          id: productId,
+                          name: getName(widget.product),
+                          brand: getBrand(widget.product),
+                          description: getDescription(widget.product),
+                          variantDetails: getVariantDetails(widget.product),
+                          count: state,
+                          variantIndex: selectedVariantIndex,
+                          userId: '',
+                          discount: widget.product.discount,
+                        );
+
+                        context.read<CartBloc>().add(
+                              AddToCartEvent(
+                                productId: productId,
+                                item: cartItem,
+                              ),
+                            );
+
+                        final variantName = getVariantName(
+                          widget.product,
+                          selectedVariantIndex,
+                        );
+
+                        showToast(
+                          context,
+                          'Added $state x ${getName(widget.product)} ($variantName) to cart!',
+                          type: ToastType.success,
+                        );
+                      },
+                      color: context.cs.success,
+                      textColor: ThemeCubit.textSecondaryDark,
+                    );
                   },
                 ),
               ),
@@ -416,7 +482,23 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget _buildImageStack(BuildContext context, List<String> images, bool isDark, ColorScheme colorScheme, {double? height}) {
+  bool _isItemInCart(
+    dynamic cartState,
+    String productId,
+    int variantIndex,
+  ) {
+    // Adjust based on your CartState structure
+    if (cartState is CartLoadedState) {
+      return cartState.items.any(
+        (item) => item.id == productId && item.variantIndex == variantIndex,
+      );
+    }
+    return false;
+  }
+
+  Widget _buildImageStack(BuildContext context, List<String> images,
+      bool isDark, ColorScheme colorScheme,
+      {double? height}) {
     return Stack(
       children: [
         BlocBuilder<ImageIndexCubit, int>(
@@ -469,7 +551,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 
   Widget _buildTitleSection(BuildContext context, int index) {
-    
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -535,7 +616,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     double price = getPrice(widget.product, selectedVariantIndex);
     final discount = widget.product.discount;
     final hasDiscount = discount != null && discount > 0;
-    
+
     double finalPrice = price;
     if (hasDiscount) {
       finalPrice = price - (price * discount / 100);
@@ -591,8 +672,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget _buildVariantsSection(
-      BuildContext context, int count, int selectedIndex, ColorScheme colorScheme) {
+  Widget _buildVariantsSection(BuildContext context, int count,
+      int selectedIndex, ColorScheme colorScheme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -616,12 +697,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 context.read<ImageIndexCubit>().change(0);
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: isSelected ? colorScheme.primary.withValues(alpha: 0.1) : colorScheme.surface,
+                  color: isSelected
+                      ? colorScheme.primary.withValues(alpha: 0.1)
+                      : colorScheme.surface,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: isSelected ? colorScheme.primary : colorScheme.outline.withValues(alpha: 0.3),
+                    color: isSelected
+                        ? colorScheme.primary
+                        : colorScheme.outline.withValues(alpha: 0.3),
                     width: isSelected ? 2 : 1,
                   ),
                 ),
@@ -630,7 +716,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                    color: isSelected ? colorScheme.primary : colorScheme.onSurface,
+                    color: isSelected
+                        ? colorScheme.primary
+                        : colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -641,7 +729,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget _buildDescriptionSection(BuildContext context, ColorScheme colorScheme) {
+  Widget _buildDescriptionSection(
+      BuildContext context, ColorScheme colorScheme) {
     final description = getDescription(widget.product);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -667,7 +756,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     height: 1.5,
                   ),
                   maxLines: isExpanded ? null : 3,
-                  overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                  overflow:
+                      isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
                 ),
                 if (description.length > 100)
                   GestureDetector(
@@ -694,7 +784,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget _buildReviewSection(BuildContext context, ColorScheme colorScheme, String currentProductId, {bool showList = true}) {
+  Widget _buildReviewSection(
+      BuildContext context, ColorScheme colorScheme, String currentProductId,
+      {bool showList = true}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -721,8 +813,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       ),
                     ),
                   ).then((_) {
-                      if (!mounted) return;
-                      reviewBloc.add(GetReviewsEvent(productId: currentProductId));
+                    if (!mounted) return;
+                    reviewBloc
+                        .add(GetReviewsEvent(productId: currentProductId));
                   });
                 },
                 child: Text('See All'),
@@ -731,7 +824,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         ),
         if (showList) ...[
           12.h,
-           BlocBuilder<ReviewBloc, ReviewState>(
+          BlocBuilder<ReviewBloc, ReviewState>(
             builder: (context, state) {
               if (state is ReviewLoading) {
                 return const Center(child: CircularProgressIndicator());

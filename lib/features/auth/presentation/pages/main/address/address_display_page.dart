@@ -1,5 +1,3 @@
-
-
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
@@ -106,19 +104,17 @@ class AddressDisplayPage extends StatelessWidget {
             );
           },
         ),
-        floatingActionButton: isSelecting
-            ? null
-            : FloatingActionButton.extended(
-                onPressed: () => navigateToAddAddress(context),
-                backgroundColor: context.cs.primary,
-                icon: Icon(Icons.add, color: context.cs.onPrimary),
-                label: Text(
-                  'Add Address',
-                  style: context.ts.labelLarge?.copyWith(
-                    color: context.cs.onPrimary,
-                  ),
-                ),
-              ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => navigateToAddAddress(context),
+          backgroundColor: context.cs.primary,
+          icon: Icon(Icons.add, color: context.cs.onPrimary),
+          label: Text(
+            'Add Address',
+            style: context.ts.labelLarge?.copyWith(
+              color: context.cs.onPrimary,
+            ),
+          ),
+        ),
         bottomNavigationBar: isSelecting
             ? BlocBuilder<AddressSelectionCubit, AddressSelectionState>(
                 builder: (context, state) {
