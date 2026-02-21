@@ -12,7 +12,7 @@ import 'package:rizqmart/features/auth/domain/entities/main/show_product_entitie
 import 'package:responsive_display/responsive_display.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_event.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/product/product_cart_check_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/product/single_product_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/counter/counter_cubit.dart';
@@ -59,7 +59,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 
   String getWishlistId(int variantIdx) {
-    return '${productId}_variant_$variantIdx';
+    return context.read<ProductCartCheckCubit>().getWishlistId(productId, variantIdx);
   }
 
   @override
@@ -89,6 +89,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         ),
         BlocProvider(create: (_) => ImageIndexCubit()),
         BlocProvider(create: (_) => DesicriptionCubit()),
+        BlocProvider(create: (_) => ProductCartCheckCubit()),
         BlocProvider(
             create: (_) =>
                 sl<ReviewBloc>()..add(GetReviewsEvent(productId: productId))),
@@ -418,9 +419,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           return;
                         }
 
-                        // Check if item already exists in cart
                         final cartState = context.read<CartBloc>().state;
-                        final itemExists = _isItemInCart(
+                        final itemExists = context.read<ProductCartCheckCubit>().isItemInCart(
                           cartState,
                           productId,
                           selectedVariantIndex,
@@ -482,18 +482,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
+  // ignore: unused_element
   bool _isItemInCart(
     dynamic cartState,
     String productId,
     int variantIndex,
   ) {
-    // Adjust based on your CartState structure
-    if (cartState is CartLoadedState) {
-      return cartState.items.any(
-        (item) => item.id == productId && item.variantIndex == variantIndex,
-      );
-    }
-    return false;
+    return context.read<ProductCartCheckCubit>().isItemInCart(
+      cartState,
+      productId,
+      variantIndex,
+    );
   }
 
   Widget _buildImageStack(BuildContext context, List<String> images,

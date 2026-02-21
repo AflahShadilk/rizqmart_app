@@ -73,7 +73,6 @@ class _AddReviewDialogBodyState extends State<_AddReviewDialogBody> {
   @override
   void initState() {
     super.initState();
-    // Pre-populate fields when editing an existing review
     if (widget.existingReview != null) {
       _commentController.text = widget.existingReview!.comment;
     }

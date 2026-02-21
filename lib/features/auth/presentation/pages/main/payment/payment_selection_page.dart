@@ -8,6 +8,7 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/payment_selection_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/payment_selection_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/add_money_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_event.dart';
@@ -443,6 +444,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
   
   void _showAddMoneyDialog(BuildContext context) {
     final TextEditingController amountController = TextEditingController();
+    final addMoneyCubit = AddMoneyCubit();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -474,14 +476,9 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
           ),
           ElevatedButton(
             onPressed: () {
-              final amount = double.tryParse(amountController.text);
-              if (amount != null && amount > 0) {
-                 
-                 
-                 
-                 
-                 
-                 context.read<WalletBloc>().add(AddMoneyEvent(
+              final amount = addMoneyCubit.validateAndParseAmount(amountController.text);
+              if (amount != null) {
+                context.read<WalletBloc>().add(AddMoneyEvent(
                   userId: FirebaseAuth.instance.currentUser?.uid ?? '',
                   amount: amount,
                 ));

@@ -44,6 +44,7 @@ class _OrdersView extends StatelessWidget {
       },
       child: PopScope(
         canPop: canPop,
+        // ignore: deprecated_member_use
         onPopInvoked: (didPop) {
           if (didPop) return;
           Navigator.pushReplacementNamed(context, AppRoutes.navigationBar);

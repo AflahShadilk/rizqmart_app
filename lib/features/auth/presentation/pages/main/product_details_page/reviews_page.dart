@@ -81,7 +81,6 @@ class _ReviewsPageState extends State<ReviewsPage> {
               foregroundColor: context.cs.onPrimary,
             );
           }
-          // Non-purchased users or still loading — no FAB
           return const SizedBox.shrink();
         },
       ),
@@ -122,7 +121,6 @@ class _ReviewsPageState extends State<ReviewsPage> {
               },
             );
           } else if (state is ReviewsLoaded) {
-            // Fallback for legacy state (shouldn't normally reach here)
             if (state.reviews.isEmpty) {
               return Center(
                 child: Column(

@@ -206,7 +206,6 @@ Widget quantityCounter(BuildContext context, String cartItemId, int count) {
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Minus Button - Disabled when count is 1 or less
         InkWell(
           onTap: isMinusDisabled
               ? null
@@ -224,14 +223,13 @@ Widget quantityCounter(BuildContext context, String cartItemId, int count) {
             child: Icon(
               Icons.remove,
               color: isMinusDisabled
-                  ? context.cs.primary.withValues(alpha: 0.3) // Disabled color
-                  : context.cs.error, // Active color
+                  ? context.cs.primary.withValues(alpha: 0.3)
+                  : context.cs.error,
               size: 18,
             ),
           ),
         ),
 
-        // Count Display
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           child: Text(
@@ -244,7 +242,6 @@ Widget quantityCounter(BuildContext context, String cartItemId, int count) {
           ),
         ),
 
-        // Plus Button
         InkWell(
           onTap: () {
             context.read<CartBloc>().add(IncrementQuantityEvent(cartItemId));

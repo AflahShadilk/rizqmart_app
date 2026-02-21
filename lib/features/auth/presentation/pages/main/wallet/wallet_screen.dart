@@ -10,6 +10,7 @@ import 'package:rizqmart/features/auth/domain/entities/main/wallet_transaction_e
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/add_money_cubit.dart';
 import 'withdraw_screen.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
@@ -233,6 +234,7 @@ class WalletScreen extends StatelessWidget {
 
   void _showAddMoneyDialog(BuildContext context) {
     final TextEditingController amountController = TextEditingController();
+    final addMoneyCubit = AddMoneyCubit();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -264,8 +266,8 @@ class WalletScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              final amount = double.tryParse(amountController.text);
-              if (amount != null && amount > 0) {
+              final amount = addMoneyCubit.validateAndParseAmount(amountController.text);
+              if (amount != null) {
                 context.read<WalletBloc>().add(AddMoneyEvent(
                   userId: userId,
                   amount: amount,

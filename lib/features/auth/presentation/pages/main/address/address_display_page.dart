@@ -7,8 +7,10 @@ import 'package:rizqmart/core/services/registeration/register.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/address/address%20card/address_card_expand_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/address/address%20card/address_card_expand_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/address/address%20page/address_page_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/address/address%20page/address_page_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/address/address_selection_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/address/select_address_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/address/address_list_view_page.dart';
@@ -29,22 +31,58 @@ class AddressDisplayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final addressBloc = AddressBloc(
+      getAddressUsecase: sl(),
+      addAddressUsecase: sl(),
+      updateAddressUsecase: sl(),
+      deleteAddressUsecase: sl(),
+      setDefaultAddressUsecase: sl(),
+      getCurrentLocationUsecase: sl(),
+    );
+
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => AddressBloc(
-              getAddressUsecase: sl(),
-              addAddressUsecase: sl(),
-              updateAddressUsecase: sl(),
-              deleteAddressUsecase: sl(),
-              setDefaultAddressUsecase: sl(),
-              getCurrentLocationUsecase: sl())
-            ..add(LoadAddressesEvent(userId: userId)),
+        BlocProvider<AddressBloc>(
+          create: (_) => addressBloc,
         ),
-        BlocProvider(
-          create: (context) => AddressSelectionCubit(),
+        BlocProvider<AddressPageCubit>(
+          create: (_) => AddressPageCubit(
+            addressBloc: addressBloc,
+            userId: userId,
+          ),
+        ),
+        BlocProvider<AddressSelectionCubit>(
+          create: (_) => AddressSelectionCubit(),
         ),
       ],
+      child: _AddressDisplayView(userId: userId, isSelecting: isSelecting),
+    );
+  }
+}
+
+class _AddressDisplayView extends StatelessWidget {
+  final String userId;
+  final bool isSelecting;
+
+  const _AddressDisplayView({
+    required this.userId,
+    required this.isSelecting,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<AddressPageCubit, AddressPageState>(
+      listener: (context, state) {
+        if (state is AddressPageError) {
+          showToast(context, state.message);
+        }
+        if (state is AddressPageDeleted) {
+          showToast(context, state.message);
+        }
+        if (state is AddressDefaultSet) {
+          showToast(context, state.message);
+        }
+      },
       child: Scaffold(
         backgroundColor: context.cs.surface,
         appBar: AppBar(
@@ -54,72 +92,54 @@ class AddressDisplayPage extends StatelessWidget {
           title: AppHeading(isSelecting ? 'Select Address' : 'My Addresses'),
           centerTitle: true,
         ),
-        body: BlocConsumer<AddressBloc, AddressState>(
-          listener: (context, state) {
-            if (state is AddressErrorState) {
-              showToast(context, state.message);
-            }
-            if (state is AddressDeletedState) {
-              showToast(context, state.message);
-              context.read<AddressBloc>().add(LoadAddressesEvent(userId: userId));
-            }
-            if (state is DefaultAddressSetState) {
-              showToast(context, state.message);
-            }
-          },
+        body: BlocBuilder<AddressPageCubit, AddressPageState>(
           builder: (context, state) {
-            if (state is AddressLoadingState) {
-              return const Center(
-                child: CircularProgressIndicator(),
+            if (state is AddressPageInitial || state is AddressPageLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is AddressPageEmpty) {
+              return EmptyAddressView(
+                onAddAddress: () => _navigateToAddAddress(context),
               );
             }
 
-            if (state is AddressesLoadedState) {
-              if (state.addresses.isEmpty) {
-                return EmptyAddressView(
-                  onAddAddress: () => navigateToAddAddress(context),
-                );
-              }
-
+            if (state is AddressPageLoaded) {
               if (isSelecting) {
-                return buildSelectableAddressListView(
-                  context,
-                  state.addresses,
-                );
+                return _buildSelectableAddressListView(
+                    context, state.addresses);
               }
-
               return AddressListView(
                 addresses: state.addresses,
                 userId: userId,
-                onAddAddress: () => navigateToAddAddress(context),
+                onAddAddress: () => _navigateToAddAddress(context),
                 onEditAddress: (address) =>
-                    navigateToEditAddress(context, address),
+                    _navigateToEditAddress(context, address),
                 onDeleteAddress: (address) =>
-                    deleteAddress(context, address),
+                    _showDeleteDialog(context, address),
               );
             }
 
             return EmptyAddressView(
-              onAddAddress: () => navigateToAddAddress(context),
+              onAddAddress: () => _navigateToAddAddress(context),
             );
           },
         ),
         floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => navigateToAddAddress(context),
+          onPressed: () => _navigateToAddAddress(context),
           backgroundColor: context.cs.primary,
           icon: Icon(Icons.add, color: context.cs.onPrimary),
           label: Text(
             'Add Address',
-            style: context.ts.labelLarge?.copyWith(
-              color: context.cs.onPrimary,
-            ),
+            style: context.ts.labelLarge?.copyWith(color: context.cs.onPrimary),
           ),
         ),
         bottomNavigationBar: isSelecting
             ? BlocBuilder<AddressSelectionCubit, AddressSelectionState>(
                 builder: (context, state) {
                   return state.selectedAddress != null
-                      ? buildConfirmAddressButton(context, state.selectedAddress!)
+                      ? _buildConfirmAddressButton(
+                          context, state.selectedAddress!)
                       : const SizedBox.shrink();
                 },
               )
@@ -128,7 +148,7 @@ class AddressDisplayPage extends StatelessWidget {
     );
   }
 
-  Widget buildSelectableAddressListView(
+  Widget _buildSelectableAddressListView(
     BuildContext context,
     List<AddressEntities> addresses,
   ) {
@@ -137,13 +157,11 @@ class AddressDisplayPage extends StatelessWidget {
       itemCount: addresses.length,
       itemBuilder: (context, index) {
         final address = addresses[index];
-
         return BlocBuilder<AddressSelectionCubit, AddressSelectionState>(
           builder: (context, state) {
-            final isSelected = state.selectedAddress?.id == address.id;
             return _SelectableAddressCard(
               address: address,
-              isSelected: isSelected,
+              isSelected: state.selectedAddress?.id == address.id,
             );
           },
         );
@@ -151,88 +169,72 @@ class AddressDisplayPage extends StatelessWidget {
     );
   }
 
-  void navigateToAddAddress(BuildContext context) {
+  void _navigateToAddAddress(BuildContext context) {
     Navigator.pushNamed(
       context,
       AppRoutes.addAddress,
       arguments: userId,
     ).then((_) {
-      context.read<AddressBloc>().add(LoadAddressesEvent(userId: userId));
+      context.read<AddressPageCubit>().loadAddresses();
     });
   }
 
-  void navigateToEditAddress(BuildContext context, AddressEntities address) {
+  void _navigateToEditAddress(BuildContext context, AddressEntities address) {
     Navigator.pushNamed(
       context,
       AppRoutes.editAddress,
-      arguments: {
-        'userId': userId,
-        'address': address,
-      },
+      arguments: {'userId': userId, 'address': address},
     ).then((_) {
-      context.read<AddressBloc>().add(LoadAddressesEvent(userId: userId));
+      context.read<AddressPageCubit>().loadAddresses();
     });
   }
 
-  void deleteAddress(BuildContext context, AddressEntities address) {
+  void _showDeleteDialog(BuildContext context, AddressEntities address) {
     showDialog(
       context: context,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: const Text('Delete Address'),
-          content: const Text('Are you sure you want to delete this address?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-                context.read<AddressBloc>().add(
-                  DeleteAddressEvent(
-                    userId: userId,
-                    addressId: address.id,
-                  ),
-                );
-              },
-              child: const Text(
-                'Delete',
-                style: TextStyle(color: Colors.red),
-              ),
-            ),
-          ],
-        );
-      },
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Delete Address'),
+        content: const Text('Are you sure you want to delete this address?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(dialogContext);
+              context.read<AddressPageCubit>().deleteAddress(address.id);
+            },
+            child: const Text('Delete',
+                style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget buildConfirmAddressButton(
+  Widget _buildConfirmAddressButton(
     BuildContext context,
     AddressEntities selectedAddress,
   ) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: ElevatedButton(
-        onPressed: () {
-          Navigator.pop(context, selectedAddress);
-        },
+        onPressed: () => Navigator.pop(context, selectedAddress),
         style: ElevatedButton.styleFrom(
           backgroundColor: context.cs.primary,
           padding: const EdgeInsets.symmetric(vertical: 16),
         ),
         child: Text(
           'Confirm Address',
-          style: context.ts.labelLarge?.copyWith(
-            color: context.cs.onPrimary,
-          ),
+          style: context.ts.labelLarge?.copyWith(color: context.cs.onPrimary),
         ),
       ),
     );
   }
 }
 
-class _SelectableAddressCard extends StatefulWidget {
+class _SelectableAddressCard extends StatelessWidget {
   final AddressEntities address;
   final bool isSelected;
 
@@ -242,88 +244,103 @@ class _SelectableAddressCard extends StatefulWidget {
   });
 
   @override
-  State<_SelectableAddressCard> createState() => _SelectableAddressCardState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => AddressCardExpandCubit(),
+      child: _SelectableAddressCardContent(
+        address: address,
+        isSelected: isSelected,
+      ),
+    );
+  }
 }
 
-class _SelectableAddressCardState extends State<_SelectableAddressCard> {
-  bool _isExpanded = false;
+class _SelectableAddressCardContent extends StatelessWidget {
+  final AddressEntities address;
+  final bool isSelected;
+
+  const _SelectableAddressCardContent({
+    required this.address,
+    required this.isSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: widget.isSelected ? context.cs.primary : Colors.transparent,
-          width: 2,
-        ),
-      ),
-      child: InkWell(
-        onTap: () {
-          context.read<AddressSelectionCubit>().selectAddress(widget.address);
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+    return BlocBuilder<AddressCardExpandCubit, AddressCardExpandState>(
+      builder: (context, expandState) {
+        return Card(
+          margin: const EdgeInsets.only(bottom: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(
+              color: isSelected ? context.cs.primary : Colors.transparent,
+              width: 2,
+            ),
+          ),
+          child: InkWell(
+            onTap: () {
+              context.read<AddressSelectionCubit>().selectAddress(address);
+            },
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildAddressTypeLabel(context),
-                        8.h,
-                        _buildMainAddressInfo(context),
-                        if (_isExpanded) _buildExpandedAddressInfo(context),
-                      ],
-                    ),
-                  ),
-                  Column(
+                  Row(
                     children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildAddressTypeLabel(context),
+                            8.h,
+                            _buildMainAddressInfo(context),
+                            if (expandState.isExpanded)
+                              _buildExpandedAddressInfo(context),
+                          ],
+                        ),
+                      ),
                       Radio<bool>(
                         value: true,
-                        groupValue: widget.isSelected,
+                        groupValue: isSelected,
                         onChanged: (value) {
                           if (value == true) {
                             context
                                 .read<AddressSelectionCubit>()
-                                .selectAddress(widget.address);
+                                .selectAddress(address);
                           }
                         },
                       ),
                     ],
                   ),
+                  const Divider(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton.icon(
+                      onPressed: () =>
+                          context.read<AddressCardExpandCubit>().toggle(),
+                      icon: Icon(
+                        expandState.isExpanded
+                            ? Icons.expand_less
+                            : Icons.expand_more,
+                        size: 18,
+                      ),
+                      label: Text(
+                          expandState.isExpanded ? 'Show Less' : 'Show More'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: context.cs.primary,
+                        padding: EdgeInsets.zero,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ),
+                  ),
                 ],
               ),
-              const Divider(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: TextButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _isExpanded = !_isExpanded;
-                    });
-                  },
-                  icon: Icon(
-                    _isExpanded ? Icons.expand_less : Icons.expand_more,
-                    size: 18,
-                  ),
-                  label: Text(_isExpanded ? 'Show Less' : 'Show More'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: context.cs.primary,
-                    padding: EdgeInsets.zero,
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -335,7 +352,7 @@ class _SelectableAddressCardState extends State<_SelectableAddressCard> {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
-        widget.address.label,
+        address.label,
         style: context.ts.labelSmall?.copyWith(
           color: context.cs.primary,
           fontWeight: FontWeight.bold,
@@ -346,10 +363,8 @@ class _SelectableAddressCardState extends State<_SelectableAddressCard> {
 
   Widget _buildMainAddressInfo(BuildContext context) {
     return Text(
-      '${widget.address.city}, ${widget.address.state}',
-      style: context.ts.bodyMedium?.copyWith(
-        fontWeight: FontWeight.w600,
-      ),
+      '${address.city}, ${address.state}',
+      style: context.ts.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
     );
   }
 
@@ -358,17 +373,17 @@ class _SelectableAddressCardState extends State<_SelectableAddressCard> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         12.h,
-        _buildInfoText(context, 'Name', widget.address.fullName),
+        _buildInfoText(context, 'Name', address.fullName),
         4.h,
-        _buildInfoText(context, 'Phone', widget.address.phoneNumber),
+        _buildInfoText(context, 'Phone', address.phoneNumber),
         4.h,
-        _buildInfoText(context, 'Address', widget.address.address1),
-        if (widget.address.address2.isNotEmpty) ...[
+        _buildInfoText(context, 'Address', address.address1),
+        if (address.address2.isNotEmpty) ...[
           2.h,
-          _buildInfoText(context, '', widget.address.address2),
+          _buildInfoText(context, '', address.address2),
         ],
         4.h,
-        _buildInfoText(context, 'Pincode', widget.address.pincode),
+        _buildInfoText(context, 'Pincode', address.pincode),
       ],
     );
   }
@@ -391,9 +406,7 @@ class _SelectableAddressCardState extends State<_SelectableAddressCard> {
         Expanded(
           child: Text(
             value,
-            style: context.ts.bodySmall?.copyWith(
-              color: context.cs.onSurface,
-            ),
+            style: context.ts.bodySmall?.copyWith(color: context.cs.onSurface),
           ),
         ),
       ],

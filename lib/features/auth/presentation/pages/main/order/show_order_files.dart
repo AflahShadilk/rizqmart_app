@@ -14,6 +14,8 @@ import 'package:rizqmart/features/auth/domain/repositories/main/user_profile_rep
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/checkout/checkout_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/checkout/checkout_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/checkout/checkout_calculation_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/checkout/checkout_calculation_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/payment/payment_selection_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/divider_ext.dart';
@@ -27,21 +29,6 @@ Future<dynamic> modelBottomSheet(
   BuildContext context,
   CartLoadedState cartState,
 ) {
-  double totalMrp = 0.0;
-  for (var item in cartState.items) {
-    if (item.variantDetails.isNotEmpty &&
-        item.variantIndex < item.variantDetails.length) {
-      final variant = item.variantDetails[item.variantIndex];
-      final price = (variant['mrp'] ?? 0).toDouble();
-      totalMrp += price * item.count;
-    }
-  }
-
-  final subtotal = cartState.totalAmount;
-  final totalSavings = totalMrp - subtotal;
-  final deliveryFee = subtotal > 150 ? 0.0 : 40.0;
-  final totalCost = subtotal + deliveryFee;
-
   return showModalBottomSheet(
     elevation: 3,
     isDismissible: true,
@@ -49,8 +36,11 @@ Future<dynamic> modelBottomSheet(
     backgroundColor: Colors.transparent,
     context: context,
     builder: (bottomSheetContext) {
-      return BlocProvider(
-        create: (context) => CheckoutCubit(),
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => CheckoutCubit()),
+          BlocProvider(create: (context) => CheckoutCalculationCubit()..calculate(cartState)),
+        ],
         child: Container(
           decoration: BoxDecoration(
             color: context.cs.surface,
@@ -231,37 +221,49 @@ Future<dynamic> modelBottomSheet(
                     color: context.cs.outlineVariant.withValues(alpha: .3),
                   ),
                   8.h,
-                  _costRowCompact(context, 'Subtotal (MRP)', totalMrp),
-                  6.h,
-                  _costRowCompact(context, 'Delivery', deliveryFee),
-                  if (totalSavings > 0) ...[
-                    6.h,
-                    _costRowCompact(context, 'Discount', -totalSavings,
-                        isDiscount: true),
-                  ],
+                  BlocBuilder<CheckoutCalculationCubit, CheckoutCalculationState>(
+                    builder: (context, calcState) {
+                      return Column(
+                        children: [
+                          _costRowCompact(context, 'Subtotal (MRP)', calcState.totalMrp),
+                          6.h,
+                          _costRowCompact(context, 'Delivery', calcState.deliveryFee),
+                          if (calcState.totalSavings > 0) ...[
+                            6.h,
+                            _costRowCompact(context, 'Discount', -calcState.totalSavings,
+                                isDiscount: true),
+                          ],
+                        ],
+                      );
+                    },
+                  ),
                   6.h,
                   context.divider(
                     thickness: 1,
                     color: context.cs.outlineVariant.withValues(alpha: .3),
                   ),
                   6.h,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Total',
-                        style: context.ts.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        '₹${totalCost.toStringAsFixed(2)}',
-                        style: context.ts.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: context.cs.primary,
-                        ),
-                      ),
-                    ],
+                  BlocBuilder<CheckoutCalculationCubit, CheckoutCalculationState>(
+                    builder: (context, calcState) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Total',
+                            style: context.ts.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            '₹${calcState.totalCost.toStringAsFixed(2)}',
+                            style: context.ts.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: context.cs.primary,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   12.h,
                   Text(
@@ -273,6 +275,7 @@ Future<dynamic> modelBottomSheet(
                   12.h,
                   BlocBuilder<CheckoutCubit, CheckoutState>(
                     builder: (context, checkoutState) {
+                      final calcState = context.read<CheckoutCalculationCubit>().state;
                       final canProceed = checkoutState.deliveryMethod != null &&
                           checkoutState.deliveryAddress != null &&
                           checkoutState.paymentMethod != null;
@@ -282,40 +285,33 @@ Future<dynamic> modelBottomSheet(
                         height: 52,
                         child: MainButton(
                           label: canProceed
-                              ? 'Place Order  ₹${totalCost.toStringAsFixed(2)}'
+                              ? 'Place Order  ₹${calcState.totalCost.toStringAsFixed(2)}'
                               : 'Complete all fields',
                           onPress: canProceed
                               ? () async {
-                                  
                                   try {
-                                    
                                     String userName = FirebaseAuth.instance.currentUser?.displayName ?? 'Customer';
                                     String userEmail = FirebaseAuth.instance.currentUser?.email ?? 'no-email@example.com';
                                     String userPhone = 'N/A';
-                                    
-                                    
+
                                     try {
                                       final userProfileRepo = sl<UserProfileRepository>();
                                       final userProfile = await userProfileRepo.getUserProfile(userId);
-                                      
-                                      
+
                                       if (userProfile.name.isNotEmpty) userName = userProfile.name;
                                       if (userProfile.email.isNotEmpty) userEmail = userProfile.email;
                                       userPhone = userProfile.phoneNumber ?? 'N/A';
-                                      
-                                    
                                     } catch (e) {
-
                                     }
 
                                     final order = OrderEntities(
                                       orderId: '',
                                       userId: userId,
                                       items: cartState.items,
-                                      subtotal: subtotal,
-                                      deliveryFee: deliveryFee,
-                                      discount: totalSavings,
-                                      totalCost: totalCost,
+                                      subtotal: calcState.subtotal,
+                                      deliveryFee: calcState.deliveryFee,
+                                      discount: calcState.totalSavings,
+                                      totalCost: calcState.totalCost,
                                       deliveryMethod:
                                           checkoutState.deliveryMethod!,
                                       paymentMethod:
@@ -325,7 +321,6 @@ Future<dynamic> modelBottomSheet(
                                       createdAt: DateTime.now(),
                                       deliveryAddress:
                                           checkoutState.deliveryAddress!,
-                                      
                                       userName: userName,
                                       userEmail: userEmail,
                                       userPhone: userPhone,

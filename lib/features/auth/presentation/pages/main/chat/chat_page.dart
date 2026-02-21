@@ -8,6 +8,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/chat/chat_send_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/chat/widgets/chat_bubble.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
@@ -43,13 +44,15 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   late final String _currentUserId;
-  late final String _chatId; 
+  late final String _chatId;
+  late final ChatSendCubit _chatSendCubit;
 
   @override
   void initState() {
     super.initState();
     _currentUserId = FirebaseAuth.instance.currentUser!.uid;
-    _chatId = widget.orderId; 
+    _chatId = widget.orderId;
+    _chatSendCubit = ChatSendCubit(chatBloc: context.read<ChatBloc>());
 
     
     context.read<ChatBloc>().add(CreateChatRoomEvent(
@@ -73,16 +76,13 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _sendMessage() {
-    if (_messageController.text.trim().isEmpty) return;
-
-    context.read<ChatBloc>().add(SendMessageEvent(
+    final sent = _chatSendCubit.sendMessage(
+      text: _messageController.text,
       chatId: _chatId,
       senderId: _currentUserId,
-      text: _messageController.text.trim(),
       senderRole: 'user',
-    ));
-
-    _messageController.clear();
+    );
+    if (sent) _messageController.clear();
   }
 
   @override

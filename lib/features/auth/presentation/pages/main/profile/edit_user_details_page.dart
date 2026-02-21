@@ -1,6 +1,5 @@
 
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
@@ -9,8 +8,8 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/dob
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/gender/gender_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/profilephoto/profile_photo_upload_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/edit_profile_form_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/date_of_birth_field.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/genden/gender_selection.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/profile_photo.dart';
@@ -39,6 +38,7 @@ class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
   late TextEditingController bioController;
   late DateOfBirthCubit dateOfBirthCubit;
   late GenderCubit genderCubit;
+  late EditProfileFormCubit editProfileFormCubit;
 
   final formKey = GlobalKey<FormState>();
 
@@ -63,6 +63,7 @@ class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
       dateOfBirthCubit = DateOfBirthCubit(null);
       genderCubit = GenderCubit(null);
     }
+    editProfileFormCubit = EditProfileFormCubit(profileBloc: widget.profileBloc);
   }
 
   @override
@@ -78,36 +79,13 @@ class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
 
   void saveProfile() {
     if (formKey.currentState!.validate()) {
-      final currentUser = FirebaseAuth.instance.currentUser;
-
-      if (currentUser == null) {
-        showToast(context, 'Error: User not authenticated');
-        return;
-      }
-
-      final userId = currentUser.uid;
-
-      if (userId.isEmpty) {
-        showToast(context, 'Error: User ID is missing');
-        return;
-      }
-
-      final updatedProfile = UserProfileEntities(
-        userId: userId,
+      editProfileFormCubit.saveProfile(
         name: nameController.text,
         email: emailController.text,
-        phoneNumber: phoneController.text.isEmpty ? null : phoneController.text,
-        photoUrl: (widget.profileBloc.state is UserProfileLoadedState)
-            ? (widget.profileBloc.state as UserProfileLoadedState).profile.photoUrl
-            : null,
-        bio: bioController.text.isEmpty ? null : bioController.text,
+        phone: phoneController.text,
+        bio: bioController.text,
         dateOfBirth: dateOfBirthCubit.state,
         gender: genderCubit.state,
-        updatedAt: DateTime.now(),
-      );
-
-      widget.profileBloc.add(
-        UpdateUserProfileEvent(profile: updatedProfile),
       );
     }
   }
