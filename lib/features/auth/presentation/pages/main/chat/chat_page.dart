@@ -3,6 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_bloc.dart';
@@ -132,9 +133,28 @@ class _ChatPageState extends State<ChatPage> {
                          reverse: true, 
                          itemBuilder: (context, index) {
                            final message = state.messages[index];
-                           return ChatBubble(
-                             message: message,
-                             isMe: message.senderId == _currentUserId,
+                           final bool isMe = message.senderId == _currentUserId;
+                           
+                           bool showDateHeader = false;
+                           if (index == state.messages.length - 1) {
+                             showDateHeader = true;
+                           } else {
+                             final prevMessage = state.messages[index + 1];
+                             final messageDate = DateTime(message.timestamp.year, message.timestamp.month, message.timestamp.day);
+                             final prevMessageDate = DateTime(prevMessage.timestamp.year, prevMessage.timestamp.month, prevMessage.timestamp.day);
+                             if (messageDate != prevMessageDate) {
+                               showDateHeader = true;
+                             }
+                           }
+
+                           return Column(
+                             children: [
+                               if (showDateHeader) _buildDateDivider(message.timestamp),
+                               ChatBubble(
+                                 message: message,
+                                 isMe: isMe,
+                               ),
+                             ],
                            );
                          },
                        );
@@ -217,5 +237,42 @@ class _ChatPageState extends State<ChatPage> {
         ],
       ),
     );
+  }
+
+  Widget _buildDateDivider(DateTime timestamp) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Row(
+        children: [
+          Expanded(child: Divider(color: context.cs.outlineVariant.withValues(alpha: 0.5))),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              _formatDate(timestamp),
+              style: context.ts.labelSmall?.copyWith(
+                color: context.cs.onSurfaceVariant,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Expanded(child: Divider(color: context.cs.outlineVariant.withValues(alpha: 0.5))),
+        ],
+      ),
+    );
+  }
+
+  String _formatDate(DateTime timestamp) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final messageDate = DateTime(timestamp.year, timestamp.month, timestamp.day);
+
+    if (messageDate == today) {
+      return 'Today';
+    } else if (messageDate == yesterday) {
+      return 'Yesterday';
+    } else {
+      return DateFormat('MMMM dd, yyyy').format(timestamp);
+    }
   }
 }

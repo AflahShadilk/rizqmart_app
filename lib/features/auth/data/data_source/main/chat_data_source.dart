@@ -8,8 +8,6 @@ class ChatRemoteDataSource {
 
   ChatRemoteDataSource(this.firestore);
 
-  
-  
   Future<String> createChatRoom({
     required String orderId,
     required String userId,
@@ -21,7 +19,6 @@ class ChatRemoteDataSource {
   }) async {
     final chatRef = firestore.collection('chatRooms').doc(orderId);
 
-    
     await chatRef.set({
       'orderId': orderId,
       'userId': userId,
@@ -35,10 +32,9 @@ class ChatRemoteDataSource {
       'createdAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
 
-    return orderId; 
+    return orderId;
   }
 
-  
   Stream<List<ChatModel>> getUserChats(String userId) {
     return firestore
         .collection('chatRooms')
@@ -51,16 +47,15 @@ class ChatRemoteDataSource {
   }
 
   Stream<List<ChatModel>> getAdminChats(String adminId) {
-  return firestore
-      .collection('chatRooms')
-      .orderBy('lastMessageTime', descending: true)
-      .snapshots()
-      .map((snapshot) {
-    return snapshot.docs.map((doc) => ChatModel.fromFirestore(doc)).toList();
-  });
-}
+    return firestore
+        .collection('chatRooms')
+        .orderBy('lastMessageTime', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) => ChatModel.fromFirestore(doc)).toList();
+    });
+  }
 
-  
   Stream<List<MessageEntity>> getMessages(String chatId) {
     return firestore
         .collection('chatRooms')
@@ -75,32 +70,32 @@ class ChatRemoteDataSource {
     });
   }
 
- Future<void> sendMessage({
-  required String chatId,
-  required String senderId,
-  required String text,
-  required String senderRole,
-}) async {
-  final batch = firestore.batch();
+  Future<void> sendMessage({
+    required String chatId,
+    required String senderId,
+    required String text,
+    required String senderRole,
+  }) async {
+    final batch = firestore.batch();
 
-  final chatRef = firestore.collection('chatRooms').doc(chatId);
-  final messageRef = chatRef.collection('messages').doc();
+    final chatRef = firestore.collection('chatRooms').doc(chatId);
+    final messageRef = chatRef.collection('messages').doc();
 
-  final messageData = {
-    'senderId': senderId,
-    'text': text,
-    'timestamp': FieldValue.serverTimestamp(), 
-    'type': 'text', 
-    'senderRole': senderRole,
-  };
+    final messageData = {
+      'senderId': senderId,
+      'text': text,
+      'timestamp': FieldValue.serverTimestamp(),
+      'type': 'text',
+      'senderRole': senderRole,
+    };
 
-  batch.set(messageRef, messageData);
+    batch.set(messageRef, messageData);
 
-  batch.update(chatRef, {
-    'lastMessage': text,
-    'timestamp': FieldValue.serverTimestamp(),
-  });
+    batch.update(chatRef, {
+      'lastMessage': text,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
 
-  await batch.commit();
-}
+    await batch.commit();
+  }
 }
