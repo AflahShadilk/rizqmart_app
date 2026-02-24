@@ -45,16 +45,19 @@ class CategoryModel extends CategoryEntity {
       {required super.id, required super.categoryName, required super.logoUrl});
 
   factory CategoryModel.fromFireStore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+    final data = doc.data() as Map<String, dynamic>? ?? {};
     final rawUrl = data['logoUrl']
+        ?? data['logoURL']
         ?? data['image']
         ?? data['imageUrl']
+        ?? data['imageURL']
         ?? data['categoryImage']
+        ?? data['categoryImageUrl']
         ?? data['logo']
         ?? '';
     return CategoryModel(
         id: doc.id,
         categoryName: data['name'] ?? data['categoryName'] ?? '',
-        logoUrl: (rawUrl as String).trim());
+        logoUrl: rawUrl.toString().trim());
   }
 }

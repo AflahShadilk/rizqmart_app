@@ -5,6 +5,8 @@ import 'package:rizqmart/features/auth/domain/usecase/main/explore/get_products_
 import 'package:rizqmart/features/auth/domain/usecase/main/explore/search_products_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_state.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/explore_entities.dart';
+import 'package:rizqmart/features/auth/data/model/main/explore_model.dart';
 
 class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
   final GetProductsUsecase getProductUsecase;
@@ -26,9 +28,14 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
       Future<void>onGetProducts(GetAllProductsEvent event,Emitter<ExploreState>emit)async{
            emit(ExploreLoadingState());
         try{
-        final products= await getProductUsecase.call().first;
-        final catgories=await getCategoryUsecase.call().first;
-        emit(ExploreLoadedState(products:products, categories: catgories));
+        final results = await Future.wait([
+          getProductUsecase.call().first,
+          getCategoryUsecase.call().first,
+        ]);
+        emit(ExploreLoadedState(
+          products: results[0] as List<ExploreEntities>,
+          categories: results[1] as List<CategoryModel>,
+        ));
         }catch(e){
              emit(ExploreFailureState(e.toString()));
         }
@@ -39,11 +46,13 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
   ) async {
     emit(ExploreLoadingState());
     try {
-      final products = await getProductbycategoryUsecase.call(event.category).first;
-      final categories = await getCategoryUsecase.call().first;
+      final results = await Future.wait([
+        getProductbycategoryUsecase.call(event.category).first,
+        getCategoryUsecase.call().first,
+      ]);
       emit(ExploreLoadedState(
-        products: products,
-        categories: categories,
+        products: results[0] as List<ExploreEntities>,
+        categories: results[1] as List<CategoryModel>,
       ));
     } catch (e) {
       emit(ExploreFailureState(e.toString()));
@@ -56,11 +65,13 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
   ) async {
     emit(ExploreLoadingState());
     try {
-      final products = await searchProductsUsecase.call(event.query).first;
-      final categories = await getCategoryUsecase.call().first;
+      final results = await Future.wait([
+        searchProductsUsecase.call(event.query).first,
+        getCategoryUsecase.call().first,
+      ]);
       emit(ExploreLoadedState(
-        products: products,
-        categories: categories,
+        products: results[0] as List<ExploreEntities>,
+        categories: results[1] as List<CategoryModel>,
       ));
     } catch (e) {
       emit(ExploreFailureState(e.toString()));
