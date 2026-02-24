@@ -34,6 +34,9 @@ class OrderRepositoryImpl implements OrderRepository {
       userEmail: currentUser?.email ?? order.userEmail ?? 'no-email@example.com',
       userPhone: order.userPhone ?? 'N/A',  
       deliveryNotes: order.deliveryNotes,
+      couponId: order.couponId,
+      couponName: order.couponName,
+      discountAmount: order.discountAmount,
     );
 
 

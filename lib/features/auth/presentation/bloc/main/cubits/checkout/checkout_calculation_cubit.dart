@@ -1,32 +1,42 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/coupon_entity.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/checkout/checkout_calculation_state.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_engine.dart';
 
 class CheckoutCalculationCubit extends Cubit<CheckoutCalculationState> {
   CheckoutCalculationCubit() : super(const CheckoutCalculationState.initial());
 
-  void calculate(CartLoadedState cartState) {
-    double totalMrp = 0.0;
-    for (var item in cartState.items) {
-      if (item.variantDetails.isNotEmpty &&
-          item.variantIndex < item.variantDetails.length) {
-        final variant = item.variantDetails[item.variantIndex];
-        final price = (variant['mrp'] ?? 0).toDouble();
-        totalMrp += price * item.count;
+  void calculate(List<CartEntities> cartItems, {CouponEntity? coupon}) {
+    final totalMrp = CouponEngine.calculateTotalMrp(cartItems);
+    final subtotal = CouponEngine.calculateCartSubtotal(cartItems);
+    final totalSavings = totalMrp - subtotal;
+    final deliveryFee = subtotal > 150 ? 0.0 : 40.0;
+
+    double couponDiscount = 0.0;
+    String? couponId;
+    String? couponName;
+
+    if (coupon != null) {
+      final result = CouponEngine.computeResult(coupon, cartItems, deliveryFee);
+      if (result.isValid) {
+        couponDiscount = result.discount;
+        couponId = coupon.id;
+        couponName = coupon.name;
       }
     }
 
-    final subtotal = cartState.totalAmount;
-    final totalSavings = totalMrp - subtotal;
-    final deliveryFee = subtotal > 150 ? 0.0 : 40.0;
-    final totalCost = subtotal + deliveryFee;
+    final totalCost = (subtotal - couponDiscount) + deliveryFee;
 
     emit(CheckoutCalculationState(
       totalMrp: totalMrp,
       subtotal: subtotal,
       totalSavings: totalSavings,
       deliveryFee: deliveryFee,
-      totalCost: totalCost,
+      couponDiscount: couponDiscount,
+      totalCost: totalCost < 0 ? 0 : totalCost,
+      couponId: couponId,
+      couponName: couponName,
     ));
   }
 }

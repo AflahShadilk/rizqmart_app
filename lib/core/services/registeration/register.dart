@@ -117,6 +117,13 @@ import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_wall
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_bloc.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/wallet/credit_wallet_usecase.dart';
 
+// Coupon Imports
+import 'package:rizqmart/features/auth/data/data_source/main/coupon_data_source.dart';
+import 'package:rizqmart/features/auth/data/repository/main/coupon_repository_impl.dart';
+import 'package:rizqmart/features/auth/domain/repositories/main/coupon_repository.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/coupon/get_active_coupons_usecase.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_cubit.dart';
+
 final sl = GetIt.instance;
 
 void setupLocator() {
@@ -324,4 +331,10 @@ void setupLocator() {
     requestWithdrawal: sl(),
     creditWalletUseCase: sl(),
   ));
+
+  // Coupons
+  sl.registerLazySingleton<CouponDataSource>(() => CouponDataSourceImpl(firestore: sl()));
+  sl.registerLazySingleton<CouponRepository>(() => CouponRepositoryImpl(dataSource: sl()));
+  sl.registerLazySingleton(() => GetActiveCouponsUseCase(repository: sl()));
+  sl.registerFactory(() => AvailableCouponCubit(getActiveCouponsUseCase: sl()));
 }

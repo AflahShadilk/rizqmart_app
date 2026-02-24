@@ -19,6 +19,8 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/counter/cou
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/description/desicription_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/image/image_index_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/variantselection/variant_selection_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
@@ -163,6 +165,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   if (variantCount > 1)
                                     _buildVariantsSection(context, variantCount,
                                         selectedVariantIndex, colorScheme),
+                                  16.h,
+                                  _buildOffersSection(context, colorScheme),
                                   28.h,
                                   _buildDescriptionSection(
                                       context, colorScheme),
@@ -284,6 +288,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                         selectedVariantIndex,
                                         colorScheme),
                                   ),
+                                16.h,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  child: _buildOffersSection(context, colorScheme),
+                                ),
                                 28.h,
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -725,6 +734,84 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           }),
         ),
       ],
+    );
+  }
+
+  Widget _buildOffersSection(BuildContext context, ColorScheme colorScheme) {
+    return BlocBuilder<AvailableCouponCubit, AvailableCouponState>(
+      builder: (context, state) {
+        if (state is AvailableCouponLoaded) {
+          final applicableCoupons = state.coupons
+              .where((c) => c.applicableProductIds.isEmpty || c.applicableProductIds.contains(productId))
+              .toList();
+
+          if (applicableCoupons.isNotEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Available Offers',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                12.h,
+                ...applicableCoupons.map((coupon) {
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withValues(alpha: 0.05),
+                      border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.local_offer, color: Colors.orange, size: 20),
+                        12.w,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${coupon.percentage.toStringAsFixed(0)}% OFF',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange,
+                                ),
+                              ),
+                              2.h,
+                              Text(
+                                coupon.name,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              2.h,
+                              Text(
+                                'Use coupon code during checkout (Min order ₹${coupon.minOrderValue.toStringAsFixed(0)})',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  color: colorScheme.onSurface.withValues(alpha: 0.6),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ],
+            );
+          }
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 

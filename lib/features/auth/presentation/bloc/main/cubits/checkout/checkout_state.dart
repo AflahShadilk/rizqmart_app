@@ -1,10 +1,12 @@
 import 'package:equatable/equatable.dart';
+import 'package:rizqmart/features/auth/domain/entities/main/coupon_entity.dart';
 
 class CheckoutState extends Equatable {
   final String? deliveryMethod;
   final String? deliveryAddress;
   final String? paymentMethod;
   final String? promoCode;
+  final CouponEntity? appliedCoupon;
   final String? userPhone;      
   final String? deliveryNotes;
 
@@ -13,6 +15,7 @@ class CheckoutState extends Equatable {
     required this.deliveryAddress,
     required this.paymentMethod,
     required this.promoCode,
+    this.appliedCoupon,
     this.userPhone,
     this.deliveryNotes
   });
@@ -22,6 +25,7 @@ class CheckoutState extends Equatable {
     String? deliveryAddress,
     String? paymentMethod,
     String? promoCode,
+    CouponEntity? appliedCoupon,
     String? deliveryNotes
   }) {
     return CheckoutState(
@@ -29,11 +33,12 @@ class CheckoutState extends Equatable {
       deliveryAddress: deliveryAddress ?? this.deliveryAddress,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       promoCode: promoCode ?? this.promoCode,
+      appliedCoupon: appliedCoupon ?? this.appliedCoupon,
       deliveryNotes: deliveryNotes ?? this.deliveryNotes,
     );
   }
 
   @override
   List<Object?> get props =>
-      [deliveryMethod, deliveryAddress, paymentMethod, promoCode,deliveryNotes];
+      [deliveryMethod, deliveryAddress, paymentMethod, promoCode, appliedCoupon, deliveryNotes];
 }

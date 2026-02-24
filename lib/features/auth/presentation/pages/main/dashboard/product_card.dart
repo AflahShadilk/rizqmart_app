@@ -9,6 +9,9 @@ import 'package:rizqmart/core/services/firestore_product/variant_det_getter.dart
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/add_to_cart_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_state.dart';
 
 class ProductCard extends StatefulWidget {
   final ProductEntities product;
@@ -234,6 +237,35 @@ class _ProductCardState extends State<ProductCard>
                             ),
                           ),
                         ),
+                      ),
+                      BlocBuilder<AvailableCouponCubit, AvailableCouponState>(
+                        builder: (context, state) {
+                          if (state is AvailableCouponLoaded) {
+                            final hasOffer = state.coupons.any((c) => c.applicableProductIds.isEmpty || c.applicableProductIds.contains(widget.product.id));
+                            if (hasOffer && !hasDiscount) {
+                              return Positioned(
+                                top: 8,
+                                left: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: Colors.orange,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    'Offer Inside!',
+                                    style: GoogleFonts.inter(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                          return const SizedBox.shrink();
+                        },
                       ),
                   ],
                 ),

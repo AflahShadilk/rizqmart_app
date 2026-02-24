@@ -98,8 +98,14 @@ class InvoiceCubit extends Cubit<InvoiceState> {
                       item.variantIndex < item.variantDetails.length) {
                     final variant =
                         item.variantDetails[item.variantIndex];
+                    final priceAtPurchase = variant['priceAtPurchase'];
+                    final mrpRaw = variant['mrp'];
                     final priceRaw = variant['price'];
-                    if (priceRaw != null) {
+                    if (priceAtPurchase != null) {
+                      unitPrice = (priceAtPurchase as num).toDouble();
+                    } else if (mrpRaw != null) {
+                      unitPrice = (mrpRaw as num).toDouble();
+                    } else if (priceRaw != null) {
                       unitPrice = (priceRaw as num).toDouble();
                     }
                   }
@@ -138,6 +144,11 @@ class InvoiceCubit extends Cubit<InvoiceState> {
                           'Discount:   - INR ${order.discount.toStringAsFixed(2)}',
                           style:
                               const pw.TextStyle(color: PdfColors.green)),
+                      if ((order.discountAmount ?? 0) > 0)
+                        pw.Text(
+                            'Coupon Discount${order.couponName != null ? ' (${order.couponName})' : ''}:   - INR ${order.discountAmount!.toStringAsFixed(2)}',
+                            style:
+                                const pw.TextStyle(color: PdfColors.green)),
                       pw.Divider(),
                       pw.Text(
                         'Grand Total:   INR ${order.totalCost.toStringAsFixed(2)}',

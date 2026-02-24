@@ -21,6 +21,9 @@ class OrderEntities extends Equatable {
 
   final String? deliveryNotes;
   final String? adminNotes;
+  final String? couponId;
+  final String? couponName;
+  final double? discountAmount;
 
   const OrderEntities({
     required this.orderId,
@@ -41,6 +44,9 @@ class OrderEntities extends Equatable {
     this.userPhone,
     this.deliveryNotes,
     this.adminNotes,
+    this.couponId,
+    this.couponName,
+    this.discountAmount,
   });
 
   @override
@@ -64,5 +70,8 @@ class OrderEntities extends Equatable {
 
         deliveryNotes,
         adminNotes,
+        couponId,
+        couponName,
+        discountAmount,
       ];
 }

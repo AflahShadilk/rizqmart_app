@@ -387,7 +387,11 @@ class _OrderDetailsView extends StatelessWidget {
         8.h,
         _summaryRow(context, 'Delivery Fee', order.deliveryFee),
         8.h,
-        _summaryRow(context, 'Discount', -order.discount, isDiscount: true),
+        _summaryRow(context, 'Discount', order.discount, isDiscount: true),
+        if ((order.discountAmount ?? 0) > 0) ...[
+          8.h,
+          _summaryRow(context, 'Coupon Discount${order.couponName != null ? ' (${order.couponName})' : ''}', order.discountAmount!, isDiscount: true),
+        ],
         12.h,
         Divider(color: context.cs.outlineVariant),
         12.h,

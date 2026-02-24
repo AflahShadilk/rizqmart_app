@@ -31,6 +31,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_bloc.dar
 import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_cubit.dart';
 
 class BlocProviders extends StatelessWidget {
   final GlobalKey<NavigatorState>? navigatorKey;
@@ -156,6 +157,9 @@ class BlocProviders extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => sl<ReviewBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<AvailableCouponCubit>()..loadCoupons(),
         ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(

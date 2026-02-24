@@ -22,6 +22,9 @@ class OrderFirestoreModel extends OrderEntities {
     super.userPhone,
     super.deliveryNotes,
     super.adminNotes,
+    super.couponId,
+    super.couponName,
+    super.discountAmount,
   });
 
   factory OrderFirestoreModel.fromFirestore(DocumentSnapshot doc) {
@@ -60,19 +63,34 @@ class OrderFirestoreModel extends OrderEntities {
       userPhone: data['userPhone'] ?? 'N/A',
       deliveryNotes: data['deliveryNotes'],
       adminNotes: data['adminNotes'],
+      couponId: data['couponId'],
+      couponName: data['couponName'],
+      discountAmount: (data['discountAmount'] ?? 0).toDouble(),
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'userId': userId,
-      'items': items.map((item) => {
-        'id': item.id,
-        'name': item.name,
-        'brand': item.brand,
-        'variantIndex': item.variantIndex,
-        'count': item.count,
-        'variantDetails': item.variantDetails,
+      'items': items.map((item) {
+        double priceAtPurchase = 0.0;
+        if (item.variantDetails.isNotEmpty &&
+            item.variantIndex < item.variantDetails.length) {
+          final variant = item.variantDetails[item.variantIndex];
+          double price = (variant['mrp'] ?? 0).toDouble();
+          final disc = item.discount ?? 0;
+          if (disc > 0) price = price - (price * disc / 100);
+          priceAtPurchase = price;
+        }
+        return {
+          'id': item.id,
+          'name': item.name,
+          'brand': item.brand,
+          'variantIndex': item.variantIndex,
+          'count': item.count,
+          'variantDetails': item.variantDetails,
+          'priceAtPurchase': priceAtPurchase,
+        };
       }).toList(),
       'subtotal': subtotal,
       'deliveryFee': deliveryFee,
@@ -89,6 +107,9 @@ class OrderFirestoreModel extends OrderEntities {
       'userPhone': userPhone ?? 'N/A',
       'deliveryNotes': deliveryNotes,
       'adminNotes': adminNotes,
+      'couponId': couponId,
+      'couponName': couponName,
+      'discountAmount': discountAmount ?? 0.0,
     };
   }
 }
