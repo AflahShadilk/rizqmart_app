@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/error_handler.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/data/model/main/review_model.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/review_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/review_repository.dart';
@@ -9,10 +12,14 @@ class ReviewRepositoryImpl implements ReviewRepository {
   ReviewRepositoryImpl({required this.firestore});
 
   @override
-  Future<void> addReview(ReviewEntity review) async {
-    try {
+  Future<Either<Failure, void>> addReview(ReviewEntity review) {
+    return ErrorHandler.executeApiCall(() async {
       // Server-side purchase verification
-      final purchased = await hasUserPurchasedProduct(review.userId, review.productId);
+      final purchasedResult = await hasUserPurchasedProduct(review.userId, review.productId);
+      
+      bool purchased = false;
+      purchasedResult.fold((f) => throw Exception(f.message), (v) => purchased = v);
+
       if (!purchased) {
         throw Exception('You must purchase this product before writing a review.');
       }
@@ -29,7 +36,9 @@ class ReviewRepositoryImpl implements ReviewRepository {
           variantName: review.variantName);
 
       // Check if user already has a review for this product
-      final existingReview = await getUserReviewForProduct(review.userId, review.productId);
+      final existingReviewResult = await getUserReviewForProduct(review.userId, review.productId);
+      ReviewEntity? existingReview;
+      existingReviewResult.fold((f) => throw Exception(f.message), (v) => existingReview = v);
 
       final productRef = firestore.collection('products').doc(review.productId);
 
@@ -39,7 +48,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
             .collection('products')
             .doc(review.productId)
             .collection('reviews')
-            .doc(existingReview.id);
+            .doc(existingReview!.id);
 
         await reviewRef.update(reviewModel.toFirestore());
 
@@ -53,7 +62,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
           final currentCount = (data['reviewCount'] ?? 0) as int;
 
           if (currentCount > 0) {
-            final newRating = ((currentRating * currentCount) - existingReview.rating + review.rating) / currentCount;
+            final newRating = ((currentRating * currentCount) - existingReview!.rating + review.rating) / currentCount;
             transaction.update(productRef, {'rating': newRating});
           }
         });
@@ -86,14 +95,12 @@ class ReviewRepositoryImpl implements ReviewRepository {
           });
         });
       }
-    } catch (e) {
-      throw Exception(e.toString());
-    }
+    });
   }
 
   @override
-  Future<List<ReviewEntity>> getReviews(String productId) async {
-    try {
+  Future<Either<Failure, List<ReviewEntity>>> getReviews(String productId) {
+    return ErrorHandler.executeApiCall(() async {
       final snapshot = await firestore
           .collection('products')
           .doc(productId)
@@ -105,14 +112,12 @@ class ReviewRepositoryImpl implements ReviewRepository {
           .map((doc) => ReviewModel.fromFirestore(doc))
           .toList();
       return reviews;
-    } catch (e) {
-      throw Exception(e.toString());
-    }
+    });
   }
 
   @override
-  Future<bool> hasUserPurchasedProduct(String userId, String productId) async {
-    try {
+  Future<Either<Failure, bool>> hasUserPurchasedProduct(String userId, String productId) {
+    return ErrorHandler.executeApiCall(() async {
       final snapshot = await firestore
           .collection('orders')
           .where('userId', isEqualTo: userId)
@@ -132,14 +137,12 @@ class ReviewRepositoryImpl implements ReviewRepository {
         }
       }
       return false;
-    } catch (e) {
-      throw Exception(e.toString());
-    }
+    });
   }
 
   @override
-  Future<ReviewEntity?> getUserReviewForProduct(String userId, String productId) async {
-    try {
+  Future<Either<Failure, ReviewEntity?>> getUserReviewForProduct(String userId, String productId) {
+    return ErrorHandler.executeApiCall(() async {
       final snapshot = await firestore
           .collection('products')
           .doc(productId)
@@ -150,9 +153,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
 
       if (snapshot.docs.isEmpty) return null;
       return ReviewModel.fromFirestore(snapshot.docs.first);
-    } catch (e) {
-      throw Exception(e.toString());
-    }
+    });
   }
 }
 

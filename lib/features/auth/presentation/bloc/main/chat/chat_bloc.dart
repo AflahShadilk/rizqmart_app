@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/services/notification_service.dart';
-import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/chat/get_messages_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/chat/initiate_chat_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/chat/send_message_usecase.dart';
@@ -13,8 +12,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final GetMessagesUseCase getMessagesUseCase;
   final SendMessageUseCase sendMessageUseCase;
 
-  StreamSubscription<List<MessageEntity>>? _messagesSubscription;
-
   ChatBloc({
     required this.createChatRoomUseCase,
     required this.getMessagesUseCase,
@@ -23,11 +20,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<CreateChatRoomEvent>(_onCreateChatRoom);
     on<LoadMessagesEvent>(_onLoadMessages);
     on<SendMessageEvent>(_onSendMessage);
-    on<_UpdateMessagesEvent>(_onUpdateMessages);
-  }
-
-  void _onUpdateMessages(_UpdateMessagesEvent event, Emitter<ChatState> emit) {
-    emit(ChatMessagesLoadedState(event.messages));
   }
 
   Future<void> _onCreateChatRoom(
@@ -35,34 +27,40 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     Emitter<ChatState> emit,
   ) async {
     emit(ChatLoadingState());
-    try {
-      final token = await NotificationService().getDeviceToken();
+    final token = await NotificationService().getDeviceToken();
 
-      final chatId = await createChatRoomUseCase(
-        orderId: event.orderId,
-        userId: event.userId,
-        adminId: event.adminId,
-        productId: event.productId,
-        productName: event.productName,
-        productImage: event.productImage,
-        userFcmToken: token,
-      );
-      emit(ChatInitiatedState(chatId)); 
-      add(LoadMessagesEvent(chatId));
-    } catch (e) {
-      emit(ChatErrorState(e.toString()));
-    }
+    final result = await createChatRoomUseCase(
+      orderId: event.orderId,
+      userId: event.userId,
+      adminId: event.adminId,
+      productId: event.productId,
+      productName: event.productName,
+      productImage: event.productImage,
+      userFcmToken: token,
+    );
+
+    result.fold(
+      (failure) => emit(ChatErrorState(failure.message)),
+      (chatId) {
+        emit(ChatInitiatedState(chatId)); 
+        add(LoadMessagesEvent(chatId));
+      },
+    );
   }
 
   Future<void> _onLoadMessages(
     LoadMessagesEvent event,
     Emitter<ChatState> emit,
   ) async {
-    await _messagesSubscription?.cancel();
-    _messagesSubscription = getMessagesUseCase(event.chatId).listen(
-      (messages) {
-        add(_UpdateMessagesEvent(messages));
+    await emit.forEach(
+      getMessagesUseCase(event.chatId),
+      onData: (result) {
+        return result.fold(
+          (failure) => ChatErrorState(failure.message),
+          (messages) => ChatMessagesLoadedState(messages),
+        );
       },
+      onError: (error, stackTrace) => ChatErrorState(error.toString()),
     );
   }
 
@@ -70,27 +68,18 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     SendMessageEvent event,
     Emitter<ChatState> emit,
   ) async {
-    try {
-      await sendMessageUseCase(
-        chatId: event.chatId,
-        senderId: event.senderId,
-        text: event.text,
-        senderRole: event.senderRole,
-      );
-    } catch (e) {
-      emit(ChatErrorState('Failed to send message: ${e.toString()}'));
-    }
+    final result = await sendMessageUseCase(
+      chatId: event.chatId,
+      senderId: event.senderId,
+      text: event.text,
+      senderRole: event.senderRole,
+    );
+
+    result.fold(
+      (failure) => emit(ChatErrorState('Failed to send message: ${failure.message}')),
+      (_) {
+        // Message sent successfully, no state change needed as stream handles updates.
+      },
+    );
   }
-
-  @override
-  Future<void> close() {
-    _messagesSubscription?.cancel();
-    return super.close();
-  }
-}
-
-
-class _UpdateMessagesEvent extends ChatEvent {
-  final List<MessageEntity> messages;
-  const _UpdateMessagesEvent(this.messages);
 }

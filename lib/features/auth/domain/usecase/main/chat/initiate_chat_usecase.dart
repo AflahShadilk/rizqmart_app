@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/chat_repository.dart';
 
 class CreateChatRoomUseCase {
@@ -5,7 +7,7 @@ class CreateChatRoomUseCase {
 
   CreateChatRoomUseCase(this.repository);
 
-  Future<String> call({
+  Future<Either<Failure, String>> call({
     required String orderId,
     required String userId,
     String adminId = 'admin',
@@ -14,7 +16,7 @@ class CreateChatRoomUseCase {
     String? productImage,
     String? userFcmToken,
   }) async {
-    return await repository.createChatRoom(
+    return repository.createChatRoom(
       orderId: orderId,
       userId: userId,
       adminId: adminId,

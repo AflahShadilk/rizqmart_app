@@ -1,12 +1,14 @@
-
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/error_handler.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/notification_data_source.dart';
 import 'package:rizqmart/features/auth/data/model/main/notification_model.dart';
 
 abstract class NotificationRepository {
-  Stream<List<NotificationModel>> getNotifications(String userId);
-  Future<void> markAsRead(String userId, String notificationId);
-  Future<void> markAllAsRead(String userId);
-  Future<void> clearAllNotifications(String userId);
+  Stream<Either<Failure, List<NotificationModel>>> getNotifications(String userId);
+  Future<Either<Failure, void>> markAsRead(String userId, String notificationId);
+  Future<Either<Failure, void>> markAllAsRead(String userId);
+  Future<Either<Failure, void>> clearAllNotifications(String userId);
 }
 
 class NotificationRepositoryImpl implements NotificationRepository {
@@ -15,22 +17,28 @@ class NotificationRepositoryImpl implements NotificationRepository {
   NotificationRepositoryImpl(this.dataSource);
 
   @override
-  Stream<List<NotificationModel>> getNotifications(String userId) {
-    return dataSource.getNotifications(userId);
+  Stream<Either<Failure, List<NotificationModel>>> getNotifications(String userId) {
+    return ErrorHandler.executeApiStream(() => dataSource.getNotifications(userId));
   }
 
   @override
-  Future<void> markAsRead(String userId, String notificationId) async {
-    return dataSource.markAsRead(userId, notificationId);
+  Future<Either<Failure, void>> markAsRead(String userId, String notificationId) {
+    return ErrorHandler.executeApiCall(() async {
+      return await dataSource.markAsRead(userId, notificationId);
+    });
   }
 
   @override
-  Future<void> markAllAsRead(String userId) async {
-    return dataSource.markAllAsRead(userId);
+  Future<Either<Failure, void>> markAllAsRead(String userId) {
+    return ErrorHandler.executeApiCall(() async {
+      return await dataSource.markAllAsRead(userId);
+    });
   }
 
   @override
-  Future<void> clearAllNotifications(String userId) async {
-    return dataSource.clearAllNotifications(userId);
+  Future<Either<Failure, void>> clearAllNotifications(String userId) {
+    return ErrorHandler.executeApiCall(() async {
+      return await dataSource.clearAllNotifications(userId);
+    });
   }
 }

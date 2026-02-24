@@ -1,3 +1,6 @@
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/failures.dart';
+
 abstract class ForgotpassAuthrepo {
-  Future<void>sendEmail(String email);
+  Future<Either<Failure, void>> sendEmail(String email);
 }

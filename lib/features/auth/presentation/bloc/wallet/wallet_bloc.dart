@@ -36,16 +36,14 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     balanceResult.fold(
       (failure) => emit(state.copyWith(
         status: WalletStatus.error,
-        errorMessage: failure,
+        errorMessage: failure.message,
       )),
       (wallet) {
         transactionsResult.fold(
           (failure) => emit(state.copyWith(
             status: WalletStatus.loaded,
             wallet: wallet,
-            
-            
-            errorMessage: "Failed to load transactions: $failure", 
+            errorMessage: "Failed to load transactions: ${failure.message}", 
           )),
           (transactions) => emit(state.copyWith(
             status: WalletStatus.loaded,
@@ -71,7 +69,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     result.fold(
       (failure) => emit(state.copyWith(
         status: WalletStatus.error,
-        errorMessage: failure,
+        errorMessage: failure.message,
       )),
       (transaction) { 
         emit(state.copyWith(
@@ -89,7 +87,6 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   ) async {
     emit(state.copyWith(status: WalletStatus.loading));
     
-    
     final referenceId = 'dep_${DateTime.now().millisecondsSinceEpoch}';
     
     final result = await creditWalletUseCase(
@@ -103,7 +100,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     result.fold(
       (failure) => emit(state.copyWith(
         status: WalletStatus.error,
-        errorMessage: failure,
+        errorMessage: failure.message,
       )),
       (transaction) {
         emit(state.copyWith(

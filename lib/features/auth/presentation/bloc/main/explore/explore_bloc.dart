@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/explore/get_category_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/explore/get_productbycategory_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/explore/get_products_usecase.dart';
@@ -25,38 +27,57 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
         on<GetCategoriesEvent>(onGetCategories);
       }
 
-      Future<void>onGetProducts(GetAllProductsEvent event,Emitter<ExploreState>emit)async{
-           emit(ExploreLoadingState());
-        try{
-        final results = await Future.wait([
-          getProductUsecase.call().first,
-          getCategoryUsecase.call().first,
-        ]);
-        emit(ExploreLoadedState(
-          products: results[0] as List<ExploreEntities>,
-          categories: results[1] as List<CategoryModel>,
-        ));
-        }catch(e){
-             emit(ExploreFailureState(e.toString()));
-        }
-      }
-       Future<void> onGetProductsByCategory(
+  Future<void> onGetProducts(GetAllProductsEvent event, Emitter<ExploreState> emit) async {
+    emit(ExploreLoadingState());
+    
+    final results = await Future.wait([
+      getProductUsecase.call().first,
+      getCategoryUsecase.call().first,
+    ]);
+    
+    final productsResult = results[0] as Either<Failure, List<ExploreEntities>>;
+    final categoriesResult = results[1] as Either<Failure, List<CategoryModel>>;
+    
+    productsResult.fold(
+      (failure) => emit(ExploreFailureState(failure.message)),
+      (products) {
+        categoriesResult.fold(
+          (failure) => emit(ExploreFailureState(failure.message)),
+          (categories) => emit(ExploreLoadedState(
+            products: products,
+            categories: categories,
+          )),
+        );
+      },
+    );
+  }
+
+  Future<void> onGetProductsByCategory(
     GetProductsByCategoryEvent event,
     Emitter<ExploreState> emit,
   ) async {
     emit(ExploreLoadingState());
-    try {
-      final results = await Future.wait([
-        getProductbycategoryUsecase.call(event.category).first,
-        getCategoryUsecase.call().first,
-      ]);
-      emit(ExploreLoadedState(
-        products: results[0] as List<ExploreEntities>,
-        categories: results[1] as List<CategoryModel>,
-      ));
-    } catch (e) {
-      emit(ExploreFailureState(e.toString()));
-    }
+    
+    final results = await Future.wait([
+      getProductbycategoryUsecase.call(event.category).first,
+      getCategoryUsecase.call().first,
+    ]);
+    
+    final productsResult = results[0] as Either<Failure, List<ExploreEntities>>;
+    final categoriesResult = results[1] as Either<Failure, List<CategoryModel>>;
+    
+    productsResult.fold(
+      (failure) => emit(ExploreFailureState(failure.message)),
+      (products) {
+        categoriesResult.fold(
+          (failure) => emit(ExploreFailureState(failure.message)),
+          (categories) => emit(ExploreLoadedState(
+            products: products,
+            categories: categories,
+          )),
+        );
+      },
+    );
   }
 
   Future<void> onSearchProducts(
@@ -64,18 +85,27 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
     Emitter<ExploreState> emit,
   ) async {
     emit(ExploreLoadingState());
-    try {
-      final results = await Future.wait([
-        searchProductsUsecase.call(event.query).first,
-        getCategoryUsecase.call().first,
-      ]);
-      emit(ExploreLoadedState(
-        products: results[0] as List<ExploreEntities>,
-        categories: results[1] as List<CategoryModel>,
-      ));
-    } catch (e) {
-      emit(ExploreFailureState(e.toString()));
-    }
+    
+    final results = await Future.wait([
+      searchProductsUsecase.call(event.query).first,
+      getCategoryUsecase.call().first,
+    ]);
+    
+    final productsResult = results[0] as Either<Failure, List<ExploreEntities>>;
+    final categoriesResult = results[1] as Either<Failure, List<CategoryModel>>;
+    
+    productsResult.fold(
+      (failure) => emit(ExploreFailureState(failure.message)),
+      (products) {
+        categoriesResult.fold(
+          (failure) => emit(ExploreFailureState(failure.message)),
+          (categories) => emit(ExploreLoadedState(
+            products: products,
+            categories: categories,
+          )),
+        );
+      },
+    );
   }
 
   Future<void> onGetCategories(
@@ -83,14 +113,15 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
     Emitter<ExploreState> emit,
   ) async {
     emit(ExploreLoadingState());
-    try {
-      final categories = await getCategoryUsecase.call().first;
-      emit(ExploreLoadedState(
+    
+    final categoriesResult = await getCategoryUsecase.call().first;
+    
+    categoriesResult.fold(
+      (failure) => emit(ExploreFailureState(failure.message)),
+      (categories) => emit(ExploreLoadedState(
         products: [],
         categories: categories,
-      ));
-    } catch (e) {
-      emit(ExploreFailureState(e.toString()));
-    }
+      )),
+    );
   }
 }

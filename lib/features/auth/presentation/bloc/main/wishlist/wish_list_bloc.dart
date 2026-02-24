@@ -37,7 +37,7 @@ class WishListBloc extends Bloc<WishListEvent, WishListState> {
     );
     final result = await wishListToggleUsecase(event.productId, entity);
     result.fold(
-      (failure) => emit(FailureWishListState(failure.toString())),
+      (failure) => emit(FailureWishListState(failure.message)),
       (_) {
         emit(InitializeWishListState([]));
         add(GetAllWishListEvent());
@@ -53,7 +53,7 @@ class WishListBloc extends Bloc<WishListEvent, WishListState> {
       getAllWishListUsecase(),
       onData: (either) {
         return either.fold(
-          (failure) => FailureWishListState(failure.toString()),
+          (failure) => FailureWishListState(failure.message),
           (items) {
             if (items.isNotEmpty) {
               return LoadedWishListState(items);
@@ -73,7 +73,7 @@ class WishListBloc extends Bloc<WishListEvent, WishListState> {
     emit(LoadingWishListState());
     final result = await addToWishListUsecase(event.productId, event.item);
     result.fold(
-      (failure) => emit(FailureWishListState(failure.toString())),
+      (failure) => emit(FailureWishListState(failure.message)),
       (_) {
         emit(InitializeWishListState([]));
         add(GetAllWishListEvent());
@@ -85,7 +85,7 @@ class WishListBloc extends Bloc<WishListEvent, WishListState> {
       DeleteWishListEvent event, Emitter<WishListState> emit) async {
     final result = await deleteFrmWishListUsecase(event.productId);
     result.fold(
-      (failure) => emit(FailureWishListState(failure.toString())),
+      (failure) => emit(FailureWishListState(failure.message)),
       (_) {
         emit(InitializeWishListState([]));
         add(GetAllWishListEvent());

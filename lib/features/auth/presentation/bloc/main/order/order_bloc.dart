@@ -25,12 +25,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     Emitter<OrderState> emit,
   ) async {
     emit(const OrderLoadingState());
-    try {
-      final orderId = await placeOrderUsecase.call(event.order);
-      emit(OrderSuccessState(orderId: orderId));
-    } catch (e) {
-      emit(OrderErrorState('Failed to place order: ${e.toString()}'));
-    }
+    final result = await placeOrderUsecase.call(event.order);
+    result.fold(
+      (failure) => emit(OrderErrorState('Failed to place order: ${failure.message}')),
+      (orderId) => emit(OrderSuccessState(orderId: orderId)),
+    );
   }
 
   Future<void> _onGetUserOrders(
@@ -38,12 +37,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     Emitter<OrderState> emit,
   ) async {
     emit(const OrderLoadingState());
-    try {
-      final orders = await getUserOrdersUsecase.call();
-      emit(OrdersLoadedState(orders));
-    } catch (e) {
-      emit(OrderErrorState('Failed to get orders: ${e.toString()}'));
-    }
+    final result = await getUserOrdersUsecase.call();
+    result.fold(
+      (failure) => emit(OrderErrorState('Failed to get orders: ${failure.message}')),
+      (orders) => emit(OrdersLoadedState(orders)),
+    );
   }
 
   Future<void> _onCancelOrder(
@@ -51,14 +49,13 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     Emitter<OrderState> emit,
   ) async {
     emit(const OrderLoadingState());
-    try {
-      await cancelOrderUsecase.call(event.orderId);
-      emit(const OrderSuccessState(
+    final result = await cancelOrderUsecase.call(event.orderId);
+    result.fold(
+      (failure) => emit(OrderErrorState('Failed to cancel order: ${failure.message}')),
+      (_) => emit(const OrderSuccessState(
         orderId: '',
         message: 'Order cancelled successfully',
-      ));
-    } catch (e) {
-      emit(OrderErrorState('Failed to cancel order: ${e.toString()}'));
-    }
+      )),
+    );
   }
 }

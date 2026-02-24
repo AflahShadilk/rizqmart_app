@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/dashboard_repository.dart';
 
@@ -6,7 +8,7 @@ class GetProductByIdUseCase {
 
   GetProductByIdUseCase(this.repository);
 
-  Stream<ProductEntities> call(String id) {
+  Stream<Either<Failure, ProductEntities>> call(String id) {
     return repository.getProductById(id);
   }
 }

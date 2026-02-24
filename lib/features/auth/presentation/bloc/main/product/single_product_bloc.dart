@@ -1,6 +1,7 @@
 import 'dart:async';
 
-
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
@@ -11,7 +12,7 @@ part 'single_product_state.dart';
 
 class SingleProductBloc extends Bloc<SingleProductEvent, SingleProductState> {
   final GetProductByIdUseCase getProductByIdUseCase;
-  StreamSubscription<ProductEntities>? _productSubscription;
+  StreamSubscription<Either<Failure, ProductEntities>>? _productSubscription;
 
   SingleProductBloc({required this.getProductByIdUseCase})
       : super(SingleProductInitial()) {
@@ -27,7 +28,10 @@ class SingleProductBloc extends Bloc<SingleProductEvent, SingleProductState> {
     _productSubscription?.cancel();
     try {
       _productSubscription = getProductByIdUseCase(event.productId).listen(
-        (product) => add(UpdateSingleProductEvent(product)),
+        (result) => result.fold(
+          (failure) => emit(SingleProductError(failure.message)),
+          (product) => add(UpdateSingleProductEvent(product)),
+        ),
         onError: (error) => emit(SingleProductError(error.toString())),
       );
     } catch (e) {

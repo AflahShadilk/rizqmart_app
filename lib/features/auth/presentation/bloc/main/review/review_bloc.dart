@@ -31,14 +31,14 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
     Emitter<ReviewState> emit,
   ) async {
     emit(ReviewLoading());
-    try {
-      await addReviewUseCase(event.review);
-      emit(ReviewAddedSuccess());
-
-      add(GetReviewsEvent(productId: event.review.productId));
-    } catch (e) {
-      emit(ReviewError(message: e.toString()));
-    }
+    final result = await addReviewUseCase(event.review);
+    result.fold(
+      (failure) => emit(ReviewError(message: failure.message)),
+      (_) {
+        emit(ReviewAddedSuccess());
+        add(GetReviewsEvent(productId: event.review.productId));
+      },
+    );
   }
 
   Future<void> _onGetReviews(
@@ -46,34 +46,38 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
     Emitter<ReviewState> emit,
   ) async {
     emit(ReviewLoading());
-    try {
-      final reviews = await getReviewsUseCase(event.productId);
+    final reviewsResult = await getReviewsUseCase(event.productId);
+    
+    await reviewsResult.fold(
+      (failure) async => emit(ReviewError(message: failure.message)),
+      (reviews) async {
+        final currentUser = FirebaseAuth.instance.currentUser;
+        if (currentUser != null) {
+          final purchaseResult = await checkPurchaseUseCase(currentUser.uid, event.productId);
+          final userReviewResult = await getUserReviewUseCase(currentUser.uid, event.productId);
 
-      // Check purchase status for the current user
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        final hasPurchased = await checkPurchaseUseCase(
-          currentUser.uid,
-          event.productId,
-        );
-        final existingReview = await getUserReviewUseCase(
-          currentUser.uid,
-          event.productId,
-        );
-        emit(ReviewsWithPurchaseStatus(
-          reviews: reviews,
-          hasPurchased: hasPurchased,
-          existingReview: existingReview,
-        ));
-      } else {
-        // Not logged in — can only view
-        emit(ReviewsWithPurchaseStatus(
-          reviews: reviews,
-          hasPurchased: false,
-        ));
-      }
-    } catch (e) {
-      emit(ReviewError(message: e.toString()));
-    }
+          purchaseResult.fold(
+            (failure) => emit(ReviewError(message: failure.message)),
+            (hasPurchased) {
+              userReviewResult.fold(
+                (failure) => emit(ReviewError(message: failure.message)),
+                (existingReview) {
+                  emit(ReviewsWithPurchaseStatus(
+                    reviews: reviews,
+                    hasPurchased: hasPurchased,
+                    existingReview: existingReview,
+                  ));
+                },
+              );
+            },
+          );
+        } else {
+          emit(ReviewsWithPurchaseStatus(
+            reviews: reviews,
+            hasPurchased: false,
+          ));
+        }
+      },
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import '../../../entities/main/wallet_entity.dart';
 import '../../../repositories/main/wallet_repository.dart';
 
@@ -7,7 +8,7 @@ class GetWalletBalanceUseCase {
 
   GetWalletBalanceUseCase(this.repository);
 
-  Future<Either<String, WalletEntity>> call(String userId) {
+  Future<Either<Failure, WalletEntity>> call(String userId) {
     return repository.getWalletBalance(userId);
   }
 }

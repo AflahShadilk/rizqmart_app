@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import '../../../entities/main/wallet_transaction_entity.dart';
 import '../../../repositories/main/wallet_repository.dart';
 
@@ -7,7 +8,7 @@ class RequestWithdrawalUseCase {
 
   RequestWithdrawalUseCase(this.repository);
 
-  Future<Either<String, WalletTransactionEntity>> call({
+  Future<Either<Failure, WalletTransactionEntity>> call({
     required String userId,
     required double amount,
   }) {

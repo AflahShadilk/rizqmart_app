@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/cart/add_to_cart_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/cart/clear_cart_item_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/cart/decreament_cart_item_usecase.dart';
@@ -19,7 +18,7 @@ class CartBloc extends Bloc<CartEvent,CartState>{
   final IncrementCartItemUsecase incrementCartItemUsecase;
   final DecreamentCartItemUsecase decreamentCartItemUsecase;
   final ClearCartItemUsecase clearCartItemUsecase;
-  StreamSubscription<List<CartEntities>>?cartSubscription;
+
   CartBloc({
     required this.getCartItemsUsecase,
     required this.addToCartUsecase,
@@ -28,7 +27,6 @@ class CartBloc extends Bloc<CartEvent,CartState>{
     required this.incrementCartItemUsecase,
     required this.decreamentCartItemUsecase,
     required this.clearCartItemUsecase,
-    
   }):super(CartInitialState()){
     on<GetCartItemsEvent>(onGetCartItems);
     on<AddToCartEvent>(onAddToCart);
@@ -37,92 +35,81 @@ class CartBloc extends Bloc<CartEvent,CartState>{
     on<IncrementQuantityEvent>(onIncrementQuantity);
     on<DecrementQuantityEvent>(onDecrementQuantity);
     on<ClearCartEvent>(onClearCart);
-
   }
   
   Future<void>onGetCartItems(
     GetCartItemsEvent event,
     Emitter<CartState>emit
   )async{
-   emit(const CartLoadingState());
-   try{
-    await cartSubscription?.cancel();
-    await emit.forEach<List<CartEntities>>(
+    emit(const CartLoadingState());
+    await emit.forEach(
       getCartItemsUsecase.call(), 
-      onData: (items){
-        if(items.isEmpty){
-          return const CartEmptyState();
-        }
-        return CartLoadedState.fromItems(items);
+      onData: (result){
+        return result.fold(
+          (failure) => CartErrorState(message: failure.message),
+          (items) {
+             if(items.isEmpty){
+               return const CartEmptyState();
+             }
+             return CartLoadedState.fromItems(items);
+          },
+        );
       },
       onError: (error, stackTrace) {
         return CartErrorState(message: error.toString());
-      },);
-      
-   }catch (e){
-    emit(CartErrorState(message: e.toString()));
-   }
+      },
+    );
   }
+
   Future<void>onAddToCart(
-  AddToCartEvent event,
-  Emitter<CartState>emit
+    AddToCartEvent event,
+    Emitter<CartState>emit
   )async{
-  try{
-    await addToCartUsecase.call(event.productId,event. item);
-
-  }catch (e){
-    emit(CartErrorState(message:'Failed to add to cart: ${e.toString()}' ));
-  }
-}
-
- Future<void>onRemoveFromCart(RemoveFromCartEvent event,Emitter<CartState>emit)async{
-  try{
-    await removeFromCartUsecase.call(event.cartItemId);
-  }catch (e){
-    emit(CartErrorState(message:'Failed to remove from cart: ${e.toString()}' ));
-
-  }
- }
-
- Future <void> onUpdateQuantity(UpdateQuantityEvent event,Emitter<CartState>emit)async{
-  try{
-    await updateCartitemQuantityUsecase.call(event.cartItemId, event.count);
-  }catch (e){
-    emit(CartErrorState(message: 'Failed to update: ${e.toString()}'));
-  }
- }
-
- Future<void>onIncrementQuantity(IncrementQuantityEvent event,Emitter<CartState>emit)async{
-  try{
-    await incrementCartItemUsecase.call(event.cartItemId);
-  }catch(e){
-   emit(CartErrorState(message: 'Failed to increment: ${e.toString()}'));
-  }
- }
-
- Future<void>onDecrementQuantity(DecrementQuantityEvent event,Emitter<CartState>emit)async{
-  try{
-    await decreamentCartItemUsecase.call(event.cartItemId);
-  }catch(e){
-    emit(CartErrorState(message: 'Failed to decrement: ${e.toString()}'));
-  }
- }
-
- Future<void>onClearCart(ClearCartEvent event,Emitter<CartState>emit)async{
-  try{
-    await clearCartItemUsecase.call();
-    emit(const CartEmptyState());
-  }catch (e){
-    emit(CartErrorState(message: 'Failed to clear cart: ${e.toString()}'));
-    
+    final result = await addToCartUsecase.call(event.productId,event. item);
+    result.fold(
+      (failure) => emit(CartErrorState(message:'Failed to add to cart: ${failure.message}' )),
+      (_) => null, // Success is handled by the stream
+    );
   }
 
- }
+  Future<void>onRemoveFromCart(RemoveFromCartEvent event,Emitter<CartState>emit)async{
+    final result = await removeFromCartUsecase.call(event.cartItemId);
+    result.fold(
+      (failure) => emit(CartErrorState(message:'Failed to remove from cart: ${failure.message}' )),
+      (_) => null,
+    );
+  }
 
- @override
- Future<void> close() {
-   cartSubscription?.cancel();
-   return super.close();
- }
+  Future <void> onUpdateQuantity(UpdateQuantityEvent event,Emitter<CartState>emit)async{
+    final result = await updateCartitemQuantityUsecase.call(event.cartItemId, event.count);
+    result.fold(
+      (failure) => emit(CartErrorState(message: 'Failed to update: ${failure.message}')),
+      (_) => null,
+    );
+  }
+
+  Future<void>onIncrementQuantity(IncrementQuantityEvent event,Emitter<CartState>emit)async{
+    final result = await incrementCartItemUsecase.call(event.cartItemId);
+    result.fold(
+      (failure) => emit(CartErrorState(message: 'Failed to increment: ${failure.message}')),
+      (_) => null,
+    );
+  }
+
+  Future<void>onDecrementQuantity(DecrementQuantityEvent event,Emitter<CartState>emit)async{
+    final result = await decreamentCartItemUsecase.call(event.cartItemId);
+    result.fold(
+      (failure) => emit(CartErrorState(message: 'Failed to decrement: ${failure.message}')),
+      (_) => null,
+    );
+  }
+
+  Future<void>onClearCart(ClearCartEvent event,Emitter<CartState>emit)async{
+    final result = await clearCartItemUsecase.call();
+    result.fold(
+      (failure) => emit(CartErrorState(message: 'Failed to clear cart: ${failure.message}')),
+      (_) => emit(const CartEmptyState()),
+    );
+  }
 }
 

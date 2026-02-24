@@ -29,12 +29,11 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   ) async {
     emit(UserProfileLoadingState());
 
-    try {
-      final profile = await getUserProfileUsecase.call(event.userId);
-      emit(UserProfileLoadedState(profile: profile));
-    } catch (e) {
-      emit(UserProfileErrorState(message: e.toString()));
-    }
+    final result = await getUserProfileUsecase.call(event.userId);
+    result.fold(
+      (failure) => emit(UserProfileErrorState(message: failure.message)),
+      (profile) => emit(UserProfileLoadedState(profile: profile)),
+    );
   }
 
   Future<void> onUpdateUserProfile(
@@ -43,28 +42,22 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   ) async {
     emit(UserProfileLoadingState());
 
-    try {
-      final updatedProfile = await updateProfileUsecase.call(event.profile);
-      emit(UserProfileLoadedState(profile: updatedProfile));
-    } catch (e) {
-      emit(UserProfileErrorState(message: e.toString()));
-    }
+    final result = await updateProfileUsecase.call(event.profile);
+    result.fold(
+      (failure) => emit(UserProfileErrorState(message: failure.message)),
+      (updatedProfile) => emit(UserProfileLoadedState(profile: updatedProfile)),
+    );
   }
 
   Future<void> onUploadProfilePhoto(
     UploadProfilePhotoEvent event,
     Emitter<UserProfileState> emit,
   ) async {
-    
-
-    try {
-      final photoUrl = await uploadProfilePhotoUsecase.call(event.userId, event.file);
-      emit(UserProfilePhotoUploadedState(photoUrl: photoUrl));
-      
-      
-    } catch (e) {
-      emit(UserProfileErrorState(message: e.toString()));
-    }
+    final result = await uploadProfilePhotoUsecase.call(event.userId, event.file);
+    result.fold(
+      (failure) => emit(UserProfileErrorState(message: failure.message)),
+      (photoUrl) => emit(UserProfilePhotoUploadedState(photoUrl: photoUrl)),
+    );
   }
 
   Future<void> onDeleteProfilePhoto(
@@ -73,12 +66,12 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   ) async {
     emit(UserProfileLoadingState());
 
-    try {
-      await deleteProfilePhotoUsecase.call(event.userId);
-      
-      add(LoadUserProfileEvent(userId: event.userId));
-    } catch (e) {
-      emit(UserProfileErrorState(message: e.toString()));
-    }
+    final result = await deleteProfilePhotoUsecase.call(event.userId);
+    result.fold(
+      (failure) => emit(UserProfileErrorState(message: failure.message)),
+      (_) {
+        add(LoadUserProfileEvent(userId: event.userId));
+      },
+    );
   }
 }

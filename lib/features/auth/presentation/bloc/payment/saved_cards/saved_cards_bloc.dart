@@ -24,8 +24,11 @@ class SavedCardsBloc extends Bloc<SavedCardsEvent, SavedCardsState> {
       LoadSavedCardsEvent event, Emitter<SavedCardsState> emit) async {
     emit(SavedCardsLoading());
     try {
-      final cards = await getSavedCardsUseCase(event.userId);
-      emit(SavedCardsLoaded(cards));
+      final result = await getSavedCardsUseCase(event.userId);
+      result.fold(
+        (failure) => emit(SavedCardsError(failure.message)),
+        (cards) => emit(SavedCardsLoaded(cards)),
+      );
     } catch (e) {
       emit(SavedCardsError(e.toString()));
     }
@@ -35,9 +38,14 @@ class SavedCardsBloc extends Bloc<SavedCardsEvent, SavedCardsState> {
       AddSavedCardEvent event, Emitter<SavedCardsState> emit) async {
     emit(SavedCardsLoading());
     try {
-      await addSavedCardUseCase(event.card, event.userId);
-      emit(const SavedCardOperationSuccess('Card added successfully'));
-      add(LoadSavedCardsEvent(event.userId)); 
+      final result = await addSavedCardUseCase(event.card, event.userId);
+      result.fold(
+        (failure) => emit(SavedCardsError(failure.message)),
+        (_) {
+          emit(const SavedCardOperationSuccess('Card added successfully'));
+          add(LoadSavedCardsEvent(event.userId));
+        },
+      );
     } catch (e) {
       emit(SavedCardsError(e.toString()));
     }
@@ -47,9 +55,14 @@ class SavedCardsBloc extends Bloc<SavedCardsEvent, SavedCardsState> {
       DeleteSavedCardEvent event, Emitter<SavedCardsState> emit) async {
     emit(SavedCardsLoading());
     try {
-      await deleteSavedCardUseCase(event.cardId, event.userId);
-      emit(const SavedCardOperationSuccess('Card removed successfully'));
-      add(LoadSavedCardsEvent(event.userId)); 
+      final result = await deleteSavedCardUseCase(event.cardId, event.userId);
+      result.fold(
+        (failure) => emit(SavedCardsError(failure.message)),
+        (_) {
+          emit(const SavedCardOperationSuccess('Card removed successfully'));
+          add(LoadSavedCardsEvent(event.userId));
+        },
+      );
     } catch (e) {
       emit(SavedCardsError(e.toString()));
     }

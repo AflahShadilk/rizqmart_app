@@ -31,6 +31,11 @@ class NotificationsUpdatedEvent extends NotificationEvent {
   const NotificationsUpdatedEvent(this.notifications);
 }
 
+class NotificationErrorEvent extends NotificationEvent {
+  final String message;
+  const NotificationErrorEvent(this.message);
+}
+
 class ClearAllNotificationsEvent extends NotificationEvent {
   final String userId;
   const ClearAllNotificationsEvent(this.userId);

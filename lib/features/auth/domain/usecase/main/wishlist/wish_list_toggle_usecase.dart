@@ -13,6 +13,6 @@ class WishListToggleUsecase {
   const WishListToggleUsecase(this.addToWishListUsecase,this.deleteFrmWishListUsecase,this.wishListRepository);
   Future<Either<Failure,Unit>>call(String productId,WishListEntities item)async{
     final isFav=await wishListRepository.isFavorate(productId);
-    return isFav.fold((failure)=>left(failure), ( fav)=>fav? deleteFrmWishListUsecase(productId):addToWishListUsecase(productId,item));
+    return isFav.fold((failure)=>Left(failure), ( fav)=>fav? deleteFrmWishListUsecase(productId):addToWishListUsecase(productId,item));
   }
 }

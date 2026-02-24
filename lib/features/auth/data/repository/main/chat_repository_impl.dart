@@ -1,3 +1,6 @@
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/error_handler.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/chat_data_source.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/chat_entity.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
@@ -9,7 +12,7 @@ class ChatRepositoryImpl implements ChatRepository {
   ChatRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<String> createChatRoom({
+  Future<Either<Failure, String>> createChatRoom({
     required String orderId,
     required String userId,
     String adminId = 'admin',
@@ -17,45 +20,49 @@ class ChatRepositoryImpl implements ChatRepository {
     String? productName,
     String? productImage,
     String? userFcmToken,
-  }) async {
-    return await remoteDataSource.createChatRoom(
-      orderId: orderId,
-      userId: userId,
-      adminId: adminId,
-      productId: productId,
-      productName: productName,
-      productImage: productImage,
-      userFcmToken: userFcmToken,
-    );
+  }) {
+    return ErrorHandler.executeApiCall(() async {
+      return await remoteDataSource.createChatRoom(
+        orderId: orderId,
+        userId: userId,
+        adminId: adminId,
+        productId: productId,
+        productName: productName,
+        productImage: productImage,
+        userFcmToken: userFcmToken,
+      );
+    });
   }
 
   @override
-  Stream<List<ChatEntity>> getUserChats(String userId) {
-    return remoteDataSource.getUserChats(userId);
+  Stream<Either<Failure, List<ChatEntity>>> getUserChats(String userId) {
+    return ErrorHandler.executeApiStream(() => remoteDataSource.getUserChats(userId));
   }
 
   @override
-  Stream<List<ChatEntity>> getAdminChats(String adminId) {
-    return remoteDataSource.getAdminChats(adminId);
+  Stream<Either<Failure, List<ChatEntity>>> getAdminChats(String adminId) {
+    return ErrorHandler.executeApiStream(() => remoteDataSource.getAdminChats(adminId));
   }
 
   @override
-  Stream<List<MessageEntity>> getMessages(String chatId) {
-    return remoteDataSource.getMessages(chatId);
+  Stream<Either<Failure, List<MessageEntity>>> getMessages(String chatId) {
+    return ErrorHandler.executeApiStream(() => remoteDataSource.getMessages(chatId));
   }
 
   @override
-  Future<void> sendMessage({
+  Future<Either<Failure, void>> sendMessage({
     required String chatId,
     required String senderId,
     required String text,
     required String senderRole,
-  }) async {
-    await remoteDataSource.sendMessage(
-      chatId: chatId,
-      senderId: senderId,
-      text: text,
-      senderRole: senderRole,
-    );
+  }) {
+    return ErrorHandler.executeApiCall(() async {
+      await remoteDataSource.sendMessage(
+        chatId: chatId,
+        senderId: senderId,
+        text: text,
+        senderRole: senderRole,
+      );
+    });
   }
 }

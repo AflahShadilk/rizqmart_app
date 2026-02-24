@@ -1,3 +1,6 @@
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/error_handler.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/core/services/stripe_services.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/cart_data_source.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/order_data_source.dart';
@@ -21,13 +24,10 @@ class PaymentRepositoryImpl implements PaymentRepository {
   });
 
   @override
-  Future<OrderEntities> createOrder(OrderEntities order) async {
-    try {
+  Future<Either<Failure, OrderEntities>> createOrder(OrderEntities order) {
+    return ErrorHandler.executeApiCall(() async {
       final authenticatedUserId = orderDataSource.currentUserId;
-      
-      if (authenticatedUserId.isEmpty) {
-        throw Exception('User not authenticated');
-      }
+      if (authenticatedUserId.isEmpty) throw Exception('User not authenticated');
 
       final orderId = await orderDataSource.placeOrder(
         OrderFirestoreModel(
@@ -70,40 +70,29 @@ class PaymentRepositoryImpl implements PaymentRepository {
         userPhone: order.userPhone,
         deliveryNotes: order.deliveryNotes,
       );
-    } catch (e) {
-      throw Exception('Failed to create order: $e');
-    }
+    });
   }
 
   @override
-  Future<PaymentEntity> payWithStripe(OrderEntities order, {SavedCardEntity? savedCard}) async {
-    try {
-      if (order.orderId.isEmpty) {
-        throw Exception('Order ID is required for Stripe payment');
-      }
+  Future<Either<Failure, PaymentEntity>> payWithStripe(OrderEntities order, {SavedCardEntity? savedCard}) {
+    return ErrorHandler.executeApiCall(() async {
+      if (order.orderId.isEmpty) throw Exception('Order ID is required for Stripe payment');
 
       final authenticatedUserId = orderDataSource.currentUserId;
-      
-      if (authenticatedUserId.isEmpty) {
-        throw Exception('User not authenticated');
-      }
+      if (authenticatedUserId.isEmpty) throw Exception('User not authenticated');
 
-      
       final paymentIntent = await StripeService.createPaymentIntent(
         amount: order.totalCost,
         currency: 'INR',
         orderId: order.orderId,
       );
 
-      if (!paymentIntent['success']) {
-        throw Exception('Failed to create payment intent');
-      }
+      if (!paymentIntent['success']) throw Exception('Failed to create payment intent');
 
       Map<String, dynamic> confirmation;
       final String paymentIntentId = paymentIntent['paymentIntentId'];
 
       if (savedCard != null) {
-        
          confirmation = await StripeService.confirmPaymentWithSavedCard(
            clientSecret: paymentIntent['clientSecret'],
            paymentMethodId: savedCard.paymentMethodId,
@@ -114,16 +103,11 @@ class PaymentRepositoryImpl implements PaymentRepository {
            merchantDisplayName: 'RizqMart',
          );
 
-         if (!success) {
-           throw Exception('Payment cancelled or failed');
-         }
-         
+         if (!success) throw Exception('Payment cancelled or failed');
          confirmation = await StripeService.confirmPayment(paymentIntentId);
       }
 
-      if (confirmation['success'] != true) {
-        throw Exception('Payment verification failed');
-      }
+      if (confirmation['success'] != true) throw Exception('Payment verification failed');
 
       final payment = PaymentFirestoreModel(
         paymentId: paymentIntentId,
@@ -146,23 +130,16 @@ class PaymentRepositoryImpl implements PaymentRepository {
       });
 
       return payment;
-    } catch (e) {
-      throw Exception('Stripe payment failed: $e');
-    }
+    });
   }
 
   @override
-  Future<PaymentEntity> payWithCOD(OrderEntities order) async {
-    try {
-      if (order.orderId.isEmpty) {
-        throw Exception('Order ID is required for COD payment');
-      }
+  Future<Either<Failure, PaymentEntity>> payWithCOD(OrderEntities order) {
+    return ErrorHandler.executeApiCall(() async {
+      if (order.orderId.isEmpty) throw Exception('Order ID is required for COD payment');
 
       final authenticatedUserId = orderDataSource.currentUserId;
-      
-      if (authenticatedUserId.isEmpty) {
-        throw Exception('User not authenticated');
-      }
+      if (authenticatedUserId.isEmpty) throw Exception('User not authenticated');
 
       final payment = PaymentFirestoreModel(
         paymentId: '',
@@ -193,27 +170,20 @@ class PaymentRepositoryImpl implements PaymentRepository {
         status: 'pending',
         createdAt: DateTime.now(),
       );
-    } catch (e) {
-      throw Exception('COD payment failed: $e');
-    }
+    });
   }
 
   @override
-  Future<PaymentEntity> cancelOrder(String orderId) async {
-    try {
+  Future<Either<Failure, PaymentEntity>> cancelOrder(String orderId) {
+    return ErrorHandler.executeApiCall(() async {
       final payment = await paymentDataSource.getPaymentByOrderId(orderId);
-
-      if (payment == null) {
-        throw Exception('Payment not found for order: $orderId');
-      }
+      if (payment == null) throw Exception('Payment not found for order: $orderId');
 
       await orderDataSource.cancelOrder(orderId);
 
       if (payment.method == 'stripe' && payment.status == 'completed') {
         final refunded = await StripeService.refundPayment(payment.paymentId);
-        if (!refunded) {
-          throw Exception('Stripe refund failed');
-        }
+        if (!refunded) throw Exception('Stripe refund failed');
       }
 
       await paymentDataSource.updatePaymentStatus(
@@ -230,29 +200,21 @@ class PaymentRepositoryImpl implements PaymentRepository {
         status: 'cancelled',
         createdAt: payment.createdAt,
       );
-    } catch (e) {
-      throw Exception('Failed to cancel order: $e');
-    }
+    });
   }
 
   @override
-  Future<PaymentEntity> refundOrder(String orderId, double amount) async {
-    try {
+  Future<Either<Failure, PaymentEntity>> refundOrder(String orderId, double amount) {
+    return ErrorHandler.executeApiCall(() async {
       final payment = await paymentDataSource.getPaymentByOrderId(orderId);
-
-      if (payment == null) {
-        throw Exception('Payment not found for order: $orderId');
-      }
+      if (payment == null) throw Exception('Payment not found for order: $orderId');
 
       if (payment.method == 'stripe') {
         final refunded = await StripeService.refundPayment(
           payment.paymentId,
           amount: amount,
         );
-
-        if (!refunded) {
-          throw Exception('Stripe refund failed');
-        }
+        if (!refunded) throw Exception('Stripe refund failed');
       }
 
       await paymentDataSource.updatePaymentStatus(
@@ -274,8 +236,6 @@ class PaymentRepositoryImpl implements PaymentRepository {
         status: 'refunded',
         createdAt: payment.createdAt,
       );
-    } catch (e) {
-      throw Exception('Failed to refund order: $e');
-    }
+    });
   }
 }

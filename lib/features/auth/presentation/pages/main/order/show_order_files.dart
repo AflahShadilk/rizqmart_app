@@ -314,10 +314,15 @@ Future<dynamic> modelBottomSheet(
 
                                         try {
                                           final userProfileRepo = sl<UserProfileRepository>();
-                                          final userProfile = await userProfileRepo.getUserProfile(userId);
-                                          if (userProfile.name.isNotEmpty) orderUserName = userProfile.name;
-                                          if (userProfile.email.isNotEmpty) userEmail = userProfile.email;
-                                          userPhone = userProfile.phoneNumber ?? 'N/A';
+                                          final userProfileResult = await userProfileRepo.getUserProfile(userId);
+                                          userProfileResult.fold(
+                                              (_) {},
+                                              (userProfile) {
+                                                if (userProfile.name.isNotEmpty) orderUserName = userProfile.name;
+                                                if (userProfile.email.isNotEmpty) userEmail = userProfile.email;
+                                                userPhone = userProfile.phoneNumber ?? 'N/A';
+                                              }
+                                          );
                                         } catch (_) {}
 
                                         final applyCouponState = context.read<ApplyCouponCubit>().state;

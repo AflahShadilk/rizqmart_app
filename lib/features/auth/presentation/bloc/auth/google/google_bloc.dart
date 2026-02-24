@@ -11,18 +11,20 @@ class GooogleAuthBloc extends Bloc<GooogleAuthEvent, GooogleAuthState> {
   GooogleAuthBloc({required this.signInWithGoogle}) : super(GooogleAuthInitial()) {
     on<SignInWithGoogleEvent>((event, emit) async {
       emit(GooogleAuthLoading());
-      try {
-        final user = await signInWithGoogle();
-        if (user != null) {
-          final pref = await SharedPreferences.getInstance();
-    await pref.setBool(saveKey, true);
-          emit(GooogleAuthSuccess(user));
-        } else {
-          emit(const GooogleAuthFailure("Sign-in cancelled"));
-        }
-      } catch (e) {
-        emit(GooogleAuthFailure(e.toString()));
-      }
+      final result = await signInWithGoogle();
+      
+      await result.fold(
+        (failure) async => emit(GooogleAuthFailure(failure.message)),
+        (user) async {
+          if (user != null) {
+            final pref = await SharedPreferences.getInstance();
+            await pref.setBool(saveKey, true);
+            emit(GooogleAuthSuccess(user));
+          } else {
+            emit(const GooogleAuthFailure("Sign-in cancelled"));
+          }
+        },
+      );
     });
   }
 }

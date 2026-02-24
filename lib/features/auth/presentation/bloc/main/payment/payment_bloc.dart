@@ -40,20 +40,16 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     InitializePaymentEvent event,
     Emitter<PaymentState> emit,
   ) async {
-    try {
-      emit(const PaymentLoadingState('Initializing payment...'));
+    emit(const PaymentLoadingState('Initializing payment...'));
 
-      currentOrder = event.order;
-      selectedPaymentMethod = event.paymentMethod;
-      selectedSavedCard = event.savedCard;
+    currentOrder = event.order;
+    selectedPaymentMethod = event.paymentMethod;
+    selectedSavedCard = event.savedCard;
 
-      emit(PaymentMethodSelectedState(
-        paymentMethod: event.paymentMethod,
-        order: event.order,
-      ));
-    } catch (e) {
-      emit(PaymentFailedState('Failed to initialize payment: $e'));
-    }
+    emit(PaymentMethodSelectedState(
+      paymentMethod: event.paymentMethod,
+      order: event.order,
+    ));
   }
 
   Future<void> onProcessPayment(
@@ -65,54 +61,57 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       return;
     }
 
-    try {
-      emit(const PaymentLoadingState('Creating order...'));
+    emit(const PaymentLoadingState('Creating order...'));
 
-      final createdOrder = await createOrderUsecase.call(currentOrder!);
-      currentOrder = createdOrder;
+    final createdOrderResult = await createOrderUsecase.call(currentOrder!);
+    
+    await createdOrderResult.fold(
+      (failure) async => emit(PaymentFailedState('Failed to create order: ${failure.message}')),
+      (createdOrder) async {
+        currentOrder = createdOrder;
 
-      if (selectedPaymentMethod == 'cod') {
-        emit(const PaymentLoadingState('Processing COD payment...'));
-        await payWithCODUseCase.call(createdOrder);
-
-        emit(PaymentSuccessState(
-          orderId: createdOrder.orderId,
-          payment: null,
-          order: createdOrder,
-        ));
-      } else if (selectedPaymentMethod == 'stripe' || selectedPaymentMethod == 'saved_card') { 
-        emit(const PaymentLoadingState('Processing Stripe payment...'));
-
-        final payment = await payWithStripeUseCase.call(createdOrder, savedCard: selectedSavedCard); 
-
-        emit(PaymentSuccessState(
-          orderId: createdOrder.orderId,
-          payment: payment,
-          order: createdOrder,
-        ));
-      } else if (selectedPaymentMethod == 'wallet') {
-        emit(const PaymentLoadingState('Processing Wallet payment...'));
-        
-        final result = await payWithWalletUseCase(
-          userId: createdOrder.userId,
-          amount: createdOrder.totalCost,
-          orderId: createdOrder.orderId,
-        );
-
-        result.fold(
-          (failure) => emit(PaymentFailedState(failure)),
-          (transaction) => emit(PaymentSuccessState(
+        if (selectedPaymentMethod == 'cod') {
+          emit(const PaymentLoadingState('Processing COD payment...'));
+          final paymentResult = await payWithCODUseCase.call(createdOrder);
+          paymentResult.fold(
+            (failure) => emit(PaymentFailedState('COD payment failed: ${failure.message}')),
+            (_) => emit(PaymentSuccessState(
+              orderId: createdOrder.orderId,
+              payment: null,
+              order: createdOrder,
+            )),
+          );
+        } else if (selectedPaymentMethod == 'stripe' || selectedPaymentMethod == 'saved_card') { 
+          emit(const PaymentLoadingState('Processing Stripe payment...'));
+          final paymentResult = await payWithStripeUseCase.call(createdOrder, savedCard: selectedSavedCard); 
+          paymentResult.fold(
+            (failure) => emit(PaymentFailedState('Stripe payment failed: ${failure.message}')),
+            (payment) => emit(PaymentSuccessState(
+              orderId: createdOrder.orderId,
+              payment: payment,
+              order: createdOrder,
+            )),
+          );
+        } else if (selectedPaymentMethod == 'wallet') {
+          emit(const PaymentLoadingState('Processing Wallet payment...'));
+          final result = await payWithWalletUseCase(
+            userId: createdOrder.userId,
+            amount: createdOrder.totalCost,
             orderId: createdOrder.orderId,
-            payment: null, 
-            order: createdOrder,
-          )),
-        );
-      } else {
-        emit(PaymentFailedState('Unknown payment method: $selectedPaymentMethod'));
-      }
-    } catch (e) {
-      emit(PaymentFailedState('Payment processing failed: $e'));
-    }
+          );
+          result.fold(
+            (failure) => emit(PaymentFailedState('Wallet payment failed: ${failure.message}')),
+            (transaction) => emit(PaymentSuccessState(
+              orderId: createdOrder.orderId,
+              payment: null, 
+              order: createdOrder,
+            )),
+          );
+        } else {
+          emit(PaymentFailedState('Unknown payment method: $selectedPaymentMethod'));
+        }
+      },
+    );
   }
 
   Future<void> onCancelPayment(
@@ -124,40 +123,40 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       return;
     }
 
-    try {
-      emit(const PaymentLoadingState('Cancelling order...'));
+    emit(const PaymentLoadingState('Cancelling order...'));
 
-      final cancelledPayment =
-          await cancelOrderUseCase.call(currentOrder!.orderId);
+    final result = await cancelOrderUseCase.call(currentOrder!.orderId);
+    
+    result.fold(
+      (failure) => emit(PaymentFailedState('Failed to cancel: ${failure.message}')),
+      (cancelledPayment) {
+        final orderId = currentOrder!.orderId;
+        currentOrder = null;
+        selectedPaymentMethod = null;
 
-      final orderId = currentOrder!.orderId;
-
-      currentOrder = null;
-      selectedPaymentMethod = null;
-
-      emit(CancellationSuccessState(
-        orderId: orderId,
-        cancelledPayment: cancelledPayment,
-        refundAmount: cancelledPayment.amount,
-      ));
-    } catch (e) {
-      emit(PaymentFailedState('Failed to cancel: $e'));
-    }
+        emit(CancellationSuccessState(
+          orderId: orderId,
+          cancelledPayment: cancelledPayment,
+          refundAmount: cancelledPayment.amount,
+        ));
+      },
+    );
   }
 
   Future<void> onRefundPayment(
     RefundPaymentEvent event,
     Emitter<PaymentState> emit,
   ) async {
-    try {
-      emit(const PaymentLoadingState('Processing refund...'));
-
-
-      emit(RefundSuccessState(
+    emit(const PaymentLoadingState('Processing refund...'));
+    // The previous implementation was a placeholder. 
+    // Usually, we would call refundOrderUseCase.
+    final result = await refundOrderUseCase.call(event.orderId, event.amount);
+    
+    result.fold(
+      (failure) => emit(PaymentFailedState('Refund failed: ${failure.message}')),
+      (_) => emit(RefundSuccessState(
         'Refund of ₹${event.amount.toStringAsFixed(2)} processed successfully',
-      ));
-    } catch (e) {
-      emit(PaymentFailedState('Refund failed: $e'));
-    }
+      )),
+    );
   }
 }

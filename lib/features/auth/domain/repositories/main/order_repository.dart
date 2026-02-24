@@ -1,8 +1,10 @@
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 
 abstract class OrderRepository {
-  Future<String> placeOrder(OrderEntities order);
-  Future<List<OrderEntities>> getUserOrders();
-  Future<OrderEntities> getOrderById(String orderId);
-  Future<void> cancelOrder(String orderId);
+  Future<Either<Failure, String>> placeOrder(OrderEntities order);
+  Future<Either<Failure, List<OrderEntities>>> getUserOrders();
+  Future<Either<Failure, OrderEntities>> getOrderById(String orderId);
+  Future<Either<Failure, void>> cancelOrder(String orderId);
 }

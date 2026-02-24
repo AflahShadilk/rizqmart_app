@@ -9,12 +9,11 @@ class AvailableCouponCubit extends Cubit<AvailableCouponState> {
       : super(AvailableCouponInitial());
 
   Future<void> loadCoupons() async {
-    try {
-      emit(AvailableCouponLoading());
-      final coupons = await getActiveCouponsUseCase();
-      emit(AvailableCouponLoaded(coupons));
-    } catch (e) {
-      emit(AvailableCouponError(e.toString()));
-    }
+    emit(AvailableCouponLoading());
+    final result = await getActiveCouponsUseCase();
+    result.fold(
+      (failure) => emit(AvailableCouponError(failure.message)),
+      (coupons) => emit(AvailableCouponLoaded(coupons)),
+    );
   }
 }

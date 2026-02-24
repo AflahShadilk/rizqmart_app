@@ -18,3 +18,10 @@ class LoadedProductEvent extends DashEvent{
 
   List<Object?> get props => [products];
 }
+
+class ErrorLoadingProductEvent extends DashEvent{
+  final String message;
+  const ErrorLoadingProductEvent(this.message);
+  @override
+  List<Object?> get props => [message];
+}

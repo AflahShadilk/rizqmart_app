@@ -1,3 +1,6 @@
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/error_handler.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/coupon_data_source.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/coupon_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/coupon_repository.dart';
@@ -8,7 +11,9 @@ class CouponRepositoryImpl implements CouponRepository {
   CouponRepositoryImpl({required this.dataSource});
 
   @override
-  Future<List<CouponEntity>> getActiveCoupons() async {
-    return await dataSource.getActiveCoupons();
+  Future<Either<Failure, List<CouponEntity>>> getActiveCoupons() {
+    return ErrorHandler.executeApiCall(() async {
+      return await dataSource.getActiveCoupons();
+    });
   }
 }

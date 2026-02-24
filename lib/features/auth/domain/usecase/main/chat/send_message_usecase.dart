@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/chat_repository.dart';
 
 class SendMessageUseCase {
@@ -5,13 +7,13 @@ class SendMessageUseCase {
 
   SendMessageUseCase(this.repository);
 
-  Future<void> call({
+  Future<Either<Failure, void>> call({
     required String chatId,
     required String senderId,
     required String text,
     required String senderRole,
   }) async {
-    await repository.sendMessage(
+    return repository.sendMessage(
       chatId: chatId,
       senderId: senderId,
       text: text,

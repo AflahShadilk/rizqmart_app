@@ -13,10 +13,13 @@ class PaymentSelectionCubit extends Cubit<PaymentSelectionState> {
     if (getSavedCardsUseCase == null) return;
     try {
       emit(state.copyWith(isLoading: true));
-      final cards = await getSavedCardsUseCase!(userId);
-      emit(state.copyWith(isLoading: false, savedCards: cards));
+      final result = await getSavedCardsUseCase!(userId);
+      result.fold(
+        (failure) => emit(state.copyWith(isLoading: false, errorMessage: failure.message)),
+        (cards) => emit(state.copyWith(isLoading: false, savedCards: cards)),
+      );
     } catch (e) {
-      emit(state.copyWith(isLoading: false));
+      emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
     }
   }
 

@@ -1,13 +1,13 @@
 import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/wallet_entity.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/wallet_transaction_entity.dart';
 
-
 abstract class WalletRepository {
-  Future<Either<String, WalletEntity>> getWalletBalance(String userId);
-  Either<String, Stream<WalletEntity>> getWalletStream(String userId); 
+  Future<Either<Failure, WalletEntity>> getWalletBalance(String userId);
+  Stream<Either<Failure, WalletEntity>> getWalletStream(String userId); 
   
-  Future<Either<String, WalletTransactionEntity>> creditWallet({
+  Future<Either<Failure, WalletTransactionEntity>> creditWallet({
     required String userId,
     required double amount,
     required String description,
@@ -15,7 +15,7 @@ abstract class WalletRepository {
     required TransactionType type,
   });
 
-  Future<Either<String, WalletTransactionEntity>> debitWallet({
+  Future<Either<Failure, WalletTransactionEntity>> debitWallet({
     required String userId,
     required double amount,
     required String description,
@@ -23,9 +23,9 @@ abstract class WalletRepository {
     required TransactionType type,
   });
 
-  Future<Either<String, List<WalletTransactionEntity>>> getTransactions(String userId);
+  Future<Either<Failure, List<WalletTransactionEntity>>> getTransactions(String userId);
   
-  Future<Either<String, WalletTransactionEntity>> requestWithdrawal({
+  Future<Either<Failure, WalletTransactionEntity>> requestWithdrawal({
     required String userId,
     required double amount,
   });

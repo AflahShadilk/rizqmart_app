@@ -1,11 +1,13 @@
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
 
 abstract class AddressRepository {
-  Future<List<AddressEntities>>getAddresses(String userId);
-  Future<AddressEntities> addAddress(AddressEntities addAddress);
-  Future<AddressEntities >updateAdress(AddressEntities updateAddress);
+  Future<Either<Failure, List<AddressEntities>>> getAddresses(String userId);
+  Future<Either<Failure, AddressEntities>> addAddress(AddressEntities addAddress);
+  Future<Either<Failure, AddressEntities>> updateAdress(AddressEntities updateAddress);
 
-  Future<void>deleteAddress(String userId,String addressId);
-  Future<void>setDefaultAddress(String userId,String addressId);
-  Future<Map<String,dynamic>>getCurrentLocation();
+  Future<Either<Failure, void>> deleteAddress(String userId, String addressId);
+  Future<Either<Failure, void>> setDefaultAddress(String userId, String addressId);
+  Future<Either<Failure, Map<String, dynamic>>> getCurrentLocation();
 }

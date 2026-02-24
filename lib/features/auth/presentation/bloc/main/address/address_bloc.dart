@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rizqmart/core/services/location/location_services.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/address/add_address_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/address/delete_address_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/address/get_address_usecase.dart';
@@ -38,13 +37,11 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     Emitter<AddressState> emit,
   ) async {
     emit(AddressLoadingState());
-
-    try {
-      final addresses = await getAddressUsecase.call(event.userId);
-      emit(AddressesLoadedState(addresses: addresses));
-    } catch (e) {
-      emit(AddressErrorState(message: e.toString()));
-    }
+    final result = await getAddressUsecase.call(event.userId);
+    result.fold(
+      (failure) => emit(AddressErrorState(message: failure.message)),
+      (addresses) => emit(AddressesLoadedState(addresses: addresses)),
+    );
   }
 
   Future<void> _onAddAddress(
@@ -52,15 +49,14 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     Emitter<AddressState> emit,
   ) async {
     emit(AddressLoadingState());
-
-    try {
-      final newAddress = await addAddressUsecase.call(event.address);
-      emit(AddressAddedState(address: newAddress));
-
-      add(LoadAddressesEvent(userId: event.address.userId));
-    } catch (e) {
-      emit(AddressErrorState(message: e.toString()));
-    }
+    final result = await addAddressUsecase.call(event.address);
+    result.fold(
+      (failure) => emit(AddressErrorState(message: failure.message)),
+      (newAddress) {
+        emit(AddressAddedState(address: newAddress));
+        add(LoadAddressesEvent(userId: event.address.userId));
+      },
+    );
   }
 
   Future<void> _onUpdateAddress(
@@ -68,15 +64,14 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     Emitter<AddressState> emit,
   ) async {
     emit(AddressLoadingState());
-
-    try {
-      final updatedAddress = await updateAddressUsecase.call(event.address);
-      emit(AddressUpdatedState(address: updatedAddress));
-
-      add(LoadAddressesEvent(userId: event.address.userId));
-    } catch (e) {
-      emit(AddressErrorState(message: e.toString()));
-    }
+    final result = await updateAddressUsecase.call(event.address);
+    result.fold(
+      (failure) => emit(AddressErrorState(message: failure.message)),
+      (updatedAddress) {
+        emit(AddressUpdatedState(address: updatedAddress));
+        add(LoadAddressesEvent(userId: event.address.userId));
+      },
+    );
   }
 
   Future<void> _onDeleteAddress(
@@ -84,15 +79,14 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     Emitter<AddressState> emit,
   ) async {
     emit(AddressLoadingState());
-
-    try {
-      await deleteAddressUsecase.call(event.userId, event.addressId);
-      emit(AddressDeletedState(message: 'Address deleted successfully'));
-
-      add(LoadAddressesEvent(userId: event.userId));
-    } catch (e) {
-      emit(AddressErrorState(message: e.toString()));
-    }
+    final result = await deleteAddressUsecase.call(event.userId, event.addressId);
+    result.fold(
+      (failure) => emit(AddressErrorState(message: failure.message)),
+      (_) {
+        emit(AddressDeletedState(message: 'Address deleted successfully'));
+        add(LoadAddressesEvent(userId: event.userId));
+      },
+    );
   }
 
   Future<void> _onSetDefaultAddress(
@@ -100,65 +94,34 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     Emitter<AddressState> emit,
   ) async {
     emit(AddressLoadingState());
-
-    try {
-      await setDefaultAddressUsecase.call(event.userId, event.addressId);
-      emit(DefaultAddressSetState(message: 'Default address updated'));
-
-      add(LoadAddressesEvent(userId: event.userId));
-    } catch (e) {
-      emit(AddressErrorState(message: e.toString()));
-    }
+    final result = await setDefaultAddressUsecase.call(event.userId, event.addressId);
+    result.fold(
+      (failure) => emit(AddressErrorState(message: failure.message)),
+      (_) {
+        emit(DefaultAddressSetState(message: 'Default address updated'));
+        add(LoadAddressesEvent(userId: event.userId));
+      },
+    );
   }
 
   Future<void> _onGetCurrentLocation(
     GetCurrentLocationEvent event,
     Emitter<AddressState> emit,
   ) async {
-    try {
-      emit(LocationLoadingState());
-
-      
-      final locationData = await getCurrentLocationUsecase.call();
-
-      emit(
-        LocationLoadedState(
-          latitude: locationData['latitude'] as double,
-          longitude: locationData['longitude'] as double,
-          accuracy: locationData['accuracy'] as double? ?? 0.0,
-          addressName: locationData['addressName'] as String?,
-        ),
-      );
-    } on LocationException catch (e) {
-      
-      emit(
-        AddressErrorState(
-          message: e.getUserFriendlyMessage(),
-        ),
-      );
-    } catch (e) {
-      
-      String errorMessage = 'An unexpected error occurred. Please try again.';
-
-      final errorStr = e.toString();
-
-      if (errorStr.contains('Location services are disabled')) {
-        errorMessage = 'Please enable location services in Settings > Location';
-      } else if (errorStr.contains('Location permission')) {
-        errorMessage =
-            'Location permission is required. Please grant it in app settings.';
-      } else if (errorStr.contains('timed out')) {
-        errorMessage = 'Location request timed out. Please try again.';
-      } else if (errorStr.contains('No last known location')) {
-        errorMessage =
-            'No location found. Please check your location settings.';
-      }
-
-      emit(
-        AddressErrorState(
-          message: errorMessage,
-        ),
-      );
-    }
+    emit(LocationLoadingState());
+    final result = await getCurrentLocationUsecase.call();
+    result.fold(
+      (failure) => emit(AddressErrorState(message: failure.message)),
+      (locationData) {
+        emit(
+          LocationLoadedState(
+            latitude: locationData['latitude'] as double,
+            longitude: locationData['longitude'] as double,
+            accuracy: locationData['accuracy'] as double? ?? 0.0,
+            addressName: locationData['addressName'] as String?,
+          ),
+        );
+      },
+    );
   }
 }
