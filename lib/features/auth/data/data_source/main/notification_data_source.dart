@@ -6,6 +6,7 @@ abstract class NotificationDataSource {
   Stream<List<NotificationModel>> getNotifications(String userId);
   Future<void> markAsRead(String userId, String notificationId);
   Future<void> markAllAsRead(String userId);
+  Future<void> clearAllNotifications(String userId);
 }
 
 class NotificationDataSourceImpl implements NotificationDataSource {
@@ -50,6 +51,22 @@ class NotificationDataSourceImpl implements NotificationDataSource {
 
     for (var doc in snapshot.docs) {
       batch.update(doc.reference, {'isRead': true});
+    }
+
+    await batch.commit();
+  }
+
+  @override
+  Future<void> clearAllNotifications(String userId) async {
+    final batch = firestore.batch();
+    final snapshot = await firestore
+        .collection('users')
+        .doc(userId)
+        .collection('notifications')
+        .get();
+
+    for (var doc in snapshot.docs) {
+      batch.delete(doc.reference);
     }
 
     await batch.commit();

@@ -35,6 +35,7 @@ import 'package:rizqmart/features/auth/presentation/pages/onboarding/splash_scre
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/welcome1.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/view_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/not_found_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/notifications_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> onGenerate(RouteSettings settings) {
@@ -209,6 +210,9 @@ case AppRoutes.aboutUs:
           );
         }
         return _error();
+
+      case AppRoutes.notifications:
+        return MaterialPageRoute(builder: (_) => const NotificationsPage());
 
       default:
         return MaterialPageRoute(

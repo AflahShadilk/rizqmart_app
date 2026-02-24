@@ -24,10 +24,12 @@ class _NotificationButtonState extends State<NotificationButton> {
         return Positioned(
           top: 130, 
           right: 70, 
-          child: const Material(
+          child: Material(
             elevation: 8,
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-            child: NotificationDropdown(),
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            child: NotificationDropdown(
+              onClose: () => _overlayController.hide(),
+            ),
           ),
         );
       },

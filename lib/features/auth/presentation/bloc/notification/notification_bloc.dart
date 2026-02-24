@@ -16,6 +16,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     on<NotificationsUpdatedEvent>(_onNotificationsUpdated);
     on<MarkAsReadEvent>(_onMarkAsRead);
     on<MarkAllAsReadEvent>(_onMarkAllAsRead);
+    on<ClearAllNotificationsEvent>(_onClearAllNotifications);
   }
 
   Future<void> _onLoadNotifications(
@@ -70,6 +71,16 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) async {
     try {
       await repository.markAllAsRead(event.userId);
+    } catch (_) {
+    }
+  }
+
+  Future<void> _onClearAllNotifications(
+    ClearAllNotificationsEvent event,
+    Emitter<NotificationState> emit,
+  ) async {
+    try {
+      await repository.clearAllNotifications(event.userId);
     } catch (_) {
     }
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/services/firestore_product/access_product_variant_details.dart';
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
@@ -12,6 +13,7 @@ import 'package:rizqmart/features/auth/domain/entities/main/show_product_entitie
 import 'package:responsive_display/responsive_display.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_event.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/product/product_cart_check_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/product/single_product_bloc.dart';
@@ -162,6 +164,89 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   _buildTitleSection(
                                       context, selectedVariantIndex),
                                   _buildPriceSection(context, colorScheme),
+                                  16.h,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Quantity',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      BlocBuilder<CounterCubit, int>(
+                                        builder: (context, state) {
+                                          return Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: colorScheme.surface,
+                                              borderRadius: BorderRadius.circular(8),
+                                              border: Border.all(
+                                                color: colorScheme.outline.withValues(alpha: 0.3),
+                                              ),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    context.read<CounterCubit>().decreament();
+                                                  },
+                                                  borderRadius: BorderRadius.circular(6),
+                                                  child: Container(
+                                                    padding: const EdgeInsets.all(4),
+                                                    decoration: BoxDecoration(
+                                                      color: state > 1 
+                                                          ? colorScheme.primary.withValues(alpha: 0.1) 
+                                                          : colorScheme.onSurface.withValues(alpha: 0.05),
+                                                      borderRadius: BorderRadius.circular(6),
+                                                    ),
+                                                    child: Icon(
+                                                      Icons.remove_rounded,
+                                                      size: 20,
+                                                      color: state > 1 
+                                                          ? colorScheme.primary 
+                                                          : colorScheme.onSurface.withValues(alpha: 0.4),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 36,
+                                                  child: Text(
+                                                    state.toString(),
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    context.read<CounterCubit>().increament();
+                                                  },
+                                                  borderRadius: BorderRadius.circular(6),
+                                                  child: Container(
+                                                    padding: const EdgeInsets.all(4),
+                                                    decoration: BoxDecoration(
+                                                      color: colorScheme.primary.withValues(alpha: 0.1),
+                                                      borderRadius: BorderRadius.circular(6),
+                                                    ),
+                                                    child: Icon(
+                                                      Icons.add_rounded,
+                                                      size: 20,
+                                                      color: colorScheme.primary,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                   if (variantCount > 1)
                                     _buildVariantsSection(context, variantCount,
                                         selectedVariantIndex, colorScheme),
@@ -415,71 +500,89 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     }
                     final totalPrice = (price * state).toStringAsFixed(2);
 
-                    return MainButton(
-                      label: 'Add to Cart ₹$totalPrice',
-                      icon: Icons.shopping_bag_outlined,
-                      onPress: () {
-                        if (state < 1) {
-                          showToast(
-                            context,
-                            'Please select at least 1 item',
-                            type: ToastType.error,
-                          );
-                          return;
+                    return BlocBuilder<CartBloc, CartState>(
+                      builder: (context, cartState) {
+                        // ignore: unused_local_variable
+                        int currentCartCount = 0;
+                        if (cartState is CartLoadedState) {
+                          currentCartCount = cartState.items.fold(0, (previousValue, element) => previousValue + element.count);
                         }
-
-                        final cartState = context.read<CartBloc>().state;
-                        final itemExists = context.read<ProductCartCheckCubit>().isItemInCart(
-                          cartState,
-                          productId,
-                          selectedVariantIndex,
-                        );
-
-                        if (itemExists) {
-                          final variantName = getVariantName(
-                            widget.product,
-                            selectedVariantIndex,
-                          );
-                          showToast(
-                            context,
-                            '${getName(widget.product)} ($variantName) already in cart!',
-                            type: ToastType.warning,
-                          );
-                          return;
-                        }
-
-                        final cartItem = CartEntities(
-                          id: productId,
-                          name: getName(widget.product),
-                          brand: getBrand(widget.product),
-                          description: getDescription(widget.product),
-                          variantDetails: getVariantDetails(widget.product),
-                          count: state,
-                          variantIndex: selectedVariantIndex,
-                          userId: '',
-                          discount: widget.product.discount,
-                        );
-
-                        context.read<CartBloc>().add(
-                              AddToCartEvent(
-                                productId: productId,
-                                item: cartItem,
-                              ),
+                        
+                        return MainButton(
+                          label: 'Add to Cart $state Items  ₹$totalPrice',
+                          icon: Icons.shopping_bag_outlined,
+                          onPress: () {
+                            if (state < 1) {
+                              showToast(
+                                context,
+                                'Please select at least 1 item',
+                                type: ToastType.error,
+                              );
+                              return;
+                            }
+    
+                            final itemExists = context.read<ProductCartCheckCubit>().isItemInCart(
+                              cartState,
+                              productId,
+                              selectedVariantIndex,
+                            );
+    
+                            final variantName = getVariantName(
+                              widget.product,
+                              selectedVariantIndex,
                             );
 
-                        final variantName = getVariantName(
-                          widget.product,
-                          selectedVariantIndex,
-                        );
+                            if (!itemExists) {
+                              final cartItem = CartEntities(
+                                id: productId,
+                                name: getName(widget.product),
+                                brand: getBrand(widget.product),
+                                description: getDescription(widget.product),
+                                variantDetails: getVariantDetails(widget.product),
+                                count: state,
+                                variantIndex: selectedVariantIndex,
+                                userId: '',
+                                discount: widget.product.discount,
+                              );
+    
+                              context.read<CartBloc>().add(
+                                    AddToCartEvent(
+                                      productId: productId,
+                                      item: cartItem,
+                                    ),
+                                  );
+                            } else {
+                              if (cartState is CartLoadedState) {
+                                final existingItem = cartState.items.firstWhere(
+                                  (element) => element.id == productId && element.variantIndex == selectedVariantIndex,
+                                );
+                                
+                                int newCount = existingItem.count + state;
+                                if (newCount > 20) {
+                                  newCount = 20;
+                                }
+                                
+                                context.read<CartBloc>().add(
+                                  UpdateQuantityEvent(
+                                    cartItemId: '${productId}_variant_$selectedVariantIndex',
+                                    count: newCount,
+                                  ),
+                                );
+                                
+                              }
+                            }
 
-                        showToast(
-                          context,
-                          'Added $state x ${getName(widget.product)} ($variantName) to cart!',
-                          type: ToastType.success,
+                            showToast(
+                              context,
+                              "added '$state' '${getName(widget.product)}' '$variantName' to cart",
+                              type: ToastType.success,
+                            );
+                            _showAddToCartAnimation(context);
+                          },
+                          color: context.cs.success,
+                          textColor: ThemeCubit.textSecondaryDark,
                         );
-                      },
-                      color: context.cs.success,
-                      textColor: ThemeCubit.textSecondaryDark,
+                      }
                     );
                   },
                 ),
@@ -489,6 +592,52 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         },
       ),
     );
+  }
+
+  void _showAddToCartAnimation(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withValues(alpha: 0.1),
+      transitionDuration: const Duration(milliseconds: 400),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Center(
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.5, end: 1.0).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: Curves.elasticOut,
+              ),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: context.cs.surface,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: context.cs.primary.withValues(alpha: 0.2),
+                    blurRadius: 20,
+                    spreadRadius: 5,
+                  )
+                ],
+              ),
+              child: Icon(
+                Icons.shopping_cart_checkout_rounded,
+                size: 60,
+                color: context.cs.primary,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    Future.delayed(const Duration(milliseconds: 1200), () {
+      if (context.mounted && Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+    });
   }
 
   // ignore: unused_element
@@ -674,6 +823,89 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 ),
               ),
             ],
+          ],
+        ),
+        16.h,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Quantity',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            BlocBuilder<CounterCubit, int>(
+              builder: (context, state) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: colorScheme.outline.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          context.read<CounterCubit>().decreament();
+                        },
+                        borderRadius: BorderRadius.circular(6),
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: state > 1 
+                                ? colorScheme.primary.withValues(alpha: 0.1) 
+                                : colorScheme.onSurface.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Icon(
+                            Icons.remove_rounded,
+                            size: 20,
+                            color: state > 1 
+                                ? colorScheme.primary 
+                                : colorScheme.onSurface.withValues(alpha: 0.4),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 36,
+                        child: Text(
+                          state.toString(),
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          context.read<CounterCubit>().increament();
+                        },
+                        borderRadius: BorderRadius.circular(6),
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: colorScheme.primary.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Icon(
+                            Icons.add_rounded,
+                            size: 20,
+                            color: colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ],

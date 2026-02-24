@@ -6,6 +6,7 @@ abstract class NotificationRepository {
   Stream<List<NotificationModel>> getNotifications(String userId);
   Future<void> markAsRead(String userId, String notificationId);
   Future<void> markAllAsRead(String userId);
+  Future<void> clearAllNotifications(String userId);
 }
 
 class NotificationRepositoryImpl implements NotificationRepository {
@@ -26,5 +27,10 @@ class NotificationRepositoryImpl implements NotificationRepository {
   @override
   Future<void> markAllAsRead(String userId) async {
     return dataSource.markAllAsRead(userId);
+  }
+
+  @override
+  Future<void> clearAllNotifications(String userId) async {
+    return dataSource.clearAllNotifications(userId);
   }
 }

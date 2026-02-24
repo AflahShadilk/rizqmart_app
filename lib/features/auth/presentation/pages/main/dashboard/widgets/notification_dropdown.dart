@@ -12,7 +12,8 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 
 
 class NotificationDropdown extends StatelessWidget {
-  const NotificationDropdown({super.key});
+  final VoidCallback? onClose;
+  const NotificationDropdown({super.key, this.onClose});
 
   @override
   Widget build(BuildContext context) {
@@ -229,11 +230,11 @@ class NotificationDropdown extends StatelessWidget {
               fontSize: 15,
             ),
           ),
-          InkWell(
+           InkWell(
             onTap: () {
                final userId = FirebaseAuth.instance.currentUser?.uid;
                if (userId != null) {
-                 context.read<NotificationBloc>().add(MarkAllAsReadEvent(userId));
+                 context.read<NotificationBloc>().add(ClearAllNotificationsEvent(userId));
                }
             },
             borderRadius: BorderRadius.circular(6),
@@ -244,7 +245,7 @@ class NotificationDropdown extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
-                'Mark all read', 
+                'Clear all', 
                 style: context.ts.labelSmall?.copyWith(
                   color: context.cs.primary, 
                   fontWeight: FontWeight.w600,
@@ -261,7 +262,8 @@ class NotificationDropdown extends StatelessWidget {
   Widget _buildFooter(BuildContext context) {
      return InkWell(
        onTap: () {
-         
+         onClose?.call();
+         Navigator.pushNamed(context, '/notifications');
        },
        child: Container(
          padding: const EdgeInsets.symmetric(vertical: 10),

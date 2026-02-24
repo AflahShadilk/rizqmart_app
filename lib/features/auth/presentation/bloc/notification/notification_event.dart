@@ -30,3 +30,8 @@ class NotificationsUpdatedEvent extends NotificationEvent {
   final List<NotificationModel> notifications;
   const NotificationsUpdatedEvent(this.notifications);
 }
+
+class ClearAllNotificationsEvent extends NotificationEvent {
+  final String userId;
+  const ClearAllNotificationsEvent(this.userId);
+}
