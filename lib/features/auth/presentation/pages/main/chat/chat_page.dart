@@ -1,18 +1,19 @@
 
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/chat/chat_send_cubit.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/chat/chat_page_init_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/chat/widgets/chat_bubble.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/app_custom_colors.dart';
 
+/// Main chat screen displaying messages between user and delivery partner/seller.
 class ChatPage extends StatefulWidget {
   final String orderId;
   final String orderDisplayId;
@@ -41,31 +42,41 @@ class ChatPage extends StatefulWidget {
   State<ChatPage> createState() => _ChatPageState();
 }
 
+/// Manages chat dependencies, scroll controller, and message inputs.
 class _ChatPageState extends State<ChatPage> {
+  // Controller for multiline message input
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  late final String _currentUserId;
-  late final String _chatId;
   late final ChatSendCubit _chatSendCubit;
+  late final ChatPageInitCubit _chatPageInitCubit;
 
   @override
   void initState() {
     super.initState();
-    _currentUserId = FirebaseAuth.instance.currentUser!.uid;
-    _chatId = widget.orderId;
+    // Send message operations
     _chatSendCubit = ChatSendCubit(chatBloc: context.read<ChatBloc>());
+    // Initialization: fetches UserId and handles chat room creation
+    _chatPageInitCubit = ChatPageInitCubit(chatBloc: context.read<ChatBloc>());
 
-    
-    context.read<ChatBloc>().add(CreateChatRoomEvent(
+    _chatPageInitCubit.initChat(
       orderId: widget.orderId,
-      userId: _currentUserId,
-      adminId: widget.sellerId ?? 'admin',
+      sellerId: widget.sellerId,
       productId: widget.productId,
       productName: widget.productName,
       productImage: widget.productImage,
-    ));
+    );
   }
 
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _scrollController.dispose();
+    _chatSendCubit.close();
+    _chatPageInitCubit.close();
+    super.dispose();
+  }
+
+  /// Animates the scroll view to the latest message at the bottom.
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
@@ -76,11 +87,13 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _sendMessage() {
+  /// Sends the current text using [ChatSendCubit].
+  void _sendMessage(String currentUserId) {
+    if (currentUserId.isEmpty) return;
     final sent = _chatSendCubit.sendMessage(
       text: _messageController.text,
-      chatId: _chatId,
-      senderId: _currentUserId,
+      chatId: widget.orderId,
+      senderId: currentUserId,
       senderRole: 'user',
     );
     if (sent) _messageController.clear();
@@ -90,6 +103,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return ResponsiveWrapper(child: Scaffold(
       backgroundColor: context.cs.surface,
+      // Top bar showing partner name and order ID
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,8 +116,10 @@ class _ChatPageState extends State<ChatPage> {
         elevation: 1,
         shadowColor: context.cs.shadow.withValues(alpha: 0.1),
       ),
+      // Main body reacting to different ChatBloc states
       body: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
+          // Auto-scroll when new messages arrive
           if (state is ChatMessagesLoadedState) {
             WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
           }
@@ -117,8 +133,22 @@ class _ChatPageState extends State<ChatPage> {
             return Center(child: Text(state.message));
           }
 
-          return Column(
-            children: [
+          return BlocProvider.value(
+            value: _chatPageInitCubit,
+            // Resolves currentUserId and ensures user is logged in
+            child: BlocBuilder<ChatPageInitCubit, ChatPageInitState>(
+              builder: (context, initState) {
+                if (initState.isError || initState.currentUserId.isEmpty) {
+                  return Center(
+                    child: Text('Please log in to chat',
+                        style: context.ts.bodyMedium?.copyWith(color: AppCustomColors.errorText)),
+                  );
+                }
+
+                final currentUserId = initState.currentUserId;
+
+                return Column(
+                  children: [
               Expanded(
                 child: BlocBuilder<ChatBloc, ChatState>(
                   builder: (context, state) {
@@ -126,6 +156,7 @@ class _ChatPageState extends State<ChatPage> {
                        if (state.messages.isEmpty) {
                          return Center(child: Text('Start conversation with ${widget.deliveryPartnerName}', style: context.ts.bodyMedium?.copyWith(color: context.cs.onSurfaceVariant)));
                        }
+                       // Renders message history efficiently using ListView.builder
                        return ListView.builder(
                          controller: _scrollController,
                          itemCount: state.messages.length,
@@ -133,8 +164,9 @@ class _ChatPageState extends State<ChatPage> {
                          reverse: true, 
                          itemBuilder: (context, index) {
                            final message = state.messages[index];
-                           final bool isMe = message.senderId == _currentUserId;
+                           final bool isMe = message.senderId == currentUserId;
                            
+                           // Logic to display a date header when messages cross days
                            bool showDateHeader = false;
                            if (index == state.messages.length - 1) {
                              showDateHeader = true;
@@ -149,7 +181,9 @@ class _ChatPageState extends State<ChatPage> {
 
                            return Column(
                              children: [
+                               // Injects date divider on new days
                                if (showDateHeader) _buildDateDivider(message.timestamp),
+                               // Extracts and formats the message content
                                ChatBubble(
                                  message: message,
                                  isMe: isMe,
@@ -163,30 +197,32 @@ class _ChatPageState extends State<ChatPage> {
                   },
                 ),
               ),
-              if (widget.orderStatus.toLowerCase() == 'cancelled')
-                _buildCancelledMessage(context)
-              else
-                _buildInputArea(context),
-            ],
-          );
+                if (widget.orderStatus.toLowerCase() == 'cancelled')
+                  _buildCancelledMessage(context)
+                else
+                  _buildInputArea(context, currentUserId),
+              ],
+            );
+          }));
 
         },
       ),
     ));
   }
 
+  /// Shows an overlay banner if the order is cancelled, preventing further chatting.
   Widget _buildCancelledMessage(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
-      color: Colors.red.withValues(alpha: 0.1),
+      color: AppCustomColors.errorBackground,
       child: Column(
         children: [
-          Icon(Icons.block, color: Colors.red.withValues(alpha: 0.7)),
+          const Icon(Icons.block, color: AppCustomColors.errorIcon),
           8.h,
           Text(
             'This chat is closed because the order was cancelled.',
-            style: context.ts.bodyMedium?.copyWith(color: Colors.red),
+            style: context.ts.bodyMedium?.copyWith(color: AppCustomColors.errorText),
             textAlign: TextAlign.center,
           ),
         ],
@@ -194,7 +230,8 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget _buildInputArea(BuildContext context) {
+  /// Input section for composing a new message (contains TextField and Send Button).
+  Widget _buildInputArea(BuildContext context, String currentUserId) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -231,7 +268,7 @@ class _ChatPageState extends State<ChatPage> {
           ),
           8.w,
           IconButton(
-            onPressed: _sendMessage,
+            onPressed: () => _sendMessage(currentUserId),
             icon: Icon(Icons.send_rounded, color: context.cs.primary),
             style: IconButton.styleFrom(
               backgroundColor: context.cs.primary.withValues(alpha: 0.1),
@@ -243,6 +280,7 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  /// Simple line divider with a formatted date string centered.
   Widget _buildDateDivider(DateTime timestamp) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),

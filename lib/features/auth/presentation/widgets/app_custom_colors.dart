@@ -1,0 +1,7 @@
+import 'package:flutter/material.dart';
+
+class AppCustomColors {
+  static const Color errorBackground = Color.fromRGBO(244, 67, 54, 0.1);
+  static const Color errorIcon = Color.fromRGBO(244, 67, 54, 0.7);
+  static const Color errorText = Colors.red;
+}
