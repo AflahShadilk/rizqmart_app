@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
 
+/// Data model for an individual chat message, enabling serialization to and from Firestore.
 class MessageModel extends MessageEntity {
   const MessageModel({
     required super.id,

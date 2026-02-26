@@ -8,6 +8,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 
+/// A page widget that lists and manages the user's incoming push notifications and alerts.
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
 

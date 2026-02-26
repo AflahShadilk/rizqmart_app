@@ -9,6 +9,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_event.da
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
+/// A circular icon button widget that adds a specific product variant to the cart.
 class AddToCartButton extends StatelessWidget {
   const AddToCartButton({
     super.key,

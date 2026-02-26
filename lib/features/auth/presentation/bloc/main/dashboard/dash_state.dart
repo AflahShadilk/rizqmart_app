@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
 
+/// Base abstract class representing the data loading state of the dashboard feature.
 abstract class DashState extends Equatable{
   const DashState();
 @override

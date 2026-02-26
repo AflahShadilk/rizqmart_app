@@ -29,6 +29,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coup
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/auto_scrolling_coupon_list.dart';
 
+/// The primary home screen widget of the app showcasing products, offers, and a search interface.
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 

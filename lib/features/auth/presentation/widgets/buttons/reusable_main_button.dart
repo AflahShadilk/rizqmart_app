@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A prominent, general-purpose elevated button used across the application for primary actions.
 class MainButton extends StatelessWidget {
   final String label;
   final IconData? icon;

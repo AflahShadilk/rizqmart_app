@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A global utility function to display a temporary, non-blocking toast notification across the screen via OverlayEntry.
 void showToast(
   BuildContext context,
   String message,

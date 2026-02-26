@@ -7,6 +7,7 @@ import 'package:rizqmart/features/auth/domain/usecase/main/wishlist/wish_list_to
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
 
+/// BLoC monitoring and modifying the user's wishlist through toggles and deletions.
 class WishListBloc extends Bloc<WishListEvent, WishListState> {
   final AddToWishListUsecase addToWishListUsecase;
   final DeleteFrmWishListUsecase deleteFrmWishListUsecase;

@@ -5,6 +5,7 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
+/// An informative page detailing the company's background, mission, values, and general statistics.
 class AboutUsPage extends StatelessWidget {
   const AboutUsPage({super.key});
 

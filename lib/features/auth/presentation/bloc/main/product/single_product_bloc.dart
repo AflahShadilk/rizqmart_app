@@ -10,6 +10,7 @@ import 'package:rizqmart/features/auth/domain/usecase/main/dashboard/get_product
 part 'single_product_event.dart';
 part 'single_product_state.dart';
 
+/// BLoC responsible for fetching and maintaining the data of a single product's detail page.
 class SingleProductBloc extends Bloc<SingleProductEvent, SingleProductState> {
   final GetProductByIdUseCase getProductByIdUseCase;
   StreamSubscription<Either<Failure, ProductEntities>>? _productSubscription;

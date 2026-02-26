@@ -5,6 +5,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/auth/google/google.stat
 import 'package:rizqmart/features/auth/presentation/bloc/auth/google/google_event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Business logic for handling user sign-in via Google.
 class GooogleAuthBloc extends Bloc<GooogleAuthEvent, GooogleAuthState> {
   final SignInWithGoogle signInWithGoogle;
 

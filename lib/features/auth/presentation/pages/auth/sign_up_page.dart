@@ -21,6 +21,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/widgets/page_responsive.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
+/// A page widget that provides a registration form for new users to create an account.
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 

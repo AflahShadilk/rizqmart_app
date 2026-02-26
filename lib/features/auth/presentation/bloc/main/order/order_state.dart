@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 
+/// Base abstract class representing the success, error, or loading states of orders.
 abstract class OrderState extends Equatable {
   const OrderState();
 

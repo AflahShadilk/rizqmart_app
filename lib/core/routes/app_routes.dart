@@ -1,3 +1,4 @@
+/// Static class containing all predefined route names for app navigation.
 class AppRoutes {
   static const String splash = '/splash';
   static const String welcome = '/welcome';

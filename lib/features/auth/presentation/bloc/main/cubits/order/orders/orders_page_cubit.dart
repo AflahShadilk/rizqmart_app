@@ -5,6 +5,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_event.
 import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_state.dart';
 import 'orders_page_state.dart';
 
+/// Cubit linking the generic OrderBloc with specific UI load/empty/error states.
 class OrdersPageCubit extends Cubit<OrdersPageState> {
   final OrderBloc orderBloc;
   late final StreamSubscription _subscription;

@@ -5,6 +5,7 @@ import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/data/data_source/auth/google_auth_remote_data_source.dart';
 import 'package:rizqmart/features/auth/domain/repositories/auth/google_repository.dart';
 
+/// Repository implementation coordinating Google authentication processes and user mapping.
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
 

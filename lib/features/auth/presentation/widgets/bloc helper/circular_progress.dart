@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Returns a centered CircularProgressIndicator with a custom linear gradient shader mask.
 Center circularProgressIndicators() {
     return Center(
     child: ShaderMask(

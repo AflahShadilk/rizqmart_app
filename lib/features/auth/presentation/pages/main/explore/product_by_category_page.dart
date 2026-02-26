@@ -20,6 +20,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'filter_bottom_sheet.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
+/// A catalog page displaying a grid of products filtered by a specific category.
 class ProductByCategoryPage extends StatefulWidget {
   final String categoryName;
   const ProductByCategoryPage({super.key, required this.categoryName});

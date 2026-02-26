@@ -10,6 +10,7 @@ import 'package:rizqmart/features/auth/domain/usecase/main/cart/update_cartitem_
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
 
+/// Business logic managing the user's shopping cart, handling additions, updates, and removals.
 class CartBloc extends Bloc<CartEvent,CartState>{
   final GetCartItemsUsecase getCartItemsUsecase;
   final AddToCartUsecase addToCartUsecase;

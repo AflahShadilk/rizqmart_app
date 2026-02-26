@@ -3,6 +3,7 @@
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 
+/// A custom styled Google Sign-In button wrapped with shadow effects.
 class GoogleSignInButton extends StatelessWidget {
   final VoidCallback? onPressed;
 

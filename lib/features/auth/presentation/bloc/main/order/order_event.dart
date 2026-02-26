@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 
+/// Base abstract class grouping all order management intents.
 abstract class OrderEvent extends Equatable {
   const OrderEvent();
 

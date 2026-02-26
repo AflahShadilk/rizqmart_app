@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+/// Entity representing the overall numerical balance and currency details of a user's digital wallet.
 class WalletEntity extends Equatable {
   final String userId;
   final double balance;

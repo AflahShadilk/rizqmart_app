@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// A selectable input field that opens a date picker for choosing a user's date of birth.
 class DateOfBirthField extends StatelessWidget {
   final DateTime? selectedDate;
   final bool enabled;

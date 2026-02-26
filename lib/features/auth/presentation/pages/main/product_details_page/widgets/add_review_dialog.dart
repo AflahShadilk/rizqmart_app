@@ -6,6 +6,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/product/review_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/product/review_state.dart';
 
+/// A dialog widget that allows users to submit a new rating and comment or edit their existing review for a product.
 class AddReviewDialog extends StatelessWidget {
   final String productId;
   final String userId;

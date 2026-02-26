@@ -29,6 +29,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
 final userName = FirebaseAuth.instance.currentUser?.displayName ?? 'Customer';
 
+/// Presents a bottom sheet interface for users to review their cart, select options, and finalize checkout.
 Future<dynamic> modelBottomSheet(
   BuildContext context,
   CartLoadedState cartState,

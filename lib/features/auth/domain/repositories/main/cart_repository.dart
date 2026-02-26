@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 
+/// Abstract repository defining operations for the user's shopping cart.
 abstract class CartRepository {
   Stream<Either<Failure, List<CartEntities>>> getCartItems();
   Future<Either<Failure, void>> addtoCart(String productId, CartEntities item);

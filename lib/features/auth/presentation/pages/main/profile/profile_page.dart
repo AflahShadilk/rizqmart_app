@@ -20,6 +20,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 import '../wallet/wallet_screen.dart';
 
+/// The primary user account screen displaying the profile summary and a menu of account-related settings.
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 

@@ -7,6 +7,7 @@ import 'package:rizqmart/features/auth/data/model/main/order_firestore_model.dar
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/order_repository.dart';
 
+/// Repository implementation managing order creation, retrieval, and status updates through Firestore.
 class OrderRepositoryImpl implements OrderRepository {
   final OrderDataSource dataSource;
   final FirebaseAuth auth = FirebaseAuth.instance;

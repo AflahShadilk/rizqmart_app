@@ -6,6 +6,7 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/profilephoto/profile_photo_upload_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 
+/// A widget displaying the user's profile image, with optional support for uploading a new photo.
 class ProfilePhotoSection extends StatelessWidget {
   final String photoUrl;
   final String userId;

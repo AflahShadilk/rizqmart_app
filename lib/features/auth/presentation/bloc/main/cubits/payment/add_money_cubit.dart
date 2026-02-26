@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/add_money_state.dart';
 
+/// Cubit verifying input amounts for wallet funding before executing the transaction.
 class AddMoneyCubit extends Cubit<AddMoneyState> {
   AddMoneyCubit() : super(const AddMoneyState.initial());
 

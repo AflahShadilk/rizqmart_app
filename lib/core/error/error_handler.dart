@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:rizqmart/core/error/exceptions.dart';
 import 'package:rizqmart/core/error/failures.dart';
 
+/// Centralized error handling utility to wrap API calls and stream operations safely.
 class ErrorHandler {
   static Future<Either<Failure, T>> executeApiCall<T>(Future<T> Function() call) async {
     try {

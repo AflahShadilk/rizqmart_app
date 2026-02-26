@@ -1,3 +1,4 @@
+/// Entity representing basic user information obtained from Google Sign-In.
 class UserEntity {
   final String uid;
   final String? email;

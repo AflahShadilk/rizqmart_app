@@ -13,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_state.dart';
 
+/// A reusable card widget to display a single product's summary, image, and price within grid layouts.
 class ProductCard extends StatefulWidget {
   final ProductEntities product;
 

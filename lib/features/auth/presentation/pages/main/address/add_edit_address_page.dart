@@ -16,7 +16,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/buttons/back_button_
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
-
+/// A page widget that provides a form for adding a new address or editing an existing one for the user.
 class AddEditAddressPage extends StatelessWidget {
   final String userId;
   final AddressEntities? address;
@@ -85,7 +85,7 @@ class AddEditAddressPage extends StatelessWidget {
     );
   }
 }
-
+/// A stateless widget extracted to separate the form implementation details of the AddEdit address functionality.
 class AddressFormContent extends StatelessWidget {
   final String userId;
   final bool isEditMode;
@@ -410,7 +410,7 @@ class AddressFormContent extends StatelessWidget {
     }
   }
 }
-
+/// A specialized text field styled specifically for various inputs within the address form context.
 class AddressTextField extends StatelessWidget {
   final String? initialValue;
   final String label;

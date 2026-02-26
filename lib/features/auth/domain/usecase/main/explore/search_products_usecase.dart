@@ -3,6 +3,7 @@ import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/explore_entities.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/explore_repository.dart';
 
+/// Use case for finding products based on a specific textual search query.
 class SearchProductsUsecase {
   final ExploreRepository repository;
   const SearchProductsUsecase(this.repository);

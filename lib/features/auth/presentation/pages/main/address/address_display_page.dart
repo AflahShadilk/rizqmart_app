@@ -58,6 +58,7 @@ class AddressDisplayPage extends StatelessWidget {
   }
 }
 
+/// Internal view that renders the address list with bloc state conditions to show loading, empty, and loaded views.
 class _AddressDisplayView extends StatelessWidget {
   final String userId;
   final bool isSelecting;

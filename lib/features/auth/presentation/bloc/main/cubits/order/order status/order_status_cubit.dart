@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'order_status_state.dart';
 
+/// Cubit matching arbitrary textual order statuses constraints to a defined color and label.
 class OrderStatusCubit extends Cubit<OrderStatusState> {
   OrderStatusCubit(String status) : super(_resolve(status));
 

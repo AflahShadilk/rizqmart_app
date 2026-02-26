@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_state.dart';
 
+/// Cubit responsible for searching through local collections leveraging match functions.
 class SearchCubit extends Cubit<SearchState>{
   SearchCubit():super(SearchInitialState());
   

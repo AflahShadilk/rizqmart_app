@@ -3,6 +3,7 @@ import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/chat_repository.dart';
 
+/// Use case for streaming a real-time list of messages within a specific chat session.
 class GetMessagesUseCase {
   final ChatRepository repository;
 

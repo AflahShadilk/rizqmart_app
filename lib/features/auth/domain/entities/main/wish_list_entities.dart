@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
 
+/// Entity representing a product safely stored in the user's wishlist for future reference.
 class WishListEntities extends Equatable implements ShowProductEntities {
   @override
   final String id;

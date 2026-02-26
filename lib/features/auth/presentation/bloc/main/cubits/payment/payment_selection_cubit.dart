@@ -4,6 +4,7 @@ import 'package:rizqmart/features/auth/domain/usecase/main/payment/get_saved_car
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/payment_selection_state.dart';
 
 
+/// Cubit organizing loaded payment methods and holding the active selection logic.
 class PaymentSelectionCubit extends Cubit<PaymentSelectionState> {
   final GetSavedCardsUseCase? getSavedCardsUseCase;
 

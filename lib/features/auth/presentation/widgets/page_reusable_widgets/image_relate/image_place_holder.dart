@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 
+/// A base shimmer effect widget used as a loading placeholder for UI elements.
 class ShimmerPlaceholder extends StatelessWidget {
   final double height;
   final double width;
@@ -36,6 +37,7 @@ class ShimmerPlaceholder extends StatelessWidget {
   }
 }
 
+/// A circular variation of the shimmer placeholder, typically used for profile images or icons.
 class CircularShimmerPlaceholder extends StatelessWidget {
   final double size;
 
@@ -55,6 +57,7 @@ class CircularShimmerPlaceholder extends StatelessWidget {
 }
 
 
+/// A rectangular variation of the shimmer placeholder with customizable border radius.
 class RectangularShimmerPlaceholder extends StatelessWidget {
   final double height;
   final double width;

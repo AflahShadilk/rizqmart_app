@@ -15,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 
+/// A success confirmation screen shown immediately after an order is successfully placed.
 class SuccessPage extends StatelessWidget {
   final List<CartEntities> items;
   const SuccessPage({super.key, this.items = const []});

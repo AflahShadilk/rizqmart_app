@@ -46,6 +46,7 @@ Widget emptyCart(BuildContext context) {
 }
 
 
+/// A dismissible container widget displaying a single cart item with its image, variants, price details, and quantity controls.
 class ProductContainer extends StatelessWidget {
   const ProductContainer({super.key, required this.cartitems});
   final CartEntities cartitems;

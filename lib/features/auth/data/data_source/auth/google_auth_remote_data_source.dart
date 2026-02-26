@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+/// Interface for defining remote authentication operations like Google Sign-In and sign out.
 abstract class AuthRemoteDataSource {
   Future<User?> signInWithGoogle();
   Future<void> signOut();
@@ -8,6 +9,7 @@ abstract class AuthRemoteDataSource {
 }
 
 
+/// Firebase-backed implementation of the `AuthRemoteDataSource` for Google authentication.
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final FirebaseAuth firebaseAuth;
   final GoogleSignIn googleSignIn;

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/data/model/main/saved_card_model.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 
+/// Remote data source for securely managing a user's saved payment methods in Firestore.
 class SavedCardRemoteDataSource {
   final FirebaseFirestore firestore;
 

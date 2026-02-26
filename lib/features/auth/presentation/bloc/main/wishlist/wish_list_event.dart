@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/wish_list_entities.dart';
 
+/// Base abstract class representing actions modifying the wishlist catalogue.
 abstract class WishListEvent extends Equatable {
   @override
   List<Object?> get props => [];

@@ -11,6 +11,7 @@ import 'package:rizqmart/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
+/// A splash screen that shows an initial loading animation and handles routing based on user login status.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 

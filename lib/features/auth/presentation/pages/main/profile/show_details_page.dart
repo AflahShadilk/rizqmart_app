@@ -14,6 +14,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
+/// A read-only view of the user's detailed profile information, including contact details and bio.
 class ShowDetailsPage extends StatelessWidget {
   final UserProfileBloc profileBloc;
 

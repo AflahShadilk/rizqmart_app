@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+/// Base abstract class for actions modifying or querying digital wallet data.
 abstract class WalletEvent extends Equatable {
   const WalletEvent();
 

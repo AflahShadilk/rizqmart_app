@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 
+/// Base abstract class for triggering payment initialization, processing, cancellations, and refunds.
 abstract class PaymentEvent extends Equatable {
   const PaymentEvent();
 

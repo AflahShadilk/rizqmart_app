@@ -1,5 +1,6 @@
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
 
+/// Base abstract class for representing the address list view's current data phase.
 abstract class AddressPageState {}
 
 class AddressPageInitial extends AddressPageState {}

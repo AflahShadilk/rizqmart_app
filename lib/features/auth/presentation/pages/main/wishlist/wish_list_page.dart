@@ -14,6 +14,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
+/// A grid-based page viewing all of the user's bookmarked or favorite products.
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
 

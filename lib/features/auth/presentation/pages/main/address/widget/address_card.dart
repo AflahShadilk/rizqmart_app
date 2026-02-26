@@ -6,6 +6,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bl
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// A card widget displaying user address details with options to set as default, edit, or delete the address.
 class AddressCard extends StatelessWidget {
   final AddressEntities address;
   final String userId;

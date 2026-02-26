@@ -3,6 +3,7 @@ import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigation_bar.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// Displays a friendly placeholder view when the user has no saved items in their favorites.
 Widget buildEmptyState(BuildContext context) {
     return Center(
       child: Column(

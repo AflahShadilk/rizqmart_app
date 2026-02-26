@@ -1,6 +1,7 @@
 import 'package:rizqmart/features/auth/data/model/main/notification_model.dart';
 import 'package:equatable/equatable.dart';
 
+/// Base abstract class for all events handled by the [NotificationBloc].
 abstract class NotificationEvent extends Equatable {
   const NotificationEvent();
 

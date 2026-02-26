@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/payment_entity.dart';
 
+/// Data model for payment transactions, adapting `PaymentEntity` for Firestore storage.
 class PaymentFirestoreModel extends PaymentEntity {
   final String? approvalUrl;
   

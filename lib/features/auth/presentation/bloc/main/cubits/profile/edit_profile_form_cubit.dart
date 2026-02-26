@@ -6,6 +6,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profi
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_state.dart';
 
+/// Cubit capturing updated profile texts and integrating with the UserProfileBloc for commits.
 class EditProfileFormCubit extends Cubit<EditProfileFormState> {
   final UserProfileBloc profileBloc;
 

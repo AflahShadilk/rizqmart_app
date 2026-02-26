@@ -1,5 +1,6 @@
 part of 'single_product_bloc.dart';
 
+/// Base abstract class reflecting the status of the single product being retrieved.
 abstract class SingleProductState extends Equatable {
   const SingleProductState();
   

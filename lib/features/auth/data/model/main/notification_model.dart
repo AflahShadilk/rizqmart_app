@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/// Data model defining a user notification, tailored for Firestore serialization.
 class NotificationModel {
   final String id;
   final String title;

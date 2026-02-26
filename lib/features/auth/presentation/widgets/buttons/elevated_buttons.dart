@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+/// A reusable styling method for generating a primary Elevated Button.
 ElevatedButton elevatedButton(double fontSize,{required void Function()?onpress,required Color color,required EdgeInsetsGeometry? padd,required String content }) {
     return ElevatedButton(
                         onPressed: onpress,

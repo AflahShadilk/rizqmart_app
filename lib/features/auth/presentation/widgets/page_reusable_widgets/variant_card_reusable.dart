@@ -5,6 +5,7 @@ import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
+/// A card widget displaying a specific product variant, complete with its name, image, price, and selection state.
 class VariantCard extends StatelessWidget {
   final String productName;
   final String variantName;

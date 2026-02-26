@@ -14,6 +14,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/add
 import 'withdraw_screen.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// A screen displaying the user's current wallet balance, recent transactions, and options to add or withdraw funds.
 class WalletScreen extends StatelessWidget {
   final String userId;
   const WalletScreen({super.key, required this.userId});

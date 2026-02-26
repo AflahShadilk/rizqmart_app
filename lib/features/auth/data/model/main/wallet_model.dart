@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/wallet_entity.dart';
 
 
+/// Data model representing a user's digital wallet and its current balance in Firestore.
 class WalletModel extends WalletEntity {
   const WalletModel({
     required super.userId,

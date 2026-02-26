@@ -12,6 +12,7 @@ import 'package:rizqmart/features/auth/domain/entities/main/payment_entity.dart'
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/payment_repository.dart';
 
+/// Repository implementation orchestrating secure payment processing through Stripe and COD methods.
 class PaymentRepositoryImpl implements PaymentRepository {
   final PaymentDataSource paymentDataSource;
   final OrderDataSource orderDataSource;

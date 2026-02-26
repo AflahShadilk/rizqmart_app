@@ -13,6 +13,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_ev
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_bar.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/notification_button.dart';
 
+/// A custom app bar widget containing the logo, location indicator, search field, and user actions (notification, profile).
 Container topBarItems(
   BuildContext context,
   searchController,
@@ -123,6 +124,7 @@ Container topBarItems(
   );
 }
 
+/// Builds a circular user profile button displaying the avatar or a placeholder icon.
 Widget buildProfileButton(BuildContext context) {
   final currentUser = FirebaseAuth.instance.currentUser;
   final photoUrl = currentUser?.photoURL ?? '';
@@ -179,6 +181,7 @@ Widget buildProfileButton(BuildContext context) {
   );
 }
 
+/// Builds a quick login button for guest users to sign in.
 Widget buildLoginButton(BuildContext context) {
   return GestureDetector(
     onTap: () {
@@ -204,6 +207,7 @@ Widget buildLoginButton(BuildContext context) {
   );
 }
 
+/// Builds an interactive notification icon button.
 Widget buildNotificationButton(BuildContext context) {
   return GestureDetector(
     onTap: () {

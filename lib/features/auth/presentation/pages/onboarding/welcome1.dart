@@ -9,6 +9,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/auth/welcome_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/auth/welcome_state.dart';
 
+/// A flow widget that manages the onboarding welcome pages and animations for new users before they log in.
 class WelcomeFlow extends StatelessWidget {
   const WelcomeFlow({super.key});
 

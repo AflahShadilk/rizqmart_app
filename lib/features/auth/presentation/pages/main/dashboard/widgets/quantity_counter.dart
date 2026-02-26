@@ -6,6 +6,7 @@ import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/counter/counter_cubit.dart';
 
+/// A reusable +/- counter widget using the CounterCubit for adjusting item quantities.
 Widget quantityButton(ColorScheme colorScheme) {
     return BlocBuilder<CounterCubit,int>(builder: (context,state){
       return Container(

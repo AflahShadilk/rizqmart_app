@@ -3,6 +3,7 @@ import 'package:rizqmart/features/auth/domain/usecase/auth/forgotpass_usecase.da
 import 'package:rizqmart/features/auth/presentation/bloc/auth/forgot/forgot_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/forgot/forgot_state.dart';
 
+/// Business logic handling password recovery via email.
 class ForgotBloc extends Bloc<ForgotEvent,ForgotState>{
   final ForgotpassUsecase forgotpassUsecase;
   ForgotBloc({required this.forgotpassUsecase}):super(ForgotInitial()){

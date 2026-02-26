@@ -3,6 +3,7 @@ import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/dashboard_repository.dart';
 
+/// Use case for fetching the complete catalogue of products to display on the main dashboard.
 class GetProductUsecase {
   final DashboardRepository repository;
   GetProductUsecase(this.repository);

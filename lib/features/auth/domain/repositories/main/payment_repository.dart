@@ -4,6 +4,7 @@ import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart'
 import 'package:rizqmart/features/auth/domain/entities/main/payment_entity.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 
+/// Abstract repository outlining payment gateways and transaction status updates.
 abstract class PaymentRepository {
   Future<Either<Failure, OrderEntities>> createOrder(OrderEntities order);
   Future<Either<Failure, PaymentEntity>> payWithStripe(OrderEntities order, {SavedCardEntity? savedCard}); 

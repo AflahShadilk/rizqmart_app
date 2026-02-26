@@ -1,5 +1,6 @@
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 
+/// Base abstract class determining whether the user's order list is loading or populated.
 abstract class OrdersPageState {}
 
 class OrdersPageInitial extends OrdersPageState {}

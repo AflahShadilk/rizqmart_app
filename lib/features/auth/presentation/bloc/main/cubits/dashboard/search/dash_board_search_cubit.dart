@@ -3,6 +3,7 @@ import 'package:rizqmart/features/auth/domain/entities/main/show_product_entitie
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/dashboard/search/dash_board_search_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_cubit.dart';
 
+/// Cubit filtering dashboard products specifically for the search bar interactions.
 class DashboardSearchCubit extends Cubit<DashboardSearchState> {
   final SearchCubit searchCubit;
 

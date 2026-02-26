@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+/// Entity representing detailed user profile information, including demographics and wallet balance.
 class UserProfileEntities extends Equatable{
   final String userId;
   final String name;

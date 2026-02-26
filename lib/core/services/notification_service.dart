@@ -10,6 +10,7 @@ import 'package:rizqmart/core/routes/app_routes.dart';
 
 
 
+/// Singleton service orchestrating push notifications, local alerts, and Firebase Cloud Messaging logic.
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;

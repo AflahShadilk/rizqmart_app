@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rizqmart/features/auth/data/model/main/order_firestore_model.dart';
 
+/// Remote data source for handling order placement, retrieval, and status updates via Firestore.
 class OrderDataSource {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;

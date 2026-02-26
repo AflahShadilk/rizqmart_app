@@ -10,6 +10,7 @@ import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_wall
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_state.dart';
 
+/// Business logic orchestrating various payment gateways (Stripe, COD, Wallet) and order processing.
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   final CreateOrderUsecase createOrderUsecase;
   final PayWithStripeUseCase payWithStripeUseCase;

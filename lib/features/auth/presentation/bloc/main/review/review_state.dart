@@ -1,5 +1,6 @@
 part of 'review_bloc.dart';
 
+/// Base abstract class documenting whether reviews are loaded, loading, or errored.
 abstract class ReviewState extends Equatable {
   const ReviewState();
 

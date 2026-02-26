@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// Cubit containing simple increment/decrement logic for product quantities.
 class CounterCubit extends Cubit<int>{
    CounterCubit():super(1);
    void increament(){

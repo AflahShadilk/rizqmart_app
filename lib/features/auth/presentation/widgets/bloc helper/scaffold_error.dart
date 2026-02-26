@@ -4,6 +4,7 @@
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// Returns a floating, custom styled SnackBar widget used to display loading failure errors.
 SnackBar errorMessageScaffold(FailureLoadingProductState state) {
     return SnackBar(
   behavior: SnackBarBehavior.floating,

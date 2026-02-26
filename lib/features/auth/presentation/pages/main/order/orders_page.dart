@@ -11,6 +11,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/order
 import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// A page displaying a chronologically ordered list of the user's past and active orders.
 class OrdersPage extends StatelessWidget {
   const OrdersPage({super.key});
 

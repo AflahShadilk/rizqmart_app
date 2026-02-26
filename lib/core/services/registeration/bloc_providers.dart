@@ -33,6 +33,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/notification/notificati
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_cubit.dart';
 
+/// Centralized widget for providing all necessary BLoCs and Cubits to the application widget tree.
 class BlocProviders extends StatelessWidget {
   final GlobalKey<NavigatorState>? navigatorKey;
   const BlocProviders({super.key, this.navigatorKey});

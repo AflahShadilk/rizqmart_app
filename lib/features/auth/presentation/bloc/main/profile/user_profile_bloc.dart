@@ -6,6 +6,7 @@ import 'package:rizqmart/features/auth/domain/usecase/main/userprofile/upload_pr
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_state.dart';
 
+/// Business logic supervising user profiles, including photo uploads and data updates.
 class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   final GetUserProfileUsecase getUserProfileUsecase;
   final UpdateProfileUsecase updateProfileUsecase;

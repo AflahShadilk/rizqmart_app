@@ -1,3 +1,4 @@
+/// Base abstract class reflecting the status of the invoice generation process.
 abstract class InvoiceState {}
 
 class InvoiceInitial extends InvoiceState {}

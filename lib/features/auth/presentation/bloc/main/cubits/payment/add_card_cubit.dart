@@ -5,6 +5,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 import 'add_card_state.dart';
 
+/// Cubit coordinating the communication with Stripe to save a new payment card.
 class AddCardCubit extends Cubit<AddCardState> {
   AddCardCubit() : super(AddCardInitial());
 

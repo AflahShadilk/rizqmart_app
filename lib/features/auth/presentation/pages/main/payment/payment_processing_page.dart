@@ -18,6 +18,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/pay
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// A page that handles the processing state and outcome of an order payment.
 class PaymentProcessingPage extends StatefulWidget {
   final OrderEntities order;
   final String paymentMethod;

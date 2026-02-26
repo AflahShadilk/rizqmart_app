@@ -1,3 +1,4 @@
+/// Common interface defining essential product attributes for display across different views.
 abstract class ShowProductEntities {
   String get id;
   String get name;

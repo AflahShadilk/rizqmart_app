@@ -3,6 +3,7 @@ import 'package:rizqmart/core/error/failures.dart';
 import '../../../entities/main/wallet_entity.dart';
 import '../../../repositories/main/wallet_repository.dart';
 
+/// Use case for retrieving the current total available funds in a user's wallet.
 class GetWalletBalanceUseCase {
   final WalletRepository repository;
 

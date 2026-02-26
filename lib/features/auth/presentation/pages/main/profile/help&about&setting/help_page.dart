@@ -5,6 +5,7 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
+/// A support page providing frequently asked questions and contact information for user assistance.
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
 

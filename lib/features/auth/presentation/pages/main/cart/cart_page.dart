@@ -13,6 +13,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
+/// A page widget that displays the user's active shopping cart, item list, and order total.
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
 

@@ -37,6 +37,7 @@ import 'package:rizqmart/features/auth/presentation/pages/main/product_details_p
 import 'package:rizqmart/features/auth/presentation/widgets/not_found_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/notifications_page.dart';
 
+/// Utility class responsible for generating and routing material pages based on named routes.
 class RouteGenerator {
   static Route<dynamic> onGenerate(RouteSettings settings) {
     final args = settings.arguments;

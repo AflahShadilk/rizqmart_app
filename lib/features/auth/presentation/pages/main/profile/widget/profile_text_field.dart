@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 
+/// A customized text input field tailored for editing user profile information.
 class ProfileTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;

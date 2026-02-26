@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/coupon_entity.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/checkout/checkout_state.dart';
 
+/// Cubit managing all choices made throughout the multi-step checkout procedure.
 class CheckoutCubit extends Cubit<CheckoutState> {
   CheckoutCubit()
       : super(

@@ -5,6 +5,7 @@ import 'package:rizqmart/features/auth/data/data_source/main/saved_card_data_sou
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/saved_card_repository.dart';
 
+/// Repository implementation managing a user's saved payment methods securely.
 class SavedCardRepositoryImpl implements SavedCardRepository {
   final SavedCardRemoteDataSource dataSource;
 

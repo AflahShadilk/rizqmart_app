@@ -9,6 +9,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 
+/// A configuration screen allowing users to toggle app preferences like dark mode and view app version information.
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 

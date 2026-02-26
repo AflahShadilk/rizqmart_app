@@ -13,6 +13,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/add_card_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/add_card_state.dart';
 
+/// A secure form page allowing users to input and save new credit or debit card details.
 class AddCardPage extends StatefulWidget {
   final String userId;
   const AddCardPage({super.key, required this.userId});

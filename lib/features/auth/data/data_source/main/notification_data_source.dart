@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/data/model/main/notification_model.dart';
 
+/// Interface outlining operations for retrieving and managing user notifications.
 abstract class NotificationDataSource {
   Stream<List<NotificationModel>> getNotifications(String userId);
   Future<void> markAsRead(String userId, String notificationId);
@@ -9,6 +10,7 @@ abstract class NotificationDataSource {
   Future<void> clearAllNotifications(String userId);
 }
 
+/// Firestore implementation for real-time notification streaming and state management.
 class NotificationDataSourceImpl implements NotificationDataSource {
   final FirebaseFirestore firestore;
 

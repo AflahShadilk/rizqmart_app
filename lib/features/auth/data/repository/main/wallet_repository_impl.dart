@@ -9,6 +9,7 @@ import 'package:rizqmart/features/auth/domain/entities/main/wallet_transaction_e
 import 'package:rizqmart/features/auth/domain/repositories/main/wallet_repository.dart';
 
 
+/// Repository implementation managing digital wallet balances and logging related transactions across the app.
 class WalletRepositoryImpl implements WalletRepository {
   final WalletRemoteDataSource remoteDataSource;
 

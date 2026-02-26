@@ -3,6 +3,7 @@ import 'package:rizqmart/features/auth/domain/usecase/auth/signup_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signUp/signup_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signUp/signup_state.dart';
 
+/// Business logic for handling new user registration and validation.
 class SignupBloc extends Bloc<SignUpEvent,SignUpState>{
   final SignupUsecase signupUsecase;
   SignupBloc(this.signupUsecase):super(SignUpIniatial()){

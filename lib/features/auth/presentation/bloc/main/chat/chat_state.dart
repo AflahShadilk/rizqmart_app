@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
 
+/// Base abstract class representing the current chat context and message list state.
 abstract class ChatState extends Equatable {
   const ChatState();
 

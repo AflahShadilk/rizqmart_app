@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/data/model/main/dash_firestore_model.dart';
 
+/// Remote data source responsible for streaming and retrieving initial product data for the main dashboard.
 class DashboardDataSource {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   Stream<List<DashFirestoreModel>> getAllProducts() {

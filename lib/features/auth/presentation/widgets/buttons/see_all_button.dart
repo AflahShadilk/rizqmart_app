@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 
+/// A green stylized TextButton used for 'See all' navigation links.
 class ReusableSeeAllButton extends StatelessWidget {
   final VoidCallback onPress;
   const ReusableSeeAllButton({super.key, required this.onPress});

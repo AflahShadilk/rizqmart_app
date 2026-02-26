@@ -6,6 +6,7 @@ import 'package:rizqmart/features/auth/data/model/main/cart_firestore_model.dart
 import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/cart_repository.dart';
 
+/// Repository implementation connecting cart features to data sources seamlessly.
 class CartRepositoryImpl implements CartRepository{
   final CartDataSource dataSource;
   CartRepositoryImpl({required this.dataSource});

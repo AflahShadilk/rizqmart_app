@@ -20,6 +20,7 @@ import 'package:rizqmart/features/auth/domain/usecase/main/payment/get_saved_car
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/payment/widgets/user_card_widget.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// A page allowing users to choose their preferred payment method for an order, including saved cards, wallet, COD, or Stripe.
 class PaymentSelectionPage extends StatefulWidget {
   final OrderEntities order;
 

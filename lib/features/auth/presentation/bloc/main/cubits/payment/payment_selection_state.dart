@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 
+/// State storing lists of saved cards alongside the actively chosen payment option.
 class PaymentSelectionState extends Equatable {
   final String selectedPayment;
   final bool isLoading;

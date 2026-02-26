@@ -10,6 +10,7 @@ import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/dashboa
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/explore_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/wish_list_page.dart';
 
+/// A bottom navigation bar widget that handles switching between the main app sections (Home, Explore, Wishlist, Cart).
 class NavigationBarPage extends StatelessWidget {
   const NavigationBarPage({super.key});
 

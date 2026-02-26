@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
 import 'package:rizqmart/core/services/firestore_product/variant_det_getter.dart';
-
+/// Returns a dropdown overlay widget populated with search result suggestions to preview and select products.
 Widget searchResultsDropdown({
   required BuildContext context,
   required TextEditingController controller,

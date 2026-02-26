@@ -5,6 +5,7 @@ import 'package:rizqmart/features/auth/domain/repositories/main/order_repository
 import 'package:rizqmart/features/auth/domain/repositories/main/wallet_repository.dart';
 
 
+/// Use case for cancelling an active order and automatically handling necessary wallet refunds.
 class CancelOrderUsecase {
   final OrderRepository repository;
   final WalletRepository walletRepository;

@@ -19,6 +19,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/search_helper/empty_
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_helper_dropdown.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
+/// A discoverability page allowing users to search for products and browse available categories.
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
 

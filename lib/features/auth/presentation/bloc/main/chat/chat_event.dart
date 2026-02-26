@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+/// Base abstract class for messaging and chat events.
 abstract class ChatEvent extends Equatable {
   const ChatEvent();
 

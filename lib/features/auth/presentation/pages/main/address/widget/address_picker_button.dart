@@ -14,6 +14,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_st
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
+/// A button widget that fetches the user's current GPS location and automatically fills in address coordinate fields.
 class LocationPickerButton extends StatelessWidget {
   const LocationPickerButton({super.key});
 

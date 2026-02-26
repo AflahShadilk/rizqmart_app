@@ -6,6 +6,7 @@ import 'package:rizqmart/features/auth/data/model/main/explore_model.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/explore_entities.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/explore_repository.dart';
 
+/// Repository implementation powering the explore tab's product catalog visibility and category filtering.
 class ExploreRepositoryImple implements ExploreRepository{
   final ExploreDataSources exploreDataSource;  
   const ExploreRepositoryImple({required this.exploreDataSource});

@@ -11,6 +11,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/notification/notificati
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
 
+/// A dropdown overlay widget displaying a quick preview of recent user notifications.
 class NotificationDropdown extends StatelessWidget {
   final VoidCallback? onClose;
   const NotificationDropdown({super.key, this.onClose});

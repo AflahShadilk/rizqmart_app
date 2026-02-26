@@ -7,6 +7,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/address/add
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/address/address_form_cubit/address_form_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// A row of selectable label options (Home, Work, Other) to categorize a new or existing address.
 class AddressLabelSelector extends StatelessWidget {
   const AddressLabelSelector({super.key});
 
@@ -52,6 +53,7 @@ class AddressLabelSelector extends StatelessWidget {
   }
 }
 
+/// An individual selectable option widget used within the address label selector row.
 class AddressLabelOption extends StatelessWidget {
   final String label;
   final IconData icon;

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 
+/// A customizable text input field with a search icon and default styling for searching products.
 class SearchField extends StatefulWidget {
   final TextEditingController controller;
   final Function(String) onChanged;

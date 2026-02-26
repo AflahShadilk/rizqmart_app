@@ -36,6 +36,7 @@ import 'package:rizqmart/features/auth/presentation/pages/main/product_details_p
 import 'reviews_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
+/// A detail page showcasing product information, variants, pricing, reviews, and an option to add it to the cart.
 class ProductDetailsPage extends StatefulWidget {
   final ShowProductEntities product;
   final int variantIndex;

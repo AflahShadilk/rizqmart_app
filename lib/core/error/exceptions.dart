@@ -1,3 +1,4 @@
+/// Exception thrown when a server-side operation fails unexpectedly.
 class ServerException implements Exception {
   final String message;
   const ServerException([this.message = 'An unexpected server error occurred']);

@@ -3,6 +3,7 @@ import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/auth/signin_user_entities.dart';
 import 'package:rizqmart/features/auth/domain/repositories/auth/signin_authrepository.dart';
 
+/// Use case for authenticating a user with their email and password credentials.
 class SigninUsecase {
   final SigninAuthrepository signinAuthrepository;
   SigninUsecase( {required this.signinAuthrepository});

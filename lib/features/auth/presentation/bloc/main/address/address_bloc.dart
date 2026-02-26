@@ -8,6 +8,7 @@ import 'package:rizqmart/features/auth/domain/usecase/main/address/update_addres
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_state.dart';
 
+/// Business logic handling user addresses and location services (adding, updating, fetching).
 class AddressBloc extends Bloc<AddressEvent, AddressState> {
   final GetAddressUsecase getAddressUsecase;
   final AddAddressUsecase addAddressUsecase;

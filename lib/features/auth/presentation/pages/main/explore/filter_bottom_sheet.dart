@@ -9,6 +9,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/productbyca
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// A modal bottom sheet providing advanced filtering options like brand, category, and variant.
 class FilterBottomSheet extends StatelessWidget {
   final List<String> brands;
   final List<String> categories;
@@ -136,6 +137,7 @@ class FilterBottomSheet extends StatelessWidget {
   }
 }
 
+/// A reusable section widget for rendering a group of selectable filter chips based on a list of items.
 class FilterSection extends StatelessWidget {
   final String title;
   final List<String> items;

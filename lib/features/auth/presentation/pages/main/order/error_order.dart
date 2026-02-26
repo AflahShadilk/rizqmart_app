@@ -8,6 +8,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_mai
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/reusable_text.dart';
 
+/// Displays an error dialog when order placement fails, providing options to retry or return home.
 Future<dynamic> orderErrorDialog(BuildContext context, String message) {
   return showDialog(
       context: context,

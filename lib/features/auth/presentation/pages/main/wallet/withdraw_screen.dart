@@ -7,6 +7,7 @@ import '../../../bloc/wallet/wallet_event.dart';
 import '../../../bloc/wallet/wallet_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// A screen allowing users to specify an amount and submit a request to withdraw funds from their wallet.
 class WithdrawScreen extends StatefulWidget {
   final String userId;
   const WithdrawScreen({super.key, required this.userId});

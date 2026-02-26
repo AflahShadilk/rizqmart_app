@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rizqmart/features/auth/data/model/main/payment_firestore_model.dart';
 
+/// Data source managing payment records, transaction tracking, and refund statuses in Firestore.
 class PaymentDataSource {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;

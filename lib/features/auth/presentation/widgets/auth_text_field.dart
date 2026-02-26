@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+/// A custom styled text form field used primarily for login and authentication.
 class TextFormFLogin extends StatefulWidget {
   const TextFormFLogin({
     super.key,

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/wish_list_entities.dart';
 
+/// Data model for wishlist items, formatting product details for storage in Firebase Firestore.
 class WishFireModel extends WishListEntities {
   const WishFireModel(
       {required super.id,

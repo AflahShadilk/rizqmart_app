@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
 
+/// Data model representing a user address, facilitating conversion between Firestore documents and `AddressEntities`.
 class AddressFireStoreModel extends AddressEntities {
   const AddressFireStoreModel(
       {required super.id,

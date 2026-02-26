@@ -10,6 +10,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
+/// A heart icon button that toggles a product variant's presence in the user's wishlist.
 class LikeButton extends StatefulWidget {
   final String productId;
   final String productName;

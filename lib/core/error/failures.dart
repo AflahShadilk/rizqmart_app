@@ -1,3 +1,4 @@
+/// Abstract base class representing a generic failure state within the application.
 abstract class Failure {
   final String message;
   const Failure(this.message);

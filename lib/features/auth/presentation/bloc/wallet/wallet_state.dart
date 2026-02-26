@@ -4,6 +4,7 @@ import '../../../domain/entities/main/wallet_transaction_entity.dart';
 
 enum WalletStatus { initial, loading, loaded, success, error }
 
+/// Encapsulates the complete wallet state including balance, transactions, and status indicators.
 class WalletState extends Equatable {
   final WalletStatus status;
   final WalletEntity? wallet;

@@ -3,6 +3,7 @@ import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/saved_card_repository.dart';
 
+/// Use case for retrieving a list of all payment cards currently saved by the user.
 class GetSavedCardsUseCase {
   final SavedCardRepository repository;
 

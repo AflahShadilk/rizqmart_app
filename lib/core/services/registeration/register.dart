@@ -126,6 +126,7 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coup
 
 final sl = GetIt.instance;
 
+/// Initial setup function to register all dependency injections (DataSources, Repos, UseCases, Blocs) via GetIt.
 void setupLocator() {
   sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
   sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);

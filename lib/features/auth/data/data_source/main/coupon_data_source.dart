@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/data/model/main/coupon_model.dart';
 
+/// Interface defining operations for fetching promotional coupons.
 abstract class CouponDataSource {
   Future<List<CouponModel>> getActiveCoupons();
 }
 
+/// Firestore implementation for retrieving active and valid promotional coupons.
 class CouponDataSourceImpl implements CouponDataSource {
   final FirebaseFirestore firestore;
 

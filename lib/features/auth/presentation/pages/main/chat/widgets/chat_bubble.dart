@@ -6,6 +6,7 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// A stateless widget that renders an individual chat message bubble along with its timestamp.
 class ChatBubble extends StatelessWidget {
   final MessageEntity message;
   final bool isMe;

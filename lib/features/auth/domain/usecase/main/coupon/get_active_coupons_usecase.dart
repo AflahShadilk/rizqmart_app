@@ -3,6 +3,7 @@ import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/coupon_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/coupon_repository.dart';
 
+/// Use case for fetching a list of currently valid and available promotional coupons.
 class GetActiveCouponsUseCase {
   final CouponRepository repository;
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_not_support_icon.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_place_holder.dart';
 
+/// A reusable image container that handles network caching, loading states, and error fallbacks.
 class ProductImage extends StatelessWidget {
   final String? imageUrl;
   final double height;

@@ -3,6 +3,7 @@ import 'package:rizqmart/features/auth/data/model/main/chat_model.dart';
 import 'package:rizqmart/features/auth/data/model/main/message_model.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
 
+/// Remote data source for real-time chat functionality, managing chat rooms and messages in Firestore.
 class ChatRemoteDataSource {
   final FirebaseFirestore firestore;
 

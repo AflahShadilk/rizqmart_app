@@ -1,3 +1,4 @@
+/// Base abstract class representing the state of the forgot password flow.
 abstract class ForgotState {}
 class ForgotInitial extends ForgotState{}
 class ForgotLoading extends ForgotState{}

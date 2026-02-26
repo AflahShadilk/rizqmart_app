@@ -4,6 +4,7 @@ import 'package:rizqmart/features/auth/domain/entities/main/coupon_entity.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/checkout/checkout_calculation_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_engine.dart';
 
+/// Cubit evaluating cart totals, discounts, coupons, and delivery fees during checkout.
 class CheckoutCalculationCubit extends Cubit<CheckoutCalculationState> {
   CheckoutCalculationCubit() : super(const CheckoutCalculationState.initial());
 

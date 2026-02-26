@@ -7,6 +7,7 @@ import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/product
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
+/// A grid view page displaying all available products dynamically.
 class AllProductsPage extends StatelessWidget {
   final List<ProductEntities> products;
 

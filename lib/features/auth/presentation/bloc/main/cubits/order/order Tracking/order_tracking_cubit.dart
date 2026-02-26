@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/order%20Tracking/order_tracking_state.dart';
 
+/// Cubit parsing a simple status string into numbered steps for the tracking progress UI.
 class OrderTrackingCubit extends Cubit<OrderTrackingState> {
   OrderTrackingCubit(String status) : super(_resolve(status));
 

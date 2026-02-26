@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/wish_list_entities.dart';
 
+/// Abstract repository for managing items in a user's personal favorites or wishlist.
 abstract class WishListRepository {
   Future<Either<Failure,Unit>>add(String productId,WishListEntities item);
   Future<Either<Failure, Unit>> delete(String productId);

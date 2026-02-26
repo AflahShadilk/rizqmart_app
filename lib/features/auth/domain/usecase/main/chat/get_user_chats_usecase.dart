@@ -3,6 +3,7 @@ import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/chat_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/chat_repository.dart';
 
+/// Use case for fetching all ongoing customer support chat sessions for a specific user.
 class GetUserChatsUseCase {
   final ChatRepository repository;
 

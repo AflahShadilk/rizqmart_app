@@ -7,6 +7,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
+/// Encapsulates all Stripe payment interactions, from creating intents to refunding orders.
 class StripeService {
   static String get publishableKey {
     final key = dotenv.env['STRIPE_PUBLISHABLE_KEY'];

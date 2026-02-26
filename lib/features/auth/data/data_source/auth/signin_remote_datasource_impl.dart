@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rizqmart/features/auth/domain/entities/auth/signin_user_entities.dart';
 
+/// Remote data source implementation for handling standard email/password user sign-in via Firebase.
 class SigninRemoteDatasourceImpl {
   final FirebaseAuth firebaseAuth;
   SigninRemoteDatasourceImpl({required this.firebaseAuth});

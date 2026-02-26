@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 
+/// Entity representing a user's placed order, containing itemized cart contents, totals, and delivery state.
 class OrderEntities extends Equatable {
   final String orderId;
   final String userId;

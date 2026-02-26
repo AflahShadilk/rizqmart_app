@@ -11,6 +11,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
+/// A page displaying all of the user's saved payment methods, with options to add or remove them.
 class SavedCardsPage extends StatefulWidget {
   const SavedCardsPage({super.key});
 

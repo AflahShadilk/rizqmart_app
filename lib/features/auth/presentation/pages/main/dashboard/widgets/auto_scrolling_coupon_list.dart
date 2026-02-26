@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/coupon_entity.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/coupon_card.dart';
 
+/// A horizontally scrolling list of coupon cards that automatically advances on a timer.
 class AutoScrollingCouponList extends StatefulWidget {
   final List<CouponEntity> coupons;
 

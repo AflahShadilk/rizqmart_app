@@ -21,6 +21,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/pages/main/chat/chat_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
+/// A comprehensive page showing tracking status, delivery details, and items for a specific order.
 class OrderDetailsPage extends StatelessWidget {
   final OrderEntities order;
 

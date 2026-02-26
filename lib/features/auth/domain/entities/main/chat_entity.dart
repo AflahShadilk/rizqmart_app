@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+/// Entity storing metadata and context for a chat conversation between user and admin regarding an order.
 class ChatEntity extends Equatable {
   final String id; 
   final String orderId;

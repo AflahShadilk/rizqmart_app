@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/delivery/delivery_partner_state.dart';
 
+/// Cubit mocking or assigning a delivery partner name and avatar.
 class DeliveryPartnerCubit extends Cubit<DeliveryPartnerState> {
   DeliveryPartnerCubit() : super(_generatePartner());
 

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// Returns an "Empty State" widget instructing the user that no products matched the current search or category filter.
 Widget buildEmpty(BuildContext context, bool isSearching, dynamic searchController,void Function() onPress) {
     final colorScheme = Theme.of(context).colorScheme;
 

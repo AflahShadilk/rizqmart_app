@@ -3,6 +3,7 @@ import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/wallet_entity.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/wallet_transaction_entity.dart';
 
+/// Abstract repository for tracking digital wallet balances, deposits, and withdrawal transactions.
 abstract class WalletRepository {
   Future<Either<Failure, WalletEntity>> getWalletBalance(String userId);
   Stream<Either<Failure, WalletEntity>> getWalletStream(String userId); 

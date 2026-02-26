@@ -23,6 +23,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/widgets/page_responsive.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
+/// A page widget representing the main login screen for existing users to authenticate via email or Google.
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 

@@ -5,6 +5,7 @@ import 'package:rizqmart/features/auth/data/data_source/auth/signin_remote_datas
 import 'package:rizqmart/features/auth/domain/entities/auth/signin_user_entities.dart';
 import 'package:rizqmart/features/auth/domain/repositories/auth/signin_authrepository.dart';
 
+/// Repository implementation managing standard email/password sign-in flows and error handling.
 class SigninRepositoryImpl implements SigninAuthrepository{
   final SigninRemoteDatasourceImpl signinRemoteDatasourceImpl;
   SigninRepositoryImpl({required this.signinRemoteDatasourceImpl});

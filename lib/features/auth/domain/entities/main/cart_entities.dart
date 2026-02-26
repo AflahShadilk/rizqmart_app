@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
 
+/// Entity representing an item added to the shopping cart, including its selected variant and quantity.
 class CartEntities extends Equatable implements ShowProductEntities{
  @override final String id;
 @override  final String name;

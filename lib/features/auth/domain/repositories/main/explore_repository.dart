@@ -3,6 +3,7 @@ import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/data/model/main/explore_model.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/explore_entities.dart';
 
+/// Abstract repository defining operations for searching and browsing the product catalog.
 abstract class ExploreRepository {
   Stream<Either<Failure, List<ExploreEntities>>> getAllProducts();
   Stream<Either<Failure, List<ExploreEntities>>> getProductbyCategory(String category);

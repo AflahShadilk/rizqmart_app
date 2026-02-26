@@ -4,6 +4,7 @@ import 'package:rizqmart/features/auth/domain/entities/main/coupon_entity.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+/// A card widget displaying a single promotional coupon with its image, discount percentage, and minimum order requirements.
 class CouponCard extends StatelessWidget {
   final CouponEntity coupon;
 

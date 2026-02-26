@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A universally used back button that pops the current navigation context.
 class BackButtonCommon extends StatelessWidget {
   const BackButtonCommon({
     super.key,
