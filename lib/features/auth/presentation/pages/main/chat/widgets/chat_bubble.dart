@@ -46,8 +46,9 @@ class ChatBubble extends StatelessWidget {
               ),
             ),
             4.h,
+            // Message date and time
             Text(
-              DateFormat('hh:mm a').format(message.timestamp),
+              DateFormat('MMM dd, yyyy • hh:mm a').format(message.timestamp),
               style: context.ts.bodySmall?.copyWith(
                 color: isMe ? context.cs.onPrimary.withValues(alpha: 0.7) : context.cs.onSurfaceVariant,
                 fontSize: 10,

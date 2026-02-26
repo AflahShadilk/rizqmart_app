@@ -212,6 +212,10 @@ class _ChatPageState extends State<ChatPage> {
           Expanded(
             child: TextField(
               controller: _messageController,
+              keyboardType: TextInputType.multiline,
+              minLines: 1, // Multiline input support
+              maxLines: 5,
+              textInputAction: TextInputAction.newline,
               decoration: InputDecoration(
                 hintText: 'Type a message...',
                 filled: true,
@@ -262,17 +266,6 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   String _formatDate(DateTime timestamp) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final yesterday = today.subtract(const Duration(days: 1));
-    final messageDate = DateTime(timestamp.year, timestamp.month, timestamp.day);
-
-    if (messageDate == today) {
-      return 'Today';
-    } else if (messageDate == yesterday) {
-      return 'Yesterday';
-    } else {
-      return DateFormat('MMMM dd, yyyy').format(timestamp);
-    }
+    return DateFormat('MMMM dd, yyyy • hh:mm a').format(timestamp);
   }
 }
