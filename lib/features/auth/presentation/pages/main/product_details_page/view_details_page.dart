@@ -130,6 +130,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
+                                       
                                     children: [
                                       BackButtonCommon(
                                           colorScheme: colorScheme),

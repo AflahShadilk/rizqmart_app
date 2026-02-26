@@ -8,20 +8,27 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bl
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
+/// Reusable address list for both display and selection modes
 class AddressListView extends StatelessWidget {
   final List<AddressEntities> addresses;
   final String userId;
   final VoidCallback onAddAddress;
-  final Function(AddressEntities) onEditAddress;
-  final Function(AddressEntities) onDeleteAddress;
+  final Function(AddressEntities)? onEditAddress;
+  final Function(AddressEntities)? onDeleteAddress;
+  final bool isSelecting;
+  final String? selectedAddressId;
+  final Function(AddressEntities)? onSelect;
 
   const AddressListView({
     super.key,
     required this.addresses,
     required this.userId,
     required this.onAddAddress,
-    required this.onEditAddress,
-    required this.onDeleteAddress,
+    this.onEditAddress,
+    this.onDeleteAddress,
+    this.isSelecting = false,
+    this.selectedAddressId,
+    this.onSelect,
   });
 
   @override
@@ -35,9 +42,12 @@ class AddressListView extends StatelessWidget {
         return AddressCardItem(
           address: address,
           userId: userId,
-          onEdit: () => onEditAddress(address),
-          onDelete: () => onDeleteAddress(address),
-          onSetDefault: () => _setDefaultAddress(context, address),
+          isSelecting: isSelecting,
+          isSelected: selectedAddressId == address.id,
+          onSelect: onSelect != null ? () => onSelect!(address) : null,
+          onEdit: onEditAddress != null ? () => onEditAddress!(address) : null,
+          onDelete: onDeleteAddress != null ? () => onDeleteAddress!(address) : null,
+          onSetDefault: isSelecting ? null : () => _setDefaultAddress(context, address),
         );
       },
     );
@@ -51,20 +61,27 @@ class AddressListView extends StatelessWidget {
   }
 }
 
+/// Address card used in both address page and checkout selection
 class AddressCardItem extends StatelessWidget {
   final AddressEntities address;
   final String userId;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
-  final VoidCallback onSetDefault;
+  final bool isSelecting;
+  final bool isSelected;
+  final VoidCallback? onSelect;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+  final VoidCallback? onSetDefault;
 
   const AddressCardItem({
     super.key,
     required this.address,
     required this.userId,
-    required this.onEdit,
-    required this.onDelete,
-    required this.onSetDefault,
+    this.isSelecting = false,
+    this.isSelected = false,
+    this.onSelect,
+    this.onEdit,
+    this.onDelete,
+    this.onSetDefault,
   });
 
   @override
@@ -74,10 +91,12 @@ class AddressCardItem extends StatelessWidget {
         color: context.cs.surface,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: address.isDefault
-              ? context.cs.primary.withValues(alpha: 0.15)
-              : context.cs.outlineVariant.withValues(alpha: 0.2),
-          width: 1,
+          color: isSelected
+              ? context.cs.primary
+              : address.isDefault
+                  ? context.cs.primary.withValues(alpha: 0.15)
+                  : context.cs.outlineVariant.withValues(alpha: 0.2),
+          width: isSelected ? 2 : 1,
         ),
         boxShadow: [
           BoxShadow(
@@ -88,13 +107,14 @@ class AddressCardItem extends StatelessWidget {
         ],
       ),
       child: InkWell(
-        onTap: () {},
+        onTap: isSelecting ? onSelect : null,
         borderRadius: BorderRadius.circular(14),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Label & default badge row
               Row(
                 children: [
                   _buildLabelBadge(context),
@@ -103,6 +123,7 @@ class AddressCardItem extends StatelessWidget {
                 ],
               ),
               14.h,
+              // Full name
               Text(
                 address.fullName,
                 style: context.ts.bodyLarge?.copyWith(
@@ -111,15 +132,16 @@ class AddressCardItem extends StatelessWidget {
                 ),
               ),
               10.h,
-              _buildInfoRow(
-                context,
-                Icons.phone,
-                address.phoneNumber,
-              ),
+              // Phone row
+              _buildInfoRow(context, Icons.phone, address.phoneNumber),
               8.h,
+              // Address text row
               _buildAddressText(context, address),
-              14.h,
-              _buildActionRow(context),
+              // Action buttons (only in non-selection mode)
+              if (!isSelecting) ...[
+                14.h,
+                _buildActionRow(context),
+              ],
             ],
           ),
         ),
@@ -232,38 +254,40 @@ class AddressCardItem extends StatelessWidget {
   Widget _buildActionRow(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: _buildActionButton(
-            context,
-            Icons.edit,
-            'Edit',
-            onEdit,
-            isPrimary: true,
+        if (onEdit != null)
+          Expanded(
+            child: _buildActionButton(
+              context,
+              Icons.edit,
+              'Edit',
+              onEdit!,
+              isPrimary: true,
+            ),
           ),
-        ),
-        8.w,
-        if (!address.isDefault)
+        if (onEdit != null) 8.w,
+        if (!address.isDefault && onSetDefault != null)
           Expanded(
             child: _buildActionButton(
               context,
               Icons.check_circle_outline,
               'Default',
-              onSetDefault,
+              onSetDefault!,
               isPrimary: true,
             ),
           )
         else
           const SizedBox.shrink(),
-        if (!address.isDefault) 8.w,
-        Expanded(
-          child: _buildActionButton(
-            context,
-            Icons.delete_outline,
-            'Delete',
-            onDelete,
-            isPrimary: false,
+        if (!address.isDefault && onSetDefault != null) 8.w,
+        if (onDelete != null)
+          Expanded(
+            child: _buildActionButton(
+              context,
+              Icons.delete_outline,
+              'Delete',
+              onDelete!,
+              isPrimary: false,
+            ),
           ),
-        ),
       ],
     );
   }
