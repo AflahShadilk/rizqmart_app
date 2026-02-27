@@ -3,26 +3,37 @@ name: Deploy Android to Firebase
 on:
   push:
     branches:
-      - main
+      - main   # Change if your branch is master
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      # Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - uses: subosito/flutter-action@v2
+      # Install Flutter (latest stable - fixes Dart 3.6 issue)
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.0'
+          channel: stable
 
+      # Show Flutter version (for debugging)
+      - name: Flutter Version
+        run: flutter --version
+
+      # Get dependencies
       - name: Install dependencies
         run: flutter pub get
 
+      # Decode keystore from GitHub Secrets
       - name: Decode keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
 
+      # Create key.properties dynamically
       - name: Create key.properties
         run: |
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
@@ -30,13 +41,16 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=upload-keystore.jks" >> android/key.properties
 
+      # Build signed release APK
       - name: Build Release APK
         run: flutter build apk --release
 
+      # Install Firebase CLI
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Upload to Firebase App Distribution
+      # Upload APK to Firebase App Distribution
+      - name: Upload to Firebase
         run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
           --app ${{ secrets.FIREBASE_APP_ID }} \
