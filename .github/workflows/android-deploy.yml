@@ -3,7 +3,7 @@ name: Deploy Android to Firebase
 on:
   push:
     branches:
-      - main   # Change if your branch is master
+      - main
 
 jobs:
   build:
@@ -14,17 +14,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Install Flutter (latest stable - fixes Dart 3.6 issue)
+      # Force specific Flutter version (NO cache, NO latest stable)
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-           flutter-version: '3.22.3'
+          flutter-version: '3.22.3'
+          channel: 'stable'
+          cache: false
 
-      # Show Flutter version (for debugging)
+      # Verify Flutter version (IMPORTANT)
       - name: Flutter Version
         run: flutter --version
 
-      # Get dependencies
+      # Install dependencies
       - name: Install dependencies
         run: flutter pub get
 
