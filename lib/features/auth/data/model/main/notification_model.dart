@@ -10,6 +10,7 @@ class NotificationModel {
   final bool isRead;
   final String type; 
   final String? referenceId; 
+  final Map<String, dynamic>? data;
 
   NotificationModel({
     required this.id,
@@ -19,18 +20,22 @@ class NotificationModel {
     required this.isRead,
     required this.type,
     this.referenceId,
+    this.data,
   });
 
   factory NotificationModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+    final docData = doc.data() as Map<String, dynamic>;
     return NotificationModel(
       id: doc.id,
-      title: data['title'] ?? '',
-      body: data['body'] ?? '',
-      timestamp: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      isRead: data['isRead'] ?? false,
-      type: data['type'] ?? 'general',
-      referenceId: data['referenceId'],
+      title: docData['title'] ?? '',
+      body: docData['body'] ?? '',
+      timestamp: (docData['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      isRead: docData['isRead'] ?? false,
+      type: docData['type'] ?? 'general',
+      referenceId: docData['referenceId'],
+      data: docData['data'] != null 
+          ? Map<String, dynamic>.from(docData['data'] as Map) 
+          : null,
     );
   }
 
@@ -42,6 +47,7 @@ class NotificationModel {
       'isRead': isRead,
       'type': type,
       'referenceId': referenceId,
+      if (data != null) 'data': data,
     };
   }
 }

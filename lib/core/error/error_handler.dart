@@ -31,23 +31,21 @@ class ErrorHandler {
 
   static Stream<Either<Failure, T>> executeApiStream<T>(Stream<T> Function() call) async* {
     try {
-      yield* call().map((data) => Right<Failure, T>(data)).handleError((error) {
-        if (error is SocketException) {
-          return  Left<Failure, T>(NetworkFailure());
-        } else if (error is FirebaseException) {
-          return Left<Failure, T>(ServerFailure(error.message ?? 'A Firebase error occurred'));
-        } else if (error is ServerException) {
-          return Left<Failure, T>(ServerFailure(error.message));
-        } else if (error is AuthException) {
-          return Left<Failure, T>(AuthFailure(error.message));
-        } else if (error is NetworkException) {
-          return Left<Failure, T>(NetworkFailure(error.message));
-        } else if (error is CacheException) {
-          return Left<Failure, T>(CacheFailure(error.message));
-        } else {
-          return Left<Failure, T>(UnknownFailure(error.toString()));
-        }
-      });
+      await for (final data in call()) {
+        yield Right<Failure, T>(data);
+      }
+    } on SocketException catch (_) {
+      yield const Left(NetworkFailure());
+    } on FirebaseException catch (e) {
+      yield Left(ServerFailure(e.message ?? 'A Firebase error occurred'));
+    } on ServerException catch (e) {
+      yield Left(ServerFailure(e.message));
+    } on AuthException catch (e) {
+      yield Left(AuthFailure(e.message));
+    } on NetworkException catch (e) {
+      yield Left(NetworkFailure(e.message));
+    } on CacheException catch (e) {
+      yield Left(CacheFailure(e.message));
     } catch (e) {
       yield Left(UnknownFailure(e.toString()));
     }

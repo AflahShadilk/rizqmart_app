@@ -87,6 +87,39 @@ class NotificationService {
     return await _firebaseMessaging.getToken();
   }
 
+  /// Shows a local notification in the phone's system notification bar.
+  /// Can be called from data sources or blocs to trigger notifications
+  /// without depending on FCM push messages.
+  Future<void> showNotification({
+    required String title,
+    required String body,
+    Map<String, dynamic>? data,
+  }) async {
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel',
+      'High Importance Notifications',
+      description: 'This channel is used for important notifications.',
+      importance: Importance.max,
+    );
+
+    await _localNotifications.show(
+      DateTime.now().millisecondsSinceEpoch.remainder(100000),
+      title,
+      body,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          channel.id,
+          channel.name,
+          channelDescription: channel.description,
+          icon: '@mipmap/ic_launcher',
+          priority: Priority.high,
+        ),
+        iOS: const DarwinNotificationDetails(),
+      ),
+      payload: data != null ? jsonEncode(data) : null,
+    );
+  }
+
   void _showLocalNotification(RemoteMessage message) {
     
     const AndroidNotificationChannel channel = AndroidNotificationChannel(

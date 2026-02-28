@@ -216,17 +216,18 @@ class NotificationsPage extends StatelessWidget {
     if (notification.type == 'order') {
       Navigator.pushNamed(context, AppRoutes.orders);
     } else if (notification.type == 'chat') {
-       if (notification.data != null && notification.data.containsKey('orderId')) {
-         final orderId = notification.data['orderId'];
+       final data = notification.data as Map<String, dynamic>?;
+       final orderId = data?['orderId'] ?? notification.referenceId;
+       if (orderId != null && orderId.isNotEmpty) {
          Navigator.pushNamed(context, AppRoutes.chat, arguments: {
            'orderId': orderId,
-           'orderDisplayId': notification.data['orderDisplayId'] ?? '',
-           'deliveryPartnerName': notification.data['deliveryPartnerName'] ?? '',
-           'productId': notification.data['productId'] ?? '',
-           'productName': notification.data['productName'] ?? '',
-           'productImage': notification.data['productImage'] ?? '',
-           'sellerId': notification.data['sellerId'] ?? '',
-           'orderStatus': notification.data['orderStatus'] ?? 'active',
+           'orderDisplayId': data?['orderDisplayId'] ?? '',
+           'deliveryPartnerName': data?['deliveryPartnerName'] ?? '',
+           'productId': data?['productId'] ?? '',
+           'productName': data?['productName'] ?? '',
+           'productImage': data?['productImage'] ?? '',
+           'sellerId': data?['sellerId'] ?? '',
+           'orderStatus': data?['orderStatus'] ?? 'active',
          });
        } else {
          Navigator.pushNamed(context, AppRoutes.orders);

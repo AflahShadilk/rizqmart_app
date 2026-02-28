@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rizqmart/core/services/notification_service.dart';
 import 'package:rizqmart/features/auth/data/model/main/chat_model.dart';
 import 'package:rizqmart/features/auth/data/model/main/message_model.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
@@ -98,5 +99,46 @@ class ChatRemoteDataSource {
     });
 
     await batch.commit();
+
+    // Create notification for the other participant
+    if (senderRole == 'admin') {
+      try {
+        final chatDoc = await chatRef.get();
+        final chatData = chatDoc.data();
+        if (chatData != null) {
+          final userId = chatData['userId'] as String?;
+          if (userId != null && userId.isNotEmpty) {
+            final truncatedText = text.length > 100 ? '${text.substring(0, 100)}...' : text;
+            await firestore
+                .collection('users')
+                .doc(userId)
+                .collection('notifications')
+                .add({
+              'title': 'New Message',
+              'body': truncatedText,
+              'type': 'chat',
+              'referenceId': chatId,
+              'isRead': false,
+              'timestamp': FieldValue.serverTimestamp(),
+              'data': {
+                'orderId': chatData['orderId'] ?? chatId,
+                'productId': chatData['productId'],
+                'productName': chatData['productName'],
+                'productImage': chatData['productImage'],
+              },
+            });
+
+            // Show local notification in the phone's notification bar
+            await NotificationService().showNotification(
+              title: 'New Message',
+              body: truncatedText,
+              data: {'chatId': chatId, 'orderId': chatData['orderId'] ?? chatId, 'type': 'chat'},
+            );
+          }
+        }
+      } catch (_) {
+        // Don't fail the message send if notification creation fails
+      }
+    }
   }
 }
