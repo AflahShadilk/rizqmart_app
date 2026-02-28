@@ -32,7 +32,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example.rizqmart"
+    namespace "com.rizqmart.user"
     compileSdk 35
     ndkVersion flutter.ndkVersion
 
@@ -51,7 +51,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.rizqmart"
+        applicationId "com.rizqmart.user"
         minSdk 23
         targetSdk 35
         versionCode flutterVersionCode.toInteger()
