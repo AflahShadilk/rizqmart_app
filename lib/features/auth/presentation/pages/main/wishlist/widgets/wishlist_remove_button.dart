@@ -6,7 +6,6 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_event.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
-// ---------------- Controllers & Classes ----------------
 
 class WishlistRemoveButton extends StatelessWidget {
   
