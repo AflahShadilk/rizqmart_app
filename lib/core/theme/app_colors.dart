@@ -56,4 +56,27 @@ class AppColors {
   static const Color darkBackground = Color(0xFF0F172A);
   static const Color darkCard       = grey800;
   static const Color darkText       = grey50;
+
+  // Explore Module Category Card Colors
+  static const List<Color> exploreLightCards = [
+    Color(0xFFFFF3E0),
+    Color(0xFFE8F5E8),
+    Color(0xFFE3F2FD),
+    Color(0xFFFFEBEE),
+    Color(0xFFF3E5F5),
+    Color(0xFFFFFDE7),
+    Color(0xFFE0F7FA),
+    Color(0xFFFCE4EC),
+  ];
+
+  static const List<Color> exploreDarkCards = [
+    Color(0xFF332800),
+    Color(0xFF0A2B0A),
+    Color(0xFF0A1929),
+    Color(0xFF2D0A0A),
+    Color(0xFF1A0A2B),
+    Color(0xFF2B2800),
+    Color(0xFF002B2B),
+    Color(0xFF2B0A14),
+  ];
 }

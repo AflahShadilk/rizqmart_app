@@ -2,16 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/empty_wish_list.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/widgets/wishlist_empty_state.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/widgets/wishlist_product_grid.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
 /// A grid-based page viewing all of the user's bookmarked or favorite products.
@@ -23,11 +21,16 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
+
+  // ---------------- Init State ----------------
+
   @override
   void initState() {
     super.initState();
     context.read<WishListBloc>().add(GetAllWishListEvent());
   }
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -73,85 +76,13 @@ class _FavoritePageState extends State<FavoritePage> {
             final allProducts = state.items;
 
             if (allProducts.isEmpty) {
-              return buildEmptyState(context);
+              return const WishlistEmptyState();
             }
 
-            return GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.72,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 8,
-              ),
-              itemCount: allProducts.length,
-              itemBuilder: (context, index) {
-                final wishListItem = allProducts[index];
-                final currentVariantIndex = wishListItem.variantIndex;
-
-                final variant = wishListItem.variantDetails.isNotEmpty &&
-                        currentVariantIndex < wishListItem.variantDetails.length
-                    ? wishListItem.variantDetails[currentVariantIndex]
-                    : {};
-
-                List<String> imageList =
-                    List<String>.from(variant['imageUrls'] ?? []);
-                String image = imageList.isNotEmpty ? imageList[0] : '';
-                double price = (variant['mrp'] ?? 0).toDouble();
-                String unitName = variant['unitName'] ?? '';
-
-                return VariantCard(
-                  productName: wishListItem.name,
-                  variantName: unitName,
-                  price: price,
-                  imageUrl: image,
-                  colorScheme: Theme.of(context).colorScheme,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.productDetails,
-                      arguments: {
-                        'product': wishListItem,
-                        'variantIndex': wishListItem.variantIndex,
-                      },
-                    );
-                  },
-                  actionButton: GestureDetector(
-                    onTap: () {
-                      context.read<WishListBloc>().add(
-                            DeleteWishListEvent(wishListItem.id),
-                          );
-
-                      showToast(
-                        context,
-                        '${wishListItem.name} removed from favorites',
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: context.cs.onSurface.withValues(alpha: 0.08),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: context.cs.onSecondary.withValues(alpha: 0.08),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(8),
-                      child: Icon(
-                        Icons.favorite,
-                        color: context.cs.error,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
+            return WishlistProductGrid(allProducts: allProducts);
           }
 
-          return buildEmptyState(context);
+          return const WishlistEmptyState();
         },
       ),
     ));

@@ -1,24 +1,22 @@
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/app_colors.dart';
-import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/explore_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/productbycategory/filter_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/productbycategory/filter_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_state.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/bloc%20helper/circular_progress.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/buttons/add_to_cart_button.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/bloc helper/circular_progress.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
 import 'filter_bottom_sheet.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/explore/widgets/filtered_product_grid.dart';
+
+// ---------------- Controllers & Classes ----------------
 
 /// A catalog page displaying a grid of products filtered by a specific category.
 class ProductByCategoryPage extends StatefulWidget {
@@ -30,8 +28,12 @@ class ProductByCategoryPage extends StatefulWidget {
 }
 
 class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
+
+  // ---------------- Variables ----------------
+
   late FilterCubit filterCubit;
 
+  // ---------------- Init State ----------------
   @override
   void initState() {
     super.initState();
@@ -41,11 +43,14 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
         );
   }
 
+  // ---------------- Dispose ----------------
   @override
   void dispose() {
     filterCubit.close();
     super.dispose();
   }
+
+  // ---------------- Helper Methods ----------------
 
   void showFilters(List<ExploreEntities> allProducts) {
     Set<String> brands = {};
@@ -120,6 +125,8 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
 
     return allVariants;
   }
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -207,52 +214,7 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
                     );
                   }
 
-                  return GridView.builder(
-                    padding: const EdgeInsets.all(16),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.72,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    itemCount: filteredVariants.length,
-                    itemBuilder: (context, index) {
-                      ExploreEntities product =
-                          filteredVariants[index]['product'];
-                      int variantIndex =
-                          filteredVariants[index]['variantIndex'];
-                      Map<String, dynamic> variant =
-                          product.variantDetails[variantIndex];
-
-                      List<String> imageList =
-                          List<String>.from(variant['imageUrls'] ?? []);
-                      String image = imageList.isNotEmpty ? imageList[0] : '';
-                      String unitName = variant['unitName'] ?? '';
-
-                      double price = (variant['mrp'] ?? 0).toDouble();
-
-                      return VariantCard(
-                        productName: product.name,
-                        variantName: unitName,
-                        price: price,
-                        imageUrl: image,
-                        colorScheme: context.cs,
-                        actionButton: AddToCartButton(
-                          widget: product,
-                          variantIndex: variantIndex,
-                          count: 1,
-                        ),
-                        onTap: () {
-                          Navigator.pushNamed(context, AppRoutes.productDetails,
-                              arguments: {
-                                'product': product,
-                                'variantIndex': variantIndex,
-                              });
-                        },
-                      );
-                    },
-                  );
+                  return FilteredProductGrid(filteredVariants: filteredVariants);
                 });
           }
 
