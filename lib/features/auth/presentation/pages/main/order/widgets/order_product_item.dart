@@ -43,7 +43,7 @@ class OrderProductItem extends StatelessWidget {
     }
 
     final double totalPrice = unitPrice * item.count;
-    final bool isDelivered = orderStatus.toLowerCase() == 'delivered';
+    final bool isOutForDelivery = orderStatus.toLowerCase() == 'out' || orderStatus.toLowerCase() == 'out for delivery' || orderStatus.toLowerCase() == 'delivered';
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -86,7 +86,7 @@ class OrderProductItem extends StatelessWidget {
               ),
             ],
           ),
-          if (isDelivered) ...[
+          if (isOutForDelivery) ...[
             8.h,
             Align(
               alignment: Alignment.centerRight,
