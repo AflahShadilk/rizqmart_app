@@ -18,6 +18,9 @@ import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.d
 
 /// Address display page — shows addresses for viewing or selection
 class AddressDisplayPage extends StatelessWidget {
+
+  // ---------------- Variables ----------------
+
   final String userId;
   final bool isSelecting;
 
@@ -26,6 +29,8 @@ class AddressDisplayPage extends StatelessWidget {
     required this.userId,
     this.isSelecting = false,
   });
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +65,9 @@ class AddressDisplayPage extends StatelessWidget {
 
 /// Internal view that renders the address list with bloc state conditions to show loading, empty, and loaded views.
 class _AddressDisplayView extends StatelessWidget {
+
+  // ---------------- Variables ----------------
+
   final String userId;
   final bool isSelecting;
 
@@ -67,6 +75,8 @@ class _AddressDisplayView extends StatelessWidget {
     required this.userId,
     required this.isSelecting,
   });
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +173,8 @@ class _AddressDisplayView extends StatelessWidget {
     );
   }
 
+  // ---------------- Helper Methods ----------------
+
   void _navigateToAddAddress(BuildContext context) {
     Navigator.pushNamed(
       context,
@@ -199,8 +211,8 @@ class _AddressDisplayView extends StatelessWidget {
               Navigator.pop(dialogContext);
               context.read<AddressPageCubit>().deleteAddress(address.id);
             },
-            child: const Text('Delete',
-                style: TextStyle(color: Colors.red)),
+            child: Text('Delete',
+                style: TextStyle(color: context.cs.error)),
           ),
         ],
       ),

@@ -7,9 +7,13 @@ import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dar
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/core/theme/app_colors.dart';
 
 /// Reusable address list for both display and selection modes
 class AddressListView extends StatelessWidget {
+
+  // ---------------- Variables ----------------
+
   final List<AddressEntities> addresses;
   final String userId;
   final VoidCallback onAddAddress;
@@ -30,6 +34,8 @@ class AddressListView extends StatelessWidget {
     this.selectedAddressId,
     this.onSelect,
   });
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +59,9 @@ class AddressListView extends StatelessWidget {
     );
   }
 
+
+  // ---------------- Helper Methods ----------------
+
   void _setDefaultAddress(BuildContext context, AddressEntities address) {
     context.read<AddressBloc>().add(SetDefaultAddressEvent(
           addressId: address.id,
@@ -63,6 +72,9 @@ class AddressListView extends StatelessWidget {
 
 /// Address card used in both address page and checkout selection
 class AddressCardItem extends StatelessWidget {
+
+  // ---------------- Variables ----------------
+
   final AddressEntities address;
   final String userId;
   final bool isSelecting;
@@ -83,6 +95,8 @@ class AddressCardItem extends StatelessWidget {
     this.onDelete,
     this.onSetDefault,
   });
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -148,6 +162,9 @@ class AddressCardItem extends StatelessWidget {
       ),
     );
   }
+
+
+  // ---------------- Helper Methods ----------------
 
   Widget _buildLabelBadge(BuildContext context) {
     final color = _getLabelColor(context);
@@ -344,11 +361,11 @@ class AddressCardItem extends StatelessWidget {
   Color _getLabelColor(BuildContext context) {
     switch (address.label.toLowerCase()) {
       case 'home':
-        return const Color(0xFF6366F1);
+        return AppColors.addressLabelHome;
       case 'work':
-        return const Color(0xFF0EA5E9);
+        return AppColors.addressLabelWork;
       case 'other':
-        return const Color(0xFF8B5CF6);
+        return AppColors.addressLabelOther;
       default:
         return context.cs.primary;
     }

@@ -8,6 +8,9 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 
 /// A card widget displaying user address details with options to set as default, edit, or delete the address.
 class AddressCard extends StatelessWidget {
+
+  // ---------------- Variables ----------------
+
   final AddressEntities address;
   final String userId;
   final VoidCallback onEdit;
@@ -18,6 +21,8 @@ class AddressCard extends StatelessWidget {
     required this.userId,
     required this.onEdit,
   });
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -183,6 +188,9 @@ class AddressCard extends StatelessWidget {
       ),
     );
   }
+
+
+  // ---------------- Helper Methods ----------------
 
   IconData _getLabelIcon(String label) {
     switch (label.toLowerCase()) {

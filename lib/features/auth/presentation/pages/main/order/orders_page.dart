@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
-import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/order%20status/order_status_cubit.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/order%20status/order_status_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/orders/orders_page_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/orders/orders_page_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/core/theme/app_colors.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/order/widgets/order_card.dart';
+
+// ---------------- Orders Page ----------------
 
 /// A page displaying a chronologically ordered list of the user's past and active orders.
 class OrdersPage extends StatelessWidget {
   const OrdersPage({super.key});
 
+  // ---------------- Build Method ----------------
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -25,55 +26,70 @@ class OrdersPage extends StatelessWidget {
   }
 }
 
+// ---------------- Orders View ----------------
+
 class _OrdersView extends StatelessWidget {
   const _OrdersView();
 
+  // ---------------- Helper Methods ----------------
+
+  void _onPopInvoked(BuildContext context, bool didPop, bool canPop) {
+    if (didPop) return;
+    Navigator.pushReplacementNamed(context, AppRoutes.navigationBar);
+  }
+
+  void _onBackPressed(BuildContext context, bool canPop) {
+    if (canPop) {
+      Navigator.pop(context);
+    } else {
+      Navigator.pushReplacementNamed(context, AppRoutes.navigationBar);
+    }
+  }
+
+  void _onOrdersPageCubitStateChange(BuildContext context, OrdersPageState state) {
+    if (state is OrdersPageCancelSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.message),
+          backgroundColor: AppColors.success500, // Changed Colors.green to success color
+        ),
+      );
+    }
+  }
+
+  // ---------------- Build Method ----------------
   @override
   Widget build(BuildContext context) {
+    // ---------------- Variables ----------------
     final bool canPop = Navigator.canPop(context);
 
+    // ---------------- UI Rendering ----------------
     return BlocListener<OrdersPageCubit, OrdersPageState>(
-      listener: (context, state) {
-        if (state is OrdersPageCancelSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
-      },
+      listener: _onOrdersPageCubitStateChange,
       child: PopScope(
         canPop: canPop,
         // ignore: deprecated_member_use
-        onPopInvoked: (didPop) {
-          if (didPop) return;
-          Navigator.pushReplacementNamed(context, AppRoutes.navigationBar);
-        },
+        onPopInvoked: (didPop) => _onPopInvoked(context, didPop, canPop),
         child: Scaffold(
           backgroundColor: context.cs.surface,
+
+          // ---------------- Orders Page Header ----------------
           appBar: AppBar(
             automaticallyImplyLeading: false,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                if (canPop) {
-                  Navigator.pop(context);
-                } else {
-                  Navigator.pushReplacementNamed(
-                      context, AppRoutes.navigationBar);
-                }
-              },
+              onPressed: () => _onBackPressed(context, canPop),
             ),
             title: Text(
               'My Orders',
-              style:
-                  context.ts.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: context.ts.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             centerTitle: true,
             backgroundColor: context.cs.surface,
             elevation: 0,
           ),
+
+          // ---------------- Orders List Body ----------------
           body: BlocBuilder<OrdersPageCubit, OrdersPageState>(
             builder: (context, state) {
               if (state is OrdersPageLoading || state is OrdersPageInitial) {
@@ -129,7 +145,7 @@ class _OrdersView extends StatelessWidget {
                   itemCount: state.orders.length,
                   separatorBuilder: (context, index) => 16.h,
                   itemBuilder: (context, index) {
-                    return _OrderCard(order: state.orders[index]);
+                    return OrderCard(order: state.orders[index]);
                   },
                 );
               }
@@ -139,138 +155,6 @@ class _OrdersView extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _OrderCard extends StatelessWidget {
-  final OrderEntities order;
-
-  const _OrderCard({required this.order});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => OrderStatusCubit(order.status),
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        color: context.cs.surface,
-        surfaceTintColor: context.cs.surfaceTint,
-        child: InkWell(
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              AppRoutes.orderDetails,
-              arguments: order,
-            );
-          },
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color:
-                            context.cs.primaryContainer.withValues(alpha: 0.4),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(Icons.inventory_2_outlined,
-                          color: context.cs.primary),
-                    ),
-                    12.w,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Order #${order.orderId.substring(0, 8).toUpperCase()}',
-                            style: context.ts.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          4.h,
-                          Text(
-                            DateFormat('MMM dd, yyyy • hh:mm a')
-                                .format(order.createdAt),
-                            style: context.ts.bodySmall?.copyWith(
-                              color:
-                                  context.cs.onSurface.withValues(alpha: 0.6),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const _StatusChip(),
-                  ],
-                ),
-                16.h,
-                Divider(
-                    color: context.cs.outlineVariant.withValues(alpha: 0.2)),
-                16.h,
-                Row(
-                  children: [
-                    Text(
-                      '${order.items.length} Items',
-                      style: context.ts.bodyMedium?.copyWith(
-                        color: context.cs.onSurface.withValues(alpha: 0.7),
-                      ),
-                    ),
-                    const Spacer(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Total Amount',
-                          style: context.ts.bodySmall?.copyWith(fontSize: 10),
-                        ),
-                        Text(
-                          '₹${order.totalCost.toStringAsFixed(2)}',
-                          style: context.ts.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: context.cs.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _StatusChip extends StatelessWidget {
-  const _StatusChip();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<OrderStatusCubit, OrderStatusState>(
-      builder: (context, state) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: state.color.withAlpha(26),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: state.color.withAlpha(128)),
-          ),
-          child: Text(
-            state.label,
-            style: context.ts.labelSmall?.copyWith(
-              color: state.color,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        );
-      },
     );
   }
 }

@@ -18,6 +18,8 @@ import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.d
 class LocationPickerButton extends StatelessWidget {
   const LocationPickerButton({super.key});
 
+  // ---------------- Build Method ----------------
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AddressBloc, AddressState>(
@@ -237,6 +239,9 @@ class LocationPickerButton extends StatelessWidget {
       ),
     );
   }
+
+
+  // ---------------- Helper Methods ----------------
 
   void _autoFillAddressFromCoordinates(
     BuildContext context,

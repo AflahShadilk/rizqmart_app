@@ -8,6 +8,9 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 
 /// A stateless widget that renders an individual chat message bubble along with its timestamp.
 class ChatBubble extends StatelessWidget {
+
+  // ---------------- Variables ----------------
+
   final MessageEntity message;
   final bool isMe;
 
@@ -16,6 +19,8 @@ class ChatBubble extends StatelessWidget {
     required this.message,
     required this.isMe,
   });
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {

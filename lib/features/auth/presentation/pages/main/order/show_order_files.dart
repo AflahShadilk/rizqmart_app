@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
-import 'package:rizqmart/core/theme/color_getter.dart';
+import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
@@ -26,8 +26,12 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/appl
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_engine.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 
+// ---------------- Variables ----------------
+
 final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
 final userName = FirebaseAuth.instance.currentUser?.displayName ?? 'Customer';
+
+// ---------------- Bottom Sheet Model ----------------
 
 /// Presents a bottom sheet interface for users to review their cart, select options, and finalize checkout.
 Future<dynamic> modelBottomSheet(
@@ -95,17 +99,17 @@ Future<dynamic> modelBottomSheet(
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.orange.withValues(alpha: 0.08),
+                        color: AppColors.warning500.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: Colors.orange.withValues(alpha: 0.2),
+                          color: AppColors.warning500.withValues(alpha: 0.2),
                         ),
                       ),
                       child: Row(
                         children: [
                           const Icon(
                             Icons.schedule,
-                            color: Colors.orange,
+                            color: AppColors.warning500,
                             size: 18,
                           ),
                           8.w,
@@ -117,14 +121,14 @@ Future<dynamic> modelBottomSheet(
                                   'Quick Delivery',
                                   style: context.ts.labelSmall?.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.orange,
+                                    color: AppColors.warning500,
                                   ),
                                 ),
                                 2.h,
                                 Text(
                                   'Within 1 hour',
                                   style: context.ts.labelSmall?.copyWith(
-                                    color: Colors.orange.withValues(alpha: 0.8),
+                                    color: AppColors.warning500.withValues(alpha: 0.8),
                                   ),
                                 ),
                               ],
@@ -364,14 +368,14 @@ Future<dynamic> modelBottomSheet(
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
                                             content: Text('Error placing order: $e'),
-                                            backgroundColor: Colors.red,
+                                            backgroundColor: AppColors.error500,
                                           ),
                                         );
                                       }
                                     }
                                   : null,
-                              color: context.cs.success,
-                              textColor: context.cs.surface,
+                                color: AppColors.success500,
+                                textColor: context.cs.surface,
                             ),
                           );
                         },
@@ -388,6 +392,8 @@ Future<dynamic> modelBottomSheet(
     },
   );
 }
+
+// ---------------- Helper Methods ----------------
 
 String _truncateAddress(String address) {
   return address.length > 20
@@ -438,13 +444,15 @@ Widget _costRowCompact(
       Text(
         '${isDiscount ? '-' : ''}₹${amount.abs().toStringAsFixed(2)}',
         style: context.ts.bodySmall?.copyWith(
-          color: isDiscount ? context.cs.success : context.cs.onSurface,
+          color: isDiscount ? AppColors.success500 : context.cs.onSurface,
           fontWeight: FontWeight.w600,
         ),
       ),
     ],
   );
 }
+
+// ---------------- Payment Method Dialog ----------------
 
 void _showPaymentMethodDialog(BuildContext context) {
   showDialog(
@@ -534,6 +542,8 @@ Widget _paymentOptionCompact(
   );
 }
 
+// ---------------- Coupon Selection Dialog ----------------
+
 void _showCouponSelectionDialog(BuildContext context, CartLoadedState cartState) {
   final applyCouponCubit = context.read<ApplyCouponCubit>();
   final calcCubit = context.read<CheckoutCalculationCubit>();
@@ -565,7 +575,7 @@ void _showCouponSelectionDialog(BuildContext context, CartLoadedState cartState)
                 itemBuilder: (_, index) {
                   if (index == couponState.coupons.length) {
                     return ListTile(
-                      leading: Icon(Icons.close, color: context.cs.error),
+                      leading: const Icon(Icons.close, color: AppColors.error500),
                       title: const Text('Remove Coupon'),
                       onTap: () {
                         applyCouponCubit.removeCoupon();
@@ -589,7 +599,7 @@ void _showCouponSelectionDialog(BuildContext context, CartLoadedState cartState)
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: isApplicable
-                              ? Colors.orange.withValues(alpha: 0.4)
+                              ? AppColors.warning500.withValues(alpha: 0.4)
                               : context.cs.outlineVariant.withValues(alpha: 0.3),
                         ),
                         borderRadius: BorderRadius.circular(10),
@@ -628,10 +638,10 @@ void _showCouponSelectionDialog(BuildContext context, CartLoadedState cartState)
                                           height: 50,
                                         )
                                       : Container(
-                                          color: Colors.orange.withValues(alpha: 0.1),
+                                          color: AppColors.warning500.withValues(alpha: 0.1),
                                           child: const Icon(
                                             Icons.local_offer,
-                                            color: Colors.orange,
+                                            color: AppColors.warning500,
                                             size: 24,
                                           ),
                                         ),
@@ -652,7 +662,7 @@ void _showCouponSelectionDialog(BuildContext context, CartLoadedState cartState)
                                     Text(
                                       discountText,
                                       style: context.ts.labelMedium?.copyWith(
-                                        color: Colors.orange,
+                                        color: AppColors.warning500,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -664,7 +674,7 @@ void _showCouponSelectionDialog(BuildContext context, CartLoadedState cartState)
                                       style: context.ts.labelSmall?.copyWith(
                                         color: isApplicable
                                             ? context.cs.onSurface.withValues(alpha: 0.5)
-                                            : context.cs.error,
+                                            : AppColors.error500,
                                       ),
                                     ),
                                   ],
@@ -677,16 +687,16 @@ void _showCouponSelectionDialog(BuildContext context, CartLoadedState cartState)
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: context.cs.success.withValues(alpha: 0.1),
+                                    color: AppColors.success500.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(6),
                                     border: Border.all(
-                                      color: context.cs.success.withValues(alpha: 0.3),
+                                      color: AppColors.success500.withValues(alpha: 0.3),
                                     ),
                                   ),
                                   child: Text(
                                     'Apply',
                                     style: context.ts.labelSmall?.copyWith(
-                                      color: context.cs.success,
+                                      color: AppColors.success500,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),

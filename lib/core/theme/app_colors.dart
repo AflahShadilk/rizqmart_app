@@ -79,4 +79,14 @@ class AppColors {
     Color(0xFF002B2B),
     Color(0xFF2B0A14),
   ];
+
+  // Address Module Label Colors
+  static const Color addressLabelHome  = Color(0xFF6366F1);
+  static const Color addressLabelWork  = Color(0xFF0EA5E9);
+  static const Color addressLabelOther = Color(0xFF8B5CF6);
+
+  // Chat Module Colors
+  static const Color chatErrorBackground = Color.fromRGBO(244, 67, 54, 0.1);
+  static Color chatErrorIcon = const Color.fromRGBO(244, 67, 54, 0.7);
+  static const Color chatErrorText = Color(0xFFF44336);
 }
