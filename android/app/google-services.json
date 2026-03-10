@@ -102,6 +102,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "570019429913-f7f79n2n8co3ibcu04ghdfrjr9aue851.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rizqmart.user",
+            "certificate_hash": "9371aaee8d7aa5b0f5d5e99666fceacbf7887a09"
+          }
+        },
+        {
+          "client_id": "570019429913-ltrasc0e3t2vbh803c24vap6lqngqadk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rizqmart.user",
+            "certificate_hash": "e8d7ea65839a7f64e3c4c18fc26c83fe0ac9c4b5"
+          }
+        },
+        {
           "client_id": "570019429913-1i815iku1kgvlt1ifgrbkemct0alq91l.apps.googleusercontent.com",
           "client_type": 3
         }

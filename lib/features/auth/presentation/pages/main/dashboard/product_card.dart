@@ -13,6 +13,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_state.dart';
 
+
+
 /// A reusable card widget to display a single product's summary, image, and price within grid layouts.
 class ProductCard extends StatefulWidget {
   final ProductEntities product;
@@ -25,6 +27,8 @@ class ProductCard extends StatefulWidget {
 
 class _ProductCardState extends State<ProductCard>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+      
+  // ---------------- Variables ----------------
   late final AnimationController _controller;
   late final Animation<double> _scaleAnimation;
 
@@ -33,19 +37,21 @@ class _ProductCardState extends State<ProductCard>
   late String variantName;
   late double variantMrp;
 
+  late double discount;
+  late bool hasDiscount;
+  late double discountedPrice;
+
   static const double _radiusValue = 12;
 
   @override
   bool get wantKeepAlive => true;
 
+// ---------------- Init State ----------------
   @override
   void initState() {
     super.initState();
 
-    productName = widget.product.name;
-    productImage = getVariantImages(widget.product).firstOrNull;
-    variantName = getVariantNames(widget.product).first;
-    variantMrp = getVariantMrp(widget.product).first;
+    _initializeProductDetails();
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -57,49 +63,56 @@ class _ProductCardState extends State<ProductCard>
     );
   }
 
+  void _initializeProductDetails() {
+    productName = widget.product.name;
+    productImage = getVariantImages(widget.product).firstOrNull;
+    variantName = getVariantNames(widget.product).first;
+    variantMrp = getVariantMrp(widget.product).first;
+    
+    discount = widget.product.discount ?? 0;
+    hasDiscount = discount > 0;
+    discountedPrice = hasDiscount 
+        ? variantMrp - (variantMrp * discount / 100) 
+        : variantMrp;
+  }
+
   @override
   void didUpdateWidget(covariant ProductCard oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.product.id != widget.product.id) {
-      productName = widget.product.name;
-      productImage = getVariantImages(widget.product).firstOrNull;
-      variantName = getVariantNames(widget.product).first;
-      variantMrp = getVariantMrp(widget.product).first;
+       _initializeProductDetails();
     }
   }
 
+// ---------------- Dispose ----------------
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
+// ---------------- Navigation Methods ----------------
+  void _onTapNav() {
+    Navigator.pushNamed(context, AppRoutes.productDetails, arguments: {
+      'product': widget.product,
+      'variantIndex': 0,
+    });
+  }
 
+// ---------------- Build Method ----------------
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
     final colorScheme = Theme.of(context).colorScheme;
-    
-    onTapNav() =>
-        Navigator.pushNamed(context, AppRoutes.productDetails, arguments: {
-          'product': widget.product,
-          'variantIndex': 0,
-        });
 
-    
-    final double discount = widget.product.discount ?? 0;
-    final bool hasDiscount = discount > 0;
-    final double discountedPrice = hasDiscount 
-        ? variantMrp - (variantMrp * discount / 100) 
-        : variantMrp;
-
+    // Gesture detector handles the press animation and navigation to detail screen
     return GestureDetector(
       onTapDown: (_) => _controller.forward(),
       onTapUp: (_) => _controller.reverse(),
       onTapCancel: () => _controller.reverse(),
-      onTap: onTapNav,
+      onTap: _onTapNav,
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: SizedBox(
@@ -133,14 +146,15 @@ class _ProductCardState extends State<ProductCard>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      productName,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.inter(
+                                  // Product name and variant description section
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        productName,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.inter(
                                         textStyle: Theme.of(context)
                                             .textTheme
                                             .labelLarge
@@ -167,6 +181,7 @@ class _ProductCardState extends State<ProductCard>
                                     ),
                                   ],
                                 ),
+                                // Pricing and Add to Cart button section
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
@@ -219,6 +234,7 @@ class _ProductCardState extends State<ProductCard>
                         ),
                       ],
                     ),
+                    // Discount badge showing percentage off if applicable
                     if (hasDiscount)
                       Positioned(
                         top: 8,
@@ -232,13 +248,14 @@ class _ProductCardState extends State<ProductCard>
                           child: Text(
                             '${discount.toStringAsFixed(0)}% OFF',
                             style: GoogleFonts.inter(
-                              color: Colors.white,
+                              color: colorScheme.onError,
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                         ),
                       ),
+                      // Coupon badge shown if a coupon is available but no direct discount exists
                       BlocBuilder<AvailableCouponCubit, AvailableCouponState>(
                         builder: (context, state) {
                           if (state is AvailableCouponLoaded) {
@@ -250,13 +267,13 @@ class _ProductCardState extends State<ProductCard>
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                                   decoration: BoxDecoration(
-                                    color: Colors.orange,
+                                    color: colorScheme.secondary,
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
                                     'Offer Inside!',
                                     style: GoogleFonts.inter(
-                                      color: Colors.white,
+                                      color: colorScheme.onSecondary,
                                       fontSize: 10,
                                       fontWeight: FontWeight.w700,
                                     ),

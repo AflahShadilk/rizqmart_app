@@ -62,8 +62,8 @@ class _NotificationButtonState extends State<NotificationButton> {
                       right: 6,
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
+                        decoration: BoxDecoration(
+                          color: context.cs.error,
                           shape: BoxShape.circle,
                         ),
                         constraints: const BoxConstraints(
@@ -72,8 +72,8 @@ class _NotificationButtonState extends State<NotificationButton> {
                         ),
                         child: Text(
                            state.unreadCount > 9 ? '9+' : state.unreadCount.toString(),
-                           style: const TextStyle(
-                             color: Colors.white,
+                           style: TextStyle(
+                             color: context.cs.onError,
                              fontSize: 8,
                              fontWeight: FontWeight.bold,
                            ),

@@ -1,21 +1,24 @@
 
 
 import 'dart:ui';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_state.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/notification_dropdown_header.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/notification_dropdown_footer.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/dropdown_notification_empty_state.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/dropdown_notification_item.dart';
 
+// ---------------- Controllers & Classes ----------------
 
 /// A dropdown overlay widget displaying a quick preview of recent user notifications.
 class NotificationDropdown extends StatelessWidget {
   final VoidCallback? onClose;
   const NotificationDropdown({super.key, this.onClose});
 
+// ---------------- Build Method ----------------
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -56,7 +59,7 @@ class NotificationDropdown extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildHeader(context),
+                const NotificationDropdownHeader(),
                 Divider(height: 1, color: context.cs.outlineVariant.withValues(alpha: 0.12)),
                 Flexible(
                   child: BlocBuilder<NotificationBloc, NotificationState>(
@@ -74,7 +77,7 @@ class NotificationDropdown extends StatelessWidget {
                       }
                       if (state is NotificationLoadedState) {
                         if (state.notifications.isEmpty) {
-                          return _buildEmptyState(context);
+                          return const DropdownNotificationEmptyState();
                         }
                         return ListView.builder(
                           shrinkWrap: true,
@@ -82,7 +85,7 @@ class NotificationDropdown extends StatelessWidget {
                           itemCount: state.notifications.length > 5 ? 5 : state.notifications.length,
                           itemBuilder: (context, index) {
                             final notification = state.notifications[index];
-                            return _buildNotificationItem(context, notification);
+                            return DropdownNotificationItem(notification: notification);
                           },
                         );
                       }
@@ -105,7 +108,7 @@ class NotificationDropdown extends StatelessWidget {
                   ),
                 ),
                 Divider(height: 1, color: context.cs.outlineVariant.withValues(alpha: 0.12)),
-                _buildFooter(context),
+                NotificationDropdownFooter(onClose: onClose),
               ],
             ),
           ),
@@ -113,260 +116,5 @@ class NotificationDropdown extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildNotificationItem(BuildContext context, dynamic notification) {
-    final bool isRead = notification.isRead;
-    
-    return Material(
-      color: isRead ? Colors.transparent : context.cs.primary.withValues(alpha: 0.05),
-      child: InkWell(
-        onTap: () => _handleNotificationTap(context, notification),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildIcon(context, notification.type, isRead),
-              10.w,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            notification.title,
-                            style: context.ts.bodySmall?.copyWith(
-                              fontWeight: isRead ? FontWeight.w500 : FontWeight.w700,
-                              color: context.cs.onSurface,
-                              fontSize: 13,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        4.w,
-                        if (!isRead) 
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: context.cs.primary,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                      ],
-                    ),
-                    3.h,
-                    Text(
-                      notification.body,
-                      style: context.ts.bodySmall?.copyWith(
-                        color: context.cs.onSurfaceVariant,
-                        height: 1.35,
-                        fontSize: 12,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    4.h,
-                    Text(
-                      _timeAgo(notification.timestamp),
-                      style: context.ts.labelSmall?.copyWith(
-                        color: context.cs.outline,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildIcon(BuildContext context, String type, bool isRead) {
-    Color iconColor = isRead ? context.cs.secondary : context.cs.primary;
-    Color bgColor = isRead ? context.cs.secondaryContainer.withValues(alpha: 0.4) : context.cs.primaryContainer.withValues(alpha: 0.6);
-    IconData icon = Icons.notifications_rounded;
-    
-    if (type == 'order') icon = Icons.local_mall_rounded;
-    if (type == 'chat') icon = Icons.chat_bubble_rounded;
-
-    return Container(
-      width: 36,
-      height: 36,
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Icon(icon, size: 18, color: iconColor),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.white.withValues(alpha: 0.04),
-            Colors.transparent,
-          ],
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Notifications', 
-            style: context.ts.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-            ),
-          ),
-           InkWell(
-            onTap: () {
-               final userId = FirebaseAuth.instance.currentUser?.uid;
-               if (userId != null) {
-                 context.read<NotificationBloc>().add(ClearAllNotificationsEvent(userId));
-               }
-            },
-            borderRadius: BorderRadius.circular(6),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: context.cs.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                'Clear all', 
-                style: context.ts.labelSmall?.copyWith(
-                  color: context.cs.primary, 
-                  fontWeight: FontWeight.w600,
-                  fontSize: 11,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFooter(BuildContext context) {
-     return InkWell(
-       onTap: () {
-         onClose?.call();
-         Navigator.pushNamed(context, '/notifications');
-       },
-       child: Container(
-         padding: const EdgeInsets.symmetric(vertical: 10),
-         alignment: Alignment.center,
-         decoration: BoxDecoration(
-           gradient: LinearGradient(
-             begin: Alignment.topCenter,
-             end: Alignment.bottomCenter,
-             colors: [
-               Colors.transparent,
-               Colors.white.withValues(alpha: 0.02),
-             ],
-           ),
-         ),
-         child: Row(
-           mainAxisAlignment: MainAxisAlignment.center,
-           children: [
-             Text(
-               'View all',
-               style: context.ts.labelMedium?.copyWith(
-                 color: context.cs.primary,
-                 fontWeight: FontWeight.w600,
-                 fontSize: 12,
-               ),
-             ),
-             4.w,
-             Icon(
-               Icons.arrow_forward_rounded, 
-               size: 14, 
-               color: context.cs.primary,
-             ),
-           ],
-         ),
-       ),
-     );
-  }
-
-  Widget _buildEmptyState(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 24),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: context.cs.surfaceContainerHighest.withValues(alpha: 0.3),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.notifications_none_rounded, 
-                size: 26, 
-                color: context.cs.outline.withValues(alpha: 0.7),
-              ),
-            ),
-            12.h,
-            Text(
-              "All caught up!", 
-              style: context.ts.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-              ),
-            ),
-            4.h,
-            Text(
-              'No new notifications', 
-              style: context.ts.bodySmall?.copyWith(
-                color: context.cs.outline,
-                fontSize: 12,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-  
-  void _handleNotificationTap(BuildContext context, dynamic notification) {
-    final userId = FirebaseAuth.instance.currentUser?.uid;
-    if (userId != null && !notification.isRead) {
-      context.read<NotificationBloc>().add(
-        MarkAsReadEvent(userId: userId, notificationId: notification.id)
-      );
-    }
-  }
-
-  String _timeAgo(DateTime timestamp) {
-    final now = DateTime.now();
-    final difference = now.difference(timestamp);
-
-    if (difference.inDays > 7) {
-      return '${timestamp.day}/${timestamp.month}';
-    } else if (difference.inDays >= 1) {
-      return '${difference.inDays}d';
-    } else if (difference.inHours >= 1) {
-      return '${difference.inHours}h';
-    } else if (difference.inMinutes >= 1) {
-      return '${difference.inMinutes}m';
-    } else {
-      return 'Just now';
-    }
-  }
 }
+

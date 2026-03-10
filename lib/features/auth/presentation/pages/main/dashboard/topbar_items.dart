@@ -13,15 +13,25 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_ev
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_bar.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/notification_button.dart';
 
+
+
 /// A custom app bar widget containing the logo, location indicator, search field, and user actions (notification, profile).
-Container topBarItems(
-  BuildContext context,
-  searchController,
-  Function(String) onSearch,
-) {
-  final size = MediaQuery.of(context).size;
-  final currentUser = FirebaseAuth.instance.currentUser;
-  final isLoggedIn = currentUser != null;
+class TopBarItems extends StatelessWidget {
+  final TextEditingController searchController;
+  final Function(String) onSearch;
+
+  const TopBarItems({
+    super.key,
+    required this.searchController,
+    required this.onSearch,
+  });
+
+// ---------------- Build Method ----------------
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final isLoggedIn = currentUser != null;
 
   return Container(
     width: double.infinity,
@@ -44,6 +54,7 @@ Container topBarItems(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               
+              // App Logo / Branding Image
               SizedBox(
                 width: size.width * 0.1,
                 child: const ClipRRect(
@@ -53,7 +64,7 @@ Container topBarItems(
                 ),
               ),
 
-              
+              // Location Display with Gestures to Fetch Current Location
               GestureDetector(
                 onTap: () {
                    context.read<AddressBloc>().add(GetCurrentLocationEvent());
@@ -93,25 +104,21 @@ Container topBarItems(
                 ),
               ),
 
-              
-              
-              
-              
-              
-              
+              // User Actions Group: Notifications and Profile / Login
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const NotificationButton(),
                   12.w,
                   isLoggedIn
-                      ? buildProfileButton(context)
-                      : buildLoginButton(context),
+                      ? const ProfileButton()
+                      : const LoginButton(),
                 ],
               ),
             ],
           ),
         ),
+        // Global Search Bar Widget underneath the header items
         Padding(
           padding: const EdgeInsets.fromLTRB(15, 13, 15, 8),
           child: SearchField(
@@ -123,110 +130,99 @@ Container topBarItems(
     ),
   );
 }
+}
+
+// ---------------- User Action Widgets ----------------
 
 /// Builds a circular user profile button displaying the avatar or a placeholder icon.
-Widget buildProfileButton(BuildContext context) {
-  final currentUser = FirebaseAuth.instance.currentUser;
-  final photoUrl = currentUser?.photoURL ?? '';
+class ProfileButton extends StatelessWidget {
+  const ProfileButton({super.key});
 
-  return GestureDetector(
-    onTap: () {
-      Navigator.pushNamed(context, AppRoutes.profile);
-    },
-    child: Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: context.cs.secondary,
-          width: 2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: context.cs.secondary.withValues(alpha: 0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+  @override
+  Widget build(BuildContext context) {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final photoUrl = currentUser?.photoURL ?? '';
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, AppRoutes.profile);
+      },
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: context.cs.secondary,
+            width: 2,
           ),
-        ],
-      ),
-      child: ClipOval(
-        child: photoUrl.isNotEmpty
-            ? ProductImage(
-                imageUrl: photoUrl,
-                width: 40,
-                height: 40,
-                borderRadius: BorderRadius.circular(50),
-              )
-            : Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [
-                      context.cs.secondary,
-                      context.cs.secondary.withValues(alpha: 0.7),
-                    ],
+          boxShadow: [
+            BoxShadow(
+              color: context.cs.secondary.withValues(alpha: 0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipOval(
+          child: photoUrl.isNotEmpty
+              ? ProductImage(
+                  imageUrl: photoUrl,
+                  width: 40,
+                  height: 40,
+                  borderRadius: BorderRadius.circular(50),
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        context.cs.secondary,
+                        context.cs.secondary.withValues(alpha: 0.7),
+                      ],
+                    ),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.person,
+                      color: context.cs.onSecondary,
+                      size: 20,
+                    ),
                   ),
                 ),
-                child: Center(
-                  child: Icon(
-                    Icons.person,
-                    color: context.cs.onSecondary,
-                    size: 20,
-                  ),
-                ),
-              ),
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 /// Builds a quick login button for guest users to sign in.
-Widget buildLoginButton(BuildContext context) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.pushReplacementNamed(context, AppRoutes.login);
-    },
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: context.cs.primary,
-          width: 1.5,
-        ),
-      ),
-      child: Text(
-        'Login',
-        style: context.ts.labelMedium?.copyWith(
-          color: context.cs.primary,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    ),
-  );
-}
+class LoginButton extends StatelessWidget {
+  const LoginButton({super.key});
 
-/// Builds an interactive notification icon button.
-Widget buildNotificationButton(BuildContext context) {
-  return GestureDetector(
-    onTap: () {
-      
-    },
-    child: Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: context.cs.surfaceContainerHighest, 
-      ),
-      child: Center(
-        child: Icon(
-          Icons.notifications_none_rounded,
-          color: context.cs.onSurfaceVariant,
-          size: 24,
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushReplacementNamed(context, AppRoutes.login);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: context.cs.primary,
+            width: 1.5,
+          ),
+        ),
+        child: Text(
+          'Login',
+          style: context.ts.labelMedium?.copyWith(
+            color: context.cs.primary,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
