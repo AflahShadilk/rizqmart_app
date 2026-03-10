@@ -52,8 +52,15 @@ class _LikeButtonState extends State<LikeButton>
     super.dispose();
   }
   
+  String get sanitizedProductId {
+    if (widget.productId.contains('_variant_')) {
+      return widget.productId.split('_variant_')[0];
+    }
+    return widget.productId;
+  }
+
   String get getWishListItemId {
-    return "${widget.productId}_variant_${widget.selectedVariantIndex}";
+    return "${sanitizedProductId}_variant_${widget.selectedVariantIndex}";
   }
   
   String get getCurrentUserId {

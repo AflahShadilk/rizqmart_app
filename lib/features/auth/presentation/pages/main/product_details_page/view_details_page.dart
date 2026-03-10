@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:rizqmart/core/services/firestore_product/access_product_variant_details.dart';
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
@@ -20,21 +19,24 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/counter/cou
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/description/desicription_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/image/image_index_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/variantselection/variant_selection_cubit.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_cubit.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/back_button_common.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 import 'package:rizqmart/core/services/registeration/register.dart';
-import '../../../widgets/buttons/like_button.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/review_card.dart';
 import 'reviews_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_image_gallery.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_title_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_price_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_variant_selector.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_offers_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_description_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_review_section.dart';
 
 /// A detail page showcasing product information, variants, pricing, reviews, and an option to add it to the cart.
 class ProductDetailsPage extends StatefulWidget {
@@ -52,8 +54,12 @@ class ProductDetailsPage extends StatefulWidget {
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
+
+  // ---------------- Variables ----------------
+
   bool isExpanded = false;
   late int selectedVariantIndex;
+  
   String get productId {
     final id = getId(widget.product);
     if (id.contains('_variant_')) {
@@ -65,6 +71,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   String getWishlistId(int variantIdx) {
     return context.read<ProductCartCheckCubit>().getWishlistId(productId, variantIdx);
   }
+
+  // ---------------- Init State ----------------
 
   @override
   void initState() {
@@ -78,6 +86,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       }
     });
   }
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -145,8 +155,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   20.h,
                                   SizedBox(
                                     height: 400,
-                                    child: _buildImageStack(
-                                        context, images, isDark, colorScheme),
+                                    child: ProductImageGallery(
+                                      images: images, 
+                                      isDark: isDark, 
+                                      colorScheme: colorScheme
+                                    ),
                                   ),
                                 ],
                               ),
@@ -162,106 +175,29 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _buildTitleSection(
-                                      context, selectedVariantIndex),
-                                  _buildPriceSection(context, colorScheme),
-                                  16.h,
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15, right: 0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Quantity',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        BlocBuilder<CounterCubit, int>(
-                                          builder: (context, state) {
-                                            return Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                                              decoration: BoxDecoration(
-                                                color: colorScheme.surface,
-                                                borderRadius: BorderRadius.circular(8),
-                                                border: Border.all(
-                                                  color: colorScheme.outline.withValues(alpha: 0.3),
-                                                ),
-                                              ),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  InkWell(
-                                                    onTap: () {
-                                                      context.read<CounterCubit>().decreament();
-                                                    },
-                                                    borderRadius: BorderRadius.circular(6),
-                                                    child: Container(
-                                                      padding: const EdgeInsets.all(4),
-                                                      decoration: BoxDecoration(
-                                                        color: state > 1 
-                                                            ? colorScheme.primary.withValues(alpha: 0.1) 
-                                                            : colorScheme.onSurface.withValues(alpha: 0.05),
-                                                        borderRadius: BorderRadius.circular(6),
-                                                      ),
-                                                      child: Icon(
-                                                        Icons.remove_rounded,
-                                                        size: 20,
-                                                        color: state > 1 
-                                                            ? colorScheme.primary 
-                                                            : colorScheme.onSurface.withValues(alpha: 0.4),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 36,
-                                                    child: Text(
-                                                      state.toString(),
-                                                      textAlign: TextAlign.center,
-                                                      style: GoogleFonts.poppins(
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      context.read<CounterCubit>().increament();
-                                                    },
-                                                    borderRadius: BorderRadius.circular(6),
-                                                    child: Container(
-                                                      padding: const EdgeInsets.all(4),
-                                                      decoration: BoxDecoration(
-                                                        color: colorScheme.primary.withValues(alpha: 0.1),
-                                                        borderRadius: BorderRadius.circular(6),
-                                                      ),
-                                                      child: Icon(
-                                                        Icons.add_rounded,
-                                                        size: 20,
-                                                        color: colorScheme.primary,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                                  ProductTitleSection(
+                                      product: widget.product, 
+                                      selectedVariantIndex: selectedVariantIndex
+                                  ),
+                                  ProductPriceSection(
+                                      product: widget.product, 
+                                      selectedVariantIndex: selectedVariantIndex
                                   ),
                                   if (variantCount > 1)
-                                    _buildVariantsSection(context, variantCount,
-                                        selectedVariantIndex, colorScheme),
+                                    ProductVariantSelector(
+                                        product: widget.product,
+                                        count: variantCount,
+                                        selectedIndex: selectedVariantIndex
+                                    ),
                                   16.h,
-                                  _buildOffersSection(context, colorScheme),
+                                  ProductOffersSection(productId: productId),
                                   28.h,
-                                  _buildDescriptionSection(
-                                      context, colorScheme),
+                                  ProductDescriptionSection(product: widget.product),
                                   30.h,
-                                  _buildReviewSection(
-                                      context, colorScheme, productId),
+                                  ProductReviewSection(
+                                      product: widget.product, 
+                                      currentProductId: productId
+                                  ),
                                   100.h,
                                 ],
                               ),
@@ -295,8 +231,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   )
                                 ],
                               ),
-                              child: _buildImageStack(
-                                  context, images, isDark, colorScheme,
+                              child: ProductImageGallery(
+                                  images: images, isDark: isDark, colorScheme: colorScheme,
                                   height: 280),
                             ),
                             Positioned(
@@ -358,43 +294,42 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(20, 16, 20, 12),
-                                  child: _buildTitleSection(
-                                      context, selectedVariantIndex),
+                                  child: ProductTitleSection(
+                                      product: widget.product, selectedVariantIndex: selectedVariantIndex),
                                 ),
                                 Padding(
                                   padding:
                                       const EdgeInsets.symmetric(horizontal: 5),
                                   child:
-                                      _buildPriceSection(context, colorScheme),
+                                      ProductPriceSection(product: widget.product, selectedVariantIndex: selectedVariantIndex),
                                 ),
                                 if (variantCount > 1)
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(
                                         20, 24, 20, 16),
-                                    child: _buildVariantsSection(
-                                        context,
-                                        variantCount,
-                                        selectedVariantIndex,
-                                        colorScheme),
+                                    child: ProductVariantSelector(
+                                        product: widget.product,
+                                        count: variantCount,
+                                        selectedIndex: selectedVariantIndex),
                                   ),
                                 16.h,
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                                  child: _buildOffersSection(context, colorScheme),
+                                  child: ProductOffersSection(productId: productId),
                                 ),
                                 28.h,
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 20),
-                                  child: _buildDescriptionSection(
-                                      context, colorScheme),
+                                  child: ProductDescriptionSection(
+                                      product: widget.product),
                                 ),
                                 30.h,
                                 Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(20, 0, 15, 0),
-                                  child: _buildReviewSection(
-                                      context, colorScheme, productId,
+                                  child: ProductReviewSection(
+                                      product: widget.product, currentProductId: productId,
                                       showList: false),
                                 ),
                                 Padding(
@@ -657,538 +592,5 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget _buildImageStack(BuildContext context, List<String> images,
-      bool isDark, ColorScheme colorScheme,
-      {double? height}) {
-    return Stack(
-      children: [
-        BlocBuilder<ImageIndexCubit, int>(
-          builder: (context, state) {
-            return PageView.builder(
-              onPageChanged: (value) {
-                context.read<ImageIndexCubit>().change(value);
-              },
-              itemCount: images.length,
-              itemBuilder: (context, index) {
-                return ProductImage(
-                  imageUrl: images[index],
-                  height: height ?? 350,
-                  width: double.infinity,
-                  borderRadius: BorderRadius.circular(12),
-                );
-              },
-            );
-          },
-        ),
-        Positioned(
-          bottom: 15,
-          left: 0,
-          right: 0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              images.length,
-              (index) => BlocBuilder<ImageIndexCubit, int>(
-                builder: (context, state) {
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    height: 8,
-                    width: state == index ? 24 : 8,
-                    decoration: BoxDecoration(
-                      color: state == index
-                          ? colorScheme.primary
-                          : colorScheme.onSurface.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
-  Widget _buildTitleSection(BuildContext context, int index) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                getBrand(widget.product),
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: context.cs.primary,
-                ),
-              ),
-              4.h,
-              Text(
-                getName(widget.product),
-                style: GoogleFonts.poppins(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                  height: 1.2,
-                ),
-              ),
-              8.h,
-              Row(
-                children: [
-                  Icon(Icons.star_rounded, color: Colors.amber, size: 20),
-                  4.w,
-                  Text(
-                    widget.product.rating.toStringAsFixed(1),
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
-                  4.w,
-                  Text(
-                    '(${widget.product.reviewCount} reviews)',
-                    style: GoogleFonts.poppins(
-                      color: context.cs.onSurface.withValues(alpha: 0.6),
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        LikeButton(
-          productId: widget.product.id,
-          productName: widget.product.name,
-          brand: widget.product.brand,
-          variantDetails: widget.product.variantDetails,
-          selectedVariantIndex: index,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPriceSection(BuildContext context, ColorScheme colorScheme) {
-    double price = getPrice(widget.product, selectedVariantIndex);
-    final discount = widget.product.discount;
-    final hasDiscount = discount != null && discount > 0;
-
-    double finalPrice = price;
-    if (hasDiscount) {
-      finalPrice = price - (price * discount / 100);
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        16.h,
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 15),
-              child: Text(
-                '₹${finalPrice.toStringAsFixed(2)}',
-                style: GoogleFonts.poppins(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.primary,
-                ),
-              ),
-            ),
-            if (hasDiscount) ...[
-              12.w,
-              Text(
-                '₹${price.toStringAsFixed(2)}',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: colorScheme.onSurface.withValues(alpha: 0.5),
-                  decoration: TextDecoration.lineThrough,
-                  decorationColor: colorScheme.onSurface.withValues(alpha: 0.5),
-                ),
-              ),
-              8.w,
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: colorScheme.error.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  '-${discount.toStringAsFixed(0)}%',
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.error,
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-        16.h,
-        Padding(
-          padding: const EdgeInsets.only(left: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-            Text(
-              'Quantity',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            BlocBuilder<CounterCubit, int>(
-              builder: (context, state) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surface,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: colorScheme.outline.withValues(alpha: 0.3),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          context.read<CounterCubit>().decreament();
-                        },
-                        borderRadius: BorderRadius.circular(6),
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: state > 1 
-                                ? colorScheme.primary.withValues(alpha: 0.1) 
-                                : colorScheme.onSurface.withValues(alpha: 0.05),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Icon(
-                            Icons.remove_rounded,
-                            size: 20,
-                            color: state > 1 
-                                ? colorScheme.primary 
-                                : colorScheme.onSurface.withValues(alpha: 0.4),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 36,
-                        child: Text(
-                          state.toString(),
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          context.read<CounterCubit>().increament();
-                        },
-                        borderRadius: BorderRadius.circular(6),
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: colorScheme.primary.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Icon(
-                            Icons.add_rounded,
-                            size: 20,
-                            color: colorScheme.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    ],
-    );
-  }
-
-  Widget _buildVariantsSection(BuildContext context, int count,
-      int selectedIndex, ColorScheme colorScheme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Available Variants',
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        12.h,
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: List.generate(count, (index) {
-            final isSelected = selectedIndex == index;
-            final variantName = getVariantName(widget.product, index);
-            return GestureDetector(
-              onTap: () {
-                context.read<VariantSelectionCubit>().selectVariant(index);
-                context.read<ImageIndexCubit>().change(0);
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? colorScheme.primary.withValues(alpha: 0.1)
-                      : colorScheme.surface,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: isSelected
-                        ? colorScheme.primary
-                        : colorScheme.outline.withValues(alpha: 0.3),
-                    width: isSelected ? 2 : 1,
-                  ),
-                ),
-                child: Text(
-                  variantName,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                    color: isSelected
-                        ? colorScheme.primary
-                        : colorScheme.onSurface,
-                  ),
-                ),
-              ),
-            );
-          }),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildOffersSection(BuildContext context, ColorScheme colorScheme) {
-    return BlocBuilder<AvailableCouponCubit, AvailableCouponState>(
-      builder: (context, state) {
-        if (state is AvailableCouponLoaded) {
-          final applicableCoupons = state.coupons
-              .where((c) => c.applicableProductIds.isEmpty || c.applicableProductIds.contains(productId))
-              .toList();
-
-          if (applicableCoupons.isNotEmpty) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Available Offers',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                12.h,
-                ...applicableCoupons.map((coupon) {
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.orange.withValues(alpha: 0.05),
-                      border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Icon(Icons.local_offer, color: Colors.orange, size: 20),
-                        12.w,
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${coupon.percentage.toStringAsFixed(0)}% OFF',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.orange,
-                                ),
-                              ),
-                              2.h,
-                              Text(
-                                coupon.name,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              2.h,
-                              Text(
-                                'Use coupon code during checkout (Min order ₹${coupon.minOrderValue.toStringAsFixed(0)})',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  color: colorScheme.onSurface.withValues(alpha: 0.6),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ],
-            );
-          }
-        }
-        return const SizedBox.shrink();
-      },
-    );
-  }
-
-  Widget _buildDescriptionSection(
-      BuildContext context, ColorScheme colorScheme) {
-    final description = getDescription(widget.product);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Description',
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        8.h,
-        BlocBuilder<DesicriptionCubit, bool>(
-          builder: (context, isExpanded) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  description,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: colorScheme.onSurface.withValues(alpha: 0.7),
-                    height: 1.5,
-                  ),
-                  maxLines: isExpanded ? null : 3,
-                  overflow:
-                      isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                ),
-                if (description.length > 100)
-                  GestureDetector(
-                    onTap: () {
-                      context.read<DesicriptionCubit>().toggle();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(
-                        isExpanded ? 'Read Less' : 'Read More',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildReviewSection(
-      BuildContext context, ColorScheme colorScheme, String currentProductId,
-      {bool showList = true}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Reviews',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            if (!showList)
-              TextButton(
-                onPressed: () {
-                  final reviewBloc = context.read<ReviewBloc>();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ReviewsPage(
-                        productId: currentProductId,
-                        productName: getName(widget.product),
-                      ),
-                    ),
-                  ).then((_) {
-                    if (!mounted) return;
-                    reviewBloc
-                        .add(GetReviewsEvent(productId: currentProductId));
-                  });
-                },
-                child: Text('See All'),
-              ),
-          ],
-        ),
-        if (showList) ...[
-          12.h,
-          BlocBuilder<ReviewBloc, ReviewState>(
-            builder: (context, state) {
-              if (state is ReviewLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              List<ReviewEntity>? reviews;
-              if (state is ReviewsWithPurchaseStatus) {
-                reviews = state.reviews;
-              } else if (state is ReviewsLoaded) {
-                reviews = state.reviews;
-              }
-              if (reviews != null) {
-                if (reviews.isEmpty) {
-                  return Text(
-                    "No reviews yet",
-                    style: GoogleFonts.poppins(
-                      color: context.cs.onSurface.withValues(alpha: 0.6),
-                    ),
-                  );
-                }
-                return ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: reviews.length,
-                  separatorBuilder: (context, index) => 16.h,
-                  itemBuilder: (context, index) {
-                    return ReviewCard(review: reviews![index]);
-                  },
-                );
-              } else if (state is ReviewError) {
-                return Text("Failed to load reviews: ${state.message}");
-              }
-              return const SizedBox();
-            },
-          ),
-        ],
-      ],
-    );
-  }
 }
