@@ -27,16 +27,16 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 import 'package:rizqmart/core/services/registeration/register.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/review_card.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/review_card.dart';
 import 'reviews_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_image_gallery.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_title_section.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_price_section.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_variant_selector.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_offers_section.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_description_section.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/product_review_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/product_image_gallery.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/product_title_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/product_price_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/product_variant_selector.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/product_offers_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/product_description_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/product_review_section.dart';
 
 /// A detail page showcasing product information, variants, pricing, reviews, and an option to add it to the cart.
 class ProductDetailsPage extends StatefulWidget {

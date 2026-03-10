@@ -5,8 +5,8 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/review_entity.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/reviews_page.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/widgets/review_card.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details/reviews_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/review_card.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/core/services/firestore_product/access_product_variant_details.dart';
 

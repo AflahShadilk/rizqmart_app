@@ -33,7 +33,7 @@ import 'package:rizqmart/features/auth/presentation/pages/main/profile/edit_user
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/wish_list_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/splash_screen.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/welcome1.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/product_details_page/view_details_page.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/product_details/view_details_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/not_found_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/notifications_page.dart';
 
