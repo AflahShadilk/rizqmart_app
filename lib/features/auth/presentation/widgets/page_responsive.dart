@@ -1,8 +1,12 @@
-
 import 'package:flutter/material.dart';
+
+// ---------------- Responsive Utility ----------------
 
 /// A utility class providing static methods to determine the current screen size for responsive layouts.
 class Responsive {
+  
+  // ---------------- Helper Methods ----------------
+
   static bool isMobile(BuildContext context) =>
       MediaQuery.of(context).size.width < 600;
 

@@ -2,10 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/dashboard/banner_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/dashboard/banner_state.dart';
+
+// ---------------- Offer Banner Widget ----------------
 
 class OfferBannerWidget extends StatelessWidget {
   const OfferBannerWidget({super.key});
@@ -54,6 +56,8 @@ class OfferBannerWidget extends StatelessWidget {
   }
 }
 
+// ---------------- Banner Body StatefulWidget ----------------
+
 class _BannerBody extends StatefulWidget {
   final List<Map<String, dynamic>> offers;
   const _BannerBody({required this.offers});
@@ -63,13 +67,21 @@ class _BannerBody extends StatefulWidget {
 }
 
 class _BannerBodyState extends State<_BannerBody> {
+  
+  // ---------------- State Variables ----------------
+
   final PageController _pageController = PageController();
+
+  // ---------------- Lifecycle Methods ----------------
 
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
   }
+
+  // ---------------- Build Method ----------------
+
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +173,7 @@ class _BannerBodyState extends State<_BannerBody> {
                         ),
                         child: Text(
                           offer['subtitle'] as String,
-                          style: GoogleFonts.inter(
+                          style: context.ts.labelSmall?.copyWith(
                             color: Colors.white,
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
@@ -171,7 +183,7 @@ class _BannerBodyState extends State<_BannerBody> {
                       8.h,
                       Text(
                         offer['title'] as String,
-                        style: GoogleFonts.outfit(
+                        style: context.ts.headlineSmall?.copyWith(
                           color: Colors.white,
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -180,7 +192,7 @@ class _BannerBodyState extends State<_BannerBody> {
                       8.h,
                       Text(
                         offer['discount'] as String,
-                        style: GoogleFonts.inter(
+                        style: context.ts.titleMedium?.copyWith(
                           color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
@@ -198,7 +210,7 @@ class _BannerBodyState extends State<_BannerBody> {
                         ),
                         child: Text(
                           'Shop Now',
-                          style: GoogleFonts.inter(
+                          style: context.ts.labelSmall?.copyWith(
                             color: offer['color'] as Color,
                             fontSize: 12,
                             fontWeight: FontWeight.w600,

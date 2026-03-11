@@ -10,14 +10,21 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
+// ---------------- Like Button ----------------
+
 /// A heart icon button that toggles a product variant's presence in the user's wishlist.
 class LikeButton extends StatefulWidget {
+  
+  // ---------------- Variables / Parameters ----------------
+
   final String productId;
   final String productName;
   final String? brand;
   final List<Map<String, dynamic>> variantDetails;
   final bool initialValue;
   final int selectedVariantIndex;
+
+  // ---------------- Constructor ----------------
 
   const LikeButton({
     super.key,
@@ -26,16 +33,20 @@ class LikeButton extends StatefulWidget {
     this.brand,
     required this.variantDetails,
     this.initialValue = false,
-    this.selectedVariantIndex = 0
+    this.selectedVariantIndex = 0,
   });
 
   @override
   State<LikeButton> createState() => _LikeButtonState();
 }
 
-class _LikeButtonState extends State<LikeButton>
-    with SingleTickerProviderStateMixin {
+class _LikeButtonState extends State<LikeButton> with SingleTickerProviderStateMixin {
+  
+  // ---------------- State Variables ----------------
+
   late AnimationController _animationController;
+
+  // ---------------- Lifecycle Methods ----------------
 
   @override
   void initState() {
@@ -52,6 +63,8 @@ class _LikeButtonState extends State<LikeButton>
     super.dispose();
   }
   
+  // ---------------- Getters / Helpers ----------------
+
   String get sanitizedProductId {
     if (widget.productId.contains('_variant_')) {
       return widget.productId.split('_variant_')[0];
@@ -67,6 +80,8 @@ class _LikeButtonState extends State<LikeButton>
     return FirebaseAuth.instance.currentUser?.uid ?? '';
   }
   
+  // ---------------- Build Method ----------------
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -76,7 +91,7 @@ class _LikeButtonState extends State<LikeButton>
       child: BlocListener<WishListBloc, WishListState>(
         listener: (context, state) {
           if (state is FailureWishListState) {
-            showToast(context, 'Error: ${state.message}');
+            showToast(context, 'Error: ${state.message}', type: ToastType.error);
           }
         },
         child: BlocBuilder<WishListBloc, WishListState>(
@@ -84,12 +99,11 @@ class _LikeButtonState extends State<LikeButton>
             bool isFavorite = false;
 
             if (wishlistState is LoadedWishListState) {
-              isFavorite = wishlistState.items
-                  .any((item) => item.id == getWishListItemId);
+               isFavorite = wishlistState.items.any((item) => item.id == getWishListItemId);
             } else if (wishlistState is InitializeWishListState) {
-              isFavorite = wishlistState.item
-                  .any((item) => item.id == getWishListItemId);
+               isFavorite = wishlistState.item.any((item) => item.id == getWishListItemId);
             }
+            
             return ScaleTransition(
               scale: Tween(begin: 1.0, end: 1.3).animate(
                 CurvedAnimation(
@@ -117,13 +131,13 @@ class _LikeButtonState extends State<LikeButton>
                       widget.brand ?? '',
                       allVariants,
                       widget.selectedVariantIndex,
-                      getCurrentUserId
+                      getCurrentUserId,
                     )
                   );
                   if (isFavorite) {
-                    showToast(context, 'Removed from wishlist');
+                    showToast(context, 'Removed from wishlist', type: ToastType.info);
                   } else {
-                    showToast(context, 'Added to wishlist');
+                    showToast(context, 'Added to wishlist', type: ToastType.success);
                   }
                 },
               ),
@@ -133,4 +147,4 @@ class _LikeButtonState extends State<LikeButton>
       ),
     );
   }
-}
+}

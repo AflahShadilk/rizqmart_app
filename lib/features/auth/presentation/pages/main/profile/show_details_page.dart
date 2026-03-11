@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
@@ -9,19 +7,29 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/pro
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/profile_photo.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/show_basic_info_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/show_personal_details_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/show_about_you_section.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/back_button_common.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
+// ---------------- Show Details Page ----------------
+
 /// A read-only view of the user's detailed profile information, including contact details and bio.
 class ShowDetailsPage extends StatelessWidget {
+  
+  // ---------------- Variables ----------------
+  
   final UserProfileBloc profileBloc;
 
   const ShowDetailsPage({
     super.key,
     required this.profileBloc,
   });
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -115,12 +123,16 @@ class ShowDetailsPage extends StatelessWidget {
   }
 }
 
+// ---------------- User Details View Content Widget ----------------
+
 class _UserDetailsViewContent extends StatelessWidget {
   final UserProfileEntities profile;
 
   const _UserDetailsViewContent({
     required this.profile,
   });
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -131,35 +143,19 @@ class _UserDetailsViewContent extends StatelessWidget {
           children: [
             _buildProfilePhotoSection(context),
             28.h,
-            _buildSectionTitle(context, 'Basic Information'),
-            14.h,
-            _buildInfoField(
-                context, 'Full Name', profile.name, Icons.person_outline),
-            12.h,
-            _buildInfoField(
-                context, 'Email', profile.email, Icons.email_outlined),
-            12.h,
-            _buildInfoField(context, 'Phone Number',
-                profile.phoneNumber ?? 'Not specified', Icons.phone_outlined),
+            ShowBasicInfoSection(profile: profile),
             20.h,
-            _buildSectionTitle(context, 'Personal Details'),
-            14.h,
-            _buildInfoField(context, 'Date of Birth',
-                _formatDate(profile.dateOfBirth), Icons.cake_outlined),
-            12.h,
-            _buildInfoField(
-                context, 'Gender', profile.gender ?? 'Not specified', Icons.wc),
+            ShowPersonalDetailsSection(profile: profile),
             20.h,
-            _buildSectionTitle(context, 'About You'),
-            14.h,
-            _buildInfoField(context, 'Bio', profile.bio ?? 'Not specified',
-                Icons.info_outline),
+            ShowAboutYouSection(profile: profile),
             28.h,
           ],
         ),
       ),
     );
   }
+
+  // ---------------- Helper Methods ----------------
 
   Widget _buildProfilePhotoSection(BuildContext context) {
     return Container(
@@ -190,79 +186,5 @@ class _UserDetailsViewContent extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Widget _buildSectionTitle(BuildContext context, String title) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        title,
-        style: context.ts.labelLarge?.copyWith(
-          color: context.cs.onSurface,
-          fontWeight: FontWeight.w600,
-          fontSize: 13,
-          letterSpacing: 0.3,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoField(
-    BuildContext context,
-    String label,
-    String value,
-    IconData icon,
-  ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: context.cs.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: context.cs.outlineVariant.withValues(alpha: 0.5),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            color: context.cs.onSurfaceVariant,
-            size: 20,
-          ),
-          16.w,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: context.ts.labelSmall?.copyWith(
-                    color: context.cs.onSurfaceVariant,
-                    fontSize: 11,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-                4.h,
-                Text(
-                  value,
-                  style: context.ts.bodyMedium?.copyWith(
-                    color: context.cs.onSurface,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return 'Not specified';
-    return '${date.day}/${date.month}/${date.year}';
   }
 }

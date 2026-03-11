@@ -1,17 +1,21 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/features/auth/presentation/pages/onboarding/widget/welcome_page_widget.dart';
+import 'package:rizqmart/features/auth/presentation/pages/onboarding/widget/onboarding_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/auth/welcome_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/auth/welcome_state.dart';
 
-/// A flow widget that manages the onboarding welcome pages and animations for new users before they log in.
+// ---------------- Welcome Flow ----------------
+
+/// A flow widget that manages the onboarding welcome pages and animations
+/// for new users before they log in.
 class WelcomeFlow extends StatelessWidget {
   const WelcomeFlow({super.key});
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +26,8 @@ class WelcomeFlow extends StatelessWidget {
   }
 }
 
+// ---------------- Welcome View ----------------
+
 class _WelcomeView extends StatefulWidget {
   const _WelcomeView();
 
@@ -29,9 +35,19 @@ class _WelcomeView extends StatefulWidget {
   State<_WelcomeView> createState() => _WelcomeViewState();
 }
 
-class _WelcomeViewState extends State<_WelcomeView> with TickerProviderStateMixin {
+class _WelcomeViewState extends State<_WelcomeView>
+    with TickerProviderStateMixin {
+
+  // ---------------- Controllers ----------------
+
   final PageController _pageController = PageController();
   late AnimationController _animationController;
+
+  // ---------------- Variables ----------------
+
+  static const int _totalPages = 3;
+
+  // ---------------- Init State ----------------
 
   @override
   void initState() {
@@ -42,7 +58,18 @@ class _WelcomeViewState extends State<_WelcomeView> with TickerProviderStateMixi
     );
   }
 
-  Future<void> completeOnboarding() async {
+  // ---------------- Dispose ----------------
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  // ---------------- Helper Methods ----------------
+
+  Future<void> _completeOnboarding() async {
     final pref = await SharedPreferences.getInstance();
     await pref.setBool('welcome', true);
     if (mounted) {
@@ -52,21 +79,17 @@ class _WelcomeViewState extends State<_WelcomeView> with TickerProviderStateMixi
 
   void _skipToEnd() {
     _animationController.forward(from: 0.0);
-    _pageController.jumpToPage(2);
+    _pageController.jumpToPage(_totalPages - 1);
   }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    _animationController.dispose();
-    super.dispose();
-  }
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
+          // ---------------- Page View ----------------
           BlocListener<WelcomeCubit, WelcomeState>(
             listener: (context, state) {
               _animationController.forward(from: 0.0);
@@ -78,38 +101,36 @@ class _WelcomeViewState extends State<_WelcomeView> with TickerProviderStateMixi
                 context.read<WelcomeCubit>().setPage(index);
               },
               children: [
-                buildPage(
+                OnboardingPageContent(
                   title: 'Fresh & Organic',
-                  subtitle: 'Get your groceries straight from farms to your doorstep.',
+                  subtitle:
+                      'Get your groceries straight from farms to your doorstep.',
                   imagePath: 'assets/icons_and_images/leeficon.png',
                   bgColor: const Color(0xFF81C784),
-                  onpress: () {
-                    completeOnboarding();
-                  },
+                  onPress: _completeOnboarding,
                 ),
-                buildPage(
+                OnboardingPageContent(
                   title: 'Lightning Fast Delivery',
-                  subtitle: 'Delivered in as fast as one hour, right when you need it.',
+                  subtitle:
+                      'Delivered in as fast as one hour, right when you need it.',
                   imagePath: 'assets/icons_and_images/deliveryIcon.png',
                   bgColor: const Color(0xFF4DB6AC),
-                  onpress: () {
-                    completeOnboarding();
-                  },
+                  onPress: _completeOnboarding,
                 ),
-                buildPage(
+                OnboardingPageContent(
                   title: 'Easy, Secure & Refundable',
-                  subtitle: 'Shop with confidence. Easy returns and secure payments.',
+                  subtitle:
+                      'Shop with confidence. Easy returns and secure payments.',
                   imagePath: 'assets/icons_and_images/secureicon.png',
                   bgColor: const Color(0xFF7986CB),
                   showButton: true,
-                  onpress: () {
-                    completeOnboarding();
-                  },
+                  onPress: _completeOnboarding,
                 ),
               ],
             ),
           ),
-          
+
+          // ---------------- Skip Button ----------------
           Positioned(
             top: 50,
             right: 20,
@@ -125,43 +146,17 @@ class _WelcomeViewState extends State<_WelcomeView> with TickerProviderStateMixi
               ),
             ),
           ),
-          
+
+          // ---------------- Page Indicator ----------------
           Positioned(
             bottom: 30,
             left: 20,
             right: 20,
             child: Column(
               children: [
-                
-                BlocBuilder<WelcomeCubit, WelcomeState>(
-                  builder: (context, state) {
-                    final currentPage = (state is WelcomePageUpdated) ? state.currentPage : 0;
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        3,
-                        (index) => ScaleTransition(
-                          scale: Tween<double>(begin: 1.0, end: 1.3).animate(
-                            CurvedAnimation(
-                              parent: _animationController,
-                              curve: Curves.elasticOut,
-                            ),
-                          ),
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 6),
-                            width: currentPage == index ? 28 : 10,
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: currentPage == index
-                                  ? Colors.white
-                                  : Colors.white.withValues(alpha: 0.5),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                OnboardingIndicator(
+                  pageCount: _totalPages,
+                  animationController: _animationController,
                 ),
                 25.h,
               ],

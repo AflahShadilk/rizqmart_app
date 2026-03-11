@@ -109,11 +109,11 @@ class _DashboardPageState extends State<DashboardPage> {
                       builder: (context, dashState) {
                         if (dashState is DashInitialState ||
                             dashState is LoadingProductState) {
-                          return Center(child: circularProgressIndicators());
+                          return const Center(child: CustomCircularProgressIndicator());
                         }
 
                         if (dashState is FailureLoadingProductState) {
-                          return errorMessageScaffold(dashState);
+                          return ErrorMessageSnackBar.build(dashState);
                         }
 
                         if (dashState is LoadedProductState) {
@@ -136,11 +136,10 @@ class _DashboardPageState extends State<DashboardPage> {
                                   isSearching ? searchItems : products;
 
                               if (isSearching && displayProducts.isEmpty) {
-                                return buildEmpty(
-                                  context,
-                                  isSearching,
-                                  searchController,
-                                  () {
+                                return EmptyProductState(
+                                  isSearching: isSearching,
+                                  searchText: searchController.text,
+                                  onPress: () {
                                     context.read<SearchCubit>().clearSearch();
                                     searchController.clear();
                                   },

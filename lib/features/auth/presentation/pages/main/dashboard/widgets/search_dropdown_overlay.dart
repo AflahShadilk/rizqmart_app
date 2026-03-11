@@ -28,8 +28,7 @@ class SearchDropdownOverlay extends StatelessWidget {
             top: 195,
             left: 16,
             right: 16,
-            child: searchResultsDropdown(
-              context: context,
+            child: SearchResultsDropdown(
               controller: searchController,
               items: state.filteredItems
                   .whereType<ShowProductEntities>()

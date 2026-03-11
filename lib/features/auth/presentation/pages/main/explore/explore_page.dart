@@ -84,7 +84,7 @@ class _ExplorePageState extends State<ExplorePage> {
                     child: BlocBuilder<ExploreBloc, ExploreState>(
                       builder: (context, state) {
                         if (state is ExploreLoadingState) {
-                          return Center(child: circularProgressIndicators());
+                          return const Center(child: CustomCircularProgressIndicator());
                         }
 
                         if (state is ExploreFailureState) {
@@ -115,11 +115,10 @@ class _ExplorePageState extends State<ExplorePage> {
 
                               if (isSearching &&
                                   searchState.filteredItems.isEmpty) {
-                                return buildEmpty(
-                                  context,
-                                  true,
-                                  _searchController,
-                                  () {
+                                return EmptyProductState(
+                                  isSearching: true,
+                                  searchText: _searchController.text,
+                                  onPress: () {
                                     context.read<SearchCubit>().clearSearch();
                                     _searchController.clear();
                                   },

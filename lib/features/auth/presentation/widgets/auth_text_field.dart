@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
+
+// ---------------- Login Text Field ----------------
 
 /// A custom styled text form field used primarily for login and authentication.
 class TextFormFLogin extends StatefulWidget {
+  
+  // ---------------- Variables / Parameters ----------------
+
+  final String? hint;
+  final IconData? iconn;
+  final Color? iconnColor;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
+  final bool? obscureText;
+  final Function(String)? onChanged;
+  final int? maxLength;
+
+  // ---------------- Constructor ----------------
+
   const TextFormFLogin({
     super.key,
     this.hint,
@@ -16,48 +33,43 @@ class TextFormFLogin extends StatefulWidget {
     this.maxLength,
   });
 
-  final String? hint;
-  final IconData? iconn;
-  final Color? iconnColor;
-  final TextEditingController? controller;
-  final String? Function(String?)? validator;
-  final TextInputType? keyboardType;
-  final bool? obscureText;
-  final Function(String)? onChanged;
-  final int? maxLength;
-
   @override
   State<TextFormFLogin> createState() => _TextFormFLoginState();
 }
 
 class _TextFormFLoginState extends State<TextFormFLogin> {
+
+  // ---------------- Build Method ----------------
+
   @override
   Widget build(BuildContext context) {
+    final activeColor = widget.iconnColor ?? context.cs.primary;
+
     return TextFormField(
       controller: widget.controller,
       validator: widget.validator,
-      autovalidateMode:AutovalidateMode.onUnfocus ,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       keyboardType: widget.keyboardType ?? TextInputType.text,
-      obscureText: widget.obscureText ??false,
+      obscureText: widget.obscureText ?? false,
       maxLength: widget.maxLength,
       onChanged: widget.onChanged,
       decoration: InputDecoration(
         hintText: widget.hint,
-        labelStyle: GoogleFonts.poppins(),
+        labelStyle: context.ts.bodyMedium,
         prefixIcon: widget.iconn != null
-            ? Icon(widget.iconn, color: widget.iconnColor ?? Colors.orange)
+            ? Icon(widget.iconn, color: activeColor)
             : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.orange, width: 1.8),
+          borderSide: BorderSide(color: activeColor, width: 1.8),
           borderRadius: BorderRadius.circular(12),
         ),
         filled: true,
-        fillColor: Colors.grey.shade50,
+        fillColor: context.cs.surfaceContainerHighest,
       ),
-      style: GoogleFonts.poppins(),
+      style: context.ts.bodyMedium,
     );
   }
 }

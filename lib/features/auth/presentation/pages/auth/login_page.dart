@@ -128,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           24.h,
-                          fieldCatogoryName('Email'),
+                          fieldCatogoryName(context, 'Email'),
                           TextFormFLogin(
                             controller: email,
                             hint: 'Enter your email',
@@ -136,31 +136,38 @@ class _LoginPageState extends State<LoginPage> {
                             keyboardType: TextInputType.emailAddress,
                           ),
                           10.h,
-                          fieldCatogoryName('Password'),
+                          fieldCatogoryName(context, 'Password'),
                           TextFormFLogin(
                             controller: password,
                             hint: 'Enter password',
                             validator: passwordValidator,
                             obscureText: true,
                           ),
-                          textButtonAuth(context, onpress: () {
-                            Navigator.of(context).pushNamed(AppRoutes.forgot);
-                          }, content: "Forgot Password?", color: AppColors.black),
+                          AuthTextButton(
+                            onPress: () {
+                              Navigator.of(context).pushNamed(AppRoutes.forgot);
+                            },
+                            content: "Forgot Password?",
+                            color: AppColors.black,
+                          ),
 
                           
                           Center(
-                            child: elevatedButton(fontSize, onpress: () async {
-                              if (createAccount.currentState!.validate()) {
-                                context.read<SigninBloc>().add(
-                                    SignInSubmittedEvent(
-                                        emailId: email.text.trim(),
-                                        password: password.text.trim()));
-                              }
-                            },
-                                color: Colors.green,
-                                padd: const EdgeInsets.symmetric(
-                                    horizontal: 80, vertical: 14),
-                                content: 'Login'),
+                            child: CustomElevatedButton(
+                              fontSize: fontSize,
+                              onPress: () async {
+                                if (createAccount.currentState!.validate()) {
+                                  context.read<SigninBloc>().add(
+                                      SignInSubmittedEvent(
+                                          emailId: email.text.trim(),
+                                          password: password.text.trim()));
+                                }
+                              },
+                              color: Colors.green,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 80, vertical: 14),
+                              content: 'Login',
+                            ),
                           ),
                           Center(
                             child:
@@ -206,11 +213,13 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           5.h,
                           Center(
-                            child: textButtonAuth(context, onpress: () {
-                              Navigator.pushNamed(context, AppRoutes.signUp);
-                            },
-                                content: "Don't have an account? Sign up",
-                                color: Colors.green),
+                            child: AuthTextButton(
+                              onPress: () {
+                                Navigator.pushNamed(context, AppRoutes.signUp);
+                              },
+                              content: "Don't have an account? Sign up",
+                              color: Colors.green,
+                            ),
                           )
                         ],
                       ),

@@ -4,12 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 
+// ---------------- Shimmer Placeholder ----------------
+
 /// A base shimmer effect widget used as a loading placeholder for UI elements.
 class ShimmerPlaceholder extends StatelessWidget {
+  
+  // ---------------- Variables / Parameters ----------------
+
   final double height;
   final double width;
   final BorderRadius? borderRadius;
   final BoxShape shape;
+
+  // ---------------- Constructor ----------------
 
   const ShimmerPlaceholder({
     super.key,
@@ -18,6 +25,8 @@ class ShimmerPlaceholder extends StatelessWidget {
     this.borderRadius,
     this.shape = BoxShape.rectangle,
   });
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +46,23 @@ class ShimmerPlaceholder extends StatelessWidget {
   }
 }
 
+// ---------------- Circular Shimmer Placeholder ----------------
+
 /// A circular variation of the shimmer placeholder, typically used for profile images or icons.
 class CircularShimmerPlaceholder extends StatelessWidget {
+  
+  // ---------------- Variables / Parameters ----------------
+
   final double size;
+
+  // ---------------- Constructor ----------------
 
   const CircularShimmerPlaceholder({
     super.key,
     this.size = 60,
   });
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +75,18 @@ class CircularShimmerPlaceholder extends StatelessWidget {
 }
 
 
+// ---------------- Rectangular Shimmer Placeholder ----------------
+
 /// A rectangular variation of the shimmer placeholder with customizable border radius.
 class RectangularShimmerPlaceholder extends StatelessWidget {
+  
+  // ---------------- Variables / Parameters ----------------
+
   final double height;
   final double width;
   final double borderRadius;
+
+  // ---------------- Constructor ----------------
 
   const RectangularShimmerPlaceholder({
     super.key,
@@ -69,6 +94,8 @@ class RectangularShimmerPlaceholder extends StatelessWidget {
     this.width = double.infinity,
     this.borderRadius = 12,
   });
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {

@@ -58,7 +58,7 @@ class _CartPageState extends State<CartPage> {
         builder: (context, state) {
           // ---------------- Loading State ----------------
           if (state is CartLoadingState) {
-            return circularProgressIndicators();
+            return const CustomCircularProgressIndicator();
           }
 
           // ---------------- Empty Cart State ----------------

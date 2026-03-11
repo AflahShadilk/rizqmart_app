@@ -1,6 +1,8 @@
-
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
+
+// ---------------- Rizq Icon ----------------
+
 /// A stateless widget that displays the main application logo image.
 class IconRizq extends StatelessWidget {
   const IconRizq({
@@ -12,6 +14,9 @@ class IconRizq extends StatelessWidget {
     return Image.asset("assets/icons_and_images/appIcon.png");
   }
 }
+
+// ---------------- RizqMart Name ----------------
+
 /// A styled typography widget to consistently display the 'RIZQ MART' brand name.
 class RizqMartName extends StatelessWidget {
   const RizqMartName({super.key});
@@ -23,20 +28,16 @@ class RizqMartName extends StatelessWidget {
       children: [
         Text(
           'RIZQ',
-          style: GoogleFonts.poppins(
-            color: Colors.black,
-            fontSize: 28,
+          style: context.ts.headlineLarge?.copyWith(
+            color: context.cs.onSurface,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.2,
           ),
         ),
-        
-        
         Text(
           ' MART',
-          style: GoogleFonts.poppins(
-            color: Colors.orange,
-            fontSize: 28,
+          style: context.ts.headlineLarge?.copyWith(
+            color: context.cs.primary,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.2,
           ),

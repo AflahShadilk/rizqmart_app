@@ -1,28 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
 
-/// A reusable styling method for generating a primary Elevated Button.
-ElevatedButton elevatedButton(double fontSize,{required void Function()?onpress,required Color color,required EdgeInsetsGeometry? padd,required String content }) {
-    return ElevatedButton(
-                        onPressed: onpress,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: color,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 100, vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 6,
-                        ),
-                        child: Text(
-                          content,
-                          style: GoogleFonts.poppins(
-                            fontSize: fontSize * 0.85,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                      );
-  }
+// ---------------- Custom Elevated Button ----------------
 
+/// A reusable generic elevated button. It replaces the old elevatedButton() top-level function.
+class CustomElevatedButton extends StatelessWidget {
   
+  // ---------------- Variables / Parameters ----------------
+
+  final double fontSize;
+  final VoidCallback? onPress;
+  final Color color;
+  final EdgeInsetsGeometry? padding;
+  final String content;
+
+  // ---------------- Constructor ----------------
+
+  const CustomElevatedButton({
+    super.key,
+    required this.fontSize,
+    required this.onPress,
+    required this.color,
+    required this.padding,
+    required this.content,
+  });
+
+  // ---------------- Build Method ----------------
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPress,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        padding: padding ?? const EdgeInsets.symmetric(horizontal: 100, vertical: 14),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 6,
+      ),
+      child: Text(
+        content,
+        style: context.ts.bodyLarge?.copyWith(
+          fontSize: fontSize * 0.85,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+// ---------------- Toast Action ----------------
+
 /// A global utility function to display a temporary, non-blocking toast notification across the screen via OverlayEntry.
 void showToast(
   BuildContext context,
-  String message,
-  {ToastType type = ToastType.info}
-) {
+  String message, {
+  ToastType type = ToastType.info,
+}) {
   final overlay = Overlay.of(context);
 
   final entry = OverlayEntry(
@@ -37,8 +39,14 @@ void showToast(
   );
 
   overlay.insert(entry);
-  Future.delayed(const Duration(milliseconds: 1200)).then((_) => entry.remove());
+  Future.delayed(const Duration(milliseconds: 1200)).then((_) {
+    if (entry.mounted) {
+      entry.remove();
+    }
+  });
 }
+
+// ---------------- Toast Types & Colors ----------------
 
 enum ToastType {
   success,
@@ -46,15 +54,18 @@ enum ToastType {
   warning,
   info,
 }
+
 Color _toastColor(ToastType type) {
+  // Toast colors are typically globally defined distinct primitives
+  // regardless of surface theme to convey critical state clearly.
   switch (type) {
     case ToastType.success:
-      return const Color(0xFF4CAF50); 
+      return const Color(0xFF4CAF50); // Green
     case ToastType.error:
-      return const Color(0xFFE53935); 
+      return const Color(0xFFE53935); // Red
     case ToastType.warning:
-      return const Color(0xFFFFB300); 
+      return const Color(0xFFFFB300); // Amber
     case ToastType.info:
-      return const Color(0xFF2196F3);
+      return const Color(0xFF2196F3); // Blue
   }
 }

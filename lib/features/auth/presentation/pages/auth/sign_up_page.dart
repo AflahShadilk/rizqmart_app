@@ -164,14 +164,14 @@ class _SignUpPageState extends State<SignUpPage> {
                               ),
                             ),
                             5.h,
-                            fieldCatogoryName('Full Name'),
+                            fieldCatogoryName(context, 'Full Name'),
                             TextFormFLogin(
                               controller: nameField,
                               hint: 'Enter your full name',
                               validator: nameFieldValidator,
                             ),
                             5.h,
-                            fieldCatogoryName('Email'),
+                            fieldCatogoryName(context, 'Email'),
                             TextFormFLogin(
                               controller: email,
                               hint: 'Enter your email',
@@ -179,7 +179,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               keyboardType: TextInputType.emailAddress,
                             ),
                             5.h,
-                            fieldCatogoryName('Password'),
+                            fieldCatogoryName(context, 'Password'),
                             TextFormFLogin(
                               controller: password,
                               hint: 'Enter password',
@@ -187,7 +187,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               obscureText: true,
                             ),
                             5.h,
-                            fieldCatogoryName('Confirm Password'),
+                            fieldCatogoryName(context, 'Confirm Password'),
                             TextFormFLogin(
                               controller: cpassword,
                               hint: 'Re-enter password',
@@ -196,34 +196,33 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                             15.h,
                             Center(
-                              child: elevatedButton(fontSize,
-                                  onpress: () {
-                                if (createAccount.currentState!
-                                    .validate()) {
-                                  context.read<SignupBloc>().add(
-                                      SignupSubmitted(
-                                          name: nameField.text.trim(),
-                                          email: email.text.trim(),
-                                          password:
-                                              password.text.trim(),
-                                          conformPass:
-                                              cpassword.text.trim()));
-                                }
-                              },
-                                  color: Colors.green,
-                                  padd: const EdgeInsets.symmetric(
-                                      horizontal: 80, vertical: 14),
-                                  content: 'Get Started'),
+                              child: CustomElevatedButton(
+                                fontSize: fontSize,
+                                onPress: () {
+                                  if (createAccount.currentState!.validate()) {
+                                    context.read<SignupBloc>().add(
+                                        SignupSubmitted(
+                                            name: nameField.text.trim(),
+                                            email: email.text.trim(),
+                                            password: password.text.trim(),
+                                            conformPass: cpassword.text.trim()));
+                                  }
+                                },
+                                color: Colors.green,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 80, vertical: 14),
+                                content: 'Get Started',
+                              ),
                             ),
                             10.h,
                             Center(
-                              child: textButtonAuth(context,
-                                  onpress: () {
-                                Navigator.pushReplacementNamed(context, AppRoutes.login);
-                              },
-                                  content:
-                                      "Already have an account?Login",
-                                  color: Colors.black),
+                              child: AuthTextButton(
+                                onPress: () {
+                                  Navigator.pushReplacementNamed(context, AppRoutes.login);
+                                },
+                                content: "Already have an account?Login",
+                                color: Colors.black,
+                              ),
                             ),
                           ],
                         ),

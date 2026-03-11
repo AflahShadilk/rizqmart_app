@@ -28,7 +28,6 @@ class AppRoutes {
    static const String settings = '/settings';
   static const String help = '/help';
   static const String aboutUs = '/aboutUs';
-
   static const String chat = '/chat';
   static const String notifications = '/notifications';
 }

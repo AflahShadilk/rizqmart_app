@@ -5,8 +5,13 @@ import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
+// ---------------- Variant Card ----------------
+
 /// A card widget displaying a specific product variant, complete with its name, image, price, and selection state.
 class VariantCard extends StatelessWidget {
+  
+  // ---------------- Variables / Parameters ----------------
+
   final String productName;
   final String variantName;
   final double price;
@@ -15,6 +20,8 @@ class VariantCard extends StatelessWidget {
   final Widget? actionButton; 
   final bool isSelected; 
   final ColorScheme colorScheme;
+
+  // ---------------- Constructor ----------------
 
   const VariantCard({
     super.key,
@@ -27,6 +34,8 @@ class VariantCard extends StatelessWidget {
     this.actionButton,
     this.isSelected = false,
   });
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -89,10 +98,10 @@ class VariantCard extends StatelessWidget {
                     
                       Text(
                         variantName,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 11,
-                              color: colorScheme.onSurface.withValues(alpha: 0.6),
-                            ),
+                        style: context.ts.bodySmall?.copyWith(
+                          fontSize: 11,
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
+                        ),
                       ),
                       const Spacer(),
                       
@@ -101,8 +110,7 @@ class VariantCard extends StatelessWidget {
                         children: [
                           Text(
                             '₹${price.toInt()}',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
+                            style: context.ts.bodyMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                               color: colorScheme.success,

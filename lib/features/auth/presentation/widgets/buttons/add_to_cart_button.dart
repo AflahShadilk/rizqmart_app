@@ -9,8 +9,19 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_event.da
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 
+// ---------------- Add To Cart Button ----------------
+
 /// A circular icon button widget that adds a specific product variant to the cart.
 class AddToCartButton extends StatelessWidget {
+  
+  // ---------------- Variables / Parameters ----------------
+
+  final ShowProductEntities widget;
+  final int variantIndex;
+  final int count;
+
+  // ---------------- Constructor ----------------
+
   const AddToCartButton({
     super.key,
     required this.widget,
@@ -18,9 +29,7 @@ class AddToCartButton extends StatelessWidget {
     this.count = 1,
   });
 
-  final ShowProductEntities widget;
-  final int variantIndex;
-  final int count;
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +51,8 @@ class AddToCartButton extends StatelessWidget {
     );
   }
 
+  // ---------------- Helper Methods ----------------
+
   void _addToCart(BuildContext context) {
     try {
       if (variantIndex >= widget.variantDetails.length) {
@@ -52,14 +63,20 @@ class AddToCartButton extends StatelessWidget {
         );
         return;
       }
-      final cartState=context.read<CartBloc>().state;
-      final itemExists= _isItemInCart(cartState);
-      if(itemExists){
-        final variantName=widget.variantDetails[variantIndex]['variant']??widget.variantDetails[variantIndex]['unitName']??'';
-      showToast(context, '${widget.name}${variantName.isNotEmpty ? ' ($variantName)' : ''} already in cart!',
-          type: ToastType.warning,);
-      return ;
+      final cartState = context.read<CartBloc>().state;
+      final itemExists = _isItemInCart(cartState);
+      
+      if (itemExists) {
+        final variantName = widget.variantDetails[variantIndex]['variant'] ?? 
+                            widget.variantDetails[variantIndex]['unitName'] ?? '';
+        showToast(
+          context,
+          '${widget.name}${variantName.isNotEmpty ? ' ($variantName)' : ''} already in cart!',
+          type: ToastType.warning,
+        );
+        return;
       }
+
       final cartItem = CartEntities(
         id: widget.id,
         name: widget.name,
@@ -73,15 +90,14 @@ class AddToCartButton extends StatelessWidget {
       );
 
       context.read<CartBloc>().add(
-            AddToCartEvent(
-              productId: widget.id,
-              item: cartItem,
-            ),
-          );
+        AddToCartEvent(
+          productId: widget.id,
+          item: cartItem,
+        ),
+      );
 
       final variantName = widget.variantDetails[variantIndex]['variant'] ??
-          widget.variantDetails[variantIndex]['unitName'] ??
-          '';
+                          widget.variantDetails[variantIndex]['unitName'] ?? '';
 
       showToast(
         context,
@@ -96,10 +112,10 @@ class AddToCartButton extends StatelessWidget {
       );
     }
   }
-  bool _isItemInCart(dynamic cartState){
-    // ignore: unnecessary_null_comparison
-    if(cartState is CartLoadedState && cartState.items!=null){
-      return cartState.items.any((item)=>item.id==widget.id&&item.variantIndex==variantIndex);
+
+  bool _isItemInCart(dynamic cartState) {
+    if (cartState is CartLoadedState) {
+      return cartState.items.any((item) => item.id == widget.id && item.variantIndex == variantIndex);
     }
     return false;
   }

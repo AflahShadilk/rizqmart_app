@@ -24,8 +24,7 @@ class ExploreSearchDropdown extends StatelessWidget {
             top: 140,
             left: 16,
             right: 16,
-            child: searchResultsDropdown(
-              context: context,
+            child: SearchResultsDropdown(
               controller: searchController,
               items: state.filteredItems.cast<ShowProductEntities>(),
               onProductSelected: () {

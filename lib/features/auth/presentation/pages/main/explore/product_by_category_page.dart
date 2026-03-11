@@ -163,7 +163,7 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  circularProgressIndicators(),
+                  const CustomCircularProgressIndicator(),
                   16.h,
                   const Text('Loading products...'),
                 ],

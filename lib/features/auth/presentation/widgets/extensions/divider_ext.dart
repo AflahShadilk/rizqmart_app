@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// ---------------- Divider Extension ----------------
+
 extension DividerExtension on BuildContext {
   Divider divider({
     double thickness = 1,

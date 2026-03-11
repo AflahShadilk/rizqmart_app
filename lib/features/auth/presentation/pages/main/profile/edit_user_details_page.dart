@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
@@ -10,14 +8,17 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/pro
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/profile/user_profile_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/edit_profile_form_cubit.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/date_of_birth_field.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/genden/gender_selection.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/profile_photo.dart';
-import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/profile_text_field.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/edit_basic_info_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/edit_personal_details_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/edit_about_you_section.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/edit_save_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/back_button_common.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
+
+// ---------------- Edit User Details Page ----------------
 
 /// A form page enabling users to update their personal information, bio, and profile photo.
 class EditUserDetailsPage extends StatefulWidget {
@@ -33,6 +34,9 @@ class EditUserDetailsPage extends StatefulWidget {
 }
 
 class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
+
+  // ---------------- Controllers & Variables ----------------
+
   late TextEditingController nameController;
   late TextEditingController phoneController;
   late TextEditingController emailController;
@@ -42,6 +46,8 @@ class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
   late EditProfileFormCubit editProfileFormCubit;
 
   final formKey = GlobalKey<FormState>();
+
+  // ---------------- Init State ----------------
 
   @override
   void initState() {
@@ -67,6 +73,8 @@ class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
     editProfileFormCubit = EditProfileFormCubit(profileBloc: widget.profileBloc);
   }
 
+  // ---------------- Dispose ----------------
+
   @override
   void dispose() {
     nameController.dispose();
@@ -77,6 +85,8 @@ class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
     genderCubit.close();
     super.dispose();
   }
+
+  // ---------------- Helper Methods ----------------
 
   void saveProfile() {
     if (formKey.currentState!.validate()) {
@@ -90,6 +100,8 @@ class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
       );
     }
   }
+
+  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +164,8 @@ class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
   }
 }
 
+// ---------------- Edit Details Content Widget ----------------
+
 class _EditDetailsContent extends StatelessWidget {
   final UserProfileEntities profile;
   final TextEditingController nameController;
@@ -175,6 +189,8 @@ class _EditDetailsContent extends StatelessWidget {
     required this.onSave,
   });
 
+  // ---------------- Build Method ----------------
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -186,80 +202,22 @@ class _EditDetailsContent extends StatelessWidget {
             children: [
               _buildProfilePhotoSection(context),
               28.h,
-              _buildSectionTitle(context, 'Basic Information'),
-              14.h,
-              ProfileTextField(
-                controller: nameController,
-                label: 'Full Name',
-                icon: Icons.person_outline,
-                enabled: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Name is required';
-                  }
-                  return null;
-                },
-                helperText: '',
-              ),
-              12.h,
-              ProfileTextField(
-                controller: emailController,
-                label: 'Email',
-                icon: Icons.email_outlined,
-                enabled: false,
-                keyboardType: TextInputType.emailAddress,
-                helperText: 'Email cannot be changed',
-              ),
-              12.h,
-              ProfileTextField(
-                controller: phoneController,
-                label: 'Phone Number',
-                icon: Icons.phone_outlined,
-                enabled: true,
-                keyboardType: TextInputType.phone,
-                helperText: '',
+              EditBasicInfoSection(
+                nameController: nameController,
+                emailController: emailController,
+                phoneController: phoneController,
               ),
               20.h,
-              _buildSectionTitle(context, 'Personal Details'),
-              14.h,
-              BlocBuilder<DateOfBirthCubit, DateTime?>(
-                bloc: dateOfBirthCubit,
-                builder: (context, selectedDate) {
-                  return DateOfBirthField(
-                    selectedDate: selectedDate,
-                    enabled: true,
-                    onDateSelected: (date) {
-                      dateOfBirthCubit.setDate(date);
-                    },
-                  );
-                },
-              ),
-              12.h,
-              BlocBuilder<GenderCubit, String?>(
-                bloc: genderCubit,
-                builder: (context, selectedGender) {
-                  return GenderSelector(
-                    selectedGender: selectedGender,
-                    enabled: true,
-                    onGenderSelected: (gender) {
-                      genderCubit.setGender(gender);
-                    },
-                  );
-                },
+              EditPersonalDetailsSection(
+                dateOfBirthCubit: dateOfBirthCubit,
+                genderCubit: genderCubit,
               ),
               20.h,
-              _buildSectionTitle(context, 'About You'),
-              14.h,
-              ProfileTextField(
-                controller: bioController,
-                label: 'Bio',
-                icon: Icons.info_outline,
-                enabled: true,
-                maxLines: 3,
-                helperText: 'Tell us about yourself',
+              EditAboutYouSection(
+                bioController: bioController,
               ),
               28.h,
-              _buildSaveButton(context),
+              EditSaveButton(onSave: onSave),
               16.h,
             ],
           ),
@@ -267,6 +225,8 @@ class _EditDetailsContent extends StatelessWidget {
       ),
     );
   }
+
+  // ---------------- Helper Methods ----------------
 
   Widget _buildProfilePhotoSection(BuildContext context) {
     return Container(
@@ -295,46 +255,6 @@ class _EditDetailsContent extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(BuildContext context, String title) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        title,
-        style: context.ts.labelLarge?.copyWith(
-          color: context.cs.onSurface,
-          fontWeight: FontWeight.w600,
-          fontSize: 13,
-          letterSpacing: 0.3,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSaveButton(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: onSave,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: context.cs.primary,
-          foregroundColor: context.cs.onPrimary,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 2,
-        ),
-        child: Text(
-          'Save Changes',
-          style: context.ts.labelLarge?.copyWith(
-            color: context.cs.onPrimary,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
       ),
     );
   }
