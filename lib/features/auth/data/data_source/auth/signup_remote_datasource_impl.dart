@@ -21,6 +21,9 @@ class SignupRemoteDatasourceImpl implements SignupRemoteDatasource {
       'uid': userId,
       'name': name,
       'email': email,
+      'createdAt': DateTime.now().toIso8601String(),
+      'walletBalance': 0.0,
+      'isBlocked': false,
     });
     
     return {

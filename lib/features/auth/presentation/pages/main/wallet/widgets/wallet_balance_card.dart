@@ -8,13 +8,11 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 class WalletBalanceCard extends StatelessWidget {
   final double balance;
   final VoidCallback onWithdraw;
-  final VoidCallback onAddMoney;
 
   const WalletBalanceCard({
     super.key,
     required this.balance,
     required this.onWithdraw,
-    required this.onAddMoney,
   });
 
   // ---------------- Build Method ----------------
@@ -66,46 +64,23 @@ class WalletBalanceCard extends StatelessWidget {
           24.h,
 
           // ---------------- Action Buttons ----------------
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: onWithdraw,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: context.cs.onPrimary,
-                    foregroundColor: context.cs.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  child: const Text(
-                    'Withdraw',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: onWithdraw,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: context.cs.onPrimary,
+                foregroundColor: context.cs.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
+                padding: const EdgeInsets.symmetric(vertical: 12),
               ),
-              12.w,
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: onAddMoney,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: context.cs.onPrimary.withValues(alpha: 0.2),
-                    foregroundColor: context.cs.onPrimary,
-                    elevation: 0,
-                    side: BorderSide(color: context.cs.onPrimary),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  child: const Text(
-                    'Add Money',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
+              child: const Text(
+                'Withdraw Funds',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-            ],
+            ),
           ),
         ],
       ),

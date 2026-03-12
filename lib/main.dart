@@ -20,6 +20,12 @@ void main() async {
       WidgetsFlutterBinding.ensureInitialized();
 
       try {
+        await dotenv.load(fileName: ".env");
+      } catch (e) {
+        debugPrint('Error loading .env file: $e');
+      }
+
+      try {
         await Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
         );
@@ -27,24 +33,26 @@ void main() async {
         FirebaseMessaging.onBackgroundMessage(
             firebaseMessagingBackgroundHandler);
       } catch (e) {
-        rethrow;
+        debugPrint('Firebase initialization error: $e');
       }
 
       try {
-        await dotenv.load(fileName: ".env");
-      } catch (_) {}
-
-      try {
         await StripeService.initialize();
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Stripe initialization error: $e');
+      }
 
       try {
         await NotificationService().initialize(navigatorKey);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Notification Service error: $e');
+      }
 
       try {
         setupLocator();
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Locator setup error: $e');
+      }
 
       runApp(MyApp(navigatorKey: navigatorKey));
     },

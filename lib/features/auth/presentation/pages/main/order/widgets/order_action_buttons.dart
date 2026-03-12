@@ -64,12 +64,13 @@ class OrderActionButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isCancelled = order.status.toLowerCase() == 'cancelled';
     final bool isDelivered = order.status.toLowerCase() == 'delivered';
+    final bool isShipped = order.status.toLowerCase() == 'shipped';
 
     return BlocBuilder<InvoiceCubit, InvoiceState>(
       builder: (context, invoiceState) {
         return Column(
           children: [
-            if (!isCancelled && !isDelivered)
+            if (!isCancelled && !isDelivered && !isShipped)
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
@@ -88,7 +89,7 @@ class OrderActionButtons extends StatelessWidget {
                   ),
                 ),
               ),
-            if (!isCancelled && !isDelivered) 16.h,
+            if (!isCancelled && !isDelivered && !isShipped) 16.h,
             SizedBox(
               width: double.infinity,
               child: MainButton(

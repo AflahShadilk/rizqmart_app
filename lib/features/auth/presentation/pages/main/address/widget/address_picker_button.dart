@@ -257,10 +257,12 @@ class LocationPickerButton extends StatelessWidget {
       if (placemarks.isNotEmpty) {
         final place = placemarks[0];
 
-        
-        final city = place.locality ?? place.administrativeArea ?? '';
+        final city = place.locality?.isNotEmpty == true
+            ? place.locality!
+            : place.subAdministrativeArea ?? '';
         final state = place.administrativeArea ?? '';
         final country = place.country ?? 'India';
+        final pincode = place.postalCode ?? '';
 
         
         if (formCubit.state.city.isEmpty && city.isNotEmpty) {
@@ -276,6 +278,10 @@ class LocationPickerButton extends StatelessWidget {
         if (formCubit.state.country.isEmpty && country.isNotEmpty) {
           formCubit.updateCountry(country);
         }
+
+        if (formCubit.state.pincode.isEmpty && pincode.isNotEmpty) {
+          formCubit.updatePincode(pincode);
+        }
       } else {
         
         if (formCubit.state.city.isEmpty) {
@@ -286,6 +292,9 @@ class LocationPickerButton extends StatelessWidget {
         }
         if (formCubit.state.country.isEmpty) {
           formCubit.updateCountry('India');
+        }
+        if (formCubit.state.pincode.isEmpty) {
+          formCubit.updatePincode('');
         }
       }
     } catch (e) {

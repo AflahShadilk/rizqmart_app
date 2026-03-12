@@ -13,7 +13,6 @@ import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.d
 
 /// A circular icon button widget that adds a specific product variant to the cart.
 class AddToCartButton extends StatelessWidget {
-  
   // ---------------- Variables / Parameters ----------------
 
   final ShowProductEntities widget;
@@ -65,10 +64,11 @@ class AddToCartButton extends StatelessWidget {
       }
       final cartState = context.read<CartBloc>().state;
       final itemExists = _isItemInCart(cartState);
-      
+
       if (itemExists) {
-        final variantName = widget.variantDetails[variantIndex]['variant'] ?? 
-                            widget.variantDetails[variantIndex]['unitName'] ?? '';
+        final variantName = widget.variantDetails[variantIndex]['variant'] ??
+            widget.variantDetails[variantIndex]['unitName'] ??
+            '';
         showToast(
           context,
           '${widget.name}${variantName.isNotEmpty ? ' ($variantName)' : ''} already in cart!',
@@ -90,14 +90,15 @@ class AddToCartButton extends StatelessWidget {
       );
 
       context.read<CartBloc>().add(
-        AddToCartEvent(
-          productId: widget.id,
-          item: cartItem,
-        ),
-      );
+            AddToCartEvent(
+              productId: widget.id,
+              item: cartItem,
+            ),
+          );
 
       final variantName = widget.variantDetails[variantIndex]['variant'] ??
-                          widget.variantDetails[variantIndex]['unitName'] ?? '';
+          widget.variantDetails[variantIndex]['unitName'] ??
+          '';
 
       showToast(
         context,
@@ -115,7 +116,8 @@ class AddToCartButton extends StatelessWidget {
 
   bool _isItemInCart(dynamic cartState) {
     if (cartState is CartLoadedState) {
-      return cartState.items.any((item) => item.id == widget.id && item.variantIndex == variantIndex);
+      return cartState.items.any(
+          (item) => item.id == widget.id && item.variantIndex == variantIndex);
     }
     return false;
   }

@@ -140,13 +140,21 @@ class _OrdersView extends StatelessWidget {
               }
 
               if (state is OrdersPageLoaded) {
-                return ListView.separated(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: state.orders.length,
-                  separatorBuilder: (context, index) => 16.h,
-                  itemBuilder: (context, index) {
-                    return OrderCard(order: state.orders[index]);
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<OrdersPageCubit>().retryLoad();
+                    await Future.delayed(const Duration(seconds: 1));
                   },
+                  color: context.cs.primary,
+                  backgroundColor: context.cs.surface,
+                  child: ListView.separated(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: state.orders.length,
+                    separatorBuilder: (context, index) => 16.h,
+                    itemBuilder: (context, index) {
+                      return OrderCard(order: state.orders[index]);
+                    },
+                  ),
                 );
               }
 

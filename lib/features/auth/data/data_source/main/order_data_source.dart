@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:rizqmart/core/services/notification_service.dart';
 import 'package:rizqmart/features/auth/data/model/main/order_firestore_model.dart';
 
 /// Remote data source for handling order placement, retrieval, and status updates via Firestore.
@@ -23,41 +22,18 @@ class OrderDataSource {
         'deliveryNotes': order.deliveryNotes,
       });
       
-
-      
-      
-      await clearUserCart(order.userId);
-
-      // Create notifications (won't fail the order if this fails)
-      try {
-        // In-app notification via Firestore
-        await firestore
-            .collection('users')
-            .doc(order.userId)
-            .collection('notifications')
-            .add({
-          'title': 'Order Placed',
-          'body': 'Your order has been placed successfully!',
-          'type': 'order',
-          'referenceId': docRef.id,
-          'isRead': false,
-          'timestamp': FieldValue.serverTimestamp(),
-        });
-
-        // System notification bar
-        await NotificationService().showNotification(
-          title: 'Order Placed',
-          body: 'Your order has been placed successfully!',
-          data: {'orderId': docRef.id, 'type': 'order'},
-        );
-      } catch (_) {
-        // Notification failure should not affect order placement
-      }
-      
       return docRef.id;
     } catch (e) {
 
       throw Exception('Failed to place order: $e');
+    }
+  }
+
+  Future<void> deleteOrder(String orderId) async {
+    try {
+      await firestore.collection('orders').doc(orderId).delete();
+    } catch (e) {
+      throw Exception('Failed to delete order: $e');
     }
   }
 

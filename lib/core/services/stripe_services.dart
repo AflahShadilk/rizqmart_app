@@ -1,14 +1,22 @@
 
 
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-/// Encapsulates all Stripe payment interactions, from creating intents to refunding orders.
+// ---------------- Stripe Service ----------------
+
+/// Encapsulates all Stripe payment interactions via the secure Firebase Cloud Functions backend.
+/// The Stripe secret key is never used on the client — only the publishable key.
 class StripeService {
+
+  // ---------------- Backend Base URL ----------------
+  static const String _baseUrl =
+      'https://us-central1-rizqmart-486b8.cloudfunctions.net/api';
+
+  // ---------------- Publishable Key ----------------
   static String get publishableKey {
     final key = dotenv.env['STRIPE_PUBLISHABLE_KEY'];
     if (key == null || key.isEmpty) {
@@ -17,82 +25,64 @@ class StripeService {
     return key;
   }
 
-  static String get secretKey {
-    final key = dotenv.env['STRIPE_SECRET_KEY'];
-    if (key == null || key.isEmpty) {
-      throw Exception('STRIPE_SECRET_KEY not found in .env file');
-    }
-    return key;
-  }
-
-  
+  // ---------------- Initialize Stripe SDK ----------------
   static Future<void> initialize() async {
     try {
       Stripe.publishableKey = publishableKey;
       await Stripe.instance.applySettings();
-
-    
-    } catch (_) {
-    }
+    } catch (_) {}
   }
 
-  
+  // ---------------- Request Payment Intent From Backend ----------------
   static Future<Map<String, dynamic>> createPaymentIntent({
     required double amount,
     required String currency,
     required String orderId,
   }) async {
     try {
-
-      
-      
       final amountInSmallestUnit = (amount * 100).toInt();
 
       final response = await http.post(
-        Uri.parse('https://api.stripe.com/v1/payment_intents'),
-        headers: {
-          'Authorization': 'Bearer $secretKey',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: {
-          'amount': amountInSmallestUnit.toString(),
+        Uri.parse('$_baseUrl/create-payment-intent'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'amount': amountInSmallestUnit,
           'currency': currency.toLowerCase(),
-          'metadata[order_id]': orderId,
-          'metadata[source]': 'RizqMart',
-          'automatic_payment_methods[enabled]': 'true',
-        },
+          'orderId': orderId,
+        }),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
         return {
           'success': true,
-          'clientSecret': data['client_secret'],
-          'paymentIntentId': data['id'],
+          'clientSecret': data['clientSecret'],
+          'paymentIntentId': data['paymentIntentId'],
+          'customerId': data['customerId'],
+          'ephemeralKey': data['ephemeralKey'],
         };
       } else {
-
         throw Exception('Failed to create payment intent: ${response.statusCode}');
       }
     } catch (e) {
-
       rethrow;
     }
   }
 
-  
+  // ---------------- Initialize & Present Payment Sheet ----------------
   static Future<bool> presentPaymentSheet({
     required String clientSecret,
     required String merchantDisplayName,
+    String? customerId,
+    String? ephemeralKey,
   }) async {
     try {
-
-      
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
           merchantDisplayName: merchantDisplayName,
+          customerId: customerId,
+          customerEphemeralKeySecret: ephemeralKey,
           style: ThemeMode.system,
           appearance: PaymentSheetAppearance(
             colors: PaymentSheetAppearanceColors(
@@ -103,39 +93,29 @@ class StripeService {
       );
 
       await Stripe.instance.presentPaymentSheet();
-      
 
       return true;
     } on StripeException catch (e) {
-
-      if (e.error.code == FailureCode.Canceled) {
-
-      }
+      if (e.error.code == FailureCode.Canceled) {}
       return false;
     } catch (e) {
-
       return false;
     }
   }
 
-  
+  // ---------------- Confirm Payment Via Backend ----------------
   static Future<Map<String, dynamic>> confirmPayment(String paymentIntentId) async {
     try {
-
-      
-      final response = await http.get(
-        Uri.parse('https://api.stripe.com/v1/payment_intents/$paymentIntentId'),
-        headers: {
-          'Authorization': 'Bearer $secretKey',
-        },
+      final response = await http.post(
+        Uri.parse('$_baseUrl/confirm-payment'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'paymentIntentId': paymentIntentId}),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
-        
         return {
-          'success': data['status'] == 'succeeded',
+          'success': data['success'] ?? false,
           'status': data['status'],
           'amount': data['amount'],
           'currency': data['currency'],
@@ -144,46 +124,35 @@ class StripeService {
         throw Exception('Failed to confirm payment');
       }
     } catch (e) {
-
       rethrow;
     }
   }
 
-  
+  // ---------------- Refund Payment Via Backend ----------------
   static Future<bool> refundPayment(String paymentIntentId, {double? amount}) async {
     try {
-
-      
-      final body = {
-        'payment_intent': paymentIntentId,
-      };
-      
+      final body = <String, dynamic>{'paymentIntentId': paymentIntentId};
       if (amount != null) {
-        body['amount'] = (amount * 100).toInt().toString();
+        body['amount'] = (amount * 100).toInt();
       }
 
       final response = await http.post(
-        Uri.parse('https://api.stripe.com/v1/refunds'),
-        headers: {
-          'Authorization': 'Bearer $secretKey',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: body,
+        Uri.parse('$_baseUrl/refund-payment'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
       );
 
       if (response.statusCode == 200) {
-
         return true;
       } else {
-
         return false;
       }
     } catch (e) {
-
       rethrow;
     }
   }
-  
+
+  // ---------------- Create Payment Method (Client-Side - Publishable Key) ----------------
   static Future<Map<String, dynamic>> createPaymentMethod({
     required String number,
     required String expMonth,
@@ -198,7 +167,7 @@ class StripeService {
           ),
         ),
       );
-      
+
       return {
         'id': paymentMethod.id,
         'last4': paymentMethod.card.last4,
@@ -209,7 +178,7 @@ class StripeService {
     }
   }
 
-  
+  // ---------------- Confirm Payment With Saved Card (Client-Side - Publishable Key) ----------------
   static Future<Map<String, dynamic>> confirmPaymentWithSavedCard({
     required String clientSecret,
     required String paymentMethodId,

@@ -102,6 +102,8 @@ class PaymentRepositoryImpl implements PaymentRepository {
          final success = await StripeService.presentPaymentSheet(
            clientSecret: paymentIntent['clientSecret'],
            merchantDisplayName: 'RizqMart',
+           customerId: paymentIntent['customerId'],
+           ephemeralKey: paymentIntent['ephemeralKey'],
          );
 
          if (!success) throw Exception('Payment cancelled or failed');
@@ -177,6 +179,26 @@ class PaymentRepositoryImpl implements PaymentRepository {
   @override
   Future<Either<Failure, PaymentEntity>> cancelOrder(String orderId) {
     return ErrorHandler.executeApiCall(() async {
+      final orderSnapshot = await orderDataSource.getOrderById(orderId);
+      if (!orderSnapshot.exists) throw Exception('Order not found');
+      
+      final orderData = orderSnapshot.data() as Map<String, dynamic>;
+      final status = orderData['status'] as String? ?? '';
+
+      // If the order is completely stuck in 'pending_payment' and no payment was generated (due to failure)
+      if (status == 'pending_payment') {
+         await orderDataSource.deleteOrder(orderId);
+         return PaymentEntity(
+            paymentId: '',
+            orderId: orderId,
+            userId: orderData['userId'] ?? '',
+            amount: (orderData['totalCost'] ?? 0).toDouble(),
+            method: 'none',
+            status: 'deleted',
+            createdAt: DateTime.now(),
+         );
+      }
+
       final payment = await paymentDataSource.getPaymentByOrderId(orderId);
       if (payment == null) throw Exception('Payment not found for order: $orderId');
 

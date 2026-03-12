@@ -140,7 +140,10 @@ void setupLocator() {
     ),
   );
   sl.registerLazySingleton<SigninRemoteDatasourceImpl>(
-    () => SigninRemoteDatasourceImpl(firebaseAuth: sl()),
+    () => SigninRemoteDatasourceImpl(
+      firebaseAuth: sl(),
+      firebaseFirestore: sl(),
+    ),
   );
   sl.registerLazySingleton<ForgotpassAuthrepo>(
     () => ForgotpassRemoteDatasourceImpl(firebaseAuth: sl()),
@@ -149,6 +152,7 @@ void setupLocator() {
     () => AuthRemoteDataSourceImpl(
       firebaseAuth: sl(),
       googleSignIn: sl(),
+      firebaseFirestore: sl(),
     ),
   );
 

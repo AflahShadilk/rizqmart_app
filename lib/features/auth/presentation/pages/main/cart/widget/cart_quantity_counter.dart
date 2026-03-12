@@ -24,6 +24,7 @@ class CartQuantityCounter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMinusDisabled = count <= 1;
+    final isPlusDisabled = count >= 20;
 
     return Container(
       decoration: BoxDecoration(
@@ -76,9 +77,11 @@ class CartQuantityCounter extends StatelessWidget {
 
           // ---------------- Increment Button ----------------
           InkWell(
-            onTap: () {
-              context.read<CartBloc>().add(IncrementQuantityEvent(cartItemId));
-            },
+            onTap: isPlusDisabled
+                ? null
+                : () {
+                    context.read<CartBloc>().add(IncrementQuantityEvent(cartItemId));
+                  },
             borderRadius: const BorderRadius.only(
               topRight: Radius.circular(7),
               bottomRight: Radius.circular(7),
@@ -87,7 +90,9 @@ class CartQuantityCounter extends StatelessWidget {
               padding: const EdgeInsets.all(6),
               child: Icon(
                 Icons.add,
-                color: context.cs.success,
+                color: isPlusDisabled
+                    ? context.cs.primary.withValues(alpha: 0.3)
+                    : context.cs.success,
                 size: 18,
               ),
             ),

@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 
 /// A specialized text field styled specifically for various inputs within the address form context.
-class AddressTextField extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
+class AddressTextField extends StatefulWidget {
   final String? initialValue;
   final String label;
   final IconData icon;
@@ -25,28 +22,54 @@ class AddressTextField extends StatelessWidget {
     this.validator,
   });
 
-  // ---------------- Build Method ----------------
+  @override
+  State<AddressTextField> createState() => _AddressTextFieldState();
+}
+
+class _AddressTextFieldState extends State<AddressTextField> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialValue);
+  }
+
+  @override
+  void didUpdateWidget(covariant AddressTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue &&
+        widget.initialValue != _controller.text) {
+      _controller.text = widget.initialValue ?? '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      initialValue: initialValue,
-      keyboardType: keyboardType,
-      maxLength: maxLength,
-      onChanged: onChanged,
-      validator: validator,
+      controller: _controller,
+      keyboardType: widget.keyboardType,
+      maxLength: widget.maxLength,
+      onChanged: widget.onChanged,
+      validator: widget.validator,
       style: context.ts.bodyMedium?.copyWith(
         color: context.cs.onSurface,
         fontSize: 14,
       ),
       decoration: InputDecoration(
-        labelText: label,
+        labelText: widget.label,
         labelStyle: context.ts.bodySmall?.copyWith(
           color: context.cs.onSurfaceVariant,
           fontSize: 12,
         ),
         prefixIcon: Icon(
-          icon,
+          widget.icon,
           color: context.cs.onSurfaceVariant,
           size: 18,
         ),
@@ -88,7 +111,7 @@ class AddressTextField extends StatelessWidget {
             width: 1.5,
           ),
         ),
-        counterText: maxLength != null ? null : '',
+        counterText: widget.maxLength != null ? null : '',
         errorStyle: TextStyle(
           color: context.cs.error,
           fontSize: 11,

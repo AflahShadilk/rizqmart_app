@@ -7,7 +7,6 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_state.dart';
-import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/add_money_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wallet/withdraw_screen.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wallet/widgets/wallet_balance_card.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wallet/widgets/wallet_transaction_list.dart';
@@ -36,66 +35,6 @@ class WalletScreen extends StatelessWidget {
     ).then((_) {
       context.read<WalletBloc>().add(LoadWalletDataEvent(userId));
     });
-  }
-
-  void _showAddMoneyDialog(BuildContext context) {
-    final TextEditingController amountController = TextEditingController();
-    final addMoneyCubit = AddMoneyCubit();
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(
-          'Add Money to Wallet',
-          style: context.ts.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: amountController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Amount (₹)',
-                hintText: 'Enter amount to add',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                prefixIcon: const Icon(Icons.currency_rupee),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final amount =
-                  addMoneyCubit.validateAndParseAmount(amountController.text);
-              if (amount != null) {
-                context.read<WalletBloc>().add(AddMoneyEvent(
-                      userId: userId,
-                      amount: amount,
-                    ));
-                Navigator.pop(ctx);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Please enter a valid amount')),
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: context.cs.primary,
-              foregroundColor: context.cs.onPrimary,
-            ),
-            child: const Text('Add Money'),
-          ),
-        ],
-      ),
-    );
   }
 
   // ---------------- Build Method ----------------
@@ -142,7 +81,6 @@ class WalletScreen extends StatelessWidget {
                   WalletBalanceCard(
                     balance: state.wallet?.balance ?? 0.0,
                     onWithdraw: () => _navigateToWithdraw(context),
-                    onAddMoney: () => _showAddMoneyDialog(context),
                   ),
                   24.h,
 

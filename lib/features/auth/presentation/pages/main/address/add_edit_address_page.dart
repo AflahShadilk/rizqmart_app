@@ -17,6 +17,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/address/widget/address_text_field.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/address/widget/address_validators.dart';
 
 /// A page widget that provides a form for adding a new address or editing an existing one for the user.
 class AddEditAddressPage extends StatelessWidget {
@@ -136,12 +137,7 @@ class AddressFormContent extends StatelessWidget {
                     icon: Icons.person_outline,
                     onChanged: (value) =>
                         context.read<AddressFormCubit>().updateFullName(value),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Full name is required';
-                      }
-                      return null;
-                    },
+                    validator: (value) => AddressValidators.validateName(value),
                   );
                 },
               ),
@@ -156,15 +152,7 @@ class AddressFormContent extends StatelessWidget {
                     onChanged: (value) => context
                         .read<AddressFormCubit>()
                         .updatePhoneNumber(value),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Phone number is required';
-                      }
-                      if (value.length != 10) {
-                        return 'Enter a valid 10-digit phone number';
-                      }
-                      return null;
-                    },
+                    validator: (value) => AddressValidators.validatePhoneNumber(value),
                   );
                 },
               ),
@@ -179,12 +167,7 @@ class AddressFormContent extends StatelessWidget {
                     icon: Icons.location_on_outlined,
                     onChanged: (value) =>
                         context.read<AddressFormCubit>().updateAddress1(value),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Street address is required';
-                      }
-                      return null;
-                    },
+                    validator: (value) => AddressValidators.validateAddress(value, isRequired: true),
                   );
                 },
               ),
@@ -197,6 +180,7 @@ class AddressFormContent extends StatelessWidget {
                     icon: Icons.location_on_outlined,
                     onChanged: (value) =>
                         context.read<AddressFormCubit>().updateAddress2(value),
+                    validator: (value) => AddressValidators.validateAddress(value, isRequired: false),
                   );
                 },
               ),
@@ -213,12 +197,7 @@ class AddressFormContent extends StatelessWidget {
                           onChanged: (value) => context
                               .read<AddressFormCubit>()
                               .updateCity(value),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'City is required';
-                            }
-                            return null;
-                          },
+                          validator: (value) => AddressValidators.validateCityState(value, 'City'),
                         );
                       },
                     ),
@@ -234,12 +213,7 @@ class AddressFormContent extends StatelessWidget {
                           onChanged: (value) => context
                               .read<AddressFormCubit>()
                               .updateState(value),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'State is required';
-                            }
-                            return null;
-                          },
+                          validator: (value) => AddressValidators.validateCityState(value, 'State'),
                         );
                       },
                     ),
@@ -257,15 +231,7 @@ class AddressFormContent extends StatelessWidget {
                     maxLength: 6,
                     onChanged: (value) =>
                         context.read<AddressFormCubit>().updatePincode(value),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Pincode is required';
-                      }
-                      if (value.length != 6) {
-                        return 'Enter a valid 6-digit pincode';
-                      }
-                      return null;
-                    },
+                    validator: (value) => AddressValidators.validatePincodeFormat(value),
                   );
                 },
               ),

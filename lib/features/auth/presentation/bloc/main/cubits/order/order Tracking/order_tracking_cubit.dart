@@ -5,6 +5,10 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/order
 class OrderTrackingCubit extends Cubit<OrderTrackingState> {
   OrderTrackingCubit(String status) : super(_resolve(status));
 
+  void updateStatus(String status) {
+    emit(_resolve(status));
+  }
+
   static OrderTrackingState _resolve(String status) {
     final s = status.toLowerCase();
     if (s == 'cancelled') return OrderTrackingCancelled();

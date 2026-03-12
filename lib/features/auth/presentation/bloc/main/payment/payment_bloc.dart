@@ -7,6 +7,9 @@ import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_cod_
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_stripe_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/refund_order_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/pay_with_wallet_usecase.dart';
+import 'package:rizqmart/features/auth/domain/usecase/main/cart/clear_cart_item_usecase.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rizqmart/core/services/notification_service.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_state.dart';
 
@@ -18,6 +21,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   final CancelPaymentOrderUseCase cancelOrderUseCase;
   final RefundOrderUseCase refundOrderUseCase;
   final PayWithWalletUseCase payWithWalletUseCase;
+  final ClearCartItemUsecase clearCartItemUsecase;
 
   OrderEntities? currentOrder;
   String? selectedPaymentMethod;
@@ -30,11 +34,40 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     required this.cancelOrderUseCase,
     required this.refundOrderUseCase,
     required this.payWithWalletUseCase, 
+    required this.clearCartItemUsecase,
   }) : super(const PaymentInitialState()) {
     on<InitializePaymentEvent>(onInitializePayment);
     on<ProcessPaymentEvent>(onProcessPayment);
     on<CancelPaymentEvent>(onCancelPayment);
     on<RefundPaymentEvent>(onRefundPayment);
+  }
+
+  Future<void> _sendSuccessNotification(String orderId, String userId) async {
+    try {
+      // ---------------- In-App Notification via Firestore ----------------
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('notifications')
+          .add({
+        'title': 'Order Placed',
+        'body': 'Your order has been placed successfully!',
+        'type': 'order',
+        'referenceId': orderId,
+        'data': {'orderId': orderId},
+        'isRead': false,
+        'timestamp': Timestamp.now(),
+      });
+
+      // ---------------- System Status Bar Notification ----------------
+      await NotificationService().showNotification(
+        title: 'Order Placed',
+        body: 'Your order has been placed successfully!',
+        data: {'orderId': orderId, 'type': 'order'},
+      );
+    } catch (_) {
+      // Ignore notification failures
+    }
   }
 
   Future<void> onInitializePayment(
@@ -74,24 +107,44 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         if (selectedPaymentMethod == 'cod') {
           emit(const PaymentLoadingState('Processing COD payment...'));
           final paymentResult = await payWithCODUseCase.call(createdOrder);
-          paymentResult.fold(
-            (failure) => emit(PaymentFailedState('COD payment failed: ${failure.message}')),
-            (_) => emit(PaymentSuccessState(
-              orderId: createdOrder.orderId,
-              payment: null,
-              order: createdOrder,
-            )),
+          await paymentResult.fold(
+            (failure) async {
+              await cancelOrderUseCase.call(createdOrder.orderId);
+              emit(PaymentFailedState('COD payment failed: ${failure.message}'));
+            },
+            (_) async {
+              await clearCartItemUsecase.call();
+              await _sendSuccessNotification(createdOrder.orderId, createdOrder.userId);
+              emit(PaymentSuccessState(
+                orderId: createdOrder.orderId,
+                payment: null,
+                order: createdOrder,
+              ));
+            },
           );
         } else if (selectedPaymentMethod == 'stripe' || selectedPaymentMethod == 'saved_card') { 
           emit(const PaymentLoadingState('Processing Stripe payment...'));
           final paymentResult = await payWithStripeUseCase.call(createdOrder, savedCard: selectedSavedCard); 
-          paymentResult.fold(
-            (failure) => emit(PaymentFailedState('Stripe payment failed: ${failure.message}')),
-            (payment) => emit(PaymentSuccessState(
-              orderId: createdOrder.orderId,
-              payment: payment,
-              order: createdOrder,
-            )),
+          await paymentResult.fold(
+            (failure) async {
+              await cancelOrderUseCase.call(createdOrder.orderId);
+              
+              String errorMsg = failure.message;
+              if (errorMsg.contains('PaymentMethod was previously used')) {
+                errorMsg = 'Payment failed. Please select or add a new card.';
+              }
+              
+              emit(PaymentFailedState('Stripe payment failed: $errorMsg'));
+            },
+            (payment) async {
+              await clearCartItemUsecase.call();
+              await _sendSuccessNotification(createdOrder.orderId, createdOrder.userId);
+              emit(PaymentSuccessState(
+                orderId: createdOrder.orderId,
+                payment: payment,
+                order: createdOrder,
+              ));
+            },
           );
         } else if (selectedPaymentMethod == 'wallet') {
           emit(const PaymentLoadingState('Processing Wallet payment...'));
@@ -100,15 +153,23 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
             amount: createdOrder.totalCost,
             orderId: createdOrder.orderId,
           );
-          result.fold(
-            (failure) => emit(PaymentFailedState('Wallet payment failed: ${failure.message}')),
-            (transaction) => emit(PaymentSuccessState(
-              orderId: createdOrder.orderId,
-              payment: null, 
-              order: createdOrder,
-            )),
+          await result.fold(
+            (failure) async {
+              await cancelOrderUseCase.call(createdOrder.orderId);
+              emit(PaymentFailedState('Wallet payment failed: ${failure.message}'));
+            },
+            (transaction) async {
+              await clearCartItemUsecase.call();
+              await _sendSuccessNotification(createdOrder.orderId, createdOrder.userId);
+              emit(PaymentSuccessState(
+                orderId: createdOrder.orderId,
+                payment: null, 
+                order: createdOrder,
+              ));
+            },
           );
         } else {
+          await cancelOrderUseCase.call(createdOrder.orderId);
           emit(PaymentFailedState('Unknown payment method: $selectedPaymentMethod'));
         }
       },

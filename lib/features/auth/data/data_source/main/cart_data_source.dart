@@ -88,10 +88,17 @@ class CartDataSource {
 Future<void> incrementQuantity(
     {required String userId, required String cartItemId}) async {
   try {
-    await cartCollectionReference(userId).doc(cartItemId).update({
-      'count': FieldValue.increment(1),
-      'updatedAt': FieldValue.serverTimestamp()
-    });
+    final doc = await cartCollectionReference(userId).doc(cartItemId).get();
+    if (doc.exists) {
+      final data = doc.data() as Map<String, dynamic>?;
+      final currentCount = (data?['count'] ?? 1) as int;
+      if (currentCount < 20) {
+        await cartCollectionReference(userId).doc(cartItemId).update({
+          'count': FieldValue.increment(1),
+          'updatedAt': FieldValue.serverTimestamp()
+        });
+      }
+    }
   } catch (e) {
     throw Exception('Failed to increment quantity: $e');
   }

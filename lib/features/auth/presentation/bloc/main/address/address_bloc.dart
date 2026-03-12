@@ -7,6 +7,7 @@ import 'package:rizqmart/features/auth/domain/usecase/main/address/set_default_a
 import 'package:rizqmart/features/auth/domain/usecase/main/address/update_address_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_state.dart';
+import 'package:rizqmart/features/auth/presentation/pages/main/address/widget/address_validators.dart';
 
 /// Business logic handling user addresses and location services (adding, updating, fetching).
 class AddressBloc extends Bloc<AddressEvent, AddressState> {
@@ -50,6 +51,18 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     Emitter<AddressState> emit,
   ) async {
     emit(AddressLoadingState());
+
+    final matchError = await AddressValidators.validatePincodeCityStateMatch(
+      pincode: event.address.pincode,
+      city: event.address.city,
+      state: event.address.state,
+    );
+
+    if (matchError != null) {
+      emit(AddressErrorState(message: matchError));
+      return;
+    }
+
     final result = await addAddressUsecase.call(event.address);
     result.fold(
       (failure) => emit(AddressErrorState(message: failure.message)),
@@ -65,6 +78,18 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     Emitter<AddressState> emit,
   ) async {
     emit(AddressLoadingState());
+
+    final matchError = await AddressValidators.validatePincodeCityStateMatch(
+      pincode: event.address.pincode,
+      city: event.address.city,
+      state: event.address.state,
+    );
+
+    if (matchError != null) {
+      emit(AddressErrorState(message: matchError));
+      return;
+    }
+
     final result = await updateAddressUsecase.call(event.address);
     result.fold(
       (failure) => emit(AddressErrorState(message: failure.message)),

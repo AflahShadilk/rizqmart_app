@@ -23,7 +23,7 @@ class NotificationDataSourceImpl implements NotificationDataSource {
         .doc(userId)
         .collection('notifications')
         .orderBy('timestamp', descending: true)
-        .snapshots()
+        .snapshots(includeMetadataChanges: true)
         .map((snapshot) {
       return snapshot.docs
           .map((doc) => NotificationModel.fromFirestore(doc))

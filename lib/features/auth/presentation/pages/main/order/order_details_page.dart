@@ -11,6 +11,8 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/order
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/order%20cancel/order_cancel_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/support/support_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_event.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/order/widgets/order_header.dart';
@@ -52,12 +54,25 @@ class OrderDetailsPage extends StatelessWidget {
 
 // ---------------- Order Details View ----------------
 
-class _OrderDetailsView extends StatelessWidget {
+class _OrderDetailsView extends StatefulWidget {
   // ---------------- Variables ----------------
   final OrderEntities order;
 
   // ---------------- Constructor ----------------
   const _OrderDetailsView({required this.order});
+
+  @override
+  State<_OrderDetailsView> createState() => _OrderDetailsViewState();
+}
+
+class _OrderDetailsViewState extends State<_OrderDetailsView> {
+  late OrderEntities currentOrder;
+
+  @override
+  void initState() {
+    super.initState();
+    currentOrder = widget.order;
+  }
 
   // ---------------- Helper Methods ----------------
   void _onOrderCancelStateChange(BuildContext context, OrderCancelState state) {
@@ -66,11 +81,32 @@ class _OrderDetailsView extends StatelessWidget {
     }
   }
 
+  void _onOrderBlocStateChange(BuildContext context, OrderState state) {
+    if (state is OrdersLoadedState) {
+      try {
+        final updatedOrder = state.orders.firstWhere((o) => o.orderId == currentOrder.orderId);
+        setState(() {
+          currentOrder = updatedOrder;
+        });
+        context.read<OrderTrackingCubit>().updateStatus(updatedOrder.status);
+      } catch (_) {
+        // Order not found or not in list
+      }
+    }
+  }
+
   // ---------------- Build Method ----------------
   @override
   Widget build(BuildContext context) {
-    return BlocListener<OrderCancelCubit, OrderCancelState>(
-      listener: _onOrderCancelStateChange,
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<OrderCancelCubit, OrderCancelState>(
+          listener: _onOrderCancelStateChange,
+        ),
+        BlocListener<OrderBloc, OrderState>(
+          listener: _onOrderBlocStateChange,
+        ),
+      ],
       child: ResponsiveWrapper(
         child: Scaffold(
           backgroundColor: context.cs.surface,
@@ -87,25 +123,34 @@ class _OrderDetailsView extends StatelessWidget {
           ),
           
           // ---------------- Order Details Body ----------------
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  OrderHeader(order: order),
-                  24.h,
-                  const OrderTrackingStepper(),
-                  24.h,
-                  OrderDeliveryBoySection(order: order),
-                  24.h,
-                  OrderProductsList(order: order),
-                  24.h,
-                  OrderSummarySection(order: order),
-                  32.h,
-                  OrderActionButtons(order: order),
-                  40.h,
-                ],
+          body: RefreshIndicator(
+            onRefresh: () async {
+              context.read<OrderBloc>().add(const GetUserOrdersEvent());
+              await Future.delayed(const Duration(seconds: 1));
+            },
+            color: context.cs.primary,
+            backgroundColor: context.cs.surface,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    OrderHeader(order: currentOrder),
+                    24.h,
+                    const OrderTrackingStepper(),
+                    24.h,
+                    OrderDeliveryBoySection(order: currentOrder),
+                    24.h,
+                    OrderProductsList(order: currentOrder),
+                    24.h,
+                    OrderSummarySection(order: currentOrder),
+                    32.h,
+                    OrderActionButtons(order: currentOrder),
+                    40.h,
+                  ],
+                ),
               ),
             ),
           ),
