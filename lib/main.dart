@@ -1,6 +1,7 @@
 
 
 import 'dart:async';
+import 'dart:developer' as developer;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -21,8 +22,9 @@ void main() async {
 
       try {
         await dotenv.load(fileName: ".env");
+        developer.log('dotenv loaded successfully', name: 'App');
       } catch (e) {
-        debugPrint('Error loading .env file: $e');
+        developer.log('WARNING: .env file failed to load: $e (Stripe will use fallback key)', name: 'App');
       }
 
       try {
@@ -38,8 +40,9 @@ void main() async {
 
       try {
         await StripeService.initialize();
+        developer.log('Stripe initialized: ${StripeService.isInitialized}', name: 'App');
       } catch (e) {
-        debugPrint('Stripe initialization error: $e');
+        developer.log('CRITICAL: Stripe initialization failed in release build: $e', name: 'App');
       }
 
       try {

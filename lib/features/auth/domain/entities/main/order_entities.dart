@@ -14,6 +14,7 @@ class OrderEntities extends Equatable {
   final String paymentMethod;
   final String? promoCode;
   final String status;
+  final String? paymentStatus;
   final DateTime createdAt;
   final String? deliveryAddress;
   final String? userName;
@@ -38,6 +39,7 @@ class OrderEntities extends Equatable {
     required this.paymentMethod,
     this.promoCode,
     required this.status,
+    this.paymentStatus,
     required this.createdAt,
     this.deliveryAddress,
     this.userName,
@@ -63,6 +65,7 @@ class OrderEntities extends Equatable {
         paymentMethod,
         promoCode,
         status,
+        paymentStatus,
         createdAt,
         deliveryAddress,
         userName,
@@ -75,4 +78,54 @@ class OrderEntities extends Equatable {
         couponName,
         discountAmount,
       ];
+
+  OrderEntities copyWith({
+    String? orderId,
+    String? userId,
+    List<CartEntities>? items,
+    double? subtotal,
+    double? deliveryFee,
+    double? discount,
+    double? totalCost,
+    String? deliveryMethod,
+    String? paymentMethod,
+    String? promoCode,
+    String? status,
+    String? paymentStatus,
+    DateTime? createdAt,
+    String? deliveryAddress,
+    String? userName,
+    String? userEmail,
+    String? userPhone,
+    String? deliveryNotes,
+    String? adminNotes,
+    String? couponId,
+    String? couponName,
+    double? discountAmount,
+  }) {
+    return OrderEntities(
+      orderId: orderId ?? this.orderId,
+      userId: userId ?? this.userId,
+      items: items ?? this.items,
+      subtotal: subtotal ?? this.subtotal,
+      deliveryFee: deliveryFee ?? this.deliveryFee,
+      discount: discount ?? this.discount,
+      totalCost: totalCost ?? this.totalCost,
+      deliveryMethod: deliveryMethod ?? this.deliveryMethod,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      promoCode: promoCode ?? this.promoCode,
+      status: status ?? this.status,
+      paymentStatus: paymentStatus ?? this.paymentStatus,
+      createdAt: createdAt ?? this.createdAt,
+      deliveryAddress: deliveryAddress ?? this.deliveryAddress,
+      userName: userName ?? this.userName,
+      userEmail: userEmail ?? this.userEmail,
+      userPhone: userPhone ?? this.userPhone,
+      deliveryNotes: deliveryNotes ?? this.deliveryNotes,
+      adminNotes: adminNotes ?? this.adminNotes,
+      couponId: couponId ?? this.couponId,
+      couponName: couponName ?? this.couponName,
+      discountAmount: discountAmount ?? this.discountAmount,
+    );
+  }
 }

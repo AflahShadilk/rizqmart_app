@@ -7,6 +7,7 @@ import 'package:rizqmart/features/auth/data/data_source/main/order_data_source.d
 import 'package:rizqmart/features/auth/data/data_source/main/payment_data_source.dart';
 import 'package:rizqmart/features/auth/data/model/main/order_firestore_model.dart';
 import 'package:rizqmart/features/auth/data/model/main/payment_firestore_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/payment_entity.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
@@ -99,14 +100,13 @@ class PaymentRepositoryImpl implements PaymentRepository {
            paymentMethodId: savedCard.paymentMethodId,
          );
       } else {
-         final success = await StripeService.presentPaymentSheet(
+         // presentPaymentSheet now throws on failure/cancellation
+         await StripeService.presentPaymentSheet(
            clientSecret: paymentIntent['clientSecret'],
            merchantDisplayName: 'RizqMart',
            customerId: paymentIntent['customerId'],
            ephemeralKey: paymentIntent['ephemeralKey'],
          );
-
-         if (!success) throw Exception('Payment cancelled or failed');
          confirmation = await StripeService.confirmPayment(paymentIntentId);
       }
 
@@ -127,10 +127,11 @@ class PaymentRepositoryImpl implements PaymentRepository {
       await orderDataSource.firestore
           .collection('orders')
           .doc(order.orderId)
-          .update({
+          .set({
         'status': 'confirmed',
         'paymentId': payment.paymentId,
-      });
+        'paymentStatus': 'success',
+      }, SetOptions(merge: true));
 
       return payment;
     });
@@ -159,10 +160,11 @@ class PaymentRepositoryImpl implements PaymentRepository {
       await orderDataSource.firestore
           .collection('orders')
           .doc(order.orderId)
-          .update({
+          .set({
         'status': 'confirmed',
         'paymentId': paymentId,
-      });
+        'paymentStatus': 'pending',
+      }, SetOptions(merge: true));
 
       return PaymentFirestoreModel(
         paymentId: paymentId,

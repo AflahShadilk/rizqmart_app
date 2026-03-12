@@ -11,16 +11,21 @@ class OrderDataSource {
 
   Future<String> placeOrder(OrderFirestoreModel order) async {
     try {
+      DocumentReference docRef;
+      if (order.orderId.isNotEmpty) {
+        docRef = firestore.collection('orders').doc(order.orderId);
+      } else {
+        docRef = firestore.collection('orders').doc();
+      }
 
-      
-      final docRef = await firestore.collection('orders').add({
+      await docRef.set({
         ...order.toMap(),
-        'paymentStatus': 'succeeded',
+        'orderId': docRef.id,
         'userName': order.userName,
         'userEmail': order.userEmail,
         'userPhone': order.userPhone,
         'deliveryNotes': order.deliveryNotes,
-      });
+      }, SetOptions(merge: true));
       
       return docRef.id;
     } catch (e) {

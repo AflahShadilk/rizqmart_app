@@ -1,6 +1,7 @@
 
 
 import 'dart:convert';
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -16,21 +17,47 @@ class StripeService {
   static const String _baseUrl =
       'https://us-central1-rizqmart-486b8.cloudfunctions.net/api';
 
+  // ---------------- Fallback Publishable Key ----------------
+  // This is a PUBLIC key (safe to embed). Used only if .env fails to load in release builds.
+  static const String _fallbackPublishableKey =
+      'pk_test_51SIDQuE3nm7TXKvpfH5volLRuyiQaAqZuTBsKdMI0cT7WXfUCs40Cj4CkdEikVsdSNHUGAZvDOFYXETJeA6tqfCb00RW9qfWIc';
+
+  // ---------------- Track Initialization ----------------
+  static bool _isInitialized = false;
+  static bool get isInitialized => _isInitialized;
+
   // ---------------- Publishable Key ----------------
   static String get publishableKey {
     final key = dotenv.env['STRIPE_PUBLISHABLE_KEY'];
-    if (key == null || key.isEmpty) {
-      throw Exception('STRIPE_PUBLISHABLE_KEY not found in .env file');
+    if (key != null && key.isNotEmpty) {
+      return key;
     }
-    return key;
+    developer.log(
+      'STRIPE_PUBLISHABLE_KEY not found in .env, using fallback key',
+      name: 'StripeService',
+    );
+    return _fallbackPublishableKey;
   }
 
   // ---------------- Initialize Stripe SDK ----------------
   static Future<void> initialize() async {
     try {
-      Stripe.publishableKey = publishableKey;
+      final key = publishableKey;
+      developer.log('Initializing Stripe with key: ${key.substring(0, 12)}...', name: 'StripeService');
+      Stripe.publishableKey = key;
       await Stripe.instance.applySettings();
-    } catch (_) {}
+      _isInitialized = true;
+      developer.log('Stripe SDK initialized successfully', name: 'StripeService');
+    } catch (e, stack) {
+      _isInitialized = false;
+      developer.log(
+        'CRITICAL: Stripe initialization failed: $e',
+        name: 'StripeService',
+        error: e,
+        stackTrace: stack,
+      );
+      rethrow;
+    }
   }
 
   // ---------------- Request Payment Intent From Backend ----------------
@@ -40,7 +67,16 @@ class StripeService {
     required String orderId,
   }) async {
     try {
+      if (!_isInitialized) {
+        throw Exception('Stripe SDK is not initialized. Cannot create payment intent.');
+      }
+
       final amountInSmallestUnit = (amount * 100).toInt();
+
+      developer.log(
+        'Creating payment intent: amount=$amountInSmallestUnit, currency=$currency, orderId=$orderId',
+        name: 'StripeService',
+      );
 
       final response = await http.post(
         Uri.parse('$_baseUrl/create-payment-intent'),
@@ -52,8 +88,16 @@ class StripeService {
         }),
       );
 
+      developer.log(
+        'Payment intent response: statusCode=${response.statusCode}',
+        name: 'StripeService',
+      );
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        if (data['clientSecret'] == null || (data['clientSecret'] as String).isEmpty) {
+          throw Exception('Backend returned empty clientSecret');
+        }
         return {
           'success': true,
           'clientSecret': data['clientSecret'],
@@ -62,9 +106,15 @@ class StripeService {
           'ephemeralKey': data['ephemeralKey'],
         };
       } else {
-        throw Exception('Failed to create payment intent: ${response.statusCode}');
+        final errorBody = response.body;
+        developer.log(
+          'Payment intent failed: statusCode=${response.statusCode}, body=$errorBody',
+          name: 'StripeService',
+        );
+        throw Exception('Failed to create payment intent: ${response.statusCode} - $errorBody');
       }
     } catch (e) {
+      developer.log('createPaymentIntent error: $e', name: 'StripeService');
       rethrow;
     }
   }
@@ -77,6 +127,12 @@ class StripeService {
     String? ephemeralKey,
   }) async {
     try {
+      if (!_isInitialized) {
+        throw Exception('Stripe SDK is not initialized. Cannot present payment sheet.');
+      }
+
+      developer.log('Initializing payment sheet...', name: 'StripeService');
+
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
@@ -92,20 +148,32 @@ class StripeService {
         ),
       );
 
+      developer.log('Payment sheet initialized, presenting...', name: 'StripeService');
       await Stripe.instance.presentPaymentSheet();
+      developer.log('Payment sheet completed successfully', name: 'StripeService');
 
       return true;
     } on StripeException catch (e) {
-      if (e.error.code == FailureCode.Canceled) {}
-      return false;
+      if (e.error.code == FailureCode.Canceled) {
+        developer.log('Payment cancelled by user', name: 'StripeService');
+        throw Exception('Payment cancelled by the user.');
+      }
+      developer.log(
+        'StripeException: code=${e.error.code}, message=${e.error.message}',
+        name: 'StripeService',
+      );
+      throw Exception('Stripe payment failed: ${e.error.localizedMessage ?? e.error.message ?? 'Unknown Stripe error'}');
     } catch (e) {
-      return false;
+      developer.log('presentPaymentSheet unexpected error: $e', name: 'StripeService');
+      rethrow;
     }
   }
 
   // ---------------- Confirm Payment Via Backend ----------------
   static Future<Map<String, dynamic>> confirmPayment(String paymentIntentId) async {
     try {
+      developer.log('Confirming payment: $paymentIntentId', name: 'StripeService');
+
       final response = await http.post(
         Uri.parse('$_baseUrl/confirm-payment'),
         headers: {'Content-Type': 'application/json'},
@@ -114,6 +182,10 @@ class StripeService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        developer.log(
+          'Payment confirmed: success=${data['success']}, status=${data['status']}',
+          name: 'StripeService',
+        );
         return {
           'success': data['success'] ?? false,
           'status': data['status'],
@@ -121,9 +193,14 @@ class StripeService {
           'currency': data['currency'],
         };
       } else {
-        throw Exception('Failed to confirm payment');
+        developer.log(
+          'Confirm payment failed: statusCode=${response.statusCode}, body=${response.body}',
+          name: 'StripeService',
+        );
+        throw Exception('Failed to confirm payment: ${response.statusCode}');
       }
     } catch (e) {
+      developer.log('confirmPayment error: $e', name: 'StripeService');
       rethrow;
     }
   }
@@ -145,9 +222,14 @@ class StripeService {
       if (response.statusCode == 200) {
         return true;
       } else {
+        developer.log(
+          'Refund failed: statusCode=${response.statusCode}, body=${response.body}',
+          name: 'StripeService',
+        );
         return false;
       }
     } catch (e) {
+      developer.log('refundPayment error: $e', name: 'StripeService');
       rethrow;
     }
   }
@@ -174,6 +256,7 @@ class StripeService {
         'brand': paymentMethod.card.brand,
       };
     } catch (e) {
+      developer.log('createPaymentMethod error: $e', name: 'StripeService');
       rethrow;
     }
   }
@@ -201,6 +284,7 @@ class StripeService {
         'paymentIntentId': paymentIntent.id,
       };
     } catch (e) {
+      developer.log('confirmPaymentWithSavedCard error: $e', name: 'StripeService');
       rethrow;
     }
   }

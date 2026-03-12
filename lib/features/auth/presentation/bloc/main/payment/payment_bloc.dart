@@ -95,21 +95,24 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       return;
     }
 
-    emit(const PaymentLoadingState('Creating order...'));
+    final String transientOrderId = FirebaseFirestore.instance.collection('orders').doc().id;
+    final OrderEntities pendingOrder = currentOrder!.copyWith(
+      orderId: transientOrderId,
+    );
 
-    final createdOrderResult = await createOrderUsecase.call(currentOrder!);
-    
-    await createdOrderResult.fold(
-      (failure) async => emit(PaymentFailedState('Failed to create order: ${failure.message}')),
-      (createdOrder) async {
-        currentOrder = createdOrder;
+    if (selectedPaymentMethod == 'cod') {
+      emit(const PaymentLoadingState('Processing COD payment...'));
 
-        if (selectedPaymentMethod == 'cod') {
-          emit(const PaymentLoadingState('Processing COD payment...'));
+      final createdOrderResult = await createOrderUsecase.call(pendingOrder);
+
+      await createdOrderResult.fold(
+        (failure) async => emit(PaymentFailedState('Failed to create COD order: ${failure.message}')),
+        (createdOrder) async {
+          currentOrder = createdOrder;
           final paymentResult = await payWithCODUseCase.call(createdOrder);
+
           await paymentResult.fold(
             (failure) async {
-              await cancelOrderUseCase.call(createdOrder.orderId);
               emit(PaymentFailedState('COD payment failed: ${failure.message}'));
             },
             (_) async {
@@ -122,23 +125,39 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
               ));
             },
           );
-        } else if (selectedPaymentMethod == 'stripe' || selectedPaymentMethod == 'saved_card') { 
-          emit(const PaymentLoadingState('Processing Stripe payment...'));
-          final paymentResult = await payWithStripeUseCase.call(createdOrder, savedCard: selectedSavedCard); 
-          await paymentResult.fold(
-            (failure) async {
-              await cancelOrderUseCase.call(createdOrder.orderId);
-              
-              String errorMsg = failure.message;
-              if (errorMsg.contains('PaymentMethod was previously used')) {
-                errorMsg = 'Payment failed. Please select or add a new card.';
-              }
-              
-              emit(PaymentFailedState('Stripe payment failed: $errorMsg'));
-            },
-            (payment) async {
+        },
+      );
+    } else if (selectedPaymentMethod == 'stripe' || selectedPaymentMethod == 'saved_card') {
+      emit(const PaymentLoadingState('Processing Stripe payment securely...'));
+
+      final paymentResult = await payWithStripeUseCase.call(pendingOrder, savedCard: selectedSavedCard);
+
+      await paymentResult.fold(
+        (failure) async {
+          String errorMsg = failure.message;
+          if (errorMsg.contains('PaymentMethod was previously used')) {
+            errorMsg = 'Payment failed. Please select or add a new card.';
+          } else if (errorMsg.contains('Payment cancelled') || errorMsg.contains('Canceled')) {
+            errorMsg = 'Payment was cancelled by the user.';
+          }
+          
+          emit(PaymentFailedState(errorMsg));
+        },
+        (payment) async {
+          emit(const PaymentLoadingState('Stripe complete. Finalizing order...'));
+          
+          final finalOrder = pendingOrder.copyWith(
+             paymentStatus: 'success',
+          );
+          final createdOrderResult = await createOrderUsecase.call(finalOrder);
+
+          await createdOrderResult.fold(
+            (failure) async => emit(PaymentFailedState('Failed to finalize order: ${failure.message}')),
+            (createdOrder) async {
+              currentOrder = createdOrder;
               await clearCartItemUsecase.call();
               await _sendSuccessNotification(createdOrder.orderId, createdOrder.userId);
+              
               emit(PaymentSuccessState(
                 orderId: createdOrder.orderId,
                 payment: payment,
@@ -146,34 +165,46 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
               ));
             },
           );
-        } else if (selectedPaymentMethod == 'wallet') {
-          emit(const PaymentLoadingState('Processing Wallet payment...'));
-          final result = await payWithWalletUseCase(
-            userId: createdOrder.userId,
-            amount: createdOrder.totalCost,
-            orderId: createdOrder.orderId,
-          );
-          await result.fold(
-            (failure) async {
-              await cancelOrderUseCase.call(createdOrder.orderId);
-              emit(PaymentFailedState('Wallet payment failed: ${failure.message}'));
-            },
-            (transaction) async {
+        },
+      );
+    } else if (selectedPaymentMethod == 'wallet') {
+      emit(const PaymentLoadingState('Processing Wallet payment...'));
+
+      final result = await payWithWalletUseCase(
+        userId: pendingOrder.userId,
+        amount: pendingOrder.totalCost,
+        orderId: pendingOrder.orderId,
+      );
+
+      await result.fold(
+        (failure) async {
+          emit(PaymentFailedState('Wallet payment failed: ${failure.message}'));
+        },
+        (transaction) async {
+           final finalOrder = pendingOrder.copyWith(
+             paymentStatus: 'success',
+           );
+           final createdOrderResult = await createOrderUsecase.call(finalOrder);
+
+           await createdOrderResult.fold(
+            (failure) async => emit(PaymentFailedState('Failed to finalize Wallet order: ${failure.message}')),
+            (createdOrder) async {
+              currentOrder = createdOrder;
               await clearCartItemUsecase.call();
               await _sendSuccessNotification(createdOrder.orderId, createdOrder.userId);
+              
               emit(PaymentSuccessState(
                 orderId: createdOrder.orderId,
-                payment: null, 
+                payment: null,
                 order: createdOrder,
               ));
             },
           );
-        } else {
-          await cancelOrderUseCase.call(createdOrder.orderId);
-          emit(PaymentFailedState('Unknown payment method: $selectedPaymentMethod'));
-        }
-      },
-    );
+        },
+      );
+    } else {
+      emit(PaymentFailedState('Unknown payment method: $selectedPaymentMethod'));
+    }
   }
 
   Future<void> onCancelPayment(
