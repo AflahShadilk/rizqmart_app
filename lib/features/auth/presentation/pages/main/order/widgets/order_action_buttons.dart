@@ -80,13 +80,14 @@ class OrderActionButtons extends StatelessWidget {
     final bool isShipped = order.status.toLowerCase() == 'shipped';
     final bool isPendingPayment = order.status.toLowerCase() == 'pending_payment';
     final bool isPaymentFailed = order.paymentStatus?.toLowerCase() == 'failed';
+    final bool isStripe = order.paymentMethod.toLowerCase() == 'stripe';
 
     return BlocBuilder<InvoiceCubit, InvoiceState>(
       builder: (context, invoiceState) {
         return Column(
           children: [
             // ---------------- Retry Payment Button ----------------
-            if (isPendingPayment || isPaymentFailed) ...[
+            if (isStripe && isPaymentFailed) ...[
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
