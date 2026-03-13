@@ -103,7 +103,11 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     if (selectedPaymentMethod == 'cod') {
       emit(const PaymentLoadingState('Processing COD payment...'));
 
-      final createdOrderResult = await createOrderUsecase.call(pendingOrder);
+      final codOrder = pendingOrder.copyWith(
+        status: 'placed',
+        paymentStatus: 'success',
+      );
+      final createdOrderResult = await createOrderUsecase.call(codOrder);
 
       await createdOrderResult.fold(
         (failure) async => emit(PaymentFailedState('Failed to create COD order: ${failure.message}')),
@@ -148,6 +152,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           
           final finalOrder = pendingOrder.copyWith(
              paymentStatus: 'success',
+             status: 'placed',
           );
           final createdOrderResult = await createOrderUsecase.call(finalOrder);
 
@@ -183,6 +188,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         (transaction) async {
            final finalOrder = pendingOrder.copyWith(
              paymentStatus: 'success',
+             status: 'placed',
            );
            final createdOrderResult = await createOrderUsecase.call(finalOrder);
 

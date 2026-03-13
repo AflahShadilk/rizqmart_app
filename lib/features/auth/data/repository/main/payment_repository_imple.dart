@@ -7,7 +7,6 @@ import 'package:rizqmart/features/auth/data/data_source/main/order_data_source.d
 import 'package:rizqmart/features/auth/data/data_source/main/payment_data_source.dart';
 import 'package:rizqmart/features/auth/data/model/main/order_firestore_model.dart';
 import 'package:rizqmart/features/auth/data/model/main/payment_firestore_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/payment_entity.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
@@ -33,7 +32,7 @@ class PaymentRepositoryImpl implements PaymentRepository {
 
       final orderId = await orderDataSource.placeOrder(
         OrderFirestoreModel(
-          orderId: '',
+          orderId: order.orderId,
           userId: authenticatedUserId,
           items: order.items,
           subtotal: order.subtotal,
@@ -43,7 +42,7 @@ class PaymentRepositoryImpl implements PaymentRepository {
           deliveryMethod: order.deliveryMethod,
           paymentMethod: order.paymentMethod,
           promoCode: order.promoCode,
-          status: 'pending_payment',
+          status: order.status,
           createdAt: DateTime.now(),
           deliveryAddress: order.deliveryAddress,
           userName: order.userName,
@@ -64,7 +63,8 @@ class PaymentRepositoryImpl implements PaymentRepository {
         deliveryMethod: order.deliveryMethod,
         paymentMethod: order.paymentMethod,
         promoCode: order.promoCode,
-        status: 'pending_payment',
+        status: order.status,
+        paymentStatus: order.paymentStatus,
         createdAt: DateTime.now(),
         deliveryAddress: order.deliveryAddress,
         userName: order.userName,
@@ -124,15 +124,6 @@ class PaymentRepositoryImpl implements PaymentRepository {
 
       await paymentDataSource.createPayment(payment);
 
-      await orderDataSource.firestore
-          .collection('orders')
-          .doc(order.orderId)
-          .set({
-        'status': 'confirmed',
-        'paymentId': payment.paymentId,
-        'paymentStatus': 'success',
-      }, SetOptions(merge: true));
-
       return payment;
     });
   }
@@ -156,15 +147,6 @@ class PaymentRepositoryImpl implements PaymentRepository {
       );
 
       final paymentId = await paymentDataSource.createPayment(payment);
-
-      await orderDataSource.firestore
-          .collection('orders')
-          .doc(order.orderId)
-          .set({
-        'status': 'confirmed',
-        'paymentId': paymentId,
-        'paymentStatus': 'pending',
-      }, SetOptions(merge: true));
 
       return PaymentFirestoreModel(
         paymentId: paymentId,

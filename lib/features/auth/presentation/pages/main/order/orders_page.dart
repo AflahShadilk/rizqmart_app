@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/features/auth/data/model/main/order_firestore_model.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/orders/orders_page_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/orders/orders_page_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_bloc.dart';
@@ -51,7 +54,7 @@ class _OrdersView extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(state.message),
-          backgroundColor: AppColors.success500, // Changed Colors.green to success color
+          backgroundColor: AppColors.success500,
         ),
       );
     }
@@ -62,6 +65,7 @@ class _OrdersView extends StatelessWidget {
   Widget build(BuildContext context) {
     // ---------------- Variables ----------------
     final bool canPop = Navigator.canPop(context);
+    final String? currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
     // ---------------- UI Rendering ----------------
     return BlocListener<OrdersPageCubit, OrdersPageState>(
@@ -89,78 +93,77 @@ class _OrdersView extends StatelessWidget {
             elevation: 0,
           ),
 
-          // ---------------- Orders List Body ----------------
-          body: BlocBuilder<OrdersPageCubit, OrdersPageState>(
-            builder: (context, state) {
-              if (state is OrdersPageLoading || state is OrdersPageInitial) {
-                return const Center(child: CircularProgressIndicator());
-              }
+          // ---------------- Orders List Body (Real-time from Firebase) ----------------
+          body: currentUserId == null
+              ? Center(
+                  child: Text('Please log in to view orders',
+                      style: context.ts.titleMedium),
+                )
+              : StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('orders')
+                      .where('userId', isEqualTo: currentUserId)
+                      .orderBy('createdAt', descending: true)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-              if (state is OrdersPageError) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.error_outline,
-                          size: 48, color: context.cs.error),
-                      16.h,
-                      Text('Error: ${state.message}'),
-                      TextButton(
-                        onPressed: () =>
-                            context.read<OrdersPageCubit>().retryLoad(),
-                        child: const Text('Retry'),
-                      ),
-                    ],
-                  ),
-                );
-              }
-
-              if (state is OrdersPageEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.shopping_bag_outlined,
-                        size: 64,
-                        color: context.cs.onSurface.withAlpha(77),
-                      ),
-                      16.h,
-                      Text('No orders yet', style: context.ts.titleMedium),
-                      8.h,
-                      Text(
-                        'Start shopping to see your orders here',
-                        style: context.ts.bodySmall?.copyWith(
-                          color: context.cs.onSurface.withAlpha(128),
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.error_outline,
+                                size: 48, color: context.cs.error),
+                            16.h,
+                            Text('Error: ${snapshot.error}'),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              }
+                      );
+                    }
 
-              if (state is OrdersPageLoaded) {
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    context.read<OrdersPageCubit>().retryLoad();
-                    await Future.delayed(const Duration(seconds: 1));
+                    final docs = snapshot.data?.docs ?? [];
+
+                    if (docs.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.shopping_bag_outlined,
+                              size: 64,
+                              color: context.cs.onSurface.withAlpha(77),
+                            ),
+                            16.h,
+                            Text('No orders yet', style: context.ts.titleMedium),
+                            8.h,
+                            Text(
+                              'Start shopping to see your orders here',
+                              style: context.ts.bodySmall?.copyWith(
+                                color: context.cs.onSurface.withAlpha(128),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    final orders = docs
+                        .map((doc) => OrderFirestoreModel.fromFirestore(doc))
+                        .toList();
+
+                    return ListView.separated(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: orders.length,
+                      separatorBuilder: (context, index) => 16.h,
+                      itemBuilder: (context, index) {
+                        return OrderCard(order: orders[index]);
+                      },
+                    );
                   },
-                  color: context.cs.primary,
-                  backgroundColor: context.cs.surface,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: state.orders.length,
-                    separatorBuilder: (context, index) => 16.h,
-                    itemBuilder: (context, index) {
-                      return OrderCard(order: state.orders[index]);
-                    },
-                  ),
-                );
-              }
-
-              return const SizedBox.shrink();
-            },
-          ),
+                ),
         ),
       ),
     );

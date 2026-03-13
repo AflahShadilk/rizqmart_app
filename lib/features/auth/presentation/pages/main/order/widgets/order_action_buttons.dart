@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/invoice/invoice_cubit.dart';
@@ -60,57 +59,19 @@ class OrderActionButtons extends StatelessWidget {
     );
   }
 
-  void _retryPayment(BuildContext context) {
-    Navigator.pushNamed(
-      context,
-      AppRoutes.paymentProcessing,
-      arguments: {
-        'order': order,
-        'paymentMethod': 'stripe',
-        'savedCard': null,
-      },
-    );
-  }
-
   // ---------------- Build Method ----------------
   @override
   Widget build(BuildContext context) {
-    final bool isCancelled = order.status.toLowerCase() == 'cancelled';
-    final bool isDelivered = order.status.toLowerCase() == 'delivered';
-    final bool isShipped = order.status.toLowerCase() == 'shipped';
-    final bool isPendingPayment = order.status.toLowerCase() == 'pending_payment';
-    final bool isPaymentFailed = order.paymentStatus?.toLowerCase() == 'failed';
-    final bool isStripe = order.paymentMethod.toLowerCase() == 'stripe';
+    final String currentStatus = order.status.toLowerCase().trim();
+
+    // Cancel button should ONLY appear for placed and confirmed
+    final bool canCancel = (currentStatus == 'placed' || currentStatus == 'confirmed');
 
     return BlocBuilder<InvoiceCubit, InvoiceState>(
       builder: (context, invoiceState) {
         return Column(
           children: [
-            // ---------------- Retry Payment Button ----------------
-            if (isStripe && isPaymentFailed) ...[
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () => _retryPayment(context),
-                  icon: const Icon(Icons.payment_rounded),
-                  label: const Text(
-                    'Retry Payment',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: context.cs.primary,
-                    foregroundColor: context.cs.onPrimary,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                ),
-              ),
-              16.h,
-            ],
-
-            if (!isCancelled && !isDelivered && !isShipped && !isPendingPayment)
+            if (canCancel)
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
@@ -129,7 +90,7 @@ class OrderActionButtons extends StatelessWidget {
                   ),
                 ),
               ),
-            if (!isCancelled && !isDelivered && !isShipped && !isPendingPayment) 16.h,
+            if (canCancel) 16.h,
             SizedBox(
               width: double.infinity,
               child: MainButton(
