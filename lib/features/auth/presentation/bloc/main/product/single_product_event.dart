@@ -1,6 +1,4 @@
 part of 'single_product_bloc.dart';
-
-/// Base abstract class defining loading updates for single product data.
 abstract class SingleProductEvent extends Equatable {
   const SingleProductEvent();
 

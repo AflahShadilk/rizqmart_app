@@ -13,7 +13,8 @@ import 'package:rizqmart/core/services/notification_service.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_state.dart';
 
-/// Business logic orchestrating various payment gateways (Stripe, COD, Wallet) and order processing.
+
+// handles payment processing for stripe, cod, and wallet methods
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   final CreateOrderUsecase createOrderUsecase;
   final PayWithStripeUseCase payWithStripeUseCase;
@@ -44,7 +45,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
 
   Future<void> _sendSuccessNotification(String orderId, String userId) async {
     try {
-      // ---------------- In-App Notification via Firestore ----------------
+      // save in-app notification to firestore
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
@@ -59,15 +60,13 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         'timestamp': Timestamp.now(),
       });
 
-      // ---------------- System Status Bar Notification ----------------
+      // show system notification
       await NotificationService().showNotification(
         title: 'Order Placed',
         body: 'Your order has been placed successfully!',
         data: {'orderId': orderId, 'type': 'order'},
       );
-    } catch (_) {
-      // Ignore notification failures
-    }
+    } catch (_) {}
   }
 
   Future<void> onInitializePayment(

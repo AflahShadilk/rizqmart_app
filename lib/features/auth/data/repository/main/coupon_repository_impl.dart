@@ -4,8 +4,6 @@ import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/coupon_data_source.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/coupon_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/coupon_repository.dart';
-
-/// Repository implementation fetching active coupons from the data source with error handling.
 class CouponRepositoryImpl implements CouponRepository {
   final CouponDataSource dataSource;
 

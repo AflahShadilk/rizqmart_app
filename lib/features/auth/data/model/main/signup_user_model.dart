@@ -1,6 +1,4 @@
 import 'package:rizqmart/features/auth/domain/entities/auth/signup_page_entities.dart';
-
-/// Data model used specifically during the initial user registration process.
 class SignupUserModel extends SignupPageEntities{
   const SignupUserModel({required super.userId,required super.name,required super.email});
 

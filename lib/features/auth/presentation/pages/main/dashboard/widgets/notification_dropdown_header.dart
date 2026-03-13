@@ -4,15 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_event.dart';
-
-// ---------------- Notification Dropdown Header Widget ----------------
-
-/// Header widget for the notification dropdown, showing the title and a "Clear all" button.
 class NotificationDropdownHeader extends StatelessWidget {
   const NotificationDropdownHeader({super.key});
-
-// ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
-
-/// A specialized text field styled specifically for various inputs within the address form context.
 class AddressTextField extends StatefulWidget {
   final String? initialValue;
   final String label;

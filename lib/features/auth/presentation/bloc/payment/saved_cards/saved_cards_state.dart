@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
-
-/// Base abstract class representing the possible states for the saved cards feature.
 abstract class SavedCardsState extends Equatable {
   const SavedCardsState();
 

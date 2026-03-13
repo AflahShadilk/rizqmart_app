@@ -7,16 +7,9 @@ import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&abou
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&about&setting/widgets/about_mission_section.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&about&setting/widgets/about_values_section.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&about&setting/widgets/about_stats_section.dart';
-
-// ---------------- About Us Page ----------------
-
-/// An informative page detailing the company's background, mission, values, and general statistics.
 class AboutUsPage extends StatelessWidget {
   const AboutUsPage({super.key});
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return ResponsiveWrapper(
       child: Scaffold(

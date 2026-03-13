@@ -7,11 +7,6 @@ import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_bloc.dart
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Withdraw Screen ----------------
-
-/// A screen allowing users to specify an amount and submit a request to withdraw
-/// funds from their wallet.
 class WithdrawScreen extends StatefulWidget {
   final String userId;
 
@@ -22,23 +17,14 @@ class WithdrawScreen extends StatefulWidget {
 }
 
 class _WithdrawScreenState extends State<WithdrawScreen> {
-
-  // ---------------- Controllers ----------------
-
-  final _amountController = TextEditingController();
+final _amountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  // ---------------- Dispose ----------------
-
-  @override
+@override
   void dispose() {
     _amountController.dispose();
     super.dispose();
   }
-
-  // ---------------- Helper Methods ----------------
-
-  void _submitWithdrawal(BuildContext context) {
+void _submitWithdrawal(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       final amount = double.parse(_amountController.text);
       context.read<WalletBloc>().add(
@@ -49,10 +35,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
           );
     }
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
@@ -88,8 +71,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ---------------- Amount Input Section ----------------
-                    Text(
+Text(
                       'Enter Amount to Withdraw',
                       style: context.ts.titleMedium,
                     ),
@@ -119,9 +101,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                       },
                     ),
                     16.h,
-
-                    // ---------------- Available Balance Info ----------------
-                    if (state.wallet != null)
+if (state.wallet != null)
                       Text(
                         'Available Balance: ₹${state.wallet!.balance.toStringAsFixed(2)}',
                         style: context.ts.bodySmall?.copyWith(
@@ -129,9 +109,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                         ),
                       ),
                     const Spacer(),
-
-                    // ---------------- Submit Button ----------------
-                    SizedBox(
+SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: state.status == WalletStatus.loading

@@ -2,15 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_event.dart';
-
-/// State holding properties indicating if the chat initialization failed and the active user.
 class ChatPageInitState {
   final String currentUserId;
   final bool isError;
   const ChatPageInitState({required this.currentUserId, this.isError = false});
 }
-
-/// Cubit responsible for initializing a chat room immediately when the chat page opens.
 class ChatPageInitCubit extends Cubit<ChatPageInitState> {
   final ChatBloc chatBloc;
 

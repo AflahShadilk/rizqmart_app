@@ -8,11 +8,6 @@ import 'package:rizqmart/core/services/notification_service.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-// ---------------- Splash Screen ----------------
-
-/// A splash screen that shows an initial loading animation and handles routing
-/// based on user login status.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -23,11 +18,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
 
-  // ---------------- Controllers ----------------
-
   late final AnimationController _lottieController;
-
-  // ---------------- Init State ----------------
 
   @override
   void initState() {
@@ -35,15 +26,11 @@ class _SplashScreenState extends State<SplashScreen>
     _lottieController = AnimationController(vsync: this);
   }
 
-  // ---------------- Dispose ----------------
-
   @override
   void dispose() {
     _lottieController.dispose();
     super.dispose();
   }
-
-  // ---------------- Helper Methods ----------------
 
   Future<void> _navigateAfterAnimation() async {
     final pref = await SharedPreferences.getInstance();
@@ -63,14 +50,11 @@ class _SplashScreenState extends State<SplashScreen>
     }
   }
 
-  // ---------------- Build Method ----------------
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.cs.surface,
       body: Center(
-        // ---------------- Lottie Animation ----------------
         child: Lottie.asset(
           'assets/lottie/Shopping Cart.json',
           controller: _lottieController,

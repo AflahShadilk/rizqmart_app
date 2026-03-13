@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/profile_text_field.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Edit Basic Info Section ----------------
-
 class EditBasicInfoSection extends StatelessWidget {
   final TextEditingController nameController;
   final TextEditingController emailController;
@@ -16,10 +13,7 @@ class EditBasicInfoSection extends StatelessWidget {
     required this.emailController,
     required this.phoneController,
   });
-
-  // ---------------- Helper Methods ----------------
-
-  Widget _buildSectionTitle(BuildContext context, String title) {
+Widget _buildSectionTitle(BuildContext context, String title) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
@@ -33,10 +27,7 @@ class EditBasicInfoSection extends StatelessWidget {
       ),
     );
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Column(
       children: [

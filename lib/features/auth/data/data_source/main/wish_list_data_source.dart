@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/data/model/main/wish_fire_model.dart';
-
-/// Remote data source responsible for persisting user product wishlists within Firestore.
 class WishListDataSource {
   final FirebaseFirestore firebaseFirestore=FirebaseFirestore.instance;
 

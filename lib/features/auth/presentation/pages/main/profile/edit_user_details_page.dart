@@ -17,10 +17,6 @@ import 'package:rizqmart/features/auth/presentation/widgets/buttons/back_button_
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
-
-// ---------------- Edit User Details Page ----------------
-
-/// A form page enabling users to update their personal information, bio, and profile photo.
 class EditUserDetailsPage extends StatefulWidget {
   final UserProfileBloc profileBloc;
 
@@ -34,10 +30,7 @@ class EditUserDetailsPage extends StatefulWidget {
 }
 
 class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
-
-  // ---------------- Controllers & Variables ----------------
-
-  late TextEditingController nameController;
+late TextEditingController nameController;
   late TextEditingController phoneController;
   late TextEditingController emailController;
   late TextEditingController bioController;
@@ -46,10 +39,7 @@ class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
   late EditProfileFormCubit editProfileFormCubit;
 
   final formKey = GlobalKey<FormState>();
-
-  // ---------------- Init State ----------------
-
-  @override
+@override
   void initState() {
     super.initState();
     final currentState = widget.profileBloc.state;
@@ -72,10 +62,7 @@ class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
     }
     editProfileFormCubit = EditProfileFormCubit(profileBloc: widget.profileBloc);
   }
-
-  // ---------------- Dispose ----------------
-
-  @override
+@override
   void dispose() {
     nameController.dispose();
     phoneController.dispose();
@@ -85,10 +72,7 @@ class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
     genderCubit.close();
     super.dispose();
   }
-
-  // ---------------- Helper Methods ----------------
-
-  void saveProfile() {
+void saveProfile() {
     if (formKey.currentState!.validate()) {
       editProfileFormCubit.saveProfile(
         name: nameController.text,
@@ -100,10 +84,7 @@ class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
       );
     }
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
@@ -163,9 +144,6 @@ class _EditUserDetailsPageState extends State<EditUserDetailsPage> {
     );
   }
 }
-
-// ---------------- Edit Details Content Widget ----------------
-
 class _EditDetailsContent extends StatelessWidget {
   final UserProfileEntities profile;
   final TextEditingController nameController;
@@ -188,10 +166,7 @@ class _EditDetailsContent extends StatelessWidget {
     required this.formKey,
     required this.onSave,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
@@ -225,10 +200,7 @@ class _EditDetailsContent extends StatelessWidget {
       ),
     );
   }
-
-  // ---------------- Helper Methods ----------------
-
-  Widget _buildProfilePhotoSection(BuildContext context) {
+Widget _buildProfilePhotoSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(

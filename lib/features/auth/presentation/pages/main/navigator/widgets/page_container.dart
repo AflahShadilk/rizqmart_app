@@ -3,17 +3,11 @@ import 'package:rizqmart/features/auth/presentation/pages/main/cart/cart_page.da
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/dashboard_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/explore_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/wish_list_page.dart';
-
-// ---------------- Page Container ----------------
-
 class PageContainer extends StatelessWidget {
   final int selectedIndex;
 
   const PageContainer({super.key, required this.selectedIndex});
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     switch (selectedIndex) {
       case 0:

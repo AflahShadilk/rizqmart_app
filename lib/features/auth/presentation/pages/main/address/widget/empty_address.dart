@@ -3,8 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-/// A view widget displayed when the user has no saved addresses, prompting them to add one.
 class EmptyAddressView extends StatelessWidget {
   final VoidCallback onAddAddress;
 

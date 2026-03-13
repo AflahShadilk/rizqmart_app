@@ -11,8 +11,6 @@ import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/widgets/
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
-
-/// A grid-based page viewing all of the user's bookmarked or favorite products.
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
 
@@ -21,18 +19,12 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
-
-  // ---------------- Init State ----------------
-
-  @override
+@override
   void initState() {
     super.initState();
     context.read<WishListBloc>().add(GetAllWishListEvent());
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return ResponsiveWrapper(child: Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,

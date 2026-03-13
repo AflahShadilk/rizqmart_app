@@ -3,18 +3,10 @@ import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Order Summary Section ----------------
-
 class OrderSummarySection extends StatelessWidget {
-  // ---------------- Variables ----------------
-  final OrderEntities order;
-
-  // ---------------- Constructor ----------------
-  const OrderSummarySection({super.key, required this.order});
-
-  // ---------------- Helper Methods ----------------
-  Widget _summaryRow(BuildContext context, String label, double amount, {bool isDiscount = false}) {
+final OrderEntities order;
+const OrderSummarySection({super.key, required this.order});
+Widget _summaryRow(BuildContext context, String label, double amount, {bool isDiscount = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -29,9 +21,7 @@ class OrderSummarySection extends StatelessWidget {
       ],
     );
   }
-
-  // ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

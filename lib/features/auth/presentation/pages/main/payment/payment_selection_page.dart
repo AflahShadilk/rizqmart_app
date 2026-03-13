@@ -19,11 +19,6 @@ import 'package:rizqmart/features/auth/presentation/pages/main/payment/widgets/p
 import 'package:rizqmart/features/auth/presentation/pages/main/payment/widgets/payment_option_card.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/payment/widgets/payment_info_banner.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Payment Selection Page ----------------
-
-/// A page allowing users to choose their preferred payment method for an order,
-/// including saved cards, wallet, COD, or Stripe.
 class PaymentSelectionPage extends StatefulWidget {
   final OrderEntities order;
 
@@ -37,22 +32,13 @@ class PaymentSelectionPage extends StatefulWidget {
 }
 
 class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
-
-  // ---------------- Variables ----------------
-
-  late final String userId;
-
-  // ---------------- Init State ----------------
-
-  @override
+late final String userId;
+@override
   void initState() {
     super.initState();
     userId = FirebaseAuth.instance.currentUser?.uid ?? '';
   }
-
-  // ---------------- Helper Methods ----------------
-
-  void _proceedToPayment(
+void _proceedToPayment(
       BuildContext context, String selectedPayment, SavedCardEntity? savedCard) {
     Navigator.pushNamed(
       context,
@@ -124,10 +110,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
       ),
     );
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
@@ -153,14 +136,11 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ---------------- Order Summary ----------------
-                  PaymentSelectionOrderSummary(
+PaymentSelectionOrderSummary(
                     totalCost: widget.order.totalCost,
                   ),
                   32.h,
-
-                  // ---------------- Saved Cards Section ----------------
-                  if (state.savedCards.isNotEmpty) ...[
+if (state.savedCards.isNotEmpty) ...[
                     Text(
                       'Saved Cards',
                       style: context.ts.titleLarge?.copyWith(
@@ -191,9 +171,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                     ),
                     32.h,
                   ],
-
-                  // ---------------- Other Payment Methods ----------------
-                  Text(
+Text(
                     'Other Payment Methods',
                     style: context.ts.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
@@ -228,9 +206,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                     totalCost: widget.order.totalCost,
                   ),
                   32.h,
-
-                  // ---------------- Continue Button ----------------
-                  SizedBox(
+SizedBox(
                     width: double.infinity,
                     height: 56,
                     child: MainButton(
@@ -247,9 +223,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                     ),
                   ),
                   16.h,
-
-                  // ---------------- Payment Info Banner ----------------
-                  const PaymentInfoBanner(),
+const PaymentInfoBanner(),
                 ],
               ),
             );

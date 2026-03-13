@@ -13,11 +13,6 @@ import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/pr
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/profile_options_list.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
-
-
-// ---------------- Profile Page ----------------
-
-/// The primary user account screen displaying the profile summary and a menu of account-related settings.
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -26,22 +21,13 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  
-  // ---------------- Variables ----------------
-  
-  late UserProfileBloc profileBloc;
-
-  // ---------------- Init State ----------------
-
-  @override
+late UserProfileBloc profileBloc;
+@override
   void initState() {
     super.initState();
     initializeProfileBloc();
   }
-
-  // ---------------- Helper Methods ----------------
-
-  void initializeProfileBloc() {
+void initializeProfileBloc() {
     try {
       final userId = FirebaseAuth.instance.currentUser?.uid;
 
@@ -62,20 +48,14 @@ class _ProfilePageState extends State<ProfilePage> {
       showToast(context, 'Error loading profile');
     }
   }
-
-  // ---------------- Dispose ----------------
-
-  @override
+@override
   void dispose() {
     if (!profileBloc.isClosed) {
       profileBloc.close();
     }
     super.dispose();
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: profileBloc,
@@ -126,19 +106,16 @@ class _ProfilePageState extends State<ProfilePage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // ---------------- Profile Header ----------------
-            ProfileHeader(
+ProfileHeader(
               photoUrl: profile.photoUrl ?? '',
               name: profile.name,
               email: profile.email,
             ),
             32.h,
-            // ---------------- Profile Options List ----------------
-            Expanded(
+Expanded(
               child: ProfileOptionsList(profileBloc: profileBloc),
             ),
-            // ---------------- Logout Button ----------------
-            SizedBox(
+SizedBox(
               width: size.width * 0.9,
               child: const ProfileLogoutButton(),
             )

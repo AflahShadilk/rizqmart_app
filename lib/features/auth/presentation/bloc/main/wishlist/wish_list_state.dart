@@ -1,7 +1,5 @@
   import 'package:equatable/equatable.dart';
   import 'package:rizqmart/features/auth/domain/entities/main/wish_list_entities.dart';
-
-/// Base abstract class indicating the load progression of the wishlist contents.
   abstract class WishListState extends Equatable{
     @override
     

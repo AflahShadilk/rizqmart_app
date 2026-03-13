@@ -1,7 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:rizqmart/core/error/failures.dart';
-
-/// Abstract definition for the repository managing password recovery requests.
 abstract class ForgotpassAuthrepo {
   Future<Either<Failure, void>> sendEmail(String email);
 }

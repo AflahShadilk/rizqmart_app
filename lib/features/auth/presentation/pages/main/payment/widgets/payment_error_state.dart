@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Payment Error State ----------------
-
-/// A visual error display with retry and navigation options after a payment failure.
 class PaymentErrorState extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
@@ -17,10 +13,7 @@ class PaymentErrorState extends StatelessWidget {
     required this.onRetry,
     required this.onGoHome,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
@@ -29,8 +22,7 @@ class PaymentErrorState extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // ---------------- Error Icon ----------------
-              Container(
+Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: context.cs.error.withValues(alpha: 0.1),
@@ -43,9 +35,7 @@ class PaymentErrorState extends StatelessWidget {
                 ),
               ),
               24.h,
-
-              // ---------------- Error Title ----------------
-              Text(
+Text(
                 'Payment Failed',
                 style: context.ts.headlineSmall?.copyWith(
                   color: context.cs.error,
@@ -53,9 +43,7 @@ class PaymentErrorState extends StatelessWidget {
                 ),
               ),
               16.h,
-
-              // ---------------- Error Message ----------------
-              Container(
+Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: context.cs.error.withValues(alpha: 0.1),
@@ -71,9 +59,7 @@ class PaymentErrorState extends StatelessWidget {
                 ),
               ),
               24.h,
-
-              // ---------------- Retry Button ----------------
-              SizedBox(
+SizedBox(
                 width: double.infinity,
                 height: 56,
                 child: MainButton(
@@ -84,9 +70,7 @@ class PaymentErrorState extends StatelessWidget {
                 ),
               ),
               12.h,
-
-              // ---------------- Go Home Button ----------------
-              TextButton(
+TextButton(
                 onPressed: onGoHome,
                 child: Text(
                   'Go to Home',

@@ -2,21 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/icon_and_name.dart';
-
-// ---------------- App Logo ----------------
-
-/// A composite logo display combining the RizqMart icon and stylized text within a decorative container.
 class CommonAppLogo extends StatelessWidget {
-  
-  // ---------------- Constructor ----------------
-
-  const CommonAppLogo({
+const CommonAppLogo({
     super.key,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Container(
       width: 200,

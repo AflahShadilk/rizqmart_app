@@ -8,19 +8,10 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_event.da
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/cart/widget/cart_quantity_counter.dart';
-
-/// A dismissible container widget displaying a single cart item with image, variants, price, and quantity controls.
 class CartItemCard extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
-  final CartEntities cartItem;
+final CartEntities cartItem;
 
   const CartItemCard({super.key, required this.cartItem});
-
-  // ---------------- Helper Methods ----------------
-
-  /// Shows a confirmation dialog before removing an item from cart.
   Future<bool?> _showRemoveDialog(BuildContext context, String cartItemId) {
     return showDialog<bool>(
       context: context,
@@ -56,10 +47,7 @@ class CartItemCard extends StatelessWidget {
       ),
     );
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     final variant = cartItem.variantIndex < cartItem.variantDetails.length
         ? cartItem.variantDetails[cartItem.variantIndex]
@@ -113,8 +101,7 @@ class CartItemCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ---------------- Product Image ----------------
-            ClipRRect(
+ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: ProductImage(
                 imageUrl: imageUrl,
@@ -123,15 +110,12 @@ class CartItemCard extends StatelessWidget {
               ),
             ),
             12.w,
-
-            // ---------------- Product Details ----------------
-            Expanded(
+Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // ---------------- Product Name ----------------
-                  Text(
+Text(
                     cartItem.name,
                     style: context.ts.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
@@ -140,9 +124,7 @@ class CartItemCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   4.h,
-
-                  // ---------------- Variant Name ----------------
-                  Row(
+Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
@@ -154,9 +136,7 @@ class CartItemCard extends StatelessWidget {
                     ],
                   ),
                   12.h,
-
-                  // ---------------- Quantity & Price Row ----------------
-                  Row(
+Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -164,9 +144,7 @@ class CartItemCard extends StatelessWidget {
                         cartItemId: cartItemId,
                         count: cartItem.count,
                       ),
-
-                      // ---------------- Price Column ----------------
-                      Column(
+Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           if (cartItem.count > 1)

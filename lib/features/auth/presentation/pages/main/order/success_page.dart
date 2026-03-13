@@ -8,17 +8,14 @@ import 'package:rizqmart/features/auth/presentation/widgets/reusable_text.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
-// ---------------- Success Page ----------------
 
-/// A success confirmation screen shown immediately after an order is successfully placed.
+// shown after order is placed successfully
 class SuccessPage extends StatelessWidget {
-  // ---------------- Variables ----------------
   final List<CartEntities> items;
 
-  // ---------------- Constructor ----------------
   const SuccessPage({super.key, this.items = const []});
 
-  // ---------------- Build Method ----------------
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveWrapper(
@@ -34,7 +31,7 @@ class SuccessPage extends StatelessWidget {
                 children: [
                   100.h,
                   
-                  // ---------------- Success Animation ----------------
+
                   Center(
                     child: Lottie.asset(
                       'assets/lottie/Success.json',
@@ -45,7 +42,7 @@ class SuccessPage extends StatelessWidget {
                   ),
                   30.h,
                   
-                  // ---------------- Success Title ----------------
+
                   Center(
                     child: ReusableText(
                       texts: 'Your Order has been\n          Accepted',
@@ -56,7 +53,7 @@ class SuccessPage extends StatelessWidget {
                   ),
                   16.h,
                   
-                  // ---------------- Success Description ----------------
+
                   Center(
                     child: ReusableText(
                       texts:
@@ -68,7 +65,7 @@ class SuccessPage extends StatelessWidget {
                   ),
                   
                   
-                  // ---------------- Action Buttons ----------------
+
                   SizedBox(
                     width: double.infinity,
                     height: 56,

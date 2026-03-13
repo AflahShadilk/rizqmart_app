@@ -5,17 +5,14 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/order/widgets/order_review_button.dart';
 
-// ---------------- Order Product Item ----------------
-
+// displays a single product item with image, name, and quantity
 class OrderProductItem extends StatelessWidget {
-  // ---------------- Variables ----------------
   final CartEntities item;
   final String orderStatus;
 
-  // ---------------- Constructor ----------------
   const OrderProductItem({super.key, required this.item, required this.orderStatus});
 
-  // ---------------- Build Method ----------------
+
   @override
   Widget build(BuildContext context) {
     String? imageUrl;

@@ -9,24 +9,14 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/wishlist/wish_list_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
-
-// ---------------- Like Button ----------------
-
-/// A heart icon button that toggles a product variant's presence in the user's wishlist.
 class LikeButton extends StatefulWidget {
-  
-  // ---------------- Variables / Parameters ----------------
-
-  final String productId;
+final String productId;
   final String productName;
   final String? brand;
   final List<Map<String, dynamic>> variantDetails;
   final bool initialValue;
   final int selectedVariantIndex;
-
-  // ---------------- Constructor ----------------
-
-  const LikeButton({
+const LikeButton({
     super.key,
     required this.productId,
     required this.productName,
@@ -41,14 +31,8 @@ class LikeButton extends StatefulWidget {
 }
 
 class _LikeButtonState extends State<LikeButton> with SingleTickerProviderStateMixin {
-  
-  // ---------------- State Variables ----------------
-
-  late AnimationController _animationController;
-
-  // ---------------- Lifecycle Methods ----------------
-
-  @override
+late AnimationController _animationController;
+@override
   void initState() {
     super.initState();
     _animationController = AnimationController(
@@ -62,10 +46,7 @@ class _LikeButtonState extends State<LikeButton> with SingleTickerProviderStateM
     _animationController.dispose();
     super.dispose();
   }
-  
-  // ---------------- Getters / Helpers ----------------
-
-  String get sanitizedProductId {
+String get sanitizedProductId {
     if (widget.productId.contains('_variant_')) {
       return widget.productId.split('_variant_')[0];
     }
@@ -79,10 +60,7 @@ class _LikeButtonState extends State<LikeButton> with SingleTickerProviderStateM
   String get getCurrentUserId {
     return FirebaseAuth.instance.currentUser?.uid ?? '';
   }
-  
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -147,4 +125,4 @@ class _LikeButtonState extends State<LikeButton> with SingleTickerProviderStateM
       ),
     );
   }
-}
+}

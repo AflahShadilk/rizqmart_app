@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Notification Empty State Widget ----------------
-
-/// Widget displaying a placeholder when there are no new notifications.
 class NotificationEmptyState extends StatelessWidget {
   const NotificationEmptyState({super.key});
-
-// ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     return Center(
       child: Column(

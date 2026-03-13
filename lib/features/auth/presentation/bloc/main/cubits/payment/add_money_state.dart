@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-
-/// State retaining validity flags and errors during the wallet top-up flow.
 class AddMoneyState extends Equatable {
   final bool isValid;
   final String? errorMessage;

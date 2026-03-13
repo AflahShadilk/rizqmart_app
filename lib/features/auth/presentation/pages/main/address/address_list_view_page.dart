@@ -8,13 +8,8 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bl
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/core/theme/app_colors.dart';
-
-/// Reusable address list for both display and selection modes
 class AddressListView extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
-  final List<AddressEntities> addresses;
+final List<AddressEntities> addresses;
   final String userId;
   final VoidCallback onAddAddress;
   final Function(AddressEntities)? onEditAddress;
@@ -34,10 +29,7 @@ class AddressListView extends StatelessWidget {
     this.selectedAddressId,
     this.onSelect,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -58,24 +50,15 @@ class AddressListView extends StatelessWidget {
       },
     );
   }
-
-
-  // ---------------- Helper Methods ----------------
-
-  void _setDefaultAddress(BuildContext context, AddressEntities address) {
+void _setDefaultAddress(BuildContext context, AddressEntities address) {
     context.read<AddressBloc>().add(SetDefaultAddressEvent(
           addressId: address.id,
           userId: userId,
         ));
   }
 }
-
-/// Address card used in both address page and checkout selection
 class AddressCardItem extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
-  final AddressEntities address;
+final AddressEntities address;
   final String userId;
   final bool isSelecting;
   final bool isSelected;
@@ -95,10 +78,7 @@ class AddressCardItem extends StatelessWidget {
     this.onDelete,
     this.onSetDefault,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -162,11 +142,7 @@ class AddressCardItem extends StatelessWidget {
       ),
     );
   }
-
-
-  // ---------------- Helper Methods ----------------
-
-  Widget _buildLabelBadge(BuildContext context) {
+Widget _buildLabelBadge(BuildContext context) {
     final color = _getLabelColor(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/user_profile_entities.dart';
-
-/// Base abstract class describing the current phase of user profile alterations.
 abstract class UserProfileState extends Equatable {
   const UserProfileState();
 

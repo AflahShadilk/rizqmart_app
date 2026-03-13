@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/app_date_widget.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 
-/// A centered date divider displayed between messages from different days.
 class ChatDateDivider extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
   final DateTime timestamp;
 
   const ChatDateDivider({super.key, required this.timestamp});
-
-  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +30,19 @@ class ChatDateDivider extends StatelessWidget {
     );
   }
 
-  // ---------------- Helper Methods ----------------
-
-  /// Formats a DateTime into a readable date/time string.
+  /// Formats a DateTime into a smart date string (Today, Yesterday, or formatted date).
   String _formatDate(DateTime timestamp) {
-    return DateFormat('MMMM dd, yyyy • hh:mm a').format(timestamp);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final msgDate = DateTime(timestamp.year, timestamp.month, timestamp.day);
+
+    if (msgDate == today) {
+      return 'Today';
+    } else if (msgDate == yesterday) {
+      return 'Yesterday';
+    } else {
+      return AppDateWidget.format(timestamp);
+    }
   }
 }

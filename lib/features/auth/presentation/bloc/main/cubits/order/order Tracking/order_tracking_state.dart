@@ -1,4 +1,3 @@
-/// Base abstract class designating the current active progress phase of order tracking.
 abstract class OrderTrackingState {}
 
 class OrderTrackingActive extends OrderTrackingState {

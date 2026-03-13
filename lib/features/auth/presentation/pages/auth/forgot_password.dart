@@ -13,8 +13,6 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/widgets/page_responsive.dart';
 
 import '../../bloc/auth/forgot/forgot_bloc.dart';
-
-/// A page widget that provides a form for users to enter their email and request a password reset functionality.
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
 

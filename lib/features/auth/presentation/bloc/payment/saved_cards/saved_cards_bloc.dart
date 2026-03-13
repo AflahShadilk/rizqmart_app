@@ -4,8 +4,6 @@ import 'package:rizqmart/features/auth/domain/usecase/main/payment/delete_saved_
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/get_saved_cards_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/payment/saved_cards/saved_cards_state.dart';
-
-/// BLoC handling the user's saved payment options, facilitating adding and deleting cards.
 class SavedCardsBloc extends Bloc<SavedCardsEvent, SavedCardsState> {
   final GetSavedCardsUseCase getSavedCardsUseCase;
   final AddSavedCardUseCase addSavedCardUseCase;

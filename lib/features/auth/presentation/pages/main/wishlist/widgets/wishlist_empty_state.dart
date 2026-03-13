@@ -2,16 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/navigator/navigation_bar.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Controllers & Classes ----------------
-
-/// Displays a friendly placeholder view when the user has no saved items in their favorites.
 class WishlistEmptyState extends StatelessWidget {
   const WishlistEmptyState({super.key});
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Center(
       child: Column(

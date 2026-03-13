@@ -1,4 +1,3 @@
-/// Base class identifying whether the dashboard search is active or idle.
 abstract class DashboardSearchState {}
 
 class DashboardSearchIdle extends DashboardSearchState {}

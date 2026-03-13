@@ -6,9 +6,6 @@ import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/pr
 import 'package:rizqmart/features/auth/presentation/pages/main/wallet/wallet_screen.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
-
-// ---------------- Profile Options List ----------------
-
 class ProfileOptionsList extends StatefulWidget {
   final UserProfileBloc profileBloc;
 
@@ -19,22 +16,13 @@ class ProfileOptionsList extends StatefulWidget {
 }
 
 class _ProfileOptionsListState extends State<ProfileOptionsList> {
-
-  // ---------------- Variables ----------------
-
-  late final String userId;
-
-  // ---------------- Init State ----------------
-
-  @override
+late final String userId;
+@override
   void initState() {
     super.initState();
     userId = FirebaseAuth.instance.currentUser?.uid ?? '';
   }
-
-  // ---------------- Helper Methods ----------------
-
-  List<Widget> _buildMenuItems(BuildContext context) {
+List<Widget> _buildMenuItems(BuildContext context) {
     return [
       ProfileMenuItem(
         icon: Icons.shopping_bag,
@@ -119,10 +107,7 @@ class _ProfileOptionsListState extends State<ProfileOptionsList> {
       ),
     ];
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     final menuItems = _buildMenuItems(context);
     

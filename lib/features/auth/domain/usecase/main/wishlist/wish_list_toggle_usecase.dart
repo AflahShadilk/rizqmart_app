@@ -5,8 +5,6 @@ import 'package:rizqmart/features/auth/domain/entities/main/wish_list_entities.d
 import 'package:rizqmart/features/auth/domain/repositories/main/wish_list_repository.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/wishlist/add_to_wish_list_usecase.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/wishlist/delete_frm_wish_list_usecase.dart';
-
-/// Use case for automatically adding or removing a product from the wishlist based on its current status.
 class WishListToggleUsecase {
   final AddToWishListUsecase addToWishListUsecase;
   final DeleteFrmWishListUsecase deleteFrmWishListUsecase;

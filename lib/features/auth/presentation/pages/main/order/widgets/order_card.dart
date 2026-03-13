@@ -1,27 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/app_date_widget.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/app_time_widget.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/order%20status/order_status_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/order/widgets/order_status_chip.dart';
-
-// ---------------- Order Card ----------------
-
 class OrderCard extends StatelessWidget {
-  // ---------------- Variables ----------------
-  final OrderEntities order;
-
-  // ---------------- Constructor ----------------
-  const OrderCard({super.key, required this.order});
-
-  // ---------------- Build Method ----------------
-  @override
+final OrderEntities order;
+const OrderCard({super.key, required this.order});
+@override
   Widget build(BuildContext context) {
     final String formattedOrderId = order.orderId.substring(0, 8).toUpperCase();
-    final String formattedDate = DateFormat('MMM dd, yyyy • hh:mm a').format(order.createdAt);
+    final String formattedDate = '${AppDateWidget.format(order.createdAt)} • ${AppTimeWidget.format(order.createdAt)}';
     final String formattedCost = '₹${order.totalCost.toStringAsFixed(2)}';
     
     return BlocProvider(

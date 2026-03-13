@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
-
-// ---------------- Field Category Name ----------------
-
 Padding fieldCatogoryName(BuildContext context, String name) {
   return Padding(
     padding: const EdgeInsets.all(8),
@@ -14,9 +11,6 @@ Padding fieldCatogoryName(BuildContext context, String name) {
     ),
   );
 }
-
-// ---------------- Field Headline ----------------
-
 Align fieldHeadline(BuildContext context, String name) {
   return Align(
     alignment: Alignment.topCenter,
@@ -28,4 +22,4 @@ Align fieldHeadline(BuildContext context, String name) {
       ),
     ),
   );
-}
+}

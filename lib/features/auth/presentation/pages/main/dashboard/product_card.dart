@@ -12,10 +12,6 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_state.dart';
-
-
-
-/// A reusable card widget to display a single product's summary, image, and price within grid layouts.
 class ProductCard extends StatefulWidget {
   final ProductEntities product;
 
@@ -27,9 +23,7 @@ class ProductCard extends StatefulWidget {
 
 class _ProductCardState extends State<ProductCard>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-      
-  // ---------------- Variables ----------------
-  late final AnimationController _controller;
+late final AnimationController _controller;
   late final Animation<double> _scaleAnimation;
 
   late String productName;
@@ -45,9 +39,7 @@ class _ProductCardState extends State<ProductCard>
 
   @override
   bool get wantKeepAlive => true;
-
-// ---------------- Init State ----------------
-  @override
+@override
   void initState() {
     super.initState();
 
@@ -84,24 +76,18 @@ class _ProductCardState extends State<ProductCard>
        _initializeProductDetails();
     }
   }
-
-// ---------------- Dispose ----------------
-  @override
+@override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
-// ---------------- Navigation Methods ----------------
-  void _onTapNav() {
+void _onTapNav() {
     Navigator.pushNamed(context, AppRoutes.productDetails, arguments: {
       'product': widget.product,
       'variantIndex': 0,
     });
   }
-
-// ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     super.build(context);
 

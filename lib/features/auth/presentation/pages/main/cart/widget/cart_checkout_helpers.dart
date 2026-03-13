@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-/// A tappable row used in checkout flows showing an icon, title, trailing text, and forward arrow.
 Widget checkoutRow(
   BuildContext context, {
   IconData? icon,
@@ -46,8 +44,6 @@ Widget checkoutRow(
     ),
   );
 }
-
-/// A row displaying a label and formatted currency amount, optionally styled as a discount.
 Widget costRow(
   BuildContext context,
   String label,

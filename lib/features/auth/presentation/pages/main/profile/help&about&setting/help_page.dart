@@ -5,16 +5,9 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&about&setting/widgets/help_getting_started_section.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&about&setting/widgets/help_faq_section.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/help&about&setting/widgets/help_contact_section.dart';
-
-// ---------------- Help Page ----------------
-
-/// A support page providing frequently asked questions and contact information for user assistance.
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return ResponsiveWrapper(
       child: Scaffold(

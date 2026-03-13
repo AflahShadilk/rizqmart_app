@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Payment Success State ----------------
-
-/// A visual confirmation displayed when payment completes successfully.
 class PaymentSuccessState extends StatelessWidget {
   final String orderId;
 
@@ -13,10 +9,7 @@ class PaymentSuccessState extends StatelessWidget {
     super.key,
     required this.orderId,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
@@ -24,8 +17,7 @@ class PaymentSuccessState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // ---------------- Success Icon ----------------
-            Container(
+Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: context.cs.success.withValues(alpha: 0.1),
@@ -38,9 +30,7 @@ class PaymentSuccessState extends StatelessWidget {
               ),
             ),
             24.h,
-
-            // ---------------- Success Message ----------------
-            Text(
+Text(
               'Payment Successful!',
               style: context.ts.headlineSmall?.copyWith(
                 color: context.cs.success,
@@ -55,9 +45,7 @@ class PaymentSuccessState extends StatelessWidget {
               ),
             ),
             16.h,
-
-            // ---------------- Order ID ----------------
-            Container(
+Container(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(

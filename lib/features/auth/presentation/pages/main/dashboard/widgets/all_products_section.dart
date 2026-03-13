@@ -5,10 +5,6 @@ import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dar
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/product_card.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/see_all_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
-
-// ---------------- All Products Section Widget ----------------
-
-/// Section displaying all available products in a responsive grid layout
 class AllProductsSection extends StatelessWidget {
   final List<ProductEntities> products;
 
@@ -16,9 +12,7 @@ class AllProductsSection extends StatelessWidget {
     super.key,
     required this.products,
   });
-
-// ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

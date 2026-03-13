@@ -4,8 +4,6 @@ import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart'
 import 'package:rizqmart/features/auth/domain/entities/main/payment_entity.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/payment_repository.dart';
-
-/// Use case for securely processing a credit card payment via the Stripe gateway.
 class PayWithStripeUseCase {
   final PaymentRepository repo;
   PayWithStripeUseCase(this.repo);

@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
-
-/// Data model extending `ProductEntities` to handle Firestore serialization for dashboard products.
 class DashFirestoreModel extends ProductEntities {
   const DashFirestoreModel(
       {required super.id,

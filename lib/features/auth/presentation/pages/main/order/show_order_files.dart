@@ -26,14 +26,13 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/appl
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_engine.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 
-// ---------------- Variables ----------------
+
 
 final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
 final userName = FirebaseAuth.instance.currentUser?.displayName ?? 'Customer';
 
-// ---------------- Bottom Sheet Model ----------------
 
-/// Presents a bottom sheet interface for users to review their cart, select options, and finalize checkout.
+// checkout bottom sheet
 Future<dynamic> modelBottomSheet(
   BuildContext context,
   CartLoadedState cartState,
@@ -393,7 +392,7 @@ Future<dynamic> modelBottomSheet(
   );
 }
 
-// ---------------- Helper Methods ----------------
+
 
 String _truncateAddress(String address) {
   return address.length > 20
@@ -452,7 +451,7 @@ Widget _costRowCompact(
   );
 }
 
-// ---------------- Payment Method Dialog ----------------
+// payment method picker
 
 void _showPaymentMethodDialog(BuildContext context) {
   showDialog(
@@ -542,7 +541,7 @@ Widget _paymentOptionCompact(
   );
 }
 
-// ---------------- Coupon Selection Dialog ----------------
+// coupon selection dialog
 
 void _showCouponSelectionDialog(BuildContext context, CartLoadedState cartState) {
   final applyCouponCubit = context.read<ApplyCouponCubit>();

@@ -4,8 +4,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
-
-/// Data model for shopping cart items, enabling serialization to and from Firestore.
 class CartFirestoreModel extends CartEntities {
   const CartFirestoreModel(
       {required super.id,

@@ -3,17 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/navigation/navigation_cubit.dart';
-
-// ---------------- Bottom Navigation Bar Widget ----------------
-
 class BottomNavigationBarWidget extends StatelessWidget {
   final int selectedIndex;
 
   const BottomNavigationBarWidget({super.key, required this.selectedIndex});
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(

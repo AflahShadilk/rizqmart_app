@@ -1,22 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
-
-// ---------------- Main Button ----------------
-
-/// A prominent, general-purpose elevated button used across the application for primary actions.
 class MainButton extends StatelessWidget {
-  
-  // ---------------- Variables / Parameters ----------------
-
-  final String label;
+final String label;
   final IconData? icon;
   final VoidCallback? onPress; 
   final Color color;
   final Color textColor;
-
-  // ---------------- Constructor ----------------
-
-  const MainButton({
+const MainButton({
     super.key,
     required this.label,
     this.icon,
@@ -24,10 +14,7 @@ class MainButton extends StatelessWidget {
     required this.color,
     required this.textColor,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: onPress,
@@ -52,4 +39,4 @@ class MainButton extends StatelessWidget {
       ),
     );
   }
-}
+}

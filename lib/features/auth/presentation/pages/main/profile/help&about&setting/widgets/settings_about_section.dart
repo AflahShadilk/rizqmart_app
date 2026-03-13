@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Settings About Section ----------------
-
 class SettingsAboutSection extends StatelessWidget {
   const SettingsAboutSection({super.key});
-
-  // ---------------- Helper Methods ----------------
-
-  Widget _buildSectionTitle(BuildContext context, String title) {
+Widget _buildSectionTitle(BuildContext context, String title) {
     return Text(
       title,
       style: context.ts.bodyMedium?.copyWith(
@@ -197,10 +191,7 @@ class SettingsAboutSection extends StatelessWidget {
       ),
     );
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),

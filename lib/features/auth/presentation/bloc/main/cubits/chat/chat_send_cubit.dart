@@ -1,8 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_event.dart';
-
-/// Cubit handling the logic and validation for dispatching individual chat messages.
 class ChatSendCubit extends Cubit<void> {
   final ChatBloc chatBloc;
 

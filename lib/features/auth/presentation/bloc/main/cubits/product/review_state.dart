@@ -1,7 +1,5 @@
 
 import 'package:equatable/equatable.dart';
-
-/// Base abstract class containing the current star rating given by the user.
 abstract class ReviewState extends Equatable {
   final double rating;
   const ReviewState(this.rating);

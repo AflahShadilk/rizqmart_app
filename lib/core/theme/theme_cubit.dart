@@ -3,10 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/core/theme/theme_state.dart';
-
-
-
-/// Manages the application's overall theme state (light/dark mode) and defines theme configurations.
 class ThemeCubit extends Cubit<ThemeState> {
   
   

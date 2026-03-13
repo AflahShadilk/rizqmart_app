@@ -3,9 +3,6 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Add Card Form ----------------
-
 class AddCardForm extends StatelessWidget {
   final TextEditingController nameController;
   final CardEditController cardEditController;
@@ -19,10 +16,7 @@ class AddCardForm extends StatelessWidget {
     required this.isProcessing,
     required this.onSave,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Column(
       children: [

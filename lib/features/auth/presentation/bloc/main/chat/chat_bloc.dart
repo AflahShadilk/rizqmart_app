@@ -6,8 +6,6 @@ import 'package:rizqmart/features/auth/domain/usecase/main/chat/initiate_chat_us
 import 'package:rizqmart/features/auth/domain/usecase/main/chat/send_message_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/chat/chat_state.dart';
-
-/// Business logic for managing chat room creation and real-time messaging between users and admin.
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final CreateChatRoomUseCase createChatRoomUseCase;
   final GetMessagesUseCase getMessagesUseCase;

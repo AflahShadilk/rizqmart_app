@@ -3,8 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-/// A selectable widget presenting available gender options (Male, Female, Other) for user profiles.
 class GenderSelector extends StatelessWidget {
   final String? selectedGender;
   final bool enabled;

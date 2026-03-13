@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-
-/// Entity defining a single message within a customer support chat thread.
 class MessageEntity extends Equatable {
   final String id;
   final String senderId;

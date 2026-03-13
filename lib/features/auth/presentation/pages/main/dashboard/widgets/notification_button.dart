@@ -5,8 +5,6 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/notification_dropdown.dart';
-
-/// A circular button showing a notification bell icon and an unread badge, which toggles a dropdown on tap.
 class NotificationButton extends StatefulWidget {
   const NotificationButton({super.key});
 

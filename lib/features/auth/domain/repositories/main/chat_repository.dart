@@ -2,8 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/chat_entity.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/message_entity.dart';
-
-/// Abstract repository for handling real-time customer support chat messaging.
 abstract class ChatRepository {
   
   Future<Either<Failure, String>> createChatRoom({

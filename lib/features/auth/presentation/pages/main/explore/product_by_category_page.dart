@@ -15,10 +15,6 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'filter_bottom_sheet.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/widgets/filtered_product_grid.dart';
-
-// ---------------- Controllers & Classes ----------------
-
-/// A catalog page displaying a grid of products filtered by a specific category.
 class ProductByCategoryPage extends StatefulWidget {
   final String categoryName;
   const ProductByCategoryPage({super.key, required this.categoryName});
@@ -28,13 +24,8 @@ class ProductByCategoryPage extends StatefulWidget {
 }
 
 class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
-
-  // ---------------- Variables ----------------
-
-  late FilterCubit filterCubit;
-
-  // ---------------- Init State ----------------
-  @override
+late FilterCubit filterCubit;
+@override
   void initState() {
     super.initState();
     filterCubit = FilterCubit();
@@ -42,17 +33,12 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
           GetProductsByCategoryEvent(widget.categoryName),
         );
   }
-
-  // ---------------- Dispose ----------------
-  @override
+@override
   void dispose() {
     filterCubit.close();
     super.dispose();
   }
-
-  // ---------------- Helper Methods ----------------
-
-  void showFilters(List<ExploreEntities> allProducts) {
+void showFilters(List<ExploreEntities> allProducts) {
     Set<String> brands = {};
     Set<String> categories = {};
     Set<String> variants = {};
@@ -125,10 +111,7 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
 
     return allVariants;
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme;
     return ResponsiveWrapper(child: Scaffold(

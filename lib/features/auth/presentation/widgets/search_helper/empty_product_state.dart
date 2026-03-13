@@ -1,18 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Empty Product State ----------------
-
-/// Returns an "Empty State" widget instructing the user that no products matched the current search or category filter.
 class EmptyProductState extends StatelessWidget {
-  
-  // ---------------- Variables / Parameters ----------------
-
   final bool isSearching;
   final String searchText;
   final VoidCallback onPress;
-
-  // ---------------- Constructor ----------------
 
   const EmptyProductState({
     super.key,
@@ -21,7 +12,6 @@ class EmptyProductState extends StatelessWidget {
     required this.onPress,
   });
 
-  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -74,4 +64,4 @@ class EmptyProductState extends StatelessWidget {
       ),
     );
   }
-}
+}

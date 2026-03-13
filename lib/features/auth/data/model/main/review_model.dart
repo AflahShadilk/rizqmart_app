@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/review_entity.dart';
-
-/// Data model for product reviews, structured for seamless integration with Firestore.
 class ReviewModel extends ReviewEntity {
   const ReviewModel({
     required super.id,

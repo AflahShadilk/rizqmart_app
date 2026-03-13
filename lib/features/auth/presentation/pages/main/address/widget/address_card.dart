@@ -5,13 +5,8 @@ import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dar
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-/// A card widget displaying user address details with options to set as default, edit, or delete the address.
 class AddressCard extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
-  final AddressEntities address;
+final AddressEntities address;
   final String userId;
   final VoidCallback onEdit;
 
@@ -21,10 +16,7 @@ class AddressCard extends StatelessWidget {
     required this.userId,
     required this.onEdit,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -188,11 +180,7 @@ class AddressCard extends StatelessWidget {
       ),
     );
   }
-
-
-  // ---------------- Helper Methods ----------------
-
-  IconData _getLabelIcon(String label) {
+IconData _getLabelIcon(String label) {
     switch (label.toLowerCase()) {
       case 'home':
         return Icons.home_outlined;

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Payment Processing Loading State ----------------
-
-/// A centered loading indicator shown while a payment is being processed.
 class PaymentProcessingLoadingState extends StatelessWidget {
   final String message;
 
@@ -12,10 +8,7 @@ class PaymentProcessingLoadingState extends StatelessWidget {
     super.key,
     required this.message,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Center(
       child: Column(

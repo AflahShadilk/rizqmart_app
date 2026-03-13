@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
-
-/// Base abstract class defining all intents related to saved payment card management.
 abstract class SavedCardsEvent extends Equatable {
   const SavedCardsEvent();
 

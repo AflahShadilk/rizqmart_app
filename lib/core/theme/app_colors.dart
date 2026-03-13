@@ -1,8 +1,6 @@
 
 
 import 'package:flutter/material.dart';
-
-/// Contains all the standard color palettes and semantic colors used throughout the application design.
 class AppColors {
   
 

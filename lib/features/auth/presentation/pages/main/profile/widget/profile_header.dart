@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
-
-// ---------------- Profile Header Widget ----------------
-
 class ProfileHeader extends StatelessWidget {
   final String photoUrl;
   final String name;
@@ -16,10 +13,7 @@ class ProfileHeader extends StatelessWidget {
     required this.name,
     required this.email,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),

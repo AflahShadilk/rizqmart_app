@@ -1,4 +1,3 @@
-/// Base abstract class storing the status of launching an external support handler (url/email).
 abstract class SupportState {}
 
 class SupportInitial extends SupportState {}

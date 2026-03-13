@@ -8,29 +8,17 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_bloc.dar
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
-
-// ---------------- Add To Cart Button ----------------
-
-/// A circular icon button widget that adds a specific product variant to the cart.
 class AddToCartButton extends StatelessWidget {
-  // ---------------- Variables / Parameters ----------------
-
-  final ShowProductEntities widget;
+final ShowProductEntities widget;
   final int variantIndex;
   final int count;
-
-  // ---------------- Constructor ----------------
-
-  const AddToCartButton({
+const AddToCartButton({
     super.key,
     required this.widget,
     this.variantIndex = 0,
     this.count = 1,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
@@ -49,10 +37,7 @@ class AddToCartButton extends StatelessWidget {
       ),
     );
   }
-
-  // ---------------- Helper Methods ----------------
-
-  void _addToCart(BuildContext context) {
+void _addToCart(BuildContext context) {
     try {
       if (variantIndex >= widget.variantDetails.length) {
         showToast(

@@ -4,10 +4,6 @@
   import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/dashboard/dash_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Error Message SnackBar ----------------
-
-/// Returns a floating, custom styled SnackBar widget used to display loading failure errors.
 class ErrorMessageSnackBar {
   static SnackBar build(FailureLoadingProductState state) {
     return SnackBar(

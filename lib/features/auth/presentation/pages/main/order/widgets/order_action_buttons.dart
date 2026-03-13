@@ -10,16 +10,14 @@ import 'package:rizqmart/features/auth/presentation/pages/main/chat/chat_page.da
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
-// ---------------- Order Action Buttons ----------------
+// action buttons shown on the order details page
 
 class OrderActionButtons extends StatelessWidget {
-  // ---------------- Variables ----------------
   final OrderEntities order;
 
-  // ---------------- Constructor ----------------
   const OrderActionButtons({super.key, required this.order});
 
-  // ---------------- Helper Methods ----------------
+  // opens chat with seller support
   void _navigateToChat(BuildContext context) {
     Navigator.push(
       context,
@@ -34,6 +32,7 @@ class OrderActionButtons extends StatelessWidget {
     );
   }
 
+  // cancel confirmation dialog
   void _showCancelDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -59,12 +58,12 @@ class OrderActionButtons extends StatelessWidget {
     );
   }
 
-  // ---------------- Build Method ----------------
+
   @override
   Widget build(BuildContext context) {
     final String currentStatus = order.status.toLowerCase().trim();
 
-    // Cancel button should ONLY appear for placed and confirmed
+    // only show cancel for placed/confirmed orders
     final bool canCancel = (currentStatus == 'placed' || currentStatus == 'confirmed');
 
     return BlocBuilder<InvoiceCubit, InvoiceState>(

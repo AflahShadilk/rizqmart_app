@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
-
-/// Base abstract class for events related to address and location management.
 abstract class AddressEvent extends Equatable {
   const AddressEvent();
 

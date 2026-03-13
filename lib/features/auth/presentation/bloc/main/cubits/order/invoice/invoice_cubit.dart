@@ -7,8 +7,6 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'invoice_state.dart';
-
-/// Cubit rendering order data into a formatted PDF invoice for printing/download.
 class InvoiceCubit extends Cubit<InvoiceState> {
   InvoiceCubit() : super(InvoiceInitial());
 

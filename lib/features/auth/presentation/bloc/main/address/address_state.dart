@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
-
-/// Base abstract class defining the state of address and location operations.
 abstract class AddressState extends Equatable {
   const AddressState();
 

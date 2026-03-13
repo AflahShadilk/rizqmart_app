@@ -6,8 +6,6 @@ import 'package:rizqmart/features/auth/domain/usecase/main/wallet/credit_wallet_
 import 'package:rizqmart/features/auth/domain/entities/main/wallet_transaction_entity.dart';
 import 'wallet_event.dart';
 import 'wallet_state.dart';
-
-/// Business logic handling wallet balances, detailed transaction histories, and top-ups/withdrawals.
 class WalletBloc extends Bloc<WalletEvent, WalletState> {
   final GetWalletBalanceUseCase getWalletBalance;
   final GetWalletTransactionsUseCase getWalletTransactions;

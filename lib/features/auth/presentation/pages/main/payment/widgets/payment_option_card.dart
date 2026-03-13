@@ -6,10 +6,6 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/pay
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/wallet/wallet_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Payment Option Card ----------------
-
-/// A selectable payment method card supporting Wallet (with balance check), COD, and Stripe options.
 class PaymentOptionCard extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -29,20 +25,14 @@ class PaymentOptionCard extends StatelessWidget {
     required this.totalCost,
     this.onAddMoney,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     if (value == 'wallet') {
       return _buildWalletOption(context);
     }
     return _buildStandardOption(context);
   }
-
-  // ---------------- Wallet Option ----------------
-
-  Widget _buildWalletOption(BuildContext context) {
+Widget _buildWalletOption(BuildContext context) {
     return BlocBuilder<WalletBloc, WalletState>(
       builder: (context, walletState) {
         final balance = walletState.wallet?.balance ?? 0.0;
@@ -170,10 +160,7 @@ class PaymentOptionCard extends StatelessWidget {
       },
     );
   }
-
-  // ---------------- Standard Option ----------------
-
-  Widget _buildStandardOption(BuildContext context) {
+Widget _buildStandardOption(BuildContext context) {
     return BlocBuilder<PaymentSelectionCubit, PaymentSelectionState>(
       builder: (context, state) {
         final isSelected = state.selectedPayment == value;

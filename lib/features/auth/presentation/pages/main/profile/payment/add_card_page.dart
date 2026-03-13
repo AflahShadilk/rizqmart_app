@@ -8,10 +8,6 @@ import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.d
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/add_card_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/add_card_state.dart';
-
-// ---------------- Add Card Page ----------------
-
-/// A secure form page allowing users to input and save new credit or debit card details.
 class AddCardPage extends StatefulWidget {
   final String userId;
   const AddCardPage({super.key, required this.userId});
@@ -21,24 +17,15 @@ class AddCardPage extends StatefulWidget {
 }
 
 class _AddCardPageState extends State<AddCardPage> {
-
-  // ---------------- Controllers ----------------
-
-  final CardEditController _cardEditController = CardEditController();
+final CardEditController _cardEditController = CardEditController();
   final TextEditingController _nameController = TextEditingController();
-
-  // ---------------- Dispose ----------------
-
-  @override
+@override
   void dispose() {
     _cardEditController.dispose();
     _nameController.dispose();
     super.dispose();
   }
-
-  // ---------------- Helper Methods ----------------
-
-  void _validateAndSave(BuildContext context) {
+void _validateAndSave(BuildContext context) {
     if (_nameController.text.isEmpty) {
       showToast(context, 'Please enter card holder name');
       return;
@@ -54,10 +41,7 @@ class _AddCardPageState extends State<AddCardPage> {
       userId: widget.userId,
     );
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AddCardCubit(),

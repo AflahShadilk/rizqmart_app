@@ -125,8 +125,6 @@ import 'package:rizqmart/features/auth/domain/usecase/main/coupon/get_active_cou
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_cubit.dart';
 
 final sl = GetIt.instance;
-
-/// Initial setup function to register all dependency injections (DataSources, Repos, UseCases, Blocs) via GetIt.
 void setupLocator() {
   sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
   sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);

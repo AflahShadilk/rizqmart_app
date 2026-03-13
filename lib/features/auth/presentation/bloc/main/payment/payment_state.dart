@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/payment_entity.dart';
-
-/// Base abstract class encapsulating possible UI states during the payment timeline.
 abstract class PaymentState extends Equatable {
   const PaymentState();
 

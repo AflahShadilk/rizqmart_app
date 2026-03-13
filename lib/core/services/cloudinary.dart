@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-
-/// Uploads an image file to Cloudinary and returns the secure URL of the uploaded asset.
 Future<String?> uploadToCloudinary(FilePickerResult? filePickerResult) async {
   try {
     if (filePickerResult == null || filePickerResult.files.isEmpty) {

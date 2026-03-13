@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/explore_entities.dart';
-
-/// Data model for products listed in the explore section, mapped for Firestore data conversion.
 class ExploreModel extends ExploreEntities {
   const ExploreModel(
       {required super.id,
@@ -40,8 +38,6 @@ class ExploreModel extends ExploreEntities {
         );
   }
 }
-
-/// Data model representing a product category, managing parsing from Firestore.
 class CategoryModel extends CategoryEntity {
   const CategoryModel(
       {required super.id, required super.categoryName, required super.logoUrl});

@@ -4,19 +4,11 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/order/show_order_files.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
-
-/// A checkout summary button displaying the total amount and navigating to the order flow.
 class CartSummaryButton extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
-  final CartLoadedState state;
+final CartLoadedState state;
 
   const CartSummaryButton({super.key, required this.state});
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return SizedBox(

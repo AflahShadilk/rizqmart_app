@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-
-/// Base abstract class encapsulating the UI state of the search functionality.
 abstract class SearchState<T> extends Equatable{
   @override
   

@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/coupon_entity.dart';
-
-/// Data model handling serialization and deserialization of promotional coupons from Firestore.
 class CouponModel extends CouponEntity {
   const CouponModel({
     required super.id,

@@ -11,12 +11,11 @@ import 'package:rizqmart/features/auth/presentation/pages/main/chat/widgets/chat
 import 'package:rizqmart/features/auth/presentation/pages/main/chat/widgets/chat_date_divider.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/chat/widgets/chat_input_section.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_bloc.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_event.dart';
+import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_state.dart';
 
-/// Main chat screen displaying messages between user and delivery partner/seller.
 class ChatPage extends StatefulWidget {
-
-  // ---------------- Variables ----------------
-
   final String orderId;
   final String orderDisplayId;
   final String deliveryPartnerName;
@@ -41,18 +40,11 @@ class ChatPage extends StatefulWidget {
   @override
   State<ChatPage> createState() => _ChatPageState();
 }
-
-/// Manages chat dependencies, scroll controller, and message inputs.
 class _ChatPageState extends State<ChatPage> {
-
-  // ---------------- Controllers ----------------
-
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   late final ChatSendCubit _chatSendCubit;
   late final ChatPageInitCubit _chatPageInitCubit;
-
-  // ---------------- Init State ----------------
 
   @override
   void initState() {
@@ -67,9 +59,28 @@ class _ChatPageState extends State<ChatPage> {
       productName: widget.productName,
       productImage: widget.productImage,
     );
+    
+    _clearUnreadNotifications();
   }
 
-  // ---------------- Dispose ----------------
+  void _clearUnreadNotifications() {
+    final notificationBloc = context.read<NotificationBloc>();
+    final notificationState = notificationBloc.state;
+    
+    if (notificationState is NotificationLoadedState) {
+      for (final notification in notificationState.notifications) {
+        if (!notification.isRead && notification.referenceId == widget.orderId) {
+           final userId = _chatPageInitCubit.state.currentUserId;
+           if (userId.isNotEmpty) {
+             notificationBloc.add(MarkAsReadEvent(
+               userId: userId, 
+               notificationId: notification.id
+             ));
+           }
+        }
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -79,10 +90,6 @@ class _ChatPageState extends State<ChatPage> {
     _chatPageInitCubit.close();
     super.dispose();
   }
-
-  // ---------------- Helper Methods ----------------
-
-  /// Animates the scroll view to the latest message at the bottom.
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
@@ -92,8 +99,6 @@ class _ChatPageState extends State<ChatPage> {
       );
     }
   }
-
-  /// Sends the current text using [ChatSendCubit].
   void _sendMessage(String currentUserId) {
     if (currentUserId.isEmpty) return;
     final sent = _chatSendCubit.sendMessage(
@@ -105,13 +110,10 @@ class _ChatPageState extends State<ChatPage> {
     if (sent) _messageController.clear();
   }
 
-  // ---------------- Build Method ----------------
-
   @override
   Widget build(BuildContext context) {
     return ResponsiveWrapper(child: Scaffold(
       backgroundColor: context.cs.surface,
-      // ---------------- App Bar ----------------
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +126,6 @@ class _ChatPageState extends State<ChatPage> {
         elevation: 1,
         shadowColor: context.cs.shadow.withValues(alpha: 0.1),
       ),
-      // ---------------- Chat Body ----------------
       body: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
           if (state is ChatMessagesLoadedState) {
@@ -132,12 +133,10 @@ class _ChatPageState extends State<ChatPage> {
           }
         },
         builder: (context, state) {
-          // ---------------- Loading State ----------------
           if (state is ChatLoadingState || state is ChatInitialState) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // ---------------- Error State ----------------
           if (state is ChatErrorState) {
             return Center(child: Text(state.message));
           }
@@ -157,7 +156,6 @@ class _ChatPageState extends State<ChatPage> {
 
                 return Column(
                   children: [
-                    // ---------------- Messages List ----------------
                     Expanded(
                       child: BlocBuilder<ChatBloc, ChatState>(
                         builder: (context, state) {
@@ -205,7 +203,6 @@ class _ChatPageState extends State<ChatPage> {
                         },
                       ),
                     ),
-                    // ---------------- Input / Cancelled Section ----------------
                     if (widget.orderStatus.toLowerCase() == 'cancelled')
                       const ChatCancelledBanner()
                     else

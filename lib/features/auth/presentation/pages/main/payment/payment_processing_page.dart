@@ -12,10 +12,6 @@ import 'package:rizqmart/features/auth/presentation/pages/main/payment/widgets/p
 import 'package:rizqmart/features/auth/presentation/pages/main/payment/widgets/payment_success_state.dart' as success_widget;
 import 'package:rizqmart/features/auth/presentation/pages/main/payment/widgets/payment_error_state.dart' as error_widget;
 import 'package:rizqmart/features/auth/presentation/pages/main/payment/widgets/payment_confirmation_view.dart';
-
-// ---------------- Payment Processing Page ----------------
-
-/// A page that handles the processing state and outcome of an order payment.
 class PaymentProcessingPage extends StatefulWidget {
   final OrderEntities order;
   final String paymentMethod;
@@ -33,22 +29,13 @@ class PaymentProcessingPage extends StatefulWidget {
 }
 
 class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
-
-  // ---------------- Variables ----------------
-
-  bool _isInitialized = false;
-
-  // ---------------- Init State ----------------
-
-  @override
+bool _isInitialized = false;
+@override
   void initState() {
     super.initState();
     _initializePayment();
   }
-
-  // ---------------- Helper Methods ----------------
-
-  void _initializePayment() {
+void _initializePayment() {
     if (!_isInitialized) {
       _isInitialized = true;
       Future.delayed(const Duration(milliseconds: 50), () {
@@ -80,10 +67,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
   void _goHome() {
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
@@ -127,33 +111,24 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
           ),
           body: BlocBuilder<PaymentBloc, PaymentState>(
             builder: (context, state) {
-              // ---------------- Loading State ----------------
-              if (state is PaymentLoadingState) {
+if (state is PaymentLoadingState) {
                 return PaymentProcessingLoadingState(message: state.message);
               }
-
-              // ---------------- Confirmation State ----------------
-              if (state is PaymentMethodSelectedState) {
+if (state is PaymentMethodSelectedState) {
                 return PaymentConfirmationView(state: state);
               }
-
-              // ---------------- Success State ----------------
-              if (state is PaymentSuccessState) {
+if (state is PaymentSuccessState) {
                 return success_widget.PaymentSuccessState(
                     orderId: state.orderId);
               }
-
-              // ---------------- Error State ----------------
-              if (state is PaymentFailedState) {
+if (state is PaymentFailedState) {
                 return error_widget.PaymentErrorState(
                   message: state.message,
                   onRetry: _retryPayment,
                   onGoHome: _goHome,
                 );
               }
-
-              // ---------------- Default State ----------------
-              return Center(
+return Center(
                 child: CircularProgressIndicator(color: context.cs.primary),
               );
             },

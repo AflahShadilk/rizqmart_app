@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/user_profile_entities.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Show Personal Details Section ----------------
-
 class ShowPersonalDetailsSection extends StatelessWidget {
   final UserProfileEntities profile;
 
@@ -12,10 +9,7 @@ class ShowPersonalDetailsSection extends StatelessWidget {
     super.key,
     required this.profile,
   });
-
-  // ---------------- Helper Methods ----------------
-
-  Widget _buildSectionTitle(BuildContext context, String title) {
+Widget _buildSectionTitle(BuildContext context, String title) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
@@ -88,10 +82,7 @@ class ShowPersonalDetailsSection extends StatelessWidget {
     if (date == null) return 'Not specified';
     return '${date.day}/${date.month}/${date.year}';
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Column(
       children: [

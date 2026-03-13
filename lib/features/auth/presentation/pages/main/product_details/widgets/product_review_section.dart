@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/review_entity.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details/reviews_page.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/review_card.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/review_zero_state_widget.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/core/services/firestore_product/access_product_variant_details.dart';
 
@@ -74,12 +74,7 @@ class ProductReviewSection extends StatelessWidget {
               }
               if (reviews != null) {
                 if (reviews.isEmpty) {
-                  return Text(
-                    "No reviews yet",
-                    style: GoogleFonts.poppins(
-                      color: context.cs.onSurface.withValues(alpha: 0.6),
-                    ),
-                  );
+                  return const ReviewZeroStateWidget();
                 }
                 return ListView.separated(
                   shrinkWrap: true,

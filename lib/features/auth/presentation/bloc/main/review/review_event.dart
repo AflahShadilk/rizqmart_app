@@ -1,6 +1,4 @@
 part of 'review_bloc.dart';
-
-/// Base abstract class for triggering review submissions and queries.
 abstract class ReviewEvent extends Equatable {
   const ReviewEvent();
 

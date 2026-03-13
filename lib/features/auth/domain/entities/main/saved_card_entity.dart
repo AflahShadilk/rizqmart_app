@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-
-/// Entity representing a securely saved payment card used for quick checkout.
 class SavedCardEntity extends Equatable {
   final String id;
   final String paymentMethodId;

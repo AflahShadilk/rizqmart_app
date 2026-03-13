@@ -1,7 +1,5 @@
 
 import 'package:equatable/equatable.dart';
-
-/// Base abstract class defining the onboarding pages the user is viewing.
 abstract class WelcomeState extends Equatable {
   const WelcomeState();
 

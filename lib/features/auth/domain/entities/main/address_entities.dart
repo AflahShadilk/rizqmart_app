@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-
-/// Entity representing a user's saved delivery address with geographical coordinates.
 class AddressEntities extends Equatable {
   final String id;
   final String userId;

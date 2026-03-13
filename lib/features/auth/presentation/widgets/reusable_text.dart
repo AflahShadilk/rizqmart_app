@@ -1,25 +1,13 @@
 import 'package:flutter/material.dart';
-
-// ---------------- Reusable Text ----------------
-
 class ReusableText extends StatelessWidget {
-  
-  // ---------------- Variables / Parameters ----------------
-
-  final String texts;
+final String texts;
   final TextStyle? titleSize;
-
-  // ---------------- Constructor ----------------
-
-  const ReusableText({
+const ReusableText({
     super.key,
     required this.texts,
     required this.titleSize,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Text(
       texts,

@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/auth/welcome_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/auth/welcome_state.dart';
-
-// ---------------- Onboarding Indicator ----------------
-
-/// Animated page indicator dots for the onboarding flow.
 class OnboardingIndicator extends StatelessWidget {
   final int pageCount;
   final AnimationController animationController;
@@ -15,10 +11,7 @@ class OnboardingIndicator extends StatelessWidget {
     required this.pageCount,
     required this.animationController,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return BlocBuilder<WelcomeCubit, WelcomeState>(
       builder: (context, state) {

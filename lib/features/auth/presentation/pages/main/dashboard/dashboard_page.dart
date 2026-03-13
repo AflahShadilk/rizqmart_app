@@ -21,10 +21,6 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/search_dropdown_overlay.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/exclusive_offers_section.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/all_products_section.dart';
-
-// ---------------- Controllers & Classes ----------------
-
-/// The primary home screen widget of the app showcasing products, offers, and a search interface.
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -33,12 +29,8 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-
-  // ---------------- Variables ----------------
-  final TextEditingController searchController = TextEditingController();
-
-  // ---------------- Init State ----------------
-  @override
+final TextEditingController searchController = TextEditingController();
+@override
   void initState() {
     super.initState();
     context.read<DashBloc>().add(const LoadingProductsEvent());
@@ -49,9 +41,7 @@ class _DashboardPageState extends State<DashboardPage> {
       context.read<NotificationBloc>().add(LoadNotificationsEvent(user.uid));
     }
   }
-
-  // ---------------- Dashboard Refresh Logic ----------------
-  Future<void> _refreshDashboard() async {
+Future<void> _refreshDashboard() async {
     context.read<DashBloc>().add(const LoadingProductsEvent());
     context.read<AddressBloc>().add(GetCurrentLocationEvent());
 
@@ -63,18 +53,12 @@ class _DashboardPageState extends State<DashboardPage> {
     // Delay added to ensure the RefreshIndicator shows the spinner smoothly
     await Future.delayed(const Duration(milliseconds: 1000));
   }
-
-
-
-  // ---------------- Dispose ----------------
-  @override
+@override
   void dispose() {
     searchController.dispose();
     super.dispose();
   }
-
-  // ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     // Provide a localized SearchCubit instance for the Dashboard to manage its search state
     return BlocProvider(

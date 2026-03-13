@@ -4,8 +4,6 @@ import 'package:rizqmart/features/auth/domain/usecase/auth/signin_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/auth/signIn/signin_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-/// Business logic for handling traditional email/password user sign-in.
 class SigninBloc extends Bloc<SignInEvent,SignInState>{
  final SigninUsecase signinUsecase;
  SigninBloc({required this.signinUsecase}):super(SignInInitializeState()){

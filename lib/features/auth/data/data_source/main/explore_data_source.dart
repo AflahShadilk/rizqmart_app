@@ -2,8 +2,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/data/model/main/explore_model.dart';
-
-/// Remote data source facilitating search, categorization, and retrieval of product catalogs for the explore section.
 class ExploreDataSources {
   final FirebaseFirestore store = FirebaseFirestore.instance;
   Stream<List<ExploreModel>> getAllProducts() {

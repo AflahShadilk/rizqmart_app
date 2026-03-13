@@ -1,8 +1,6 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
-
-/// Base abstract class reflecting the status of the add-card networking operation.
 abstract class AddCardState extends Equatable {
   const AddCardState();
 

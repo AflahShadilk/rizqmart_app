@@ -1,17 +1,7 @@
 import 'package:flutter/material.dart';
-
-// ---------------- Custom Circular Progress Indicator ----------------
-
-/// A centered CircularProgressIndicator with a custom linear gradient shader mask.
 class CustomCircularProgressIndicator extends StatelessWidget {
-  
-  // ---------------- Constructor ----------------
-
-  const CustomCircularProgressIndicator({super.key});
-
-  // ---------------- Build Method ----------------
-
-  @override
+const CustomCircularProgressIndicator({super.key});
+@override
   Widget build(BuildContext context) {
     return Center(
       child: ShaderMask(
@@ -33,4 +23,4 @@ class CustomCircularProgressIndicator extends StatelessWidget {
       ),
     );
   }
-}
+}

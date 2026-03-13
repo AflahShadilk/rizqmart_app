@@ -3,30 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
 import 'package:rizqmart/core/services/firestore_product/variant_det_getter.dart';
-
-// ---------------- Search Results Dropdown ----------------
-
-/// Returns a dropdown overlay widget populated with search result suggestions to preview and select products.
 class SearchResultsDropdown extends StatelessWidget {
-  
-  // ---------------- Variables / Parameters ----------------
-
-  final TextEditingController controller;
+final TextEditingController controller;
   final List<ShowProductEntities> items;
   final VoidCallback onProductSelected;
-
-  // ---------------- Constructor ----------------
-
-  const SearchResultsDropdown({
+const SearchResultsDropdown({
     super.key,
     required this.controller,
     required this.items,
     required this.onProductSelected,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
 

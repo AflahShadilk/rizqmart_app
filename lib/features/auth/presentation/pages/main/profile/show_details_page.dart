@@ -14,24 +14,14 @@ import 'package:rizqmart/features/auth/presentation/widgets/buttons/back_button_
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
-
-// ---------------- Show Details Page ----------------
-
-/// A read-only view of the user's detailed profile information, including contact details and bio.
 class ShowDetailsPage extends StatelessWidget {
-  
-  // ---------------- Variables ----------------
-  
-  final UserProfileBloc profileBloc;
+final UserProfileBloc profileBloc;
 
   const ShowDetailsPage({
     super.key,
     required this.profileBloc,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
@@ -122,19 +112,13 @@ class ShowDetailsPage extends StatelessWidget {
     );
   }
 }
-
-// ---------------- User Details View Content Widget ----------------
-
 class _UserDetailsViewContent extends StatelessWidget {
   final UserProfileEntities profile;
 
   const _UserDetailsViewContent({
     required this.profile,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
@@ -154,10 +138,7 @@ class _UserDetailsViewContent extends StatelessWidget {
       ),
     );
   }
-
-  // ---------------- Helper Methods ----------------
-
-  Widget _buildProfilePhotoSection(BuildContext context) {
+Widget _buildProfilePhotoSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(

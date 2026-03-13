@@ -1,4 +1,3 @@
-/// State detailing the currently applied categorical constraints.
 class FilterState {
   final String? selectedBrand;
   final String? selectedCategory;

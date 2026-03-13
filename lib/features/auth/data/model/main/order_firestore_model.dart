@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
-
-/// Data model extending `OrderEntities` to handle the specific parsing and formatting of order data for Firestore.
 class OrderFirestoreModel extends OrderEntities {
   const OrderFirestoreModel({
     required super.orderId,

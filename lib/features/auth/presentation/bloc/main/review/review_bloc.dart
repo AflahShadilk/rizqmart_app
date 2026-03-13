@@ -9,8 +9,6 @@ import 'package:rizqmart/features/auth/domain/usecase/main/review/get_user_revie
 
 part 'review_event.dart';
 part 'review_state.dart';
-
-/// Business logic for submitting, retrieving, and validating product reviews by users.
 class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
   final AddReviewUseCase addReviewUseCase;
   final GetReviewsUseCase getReviewsUseCase;

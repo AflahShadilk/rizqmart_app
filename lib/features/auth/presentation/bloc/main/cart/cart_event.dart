@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
-
-/// Base abstract class for shopping cart actions and modifications.
 abstract class CartEvent extends Equatable{
   const CartEvent();
   @override

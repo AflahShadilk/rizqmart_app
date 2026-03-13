@@ -5,14 +5,8 @@ import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
-// ---------------- Variant Card ----------------
-
-/// A card widget displaying a specific product variant, complete with its name, image, price, and selection state.
 class VariantCard extends StatelessWidget {
-  
-  // ---------------- Variables / Parameters ----------------
-
-  final String productName;
+final String productName;
   final String variantName;
   final double price;
   final String imageUrl;
@@ -20,10 +14,7 @@ class VariantCard extends StatelessWidget {
   final Widget? actionButton; 
   final bool isSelected; 
   final ColorScheme colorScheme;
-
-  // ---------------- Constructor ----------------
-
-  const VariantCard({
+const VariantCard({
     super.key,
     required this.productName,
     required this.variantName,
@@ -34,10 +25,7 @@ class VariantCard extends StatelessWidget {
     this.actionButton,
     this.isSelected = false,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,

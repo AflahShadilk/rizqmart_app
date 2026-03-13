@@ -7,8 +7,7 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/dashboard/banner_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/dashboard/banner_state.dart';
 
-// ---------------- Offer Banner Widget ----------------
-
+// rotating offer banner carousel shown on the home dashboard
 class OfferBannerWidget extends StatelessWidget {
   const OfferBannerWidget({super.key});
 
@@ -56,7 +55,6 @@ class OfferBannerWidget extends StatelessWidget {
   }
 }
 
-// ---------------- Banner Body StatefulWidget ----------------
 
 class _BannerBody extends StatefulWidget {
   final List<Map<String, dynamic>> offers;
@@ -68,11 +66,9 @@ class _BannerBody extends StatefulWidget {
 
 class _BannerBodyState extends State<_BannerBody> {
   
-  // ---------------- State Variables ----------------
-
   final PageController _pageController = PageController();
 
-  // ---------------- Lifecycle Methods ----------------
+
 
   @override
   void dispose() {
@@ -80,7 +76,7 @@ class _BannerBodyState extends State<_BannerBody> {
     super.dispose();
   }
 
-  // ---------------- Build Method ----------------
+
 
 
   @override

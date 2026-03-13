@@ -4,13 +4,8 @@ import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cart/cart_event.dart';
-
-/// A compact increment/decrement counter widget for adjusting cart item quantity.
 class CartQuantityCounter extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
-  final String cartItemId;
+final String cartItemId;
   final int count;
 
   const CartQuantityCounter({
@@ -18,10 +13,7 @@ class CartQuantityCounter extends StatelessWidget {
     required this.cartItemId,
     required this.count,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     final isMinusDisabled = count <= 1;
     final isPlusDisabled = count >= 20;
@@ -37,8 +29,7 @@ class CartQuantityCounter extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ---------------- Decrement Button ----------------
-          InkWell(
+InkWell(
             onTap: isMinusDisabled
                 ? null
                 : () {
@@ -61,9 +52,7 @@ class CartQuantityCounter extends StatelessWidget {
               ),
             ),
           ),
-
-          // ---------------- Count Display ----------------
-          Container(
+Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             child: Text(
               '$count',
@@ -74,9 +63,7 @@ class CartQuantityCounter extends StatelessWidget {
               ),
             ),
           ),
-
-          // ---------------- Increment Button ----------------
-          InkWell(
+InkWell(
             onTap: isPlusDisabled
                 ? null
                 : () {

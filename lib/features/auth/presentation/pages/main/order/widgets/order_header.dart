@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/app_date_widget.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
-// ---------------- Order Header ----------------
+// displays order id and date at the top of order details
 
 class OrderHeader extends StatelessWidget {
-  // ---------------- Variables ----------------
   final OrderEntities order;
 
-  // ---------------- Constructor ----------------
   const OrderHeader({super.key, required this.order});
 
-  // ---------------- Build Method ----------------
+
   @override
   Widget build(BuildContext context) {
     final String formattedOrderId = '#${order.orderId.substring(0, 8).toUpperCase()}';
-    final String formattedDate = DateFormat('dd MMM, yyyy').format(order.createdAt);
+    final String formattedDate = AppDateWidget.format(order.createdAt);
 
     return Container(
       padding: const EdgeInsets.all(16),

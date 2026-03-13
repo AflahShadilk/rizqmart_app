@@ -6,10 +6,6 @@ import 'package:rizqmart/features/auth/presentation/bloc/notification/notificati
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_event.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/notification_icon.dart';
-
-// ---------------- Dropdown Notification Item Widget ----------------
-
-/// Widget representing a single notification entry in the dropdown list.
 class DropdownNotificationItem extends StatelessWidget {
   final dynamic notification;
 
@@ -17,10 +13,7 @@ class DropdownNotificationItem extends StatelessWidget {
     super.key,
     required this.notification,
   });
-
-// ---------------- Helper Methods ----------------
-
-  void _handleNotificationTap(BuildContext context) {
+void _handleNotificationTap(BuildContext context) {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null && !notification.isRead) {
       context.read<NotificationBloc>().add(
@@ -45,9 +38,7 @@ class DropdownNotificationItem extends StatelessWidget {
       return 'Just now';
     }
   }
-
-// ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     final bool isRead = notification.isRead;
     

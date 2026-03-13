@@ -2,10 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/coupon_entity.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/coupon_card.dart';
-
-// ---------------- Controllers & Classes ----------------
-
-/// A horizontally scrolling list of coupon cards that automatically advances on a timer.
 class AutoScrollingCouponList extends StatefulWidget {
   final List<CouponEntity> coupons;
 
@@ -16,13 +12,9 @@ class AutoScrollingCouponList extends StatefulWidget {
 }
 
 class _AutoScrollingCouponListState extends State<AutoScrollingCouponList> {
-  // ---------------- Variables ----------------
-  final ScrollController _scrollController = ScrollController();
+final ScrollController _scrollController = ScrollController();
   Timer? _timer;
-
-  // ---------------- Init State ----------------
-
-  @override
+@override
   void initState() {
     super.initState();
     _startAutoScroll();
@@ -54,17 +46,13 @@ class _AutoScrollingCouponListState extends State<AutoScrollingCouponList> {
       }
     });
   }
-
-  // ---------------- Dispose ----------------
-  @override
+@override
   void dispose() {
     _timer?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
-
-  // ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     // Horizontally scrolling list of coupons with automatically driven scroll controller
     return SizedBox(

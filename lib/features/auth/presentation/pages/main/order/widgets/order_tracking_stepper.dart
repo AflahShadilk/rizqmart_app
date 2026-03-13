@@ -4,18 +4,10 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/order%20Tracking/order_tracking_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/order/order%20Tracking/order_tracking_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Order Tracking Stepper ----------------
-
 class OrderTrackingStepper extends StatelessWidget {
-  // ---------------- Variables ----------------
-  static const List<String> steps = ['Placed', 'Processing', 'Shipped', 'Out', 'Delivered'];
-
-  // ---------------- Constructor ----------------
-  const OrderTrackingStepper({super.key});
-
-  // ---------------- Build Method ----------------
-  @override
+static const List<String> steps = ['Placed', 'Processing', 'Shipped', 'Out', 'Delivered'];
+const OrderTrackingStepper({super.key});
+@override
   Widget build(BuildContext context) {
     return BlocBuilder<OrderTrackingCubit, OrderTrackingState>(
       builder: (context, state) {

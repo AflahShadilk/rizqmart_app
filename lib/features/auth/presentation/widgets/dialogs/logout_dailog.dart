@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Loading Dialog ----------------
-
 void showLoadingDialog(BuildContext context) {
   showDialog(
     context: context,
@@ -29,4 +26,4 @@ void showLoadingDialog(BuildContext context) {
       );
     },
   );
-}
+}

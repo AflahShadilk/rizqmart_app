@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Payment Info Banner ----------------
-
-/// A small info banner displayed below the payment options.
 class PaymentInfoBanner extends StatelessWidget {
   const PaymentInfoBanner({super.key});
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),

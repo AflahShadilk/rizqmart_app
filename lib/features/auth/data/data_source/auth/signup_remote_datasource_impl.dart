@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rizqmart/features/auth/data/data_source/auth/signup_remote_datasource.dart';
-
-
-/// Firebase-backed implementation of `SignupRemoteDatasource` for registering new users and storing their initial profile data.
 class SignupRemoteDatasourceImpl implements SignupRemoteDatasource {
   final FirebaseAuth firebaseAuth;
   final FirebaseFirestore firebaseFirestore;

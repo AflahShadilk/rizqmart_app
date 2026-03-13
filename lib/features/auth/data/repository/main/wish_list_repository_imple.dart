@@ -6,8 +6,6 @@ import 'package:rizqmart/features/auth/data/data_source/main/wish_list_data_sour
 import 'package:rizqmart/features/auth/data/model/main/wish_fire_model.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/wish_list_entities.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/wish_list_repository.dart';
-
-/// Repository implementation bridging user wishlist actions with the underlying Firestore data source.
 class WishListRepositoryImple implements WishListRepository {
   final WishListDataSource dataSource;
   final FirebaseAuth auth;

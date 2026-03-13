@@ -10,16 +10,10 @@ import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/notification_dropdown_footer.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/dropdown_notification_empty_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/dropdown_notification_item.dart';
-
-// ---------------- Controllers & Classes ----------------
-
-/// A dropdown overlay widget displaying a quick preview of recent user notifications.
 class NotificationDropdown extends StatelessWidget {
   final VoidCallback? onClose;
   const NotificationDropdown({super.key, this.onClose});
-
-// ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     return Container(
       width: 320, 
@@ -117,4 +111,4 @@ class NotificationDropdown extends StatelessWidget {
     );
   }
 }
-
+

@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Dropdown Notification Empty State Widget ----------------
-
-/// Widget displaying a minimal placeholder in the dropdown when there are no new notifications.
 class DropdownNotificationEmptyState extends StatelessWidget {
   const DropdownNotificationEmptyState({super.key});
-
-// ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 24),

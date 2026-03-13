@@ -5,7 +5,7 @@ import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 
-// ---------------- Error Dialog ----------------
+// shows error dialog when order placement fails
 
 void orderErrorDialog(BuildContext context, {String? errorMessage}) {
   showDialog(

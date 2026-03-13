@@ -6,8 +6,6 @@ import 'package:rizqmart/features/auth/data/model/main/notification_model.dart';
 import 'package:rizqmart/features/auth/data/repository/main/notification_repository.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/notification/notification_state.dart';
-
-/// Business logic component managing notification subscriptions, reads, and state updates.
 class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   final NotificationRepository repository;
   StreamSubscription<Either<Failure, List<NotificationModel>>>? _notificationsSubscription;

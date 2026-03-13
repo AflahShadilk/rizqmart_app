@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-/// Input section for composing and sending a new chat message.
 class ChatInputSection extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
   final TextEditingController messageController;
   final VoidCallback onSend;
 
@@ -15,8 +10,6 @@ class ChatInputSection extends StatelessWidget {
     required this.messageController,
     required this.onSend,
   });
-
-  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +27,6 @@ class ChatInputSection extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // ---------------- Message Text Field ----------------
           Expanded(
             child: TextField(
               controller: messageController,
@@ -56,7 +48,6 @@ class ChatInputSection extends StatelessWidget {
             ),
           ),
           8.w,
-          // ---------------- Send Button ----------------
           IconButton(
             onPressed: onSend,
             icon: Icon(Icons.send_rounded, color: context.cs.primary),

@@ -1,6 +1,4 @@
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
-
-/// State for managing the currently selected address for delivery or checkout.
 class AddressSelectionState {
   final AddressEntities? selectedAddress;
 

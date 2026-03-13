@@ -4,8 +4,6 @@ import 'package:rizqmart/features/auth/domain/usecase/main/order/get_user_orders
 import 'package:rizqmart/features/auth/domain/usecase/main/order/place_order_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/order/order_state.dart';
-
-/// Business logic overseeing order creation, history retrieval, and cancellations.
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final PlaceOrderUsecase placeOrderUsecase;
   final GetUserOrdersUsecase getUserOrdersUsecase;

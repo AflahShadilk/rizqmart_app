@@ -1,9 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-/// A utility class providing strict validation rules and methods for delivery address forms.
 class AddressValidators {
-  /// Validates an Indian phone number: exactly 10 digits, starts with 6-9, no spaces or special characters.
   static String? validatePhoneNumber(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Phone number is required';
@@ -13,8 +10,6 @@ class AddressValidators {
     }
     return null;
   }
-
-  /// Validates a name: required, minimum 2 characters, only alphabets and spaces.
   static String? validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Name is required';
@@ -27,8 +22,6 @@ class AddressValidators {
     }
     return null;
   }
-
-  /// Validates an address string: required, minimum 5 characters, alphanumeric with comma/dash/spaces.
   static String? validateAddress(String? value, {bool isRequired = true}) {
     if (value == null || value.trim().isEmpty) {
       return isRequired ? 'Address is required' : null;
@@ -41,8 +34,6 @@ class AddressValidators {
     }
     return null;
   }
-
-  /// Validates Indian Pincode format: exactly 6 digits, doesn't start with 0.
   static String? validatePincodeFormat(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Pincode is required';
@@ -52,8 +43,6 @@ class AddressValidators {
     }
     return null;
   }
-
-  /// Validates City or State generic fields: required, only alphabets/spaces.
   static String? validateCityState(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName is required';
@@ -66,9 +55,6 @@ class AddressValidators {
     }
     return null;
   }
-
-  /// Asynchronously validates if the provided City and State logically exist within the given Indian Pincode.
-  /// Uses api.postalpincode.in to fetch the real post office mappings.
   static Future<String?> validatePincodeCityStateMatch({
     required String pincode,
     required String city,

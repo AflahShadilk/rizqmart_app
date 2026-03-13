@@ -4,15 +4,9 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coup
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/auto_scrolling_coupon_list.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
-
-// ---------------- Exclusive Offers Section Widget ----------------
-
-/// Section displaying exclusive promotional coupons in a horizontal scrolling list
 class ExclusiveOffersSection extends StatelessWidget {
   const ExclusiveOffersSection({super.key});
-
-// ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     return Column(
       children: [

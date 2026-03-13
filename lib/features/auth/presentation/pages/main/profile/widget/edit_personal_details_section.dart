@@ -6,9 +6,6 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/profile/gen
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/date_of_birth_field.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/widget/genden/gender_selection.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Edit Personal Details Section ----------------
-
 class EditPersonalDetailsSection extends StatelessWidget {
   final DateOfBirthCubit dateOfBirthCubit;
   final GenderCubit genderCubit;
@@ -18,10 +15,7 @@ class EditPersonalDetailsSection extends StatelessWidget {
     required this.dateOfBirthCubit,
     required this.genderCubit,
   });
-
-  // ---------------- Helper Methods ----------------
-
-  Widget _buildSectionTitle(BuildContext context, String title) {
+Widget _buildSectionTitle(BuildContext context, String title) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
@@ -35,10 +29,7 @@ class EditPersonalDetailsSection extends StatelessWidget {
       ),
     );
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Column(
       children: [

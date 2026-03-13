@@ -6,28 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-
-// ---------------- Stripe Service ----------------
-
-/// Encapsulates all Stripe payment interactions via the secure Firebase Cloud Functions backend.
-/// The Stripe secret key is never used on the client — only the publishable key.
 class StripeService {
-
-  // ---------------- Backend Base URL ----------------
-  static const String _baseUrl =
+static const String _baseUrl =
       'https://us-central1-rizqmart-486b8.cloudfunctions.net/api';
-
-  // ---------------- Fallback Publishable Key ----------------
-  // This is a PUBLIC key (safe to embed). Used only if .env fails to load in release builds.
+// This is a PUBLIC key (safe to embed). Used only if .env fails to load in release builds.
   static const String _fallbackPublishableKey =
       'pk_test_51SIDQuE3nm7TXKvpfH5volLRuyiQaAqZuTBsKdMI0cT7WXfUCs40Cj4CkdEikVsdSNHUGAZvDOFYXETJeA6tqfCb00RW9qfWIc';
-
-  // ---------------- Track Initialization ----------------
-  static bool _isInitialized = false;
+static bool _isInitialized = false;
   static bool get isInitialized => _isInitialized;
-
-  // ---------------- Publishable Key ----------------
-  static String get publishableKey {
+static String get publishableKey {
     final key = dotenv.env['STRIPE_PUBLISHABLE_KEY'];
     if (key != null && key.isNotEmpty) {
       return key;
@@ -38,9 +25,7 @@ class StripeService {
     );
     return _fallbackPublishableKey;
   }
-
-  // ---------------- Initialize Stripe SDK ----------------
-  static Future<void> initialize() async {
+static Future<void> initialize() async {
     try {
       final key = publishableKey;
       developer.log('Initializing Stripe with key: ${key.substring(0, 12)}...', name: 'StripeService');
@@ -59,9 +44,7 @@ class StripeService {
       rethrow;
     }
   }
-
-  // ---------------- Request Payment Intent From Backend ----------------
-  static Future<Map<String, dynamic>> createPaymentIntent({
+static Future<Map<String, dynamic>> createPaymentIntent({
     required double amount,
     required String currency,
     required String orderId,
@@ -118,9 +101,7 @@ class StripeService {
       rethrow;
     }
   }
-
-  // ---------------- Initialize & Present Payment Sheet ----------------
-  static Future<bool> presentPaymentSheet({
+static Future<bool> presentPaymentSheet({
     required String clientSecret,
     required String merchantDisplayName,
     String? customerId,
@@ -168,9 +149,7 @@ class StripeService {
       rethrow;
     }
   }
-
-  // ---------------- Confirm Payment Via Backend ----------------
-  static Future<Map<String, dynamic>> confirmPayment(String paymentIntentId) async {
+static Future<Map<String, dynamic>> confirmPayment(String paymentIntentId) async {
     try {
       developer.log('Confirming payment: $paymentIntentId', name: 'StripeService');
 
@@ -204,9 +183,7 @@ class StripeService {
       rethrow;
     }
   }
-
-  // ---------------- Refund Payment Via Backend ----------------
-  static Future<bool> refundPayment(String paymentIntentId, {double? amount}) async {
+static Future<bool> refundPayment(String paymentIntentId, {double? amount}) async {
     try {
       final body = <String, dynamic>{'paymentIntentId': paymentIntentId};
       if (amount != null) {
@@ -233,9 +210,7 @@ class StripeService {
       rethrow;
     }
   }
-
-  // ---------------- Create Payment Method (Client-Side - Publishable Key) ----------------
-  static Future<Map<String, dynamic>> createPaymentMethod({
+static Future<Map<String, dynamic>> createPaymentMethod({
     required String number,
     required String expMonth,
     required String expYear,
@@ -260,9 +235,7 @@ class StripeService {
       rethrow;
     }
   }
-
-  // ---------------- Confirm Payment With Saved Card (Client-Side - Publishable Key) ----------------
-  static Future<Map<String, dynamic>> confirmPaymentWithSavedCard({
+static Future<Map<String, dynamic>> confirmPaymentWithSavedCard({
     required String clientSecret,
     required String paymentMethodId,
   }) async {

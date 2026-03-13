@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
-
-/// Entity representing an overarching product model shown in category grids or explore feeds.
 class ExploreEntities extends Equatable implements ShowProductEntities{
  @override final String id;
  @override final String name;
@@ -46,8 +44,6 @@ class ExploreEntities extends Equatable implements ShowProductEntities{
         reviewCount,
       ];
 }
-
-/// Entity describing a product category and its visual representation logo.
 class CategoryEntity extends Equatable{
   final String id;
   final String categoryName;

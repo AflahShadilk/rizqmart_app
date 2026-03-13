@@ -10,10 +10,6 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_ev
 import 'package:rizqmart/features/auth/presentation/bloc/main/payment/payment_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Payment Confirmation View ----------------
-
-/// The main confirmation UI showing order summary, selected method, terms, and payment button.
 class PaymentConfirmationView extends StatelessWidget {
   final PaymentMethodSelectedState state;
 
@@ -21,10 +17,7 @@ class PaymentConfirmationView extends StatelessWidget {
     super.key,
     required this.state,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     final isCOD = state.paymentMethod == 'cod';
 
@@ -33,30 +26,19 @@ class PaymentConfirmationView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ---------------- Order Summary Card ----------------
-          _OrderSummaryCard(order: state.order),
+_OrderSummaryCard(order: state.order),
           24.h,
-
-          // ---------------- Payment Method Card ----------------
-          _PaymentMethodCard(method: state.paymentMethod),
+_PaymentMethodCard(method: state.paymentMethod),
           24.h,
-
-          // ---------------- Secure Payment Info ----------------
-          if (!isCOD) ...[
+if (!isCOD) ...[
             _SecurePaymentInfo(),
             24.h,
           ],
-
-          // ---------------- Terms Checkbox ----------------
-          _TermsCheckbox(),
+_TermsCheckbox(),
           24.h,
-
-          // ---------------- Payment Action Button ----------------
-          _PaymentActionButton(state: state, isCOD: isCOD),
+_PaymentActionButton(state: state, isCOD: isCOD),
           16.h,
-
-          // ---------------- Supported Methods Info ----------------
-          if (!isCOD)
+if (!isCOD)
             Center(
               child: Text(
                 'Supports Cards, UPI, Wallets & Net Banking',
@@ -71,9 +53,6 @@ class PaymentConfirmationView extends StatelessWidget {
     );
   }
 }
-
-// ---------------- Order Summary Card ----------------
-
 class _OrderSummaryCard extends StatelessWidget {
   final OrderEntities order;
 
@@ -149,9 +128,6 @@ class _OrderSummaryCard extends StatelessWidget {
     );
   }
 }
-
-// ---------------- Cost Row ----------------
-
 class _CostRow extends StatelessWidget {
   final String label;
   final double amount;
@@ -180,9 +156,6 @@ class _CostRow extends StatelessWidget {
     );
   }
 }
-
-// ---------------- Payment Method Card ----------------
-
 class _PaymentMethodCard extends StatelessWidget {
   final String method;
 
@@ -254,9 +227,6 @@ class _PaymentMethodCard extends StatelessWidget {
     );
   }
 }
-
-// ---------------- Secure Payment Info ----------------
-
 class _SecurePaymentInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -303,9 +273,6 @@ class _SecurePaymentInfo extends StatelessWidget {
     );
   }
 }
-
-// ---------------- Terms Checkbox ----------------
-
 class _TermsCheckbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -346,9 +313,6 @@ class _TermsCheckbox extends StatelessWidget {
     );
   }
 }
-
-// ---------------- Payment Action Button ----------------
-
 class _PaymentActionButton extends StatelessWidget {
   final PaymentMethodSelectedState state;
   final bool isCOD;

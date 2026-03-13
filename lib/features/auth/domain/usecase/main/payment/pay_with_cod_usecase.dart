@@ -3,8 +3,6 @@ import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/order_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/payment_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/payment_repository.dart';
-
-/// Use case for processing an order payment using the Cash on Delivery method.
 class PayWithCODUseCase {
   final PaymentRepository repo;
   PayWithCODUseCase(this.repo);

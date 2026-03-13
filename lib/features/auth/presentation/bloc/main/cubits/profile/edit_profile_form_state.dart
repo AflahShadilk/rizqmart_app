@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-
-/// Base abstract class reflecting the submit state of profile modification details.
 abstract class EditProfileFormState extends Equatable {
   const EditProfileFormState();
 

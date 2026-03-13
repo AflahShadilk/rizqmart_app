@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/data/model/main/wallet_model.dart';
 import 'package:rizqmart/features/auth/data/model/main/wallet_transaction_model.dart';
-
-/// Interface outlining specific operations for managing a user's digital wallet and transactions.
 abstract class WalletRemoteDataSource {
   Future<WalletModel> getWallet(String userId);
   Stream<WalletModel> getWalletStream(String userId);
@@ -17,8 +15,6 @@ abstract class WalletRemoteDataSource {
     required WalletTransactionModel transaction,
   });
 }
-
-/// Firestore implementation for securely tracking digital wallet balances and full transaction histories.
 class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
   final FirebaseFirestore firestore;
 

@@ -3,23 +3,14 @@ import 'package:rizqmart/core/routes/app_routes.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/wish_list_entities.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/variant_card_reusable.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wishlist/widgets/wishlist_remove_button.dart';
-
-// ---------------- Controllers & Classes ----------------
-
 class WishlistProductGrid extends StatelessWidget {
-  
-  // ---------------- Variables ----------------
-
-  final List<WishListEntities> allProducts;
+final List<WishListEntities> allProducts;
 
   const WishlistProductGrid({
     super.key,
     required this.allProducts,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return GridView.builder(
       padding: const EdgeInsets.all(16),

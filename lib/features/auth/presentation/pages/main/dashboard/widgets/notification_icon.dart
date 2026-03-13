@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
-
-// ---------------- Notification Icon Widget ----------------
-
-/// Reusable icon widget for notification items, styled based on its read status and notification type.
 class NotificationIcon extends StatelessWidget {
   final String type;
   final bool isRead;
@@ -13,9 +9,7 @@ class NotificationIcon extends StatelessWidget {
     required this.type,
     required this.isRead,
   });
-
-// ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     Color iconColor = isRead ? context.cs.secondary : context.cs.primary;
     Color bgColor = isRead ? context.cs.secondaryContainer.withValues(alpha: 0.4) : context.cs.primaryContainer.withValues(alpha: 0.6);

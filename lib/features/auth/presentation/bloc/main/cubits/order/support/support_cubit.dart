@@ -1,8 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'support_state.dart';
-
-/// Cubit interacting with external systems (like sending emails) for customer help.
 class SupportCubit extends Cubit<SupportState> {
   SupportCubit() : super(SupportInitial());
 

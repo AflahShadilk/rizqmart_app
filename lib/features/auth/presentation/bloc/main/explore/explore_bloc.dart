@@ -9,8 +9,6 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_ev
 import 'package:rizqmart/features/auth/presentation/bloc/main/explore/explore_state.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/explore_entities.dart';
 import 'package:rizqmart/features/auth/data/model/main/explore_model.dart';
-
-/// Business logic for fetching and managing products, categories, and search results on the explore page.
 class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
   final GetProductsUsecase getProductUsecase;
   final GetProductbycategoryUsecase getProductbycategoryUsecase;

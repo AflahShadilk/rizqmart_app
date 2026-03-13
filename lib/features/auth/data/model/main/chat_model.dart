@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/chat_entity.dart';
-
-/// Data model representing a chat session, converting `ChatEntity` properties for Firestore storage.
 class ChatModel extends ChatEntity {
   const ChatModel({
     required super.id,

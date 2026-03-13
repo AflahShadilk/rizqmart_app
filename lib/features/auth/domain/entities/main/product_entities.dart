@@ -1,8 +1,6 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
-
-/// Entity defining the full details of a single product including all its available variations.
 class ProductEntities extends Equatable implements ShowProductEntities{
 
  @override final  String  id;

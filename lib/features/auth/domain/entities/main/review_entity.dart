@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-
-/// Entity capturing a user's review and rating for a specific product and variant.
 class ReviewEntity extends Equatable {
   final String id;
   final String productId;

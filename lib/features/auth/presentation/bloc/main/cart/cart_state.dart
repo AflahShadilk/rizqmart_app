@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
-
-/// Base abstract class defining the shopping cart's data and UI state.
 abstract class CartState extends Equatable{
   const CartState();
   @override

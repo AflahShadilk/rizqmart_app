@@ -1,6 +1,4 @@
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
-
-/// Helper method to extract the product name from a ShowProductEntities instance.
 String getName(ShowProductEntities product) {
   return product.name;
 }

@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
-
-// ---------------- Login Text Field ----------------
-
-/// A custom styled text form field used primarily for login and authentication.
 class TextFormFLogin extends StatefulWidget {
-  
-  // ---------------- Variables / Parameters ----------------
-
-  final String? hint;
+final String? hint;
   final IconData? iconn;
   final Color? iconnColor;
   final TextEditingController? controller;
@@ -17,10 +10,7 @@ class TextFormFLogin extends StatefulWidget {
   final bool? obscureText;
   final Function(String)? onChanged;
   final int? maxLength;
-
-  // ---------------- Constructor ----------------
-
-  const TextFormFLogin({
+const TextFormFLogin({
     super.key,
     this.hint,
     this.iconn,
@@ -38,10 +28,7 @@ class TextFormFLogin extends StatefulWidget {
 }
 
 class _TextFormFLoginState extends State<TextFormFLogin> {
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     final activeColor = widget.iconnColor ?? context.cs.primary;
 

@@ -7,13 +7,11 @@ import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/add_review_dialog.dart';
 
-// ---------------- Order Review Button ----------------
 
+// button that opens the review dialog for a purchased item
 class OrderReviewButton extends StatefulWidget {
-  // ---------------- Variables ----------------
   final CartEntities item;
 
-  // ---------------- Constructor ----------------
   const OrderReviewButton({super.key, required this.item});
 
   @override
@@ -23,7 +21,7 @@ class OrderReviewButton extends StatefulWidget {
 class _OrderReviewButtonState extends State<OrderReviewButton> {
   bool _isSubmitting = false;
 
-  // ---------------- Helper Methods ----------------
+
   void _showReviewDialog(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -53,7 +51,7 @@ class _OrderReviewButtonState extends State<OrderReviewButton> {
     }
   }
 
-  // ---------------- Build Method ----------------
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<ReviewBloc, ReviewState>(

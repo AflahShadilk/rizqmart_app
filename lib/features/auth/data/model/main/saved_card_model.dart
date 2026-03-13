@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
-
-/// Data model mapping saved payment card details for secure storage in Firestore.
 class SavedCardModel extends SavedCardEntity {
   const SavedCardModel({
     required super.id,

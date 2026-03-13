@@ -13,14 +13,9 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_ev
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
-
-/// A button widget that fetches the user's current GPS location and automatically fills in address coordinate fields.
 class LocationPickerButton extends StatelessWidget {
   const LocationPickerButton({super.key});
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return BlocListener<AddressBloc, AddressState>(
       listener: (context, state) {
@@ -239,11 +234,7 @@ class LocationPickerButton extends StatelessWidget {
       ),
     );
   }
-
-
-  // ---------------- Helper Methods ----------------
-
-  void _autoFillAddressFromCoordinates(
+void _autoFillAddressFromCoordinates(
     BuildContext context,
     double latitude,
     double longitude,

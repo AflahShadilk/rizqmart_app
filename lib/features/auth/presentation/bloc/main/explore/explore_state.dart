@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/data/model/main/explore_model.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/explore_entities.dart';
-
-/// Base abstract class defining the UI states for the explore capability.
 abstract class ExploreState extends Equatable {
   @override
   List<Object?> get props => [];

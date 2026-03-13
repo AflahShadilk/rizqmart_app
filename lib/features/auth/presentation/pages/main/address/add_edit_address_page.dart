@@ -18,13 +18,8 @@ import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widget
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/address/widget/address_text_field.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/address/widget/address_validators.dart';
-
-/// A page widget that provides a form for adding a new address or editing an existing one for the user.
 class AddEditAddressPage extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
-  final String userId;
+final String userId;
   final AddressEntities? address;
 
   const AddEditAddressPage({
@@ -34,10 +29,7 @@ class AddEditAddressPage extends StatelessWidget {
   });
 
   bool get isEditMode => address != null;
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
@@ -93,12 +85,8 @@ class AddEditAddressPage extends StatelessWidget {
     );
   }
 }
-/// A stateless widget extracted to separate the form implementation details of the AddEdit address functionality.
 class AddressFormContent extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
-  final String userId;
+final String userId;
   final bool isEditMode;
   final bool isLoading;
 
@@ -108,10 +96,7 @@ class AddressFormContent extends StatelessWidget {
     required this.isEditMode,
     required this.isLoading,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
 
@@ -248,11 +233,7 @@ class AddressFormContent extends StatelessWidget {
       ),
     );
   }
-
-
-  // ---------------- Helper Methods ----------------
-
-  Widget _buildSectionTitle(BuildContext context, String title) {
+Widget _buildSectionTitle(BuildContext context, String title) {
     return Text(
       title,
       style: context.ts.labelLarge?.copyWith(

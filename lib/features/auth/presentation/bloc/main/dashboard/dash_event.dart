@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
-
-/// Base abstract class for dashboard-related intent triggers.
 abstract class DashEvent extends Equatable{
   const DashEvent();
   @override

@@ -4,10 +4,6 @@ import 'package:rizqmart/features/auth/domain/entities/main/show_product_entitie
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/search_bar/search_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_helper_dropdown.dart';
-
-// ---------------- Controllers & Classes ----------------
-
-/// Overlay dropdown widget showing quick search results directly beneath the search bar
 class SearchDropdownOverlay extends StatelessWidget {
   final TextEditingController searchController;
 
@@ -15,9 +11,7 @@ class SearchDropdownOverlay extends StatelessWidget {
     super.key,
     required this.searchController,
   });
-
-// ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {

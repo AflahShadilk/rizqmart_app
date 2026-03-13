@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Notification Dropdown Footer Widget ----------------
-
-/// Footer widget for the notification dropdown, providing a link to view all notifications.
 class NotificationDropdownFooter extends StatelessWidget {
   final VoidCallback? onClose;
 
   const NotificationDropdownFooter({super.key, this.onClose});
-
-// ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
      return InkWell(
        onTap: () {

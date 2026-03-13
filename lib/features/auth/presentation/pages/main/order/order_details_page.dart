@@ -22,17 +22,14 @@ import 'package:rizqmart/features/auth/presentation/pages/main/order/widgets/ord
 import 'package:rizqmart/features/auth/presentation/pages/main/order/widgets/order_summary_section.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/order/widgets/order_action_buttons.dart';
 
-// ---------------- Order Details Page ----------------
 
-/// A comprehensive page showing tracking status, delivery details, and items for a specific order.
+// shows full order details with tracking, products, and actions
 class OrderDetailsPage extends StatelessWidget {
-  // ---------------- Variables ----------------
   final OrderEntities order;
 
-  // ---------------- Constructor ----------------
   const OrderDetailsPage({super.key, required this.order});
 
-  // ---------------- Build Method ----------------
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -52,13 +49,11 @@ class OrderDetailsPage extends StatelessWidget {
   }
 }
 
-// ---------------- Order Details View ----------------
+
 
 class _OrderDetailsView extends StatefulWidget {
-  // ---------------- Variables ----------------
   final OrderEntities order;
 
-  // ---------------- Constructor ----------------
   const _OrderDetailsView({required this.order});
 
   @override
@@ -74,7 +69,7 @@ class _OrderDetailsViewState extends State<_OrderDetailsView> {
     currentOrder = widget.order;
   }
 
-  // ---------------- Helper Methods ----------------
+
   void _onOrderCancelStateChange(BuildContext context, OrderCancelState state) {
     if (state is OrderCancelSuccess) {
       Navigator.pop(context);
@@ -95,7 +90,7 @@ class _OrderDetailsViewState extends State<_OrderDetailsView> {
     }
   }
 
-  // ---------------- Build Method ----------------
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -111,7 +106,7 @@ class _OrderDetailsViewState extends State<_OrderDetailsView> {
         child: Scaffold(
           backgroundColor: context.cs.surface,
           
-          // ---------------- Order Details Header ----------------
+
           appBar: AppBar(
             title: Text(
               'Order Details',
@@ -122,7 +117,7 @@ class _OrderDetailsViewState extends State<_OrderDetailsView> {
             elevation: 0,
           ),
           
-          // ---------------- Order Details Body ----------------
+
           body: RefreshIndicator(
             onRefresh: () async {
               context.read<OrderBloc>().add(const GetUserOrdersEvent());

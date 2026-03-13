@@ -1,7 +1,5 @@
  import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/user_profile_entities.dart';
-
-/// Comprehensive data model representing a user's profile, adapted for Firestore storage.
 class UserProfileFirestoreModel extends UserProfileEntities{
   const UserProfileFirestoreModel({
     required super.userId,

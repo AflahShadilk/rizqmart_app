@@ -7,10 +7,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rizqmart/core/routes/app_routes.dart';
-
-
-
-/// Singleton service orchestrating push notifications, local alerts, and Firebase Cloud Messaging logic.
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;
@@ -86,10 +82,6 @@ class NotificationService {
   Future<String?> getDeviceToken() async {
     return await _firebaseMessaging.getToken();
   }
-
-  /// Shows a local notification in the phone's system notification bar.
-  /// Can be called from data sources or blocs to trigger notifications
-  /// without depending on FCM push messages.
   Future<void> showNotification({
     required String title,
     required String body,

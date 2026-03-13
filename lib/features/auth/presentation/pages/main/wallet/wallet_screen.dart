@@ -11,22 +11,11 @@ import 'package:rizqmart/features/auth/presentation/pages/main/wallet/withdraw_s
 import 'package:rizqmart/features/auth/presentation/pages/main/wallet/widgets/wallet_balance_card.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/wallet/widgets/wallet_transaction_list.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Wallet Screen ----------------
-
-/// A screen displaying the user's current wallet balance, recent transactions,
-/// and options to add or withdraw funds.
 class WalletScreen extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
-  final String userId;
+final String userId;
 
   const WalletScreen({super.key, required this.userId});
-
-  // ---------------- Helper Methods ----------------
-
-  void _navigateToWithdraw(BuildContext context) {
+void _navigateToWithdraw(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -36,10 +25,7 @@ class WalletScreen extends StatelessWidget {
       context.read<WalletBloc>().add(LoadWalletDataEvent(userId));
     });
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<WalletBloc>()..add(LoadWalletDataEvent(userId)),
@@ -77,15 +63,12 @@ class WalletScreen extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.all(16.0),
                 children: [
-                  // ---------------- Wallet Balance Card ----------------
-                  WalletBalanceCard(
+WalletBalanceCard(
                     balance: state.wallet?.balance ?? 0.0,
                     onWithdraw: () => _navigateToWithdraw(context),
                   ),
                   24.h,
-
-                  // ---------------- Transaction History ----------------
-                  WalletTransactionList(
+WalletTransactionList(
                     transactions: state.transactions,
                   ),
                 ],

@@ -5,8 +5,6 @@ import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/data/model/main/review_model.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/review_entity.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/review_repository.dart';
-
-/// Repository implementation handling product reviews, including purchase verification and rating calculation.
 class ReviewRepositoryImpl implements ReviewRepository {
   final FirebaseFirestore firestore;
 

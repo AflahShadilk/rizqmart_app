@@ -12,14 +12,11 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/order/widgets/order_card.dart';
 
-// ---------------- Orders Page ----------------
 
-/// A page displaying a chronologically ordered list of the user's past and active orders.
+// displays user's order history with real-time updates from firestore
 class OrdersPage extends StatelessWidget {
   const OrdersPage({super.key});
-
-  // ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
@@ -29,12 +26,11 @@ class OrdersPage extends StatelessWidget {
   }
 }
 
-// ---------------- Orders View ----------------
 
 class _OrdersView extends StatelessWidget {
   const _OrdersView();
 
-  // ---------------- Helper Methods ----------------
+
 
   void _onPopInvoked(BuildContext context, bool didPop, bool canPop) {
     if (didPop) return;
@@ -60,14 +56,12 @@ class _OrdersView extends StatelessWidget {
     }
   }
 
-  // ---------------- Build Method ----------------
+
   @override
   Widget build(BuildContext context) {
-    // ---------------- Variables ----------------
     final bool canPop = Navigator.canPop(context);
     final String? currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
-    // ---------------- UI Rendering ----------------
     return BlocListener<OrdersPageCubit, OrdersPageState>(
       listener: _onOrdersPageCubitStateChange,
       child: PopScope(
@@ -77,7 +71,7 @@ class _OrdersView extends StatelessWidget {
         child: Scaffold(
           backgroundColor: context.cs.surface,
 
-          // ---------------- Orders Page Header ----------------
+
           appBar: AppBar(
             automaticallyImplyLeading: false,
             leading: IconButton(
@@ -93,7 +87,7 @@ class _OrdersView extends StatelessWidget {
             elevation: 0,
           ),
 
-          // ---------------- Orders List Body (Real-time from Firebase) ----------------
+          // streams orders in real-time from firestore
           body: currentUserId == null
               ? Center(
                   child: Text('Please log in to view orders',

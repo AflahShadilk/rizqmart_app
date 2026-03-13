@@ -15,13 +15,8 @@ import 'package:rizqmart/features/auth/presentation/pages/main/address/address_l
 import 'package:rizqmart/features/auth/presentation/pages/main/address/widget/empty_address.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
-
-/// Address display page — shows addresses for viewing or selection
 class AddressDisplayPage extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
-  final String userId;
+final String userId;
   final bool isSelecting;
 
   const AddressDisplayPage({
@@ -29,10 +24,7 @@ class AddressDisplayPage extends StatelessWidget {
     required this.userId,
     this.isSelecting = false,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     final addressBloc = AddressBloc(
       getAddressUsecase: sl(),
@@ -62,23 +54,15 @@ class AddressDisplayPage extends StatelessWidget {
     );
   }
 }
-
-/// Internal view that renders the address list with bloc state conditions to show loading, empty, and loaded views.
 class _AddressDisplayView extends StatelessWidget {
-
-  // ---------------- Variables ----------------
-
-  final String userId;
+final String userId;
   final bool isSelecting;
 
   const _AddressDisplayView({
     required this.userId,
     required this.isSelecting,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return BlocListener<AddressPageCubit, AddressPageState>(
       listener: (context, state) {
@@ -172,10 +156,7 @@ class _AddressDisplayView extends StatelessWidget {
       ),
     );
   }
-
-  // ---------------- Helper Methods ----------------
-
-  void _navigateToAddAddress(BuildContext context) {
+void _navigateToAddAddress(BuildContext context) {
     Navigator.pushNamed(
       context,
       AppRoutes.addAddress,
@@ -218,8 +199,6 @@ class _AddressDisplayView extends StatelessWidget {
       ),
     );
   }
-
-  /// Confirm address selection button
   Widget _buildConfirmAddressButton(
     BuildContext context,
     AddressEntities selectedAddress,

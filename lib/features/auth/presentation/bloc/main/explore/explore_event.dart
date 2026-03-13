@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-
-/// Base abstract class for triggering data fetches and searches in the explore section.
 abstract class ExploreEvent extends Equatable {
   @override
   List<Object?> get props => [];

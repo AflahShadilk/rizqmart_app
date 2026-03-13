@@ -15,8 +15,6 @@ import 'package:rizqmart/features/auth/presentation/widgets/search_helper/empty_
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/widgets/explore_category_grid.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/explore/widgets/explore_search_dropdown.dart';
-
-/// A discoverability page allowing users to search for products and browse available categories.
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
 
@@ -25,14 +23,8 @@ class ExplorePage extends StatefulWidget {
 }
 
 class _ExplorePageState extends State<ExplorePage> {
-
-  // ---------------- Variables ----------------
-
-  final TextEditingController _searchController = TextEditingController();
-
-  // ---------------- Helper Methods ----------------
-
-  void _onSearch(String query) {
+final TextEditingController _searchController = TextEditingController();
+void _onSearch(String query) {
     context.read<SearchCubit>().search(
           query: query,
           matcher: (product, q) {
@@ -43,18 +35,12 @@ class _ExplorePageState extends State<ExplorePage> {
           },
         );
   }
-
-  // ---------------- Init State ----------------
-
-  @override
+@override
   void initState() {
     super.initState();
     context.read<ExploreBloc>().add(GetAllProductsEvent());
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return ResponsiveWrapper(child: Scaffold(
       body: Stack(
@@ -143,10 +129,7 @@ class _ExplorePageState extends State<ExplorePage> {
       ),
     ));
   }
-
-  // ---------------- Dispose ----------------
-
-  @override
+@override
   void dispose() {
     _searchController.dispose();
     super.dispose();

@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
-
-// ---------------- Rizq Icon ----------------
-
-/// A stateless widget that displays the main application logo image.
 class IconRizq extends StatelessWidget {
   const IconRizq({
     super.key,
@@ -14,10 +10,6 @@ class IconRizq extends StatelessWidget {
     return Image.asset("assets/icons_and_images/appIcon.png");
   }
 }
-
-// ---------------- RizqMart Name ----------------
-
-/// A styled typography widget to consistently display the 'RIZQ MART' brand name.
 class RizqMartName extends StatelessWidget {
   const RizqMartName({super.key});
 

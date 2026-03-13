@@ -4,20 +4,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_not_support_icon.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/image_relate/image_place_holder.dart';
-
-// ---------------- Product Image ----------------
-
-/// A reusable image container that handles network caching, loading states, and error fallbacks.
 class ProductImage extends StatelessWidget {
-  
-  // ---------------- Variables / Parameters ----------------
-
   final String? imageUrl;
   final double height;
   final double width;
   final BorderRadius borderRadius;
-
-  // ---------------- Constructor ----------------
 
   const ProductImage({
     super.key,
@@ -27,7 +18,6 @@ class ProductImage extends StatelessWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(12)),
   });
 
-  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {

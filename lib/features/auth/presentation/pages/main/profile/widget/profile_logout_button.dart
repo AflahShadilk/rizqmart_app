@@ -8,15 +8,9 @@ import 'package:rizqmart/features/auth/presentation/bloc/auth/signout/sign_out_s
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/reusable_main_button.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/dialogs/logout_dailog.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
-
-// ---------------- Profile Logout Button ----------------
-
 class ProfileLogoutButton extends StatelessWidget {
   const ProfileLogoutButton({super.key});
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return BlocListener<SignOutBloc, SignOutState>(
       listener: (context, state) {

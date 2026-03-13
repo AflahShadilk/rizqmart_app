@@ -37,8 +37,6 @@ import 'package:rizqmart/features/auth/presentation/pages/main/product_details/w
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/product_offers_section.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/product_description_section.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/product_review_section.dart';
-
-/// A detail page showcasing product information, variants, pricing, reviews, and an option to add it to the cart.
 class ProductDetailsPage extends StatefulWidget {
   final ShowProductEntities product;
   final int variantIndex;
@@ -54,10 +52,7 @@ class ProductDetailsPage extends StatefulWidget {
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
-
-  // ---------------- Variables ----------------
-
-  bool isExpanded = false;
+bool isExpanded = false;
   late int selectedVariantIndex;
   
   String get productId {
@@ -71,10 +66,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   String getWishlistId(int variantIdx) {
     return context.read<ProductCartCheckCubit>().getWishlistId(productId, variantIdx);
   }
-
-  // ---------------- Init State ----------------
-
-  @override
+@override
   void initState() {
     super.initState();
     selectedVariantIndex = widget.variantIndex;
@@ -86,10 +78,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       }
     });
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;

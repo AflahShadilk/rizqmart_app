@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Onboarding Page Content ----------------
-
-/// A single onboarding page with an image, title, subtitle, and optional "Get Started" button.
 class OnboardingPageContent extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -22,8 +18,6 @@ class OnboardingPageContent extends StatelessWidget {
     this.onPress,
   });
 
-  // ---------------- Build Method ----------------
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,7 +26,6 @@ class OnboardingPageContent extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // ---------------- Onboarding Image ----------------
           AnimatedContainer(
             duration: const Duration(milliseconds: 800),
             curve: Curves.easeOutBack,
@@ -42,7 +35,6 @@ class OnboardingPageContent extends StatelessWidget {
           ),
           32.h,
 
-          // ---------------- Onboarding Title ----------------
           Text(
             title,
             textAlign: TextAlign.center,
@@ -54,7 +46,6 @@ class OnboardingPageContent extends StatelessWidget {
           ),
           16.h,
 
-          // ---------------- Onboarding Subtitle ----------------
           Text(
             subtitle,
             textAlign: TextAlign.center,
@@ -65,7 +56,6 @@ class OnboardingPageContent extends StatelessWidget {
           ),
           const Spacer(),
 
-          // ---------------- Get Started Button ----------------
           if (showButton)
             ElevatedButton(
               onPressed: onPress,

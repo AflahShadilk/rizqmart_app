@@ -3,8 +3,6 @@ import 'package:rizqmart/features/auth/domain/entities/main/cart_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/coupon_entity.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/apply_coupon_state.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/coupon/coupon_engine.dart';
-
-/// Cubit assessing and processing discount codes/coupons applied to a cart.
 class ApplyCouponCubit extends Cubit<ApplyCouponState> {
   ApplyCouponCubit() : super(const ApplyCouponState.initial());
 

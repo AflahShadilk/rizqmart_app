@@ -3,16 +3,12 @@ import 'package:rizqmart/core/error/error_handler.dart';
 import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/data/data_source/main/notification_data_source.dart';
 import 'package:rizqmart/features/auth/data/model/main/notification_model.dart';
-
-/// Interface for accessing and managing user notification streams and read statuses.
 abstract class NotificationRepository {
   Stream<Either<Failure, List<NotificationModel>>> getNotifications(String userId);
   Future<Either<Failure, void>> markAsRead(String userId, String notificationId);
   Future<Either<Failure, void>> markAllAsRead(String userId);
   Future<Either<Failure, void>> clearAllNotifications(String userId);
 }
-
-/// Repository implementation integrating notification operations with proper error boundaries.
 class NotificationRepositoryImpl implements NotificationRepository {
   final NotificationDataSource dataSource;
 

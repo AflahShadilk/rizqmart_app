@@ -1,22 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
-
-// ---------------- Custom Elevated Button ----------------
-
-/// A reusable generic elevated button. It replaces the old elevatedButton() top-level function.
 class CustomElevatedButton extends StatelessWidget {
-  
-  // ---------------- Variables / Parameters ----------------
-
-  final double fontSize;
+final double fontSize;
   final VoidCallback? onPress;
   final Color color;
   final EdgeInsetsGeometry? padding;
   final String content;
-
-  // ---------------- Constructor ----------------
-
-  const CustomElevatedButton({
+const CustomElevatedButton({
     super.key,
     required this.fontSize,
     required this.onPress,
@@ -24,10 +14,7 @@ class CustomElevatedButton extends StatelessWidget {
     required this.padding,
     required this.content,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPress,
@@ -49,4 +36,4 @@ class CustomElevatedButton extends StatelessWidget {
       ),
     );
   }
-}
+}

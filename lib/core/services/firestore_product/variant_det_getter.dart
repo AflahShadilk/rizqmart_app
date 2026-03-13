@@ -5,8 +5,6 @@
 
 import 'package:rizqmart/features/auth/domain/entities/main/product_entities.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/show_product_entities.dart';
-
-/// Extracts and aggregates image URLs from all variants of a given product.
 List<String> getVariantImages(ShowProductEntities product) {
   List<String> imageUrls = [];
 

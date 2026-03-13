@@ -12,10 +12,6 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_st
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/search_helper/search_bar.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/notification_button.dart';
-
-
-
-/// A custom app bar widget containing the logo, location indicator, search field, and user actions (notification, profile).
 class TopBarItems extends StatelessWidget {
   final TextEditingController searchController;
   final Function(String) onSearch;
@@ -25,9 +21,7 @@ class TopBarItems extends StatelessWidget {
     required this.searchController,
     required this.onSearch,
   });
-
-// ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -131,10 +125,6 @@ class TopBarItems extends StatelessWidget {
   );
 }
 }
-
-// ---------------- User Action Widgets ----------------
-
-/// Builds a circular user profile button displaying the avatar or a placeholder icon.
 class ProfileButton extends StatelessWidget {
   const ProfileButton({super.key});
 
@@ -195,8 +185,6 @@ class ProfileButton extends StatelessWidget {
     );
   }
 }
-
-/// Builds a quick login button for guest users to sign in.
 class LoginButton extends StatelessWidget {
   const LoginButton({super.key});
 

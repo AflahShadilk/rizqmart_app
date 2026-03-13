@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Wallet Balance Card ----------------
-
-/// A gradient card displaying the user's current wallet balance with Withdraw and Add Money action buttons.
 class WalletBalanceCard extends StatelessWidget {
   final double balance;
   final VoidCallback onWithdraw;
@@ -14,10 +10,7 @@ class WalletBalanceCard extends StatelessWidget {
     required this.balance,
     required this.onWithdraw,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -43,8 +36,7 @@ class WalletBalanceCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ---------------- Balance Label ----------------
-          Text(
+Text(
             'Available Balance',
             style: context.ts.bodyLarge?.copyWith(
               color: context.cs.onPrimary.withValues(alpha: 0.9),
@@ -52,9 +44,7 @@ class WalletBalanceCard extends StatelessWidget {
             ),
           ),
           8.h,
-
-          // ---------------- Balance Amount ----------------
-          Text(
+Text(
             '₹ ${balance.toStringAsFixed(2)}',
             style: context.ts.displaySmall?.copyWith(
               color: context.cs.onPrimary,
@@ -62,9 +52,7 @@ class WalletBalanceCard extends StatelessWidget {
             ),
           ),
           24.h,
-
-          // ---------------- Action Buttons ----------------
-          SizedBox(
+SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: onWithdraw,

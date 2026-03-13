@@ -3,8 +3,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:rizqmart/core/services/cloudinary.dart';
 import 'package:rizqmart/features/auth/data/model/main/user_profile_firestore_model.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/user_profile_entities.dart';
-
-/// Remote data source handling user profile data storage and avatar tracking via Firestore.
 class UserProfileDataSource {
   final FirebaseFirestore firestore;
   

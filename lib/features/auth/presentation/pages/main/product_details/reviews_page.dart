@@ -9,9 +9,6 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/review_card.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/add_review_dialog.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
-
-
-/// A page displaying all customer reviews for a specific product, with options to add or edit user reviews.
 class ReviewsPage extends StatefulWidget {
   final String productId;
   final String productName;

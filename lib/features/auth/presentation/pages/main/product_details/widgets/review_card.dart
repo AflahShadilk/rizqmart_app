@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:intl/intl.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/app_date_widget.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/review_entity.dart';
-
-/// A card widget displaying an individual user's rating, comment, and profile details for a product review.
 class ReviewCard extends StatelessWidget {
   final ReviewEntity review;
 
@@ -34,7 +32,7 @@ class ReviewCard extends StatelessWidget {
                   Text(review.userName, style: context.ts.titleSmall),
                   4.h,
                   Text(
-                    DateFormat.yMMMd().format(review.createdAt),
+                    AppDateWidget.format(review.createdAt),
                     style: context.ts.bodySmall
                         ?.copyWith(color: context.cs.outline),
                   ),

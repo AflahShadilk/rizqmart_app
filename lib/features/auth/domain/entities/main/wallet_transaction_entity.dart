@@ -2,8 +2,6 @@ import 'package:equatable/equatable.dart';
 
 enum TransactionType { refund, purchase, withdrawal, deposit }
 enum TransactionStatus { pending, completed, failed, cancelled }
-
-/// Entity detailing an individual financial transaction occurring within the user's wallet.
 class WalletTransactionEntity extends Equatable {
   final String id;
   final String walletId;

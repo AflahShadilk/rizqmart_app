@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-/// A visually stylized card widget displaying a user's saved credit or debit card details.
 class UserCardWidget extends StatelessWidget {
   final SavedCardEntity card;
   final bool isSelected;

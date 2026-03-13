@@ -4,8 +4,6 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_bl
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/address/address_state.dart';
 import 'address_page_state.dart';
-
-/// Cubit connecting AddressBloc to the UI, handling page-specific loading and error states.
 class AddressPageCubit extends Cubit<AddressPageState> {
   final AddressBloc addressBloc;
   final String userId;

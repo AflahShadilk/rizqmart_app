@@ -8,19 +8,13 @@ import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.d
 
 
 class WishlistRemoveButton extends StatelessWidget {
-  
-  // ---------------- Variables ----------------
-
-  final WishListEntities wishListItem;
+final WishListEntities wishListItem;
 
   const WishlistRemoveButton({
     super.key,
     required this.wishListItem,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {

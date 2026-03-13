@@ -2,9 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/saved_card_entity.dart';
 import 'package:rizqmart/features/auth/domain/usecase/main/payment/get_saved_cards_usecase.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/payment/payment_selection_state.dart';
-
-
-/// Cubit organizing loaded payment methods and holding the active selection logic.
 class PaymentSelectionCubit extends Cubit<PaymentSelectionState> {
   final GetSavedCardsUseCase? getSavedCardsUseCase;
 

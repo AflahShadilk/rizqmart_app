@@ -4,15 +4,9 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/core/theme/theme_cubit.dart';
 import 'package:rizqmart/core/theme/theme_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Settings Appearance Section ----------------
-
 class SettingsAppearanceSection extends StatelessWidget {
   const SettingsAppearanceSection({super.key});
-
-  // ---------------- Helper Methods ----------------
-
-  Widget _buildSectionTitle(BuildContext context, String title) {
+Widget _buildSectionTitle(BuildContext context, String title) {
     return Text(
       title,
       style: context.ts.bodyMedium?.copyWith(
@@ -77,10 +71,7 @@ class SettingsAppearanceSection extends StatelessWidget {
       ),
     );
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),

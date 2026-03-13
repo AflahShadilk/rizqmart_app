@@ -6,18 +6,10 @@ import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/delivery/de
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/delivery/delivery_partner_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/chat/chat_page.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Order Delivery Boy Section ----------------
-
 class OrderDeliveryBoySection extends StatelessWidget {
-  // ---------------- Variables ----------------
-  final OrderEntities order;
-
-  // ---------------- Constructor ----------------
-  const OrderDeliveryBoySection({super.key, required this.order});
-
-  // ---------------- Helper Methods ----------------
-  void _navigateToChat(BuildContext context) {
+final OrderEntities order;
+const OrderDeliveryBoySection({super.key, required this.order});
+void _navigateToChat(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -30,9 +22,7 @@ class OrderDeliveryBoySection extends StatelessWidget {
       ),
     );
   }
-
-  // ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     if (order.status.toLowerCase() == 'pending' ||
         order.status.toLowerCase() == 'cancelled') {

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/color_getter.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/app_date_widget.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/wallet_transaction_entity.dart';
-
-// ---------------- Wallet Transaction Item ----------------
-
-/// A single transaction row displaying the description, date, amount, and status.
 class WalletTransactionItem extends StatelessWidget {
   final WalletTransactionEntity transaction;
 
@@ -13,20 +10,10 @@ class WalletTransactionItem extends StatelessWidget {
     super.key,
     required this.transaction,
   });
-
-  // ---------------- Helper Methods ----------------
-
   bool get _isCredit =>
       transaction.type == TransactionType.refund ||
       transaction.type == TransactionType.deposit;
-
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
-  }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
@@ -38,8 +25,7 @@ class WalletTransactionItem extends StatelessWidget {
         ),
       ),
       child: ListTile(
-        // ---------------- Transaction Icon ----------------
-        leading: CircleAvatar(
+leading: CircleAvatar(
           backgroundColor: _isCredit
               ? context.cs.success.withValues(alpha: 0.1)
               : context.cs.error.withValues(alpha: 0.1),
@@ -48,19 +34,17 @@ class WalletTransactionItem extends StatelessWidget {
             color: _isCredit ? context.cs.success : context.cs.error,
           ),
         ),
-
-        // ---------------- Transaction Details ----------------
-        title: Text(
+title: Text(
           transaction.description,
           style: context.ts.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
-          _formatDate(transaction.timestamp),
-          style: context.ts.bodySmall,
+          AppDateWidget.format(transaction.timestamp),
+          style: context.ts.bodySmall?.copyWith(
+            color: context.cs.onSurfaceVariant.withValues(alpha: 0.7),
+          ),
         ),
-
-        // ---------------- Transaction Amount ----------------
-        trailing: Column(
+trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [

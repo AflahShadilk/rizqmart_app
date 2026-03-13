@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/user_profile_entities.dart';
-
-/// Base abstract class handling profile fetch, update, and deletion actions.
 abstract class UserProfileEvent extends Equatable{
   const UserProfileEvent();
   @override

@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-
-/// Entity defining a promotional coupon, including its discount percentage, validity, and applicable products.
 class CouponEntity extends Equatable {
   final String id;
   final String name;

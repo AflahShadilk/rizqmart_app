@@ -7,15 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/auth/welcome_cubit.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/cubits/auth/welcome_state.dart';
-
-// ---------------- Welcome Flow ----------------
-
-/// A flow widget that manages the onboarding welcome pages and animations
-/// for new users before they log in.
 class WelcomeFlow extends StatelessWidget {
   const WelcomeFlow({super.key});
-
-  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +18,6 @@ class WelcomeFlow extends StatelessWidget {
     );
   }
 }
-
-// ---------------- Welcome View ----------------
 
 class _WelcomeView extends StatefulWidget {
   const _WelcomeView();
@@ -38,16 +29,10 @@ class _WelcomeView extends StatefulWidget {
 class _WelcomeViewState extends State<_WelcomeView>
     with TickerProviderStateMixin {
 
-  // ---------------- Controllers ----------------
-
   final PageController _pageController = PageController();
   late AnimationController _animationController;
 
-  // ---------------- Variables ----------------
-
   static const int _totalPages = 3;
-
-  // ---------------- Init State ----------------
 
   @override
   void initState() {
@@ -58,16 +43,12 @@ class _WelcomeViewState extends State<_WelcomeView>
     );
   }
 
-  // ---------------- Dispose ----------------
-
   @override
   void dispose() {
     _pageController.dispose();
     _animationController.dispose();
     super.dispose();
   }
-
-  // ---------------- Helper Methods ----------------
 
   Future<void> _completeOnboarding() async {
     final pref = await SharedPreferences.getInstance();
@@ -82,14 +63,11 @@ class _WelcomeViewState extends State<_WelcomeView>
     _pageController.jumpToPage(_totalPages - 1);
   }
 
-  // ---------------- Build Method ----------------
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // ---------------- Page View ----------------
           BlocListener<WelcomeCubit, WelcomeState>(
             listener: (context, state) {
               _animationController.forward(from: 0.0);
@@ -130,7 +108,6 @@ class _WelcomeViewState extends State<_WelcomeView>
             ),
           ),
 
-          // ---------------- Skip Button ----------------
           Positioned(
             top: 50,
             right: 20,
@@ -147,7 +124,6 @@ class _WelcomeViewState extends State<_WelcomeView>
             ),
           ),
 
-          // ---------------- Page Indicator ----------------
           Positioned(
             bottom: 30,
             left: 20,

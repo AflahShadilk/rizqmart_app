@@ -2,12 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-/// An overlay banner shown when the order is cancelled, preventing further chat.
 class ChatCancelledBanner extends StatelessWidget {
   const ChatCancelledBanner({super.key});
-
-  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {

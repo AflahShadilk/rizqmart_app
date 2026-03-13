@@ -14,8 +14,6 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/main_heading.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
-
-/// A page widget that displays the user's active shopping cart, item list, and order total.
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
 
@@ -24,20 +22,14 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-
-  // ---------------- Init State ----------------
-
-  @override
+@override
   void initState() {
     super.initState();
     Future.microtask(() {
       context.read<CartBloc>().add(const GetCartItemsEvent());
     });
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return ResponsiveWrapper(child: Scaffold(
       backgroundColor: context.cs.surface,
@@ -56,22 +48,16 @@ class _CartPageState extends State<CartPage> {
           }
         },
         builder: (context, state) {
-          // ---------------- Loading State ----------------
-          if (state is CartLoadingState) {
+if (state is CartLoadingState) {
             return const CustomCircularProgressIndicator();
           }
-
-          // ---------------- Empty Cart State ----------------
-          if (state is CartEmptyState) {
+if (state is CartEmptyState) {
             return const CartEmptyView();
           }
-
-          // ---------------- Loaded Cart State ----------------
-          if (state is CartLoadedState) {
+if (state is CartLoadedState) {
             return Column(
               children: [
-                // ---------------- Cart Items List ----------------
-                Expanded(
+Expanded(
                   child: ListView.builder(
                     padding: const EdgeInsets.all(16),
                     itemCount: state.items.length,
@@ -84,8 +70,7 @@ class _CartPageState extends State<CartPage> {
                     },
                   ),
                 ),
-                // ---------------- Checkout Summary ----------------
-                CartSummaryButton(state: state),
+CartSummaryButton(state: state),
                 10.h
               ],
             );

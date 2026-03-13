@@ -1,24 +1,11 @@
 import 'package:flutter/material.dart';
-
-// ---------------- Back Button Common ----------------
-
-/// A universally used back button that pops the current navigation context.
 class BackButtonCommon extends StatelessWidget {
-  
-  // ---------------- Variables / Parameters ----------------
-
-  final ColorScheme? colorScheme;
-
-  // ---------------- Constructor ----------------
-
-  const BackButtonCommon({
+final ColorScheme? colorScheme;
+const BackButtonCommon({
     super.key,
     this.colorScheme,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     final activeColorScheme = colorScheme ?? Theme.of(context).colorScheme;
     
@@ -31,4 +18,4 @@ class BackButtonCommon extends StatelessWidget {
       ),
     );
   }
-}
+}

@@ -2,14 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/reusable_text.dart';
-
-/// Displays a friendly empty state when the user's cart has no items.
 class CartEmptyView extends StatelessWidget {
   const CartEmptyView({super.key});
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Center(
       child: Column(

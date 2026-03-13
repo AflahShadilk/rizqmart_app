@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
-
-// ---------------- Payment Selection Order Summary ----------------
-
-/// Displays a compact order total summary card on the payment selection screen.
 class PaymentSelectionOrderSummary extends StatelessWidget {
   final double totalCost;
 
@@ -12,10 +8,7 @@ class PaymentSelectionOrderSummary extends StatelessWidget {
     super.key,
     required this.totalCost,
   });
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),

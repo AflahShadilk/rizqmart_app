@@ -8,15 +8,9 @@ import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/notification_empty_state.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/dashboard/widgets/notification_item.dart';
-
-// ---------------- Controllers & Classes ----------------
-
-/// A page widget that lists and manages the user's incoming push notifications and alerts.
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
-
-// ---------------- Build Method ----------------
-  @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.cs.surface,

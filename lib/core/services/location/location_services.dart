@@ -2,8 +2,6 @@
 
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
-
-/// Service for handling device location access, caching, and permission management.
 class LocationService {
   static Position? _lastPosition;
   static DateTime? _lastLocationTime;

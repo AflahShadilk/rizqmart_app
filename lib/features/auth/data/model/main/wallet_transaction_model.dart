@@ -1,8 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/wallet_transaction_entity.dart';
-
-
-/// Data model handling the serialization of individual wallet transaction records for Firestore.
 class WalletTransactionModel extends WalletTransactionEntity {
   const WalletTransactionModel({
     required super.id,

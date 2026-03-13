@@ -1,8 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:rizqmart/core/error/failures.dart';
 import 'package:rizqmart/features/auth/domain/repositories/main/chat_repository.dart';
-
-/// Use case for dispatching a text message into a specific chat room.
 class SendMessageUseCase {
   final ChatRepository repository;
 

@@ -10,10 +10,6 @@ import 'package:rizqmart/features/auth/presentation/pages/main/profile/payment/w
 import 'package:rizqmart/features/auth/presentation/pages/main/profile/payment/widgets/empty_saved_cards_state.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/show_toast_actions.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
-
-// ---------------- Saved Cards Page ----------------
-
-/// A page displaying all of the user's saved payment methods, with options to add or remove them.
 class SavedCardsPage extends StatefulWidget {
   const SavedCardsPage({super.key});
 
@@ -22,24 +18,15 @@ class SavedCardsPage extends StatefulWidget {
 }
 
 class _SavedCardsPageState extends State<SavedCardsPage> {
-
-  // ---------------- Variables ----------------
-
-  String get currentUserId => FirebaseAuth.instance.currentUser?.uid ?? '';
-
-  // ---------------- Init State ----------------
-
-  @override
+String get currentUserId => FirebaseAuth.instance.currentUser?.uid ?? '';
+@override
   void initState() {
     super.initState();
     if (currentUserId.isNotEmpty) {
       context.read<SavedCardsBloc>().add(LoadSavedCardsEvent(currentUserId));
     }
   }
-
-  // ---------------- Helper Methods ----------------
-
-  void _navigateToAddCard() {
+void _navigateToAddCard() {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -70,10 +57,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
       ),
     );
   }
-
-  // ---------------- Build Method ----------------
-
-  @override
+@override
   Widget build(BuildContext context) {
     return ResponsiveWrapper(
       child: Scaffold(

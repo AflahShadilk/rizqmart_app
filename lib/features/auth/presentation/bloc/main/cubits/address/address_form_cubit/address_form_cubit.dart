@@ -1,8 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/address_entities.dart';
 import 'address_form_state.dart';
-
-/// Cubit holding all temporary inputted data fields when creating or editing an address.
 class AddressFormCubit extends Cubit<AddressFormState> {
   AddressFormCubit(AddressEntities? initialAddress)
       : super(
