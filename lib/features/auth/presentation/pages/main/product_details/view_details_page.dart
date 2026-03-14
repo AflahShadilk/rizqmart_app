@@ -37,6 +37,8 @@ import 'package:rizqmart/features/auth/presentation/pages/main/product_details/w
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/product_offers_section.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/product_description_section.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/product_review_section.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/review_zero_state_widget.dart';
+
 class ProductDetailsPage extends StatefulWidget {
   final ShowProductEntities product;
   final int variantIndex;
@@ -332,6 +334,7 @@ bool isExpanded = false;
                                       } else if (state is ReviewsLoaded) {
                                         reviews = state.reviews;
                                       }
+                                      // shows a friendly message when the product has no reviews yet
                                       if (reviews != null &&
                                           reviews.isNotEmpty) {
                                         final displayReviews =
@@ -383,6 +386,8 @@ bool isExpanded = false;
                                       } else if (state is ReviewLoading) {
                                         return Center(
                                             child: CircularProgressIndicator());
+                                      } else if (reviews != null && reviews.isEmpty) {
+                                        return const ReviewZeroStateWidget();
                                       }
                                       return SizedBox.shrink();
                                     },

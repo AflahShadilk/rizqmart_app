@@ -5,9 +5,9 @@ import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/auth/domain/entities/main/review_entity.dart';
 import 'package:rizqmart/features/auth/presentation/bloc/main/review/review_bloc.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/buttons/back_button_common.dart';
-import 'package:rizqmart/features/auth/presentation/widgets/extensions/sized_box.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/review_card.dart';
 import 'package:rizqmart/features/auth/presentation/pages/main/product_details/widgets/add_review_dialog.dart';
+import 'package:rizqmart/features/auth/presentation/widgets/review_zero_state_widget.dart';
 import 'package:rizqmart/features/auth/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 class ReviewsPage extends StatefulWidget {
   final String productId;
@@ -90,22 +90,13 @@ class _ReviewsPageState extends State<ReviewsPage> {
             return Center(child: Text(state.message));
           } else if (state is ReviewsWithPurchaseStatus) {
             if (state.reviews.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.rate_review_outlined,
-                        size: 64, color: context.cs.outline),
-                    16.h,
-                    Text('No reviews yet', style: context.ts.titleMedium),
-                    8.h,
-                    Text(
-                      state.hasPurchased
-                          ? 'Be the first to review this product!'
-                          : 'No reviews yet for this product.',
-                      style: context.ts.bodyMedium,
-                    ),
-                  ],
+              // shows a friendly message when the product has no reviews yet
+              return Padding(
+                padding: const EdgeInsets.all(32),
+                child: ReviewZeroStateWidget(
+                  onWriteReview: state.hasPurchased
+                      ? () => _showAddReviewDialog()
+                      : null,
                 ),
               );
             }
@@ -120,19 +111,10 @@ class _ReviewsPageState extends State<ReviewsPage> {
             );
           } else if (state is ReviewsLoaded) {
             if (state.reviews.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.rate_review_outlined,
-                        size: 64, color: context.cs.outline),
-                    16.h,
-                    Text('No reviews yet', style: context.ts.titleMedium),
-                    8.h,
-                    Text('No reviews yet for this product.',
-                        style: context.ts.bodyMedium),
-                  ],
-                ),
+              // shows a friendly message when the product has no reviews yet
+              return Padding(
+                padding: const EdgeInsets.all(32),
+                child: const ReviewZeroStateWidget(),
               );
             }
             return ListView.separated(

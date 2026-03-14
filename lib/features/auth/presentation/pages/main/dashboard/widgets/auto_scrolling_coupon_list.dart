@@ -25,8 +25,8 @@ final ScrollController _scrollController = ScrollController();
       if (_scrollController.hasClients) {
         final double maxScrollExtent = _scrollController.position.maxScrollExtent;
         final double currentScrollPosition = _scrollController.position.pixels;
-        // Scroll amount is roughly the width of a CouponCard (250) + margins (8) -> ~258
-        const double scrollAmount = 258.0;
+        // Scroll amount is roughly the width of a modern CouponCard (280) + margins (16) -> ~296
+        const double scrollAmount = 296.0;
 
         if (maxScrollExtent > 0) {
           if (currentScrollPosition >= maxScrollExtent - 10) { // small tolerance
@@ -56,7 +56,7 @@ final ScrollController _scrollController = ScrollController();
   Widget build(BuildContext context) {
     // Horizontally scrolling list of coupons with automatically driven scroll controller
     return SizedBox(
-      height: 160,
+      height: 200, // increased height for modern generous layout
       child: ListView.builder(
         controller: _scrollController,
         scrollDirection: Axis.horizontal,

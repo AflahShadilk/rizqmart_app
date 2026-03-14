@@ -45,27 +45,44 @@ class ProductTitleSection extends StatelessWidget {
                 ),
               ),
               8.h,
-              Row(
-                children: [
-                  const Icon(Icons.star_rounded, color: AppColors.warning500, size: 20),
-                  4.w,
-                  Text(
-                    product.rating.toStringAsFixed(1),
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
+              // review summary under product title
+              if (product.reviewCount == 0)
+                Row(
+                  children: [
+                    Icon(Icons.star_outline_rounded, color: AppColors.warning500.withValues(alpha: 0.6), size: 18),
+                    6.w,
+                    Text(
+                      'Be the first to review this product ⭐',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: context.cs.onSurfaceVariant,
+                      ),
                     ),
-                  ),
-                  4.w,
-                  Text(
-                    '(${product.reviewCount} reviews)',
-                    style: GoogleFonts.poppins(
-                      color: context.cs.onSurface.withValues(alpha: 0.6),
-                      fontSize: 12,
+                  ],
+                )
+              else
+                Row(
+                  children: [
+                    const Icon(Icons.star_rounded, color: AppColors.warning500, size: 20),
+                    4.w,
+                    Text(
+                      product.rating.toStringAsFixed(1),
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                    4.w,
+                    Text(
+                      '(${product.reviewCount} reviews)',
+                      style: GoogleFonts.poppins(
+                        color: context.cs.onSurface.withValues(alpha: 0.6),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
