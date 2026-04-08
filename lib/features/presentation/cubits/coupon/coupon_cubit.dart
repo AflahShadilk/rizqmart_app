@@ -1,0 +1,20 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/features/domain/usecase/main/coupon/get_active_coupons_usecase.dart';
+import 'package:rizqmart/features/presentation/cubits/coupon/coupon_state.dart';
+
+/// Cubit fetching and surfacing all active promotional coupons for the user.
+class AvailableCouponCubit extends Cubit<AvailableCouponState> {
+  final GetActiveCouponsUseCase getActiveCouponsUseCase;
+
+  AvailableCouponCubit({required this.getActiveCouponsUseCase})
+      : super(AvailableCouponInitial());
+
+  Future<void> loadCoupons() async {
+    emit(AvailableCouponLoading());
+    final result = await getActiveCouponsUseCase();
+    result.fold(
+      (failure) => emit(AvailableCouponError(failure.message)),
+      (coupons) => emit(AvailableCouponLoaded(coupons)),
+    );
+  }
+}

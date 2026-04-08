@@ -5,12 +5,12 @@ import 'dart:developer' as developer;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:rizqmart/core/services/registeration/bloc_providers.dart';
-import 'package:rizqmart/core/services/registeration/register.dart';
-import 'package:rizqmart/core/services/notification_service.dart'; 
+import 'package:rizqmart/di/bloc_providers.dart';
+import 'package:rizqmart/di/register.dart';
+import 'package:rizqmart/features/data/data_source/services/notification_service.dart'; 
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'package:rizqmart/core/services/stripe_services.dart';
+import 'package:rizqmart/features/data/data_source/services/stripe_services.dart';
 import 'package:rizqmart/firebase_options.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

@@ -1,0 +1,100 @@
+import 'package:flutter/material.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/features/domain/entities/main/user_profile_entities.dart';
+import 'package:rizqmart/features/presentation/widgets/extensions/sized_box.dart';
+
+// ---------------- Show About You Section ----------------
+
+class ShowAboutYouSection extends StatelessWidget {
+  final UserProfileEntities profile;
+
+  const ShowAboutYouSection({
+    super.key,
+    required this.profile,
+  });
+
+  // ---------------- Helper Methods ----------------
+
+  Widget _buildSectionTitle(BuildContext context, String title) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        title,
+        style: context.ts.labelLarge?.copyWith(
+          color: context.cs.onSurface,
+          fontWeight: FontWeight.w600,
+          fontSize: 13,
+          letterSpacing: 0.3,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoField(
+    BuildContext context,
+    String label,
+    String value,
+    IconData icon,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: context.cs.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: context.cs.outlineVariant.withValues(alpha: 0.5),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            color: context.cs.onSurfaceVariant,
+            size: 20,
+          ),
+          16.w,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: context.ts.labelSmall?.copyWith(
+                    color: context.cs.onSurfaceVariant,
+                    fontSize: 11,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                4.h,
+                Text(
+                  value,
+                  style: context.ts.bodyMedium?.copyWith(
+                    color: context.cs.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ---------------- Build Method ----------------
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _buildSectionTitle(context, 'About You'),
+        14.h,
+        _buildInfoField(context, 'Bio', profile.bio ?? 'Not specified',
+            Icons.info_outline),
+      ],
+    );
+  }
+}
