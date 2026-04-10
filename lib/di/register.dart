@@ -1,6 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:http/http.dart' as http;
+import 'package:rizqmart/features/data/data_source/main/cook_tonight_remote_datasource.dart';
+import 'package:rizqmart/features/data/data_source/main/cook_tonight_remote_datasource_impl.dart';
+import 'package:rizqmart/features/data/repository/main/cook_tonight_repository_impl.dart';
+import 'package:rizqmart/features/domain/repositories/main/cook_tonight_repository.dart';
+import 'package:rizqmart/features/domain/usecase/main/cook_tonight/get_ingredients_for_dish_usecase.dart';
+import 'package:rizqmart/features/presentation/bloc/main/cook_tonight/cook_tonight_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rizqmart/features/data/data_source/auth/forgotpass_remote_datasource_impl.dart';
 import 'package:rizqmart/features/data/data_source/auth/google_auth_remote_data_source.dart';
@@ -342,4 +349,19 @@ void setupLocator() {
   sl.registerLazySingleton<CouponRepository>(() => CouponRepositoryImpl(dataSource: sl()));
   sl.registerLazySingleton(() => GetActiveCouponsUseCase(repository: sl()));
   sl.registerFactory(() => AvailableCouponCubit(getActiveCouponsUseCase: sl()));
+
+  // Cook Tonight
+  sl.registerLazySingleton<http.Client>(() => http.Client());
+  sl.registerLazySingleton<CookTonightRemoteDatasource>(
+    () => CookTonightRemoteDatasourceImpl(sl()),
+  );
+  sl.registerLazySingleton<CookTonightRepository>(
+    () => CookTonightRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton(
+    () => GetIngredientsForDishUsecase(sl()),
+  );
+  sl.registerFactory(
+    () => CookTonightBloc(sl()),
+  );
 }

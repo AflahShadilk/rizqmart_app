@@ -21,6 +21,7 @@ import 'package:rizqmart/features/presentation/widgets/page_reusable_widgets/res
 import 'package:rizqmart/features/presentation/pages/main/dashboard/widgets/search_dropdown_overlay.dart';
 import 'package:rizqmart/features/presentation/pages/main/dashboard/widgets/exclusive_offers_section.dart';
 import 'package:rizqmart/features/presentation/pages/main/dashboard/widgets/all_products_section.dart';
+import 'package:rizqmart/features/presentation/pages/main/dashboard/widgets/cook_tonight_dashboard_card.dart';
 
 // ---------------- Controllers & Classes ----------------
 
@@ -154,6 +155,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      const CookTonightDashboardCard(),
                                       const ExclusiveOffersSection(),
                                       AllProductsSection(products: displayProducts),
                                     ],

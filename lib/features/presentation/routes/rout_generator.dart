@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rizqmart/di/register.dart';
+import 'package:rizqmart/features/presentation/bloc/main/cook_tonight/cook_tonight_bloc.dart';
+import 'package:rizqmart/features/presentation/pages/main/cook_tonight/cook_tonight_page.dart';
 import 'package:rizqmart/features/presentation/routes/app_routes.dart';
 import 'package:rizqmart/features/presentation/pages/main/chat/chat_page.dart';
 
@@ -214,6 +218,14 @@ case AppRoutes.aboutUs:
 
       case AppRoutes.notifications:
         return MaterialPageRoute(builder: (_) => const NotificationsPage());
+
+      case AppRoutes.cookTonight:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => sl<CookTonightBloc>(),
+            child: const CookTonightPage(),
+          ),
+        );
 
       default:
         return MaterialPageRoute(
