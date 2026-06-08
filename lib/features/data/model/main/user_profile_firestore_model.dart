@@ -19,7 +19,7 @@ class UserProfileFirestoreModel extends UserProfileEntities{
   factory UserProfileFirestoreModel.fromFirestore(DocumentSnapshot doc){
     final data=doc.data() as Map<String,dynamic>;
     return UserProfileFirestoreModel(
-      userId: data['userId']??'', 
+      userId: data['userId'] ?? data['uid'] ?? doc.id, 
       name: data['name']??'',
       email: data['email']??'',
       phoneNumber: data['phoneNumber']??'',

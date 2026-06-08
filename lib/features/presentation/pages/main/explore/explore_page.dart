@@ -16,7 +16,6 @@ import 'package:rizqmart/features/presentation/widgets/page_reusable_widgets/res
 import 'package:rizqmart/features/presentation/pages/main/explore/widgets/explore_category_grid.dart';
 import 'package:rizqmart/features/presentation/pages/main/explore/widgets/explore_search_dropdown.dart';
 
-/// A discoverability page allowing users to search for products and browse available categories.
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
 
@@ -26,11 +25,7 @@ class ExplorePage extends StatefulWidget {
 
 class _ExplorePageState extends State<ExplorePage> {
 
-  // ---------------- Variables ----------------
-
   final TextEditingController _searchController = TextEditingController();
-
-  // ---------------- Helper Methods ----------------
 
   void _onSearch(String query) {
     context.read<SearchCubit>().search(
@@ -44,15 +39,11 @@ class _ExplorePageState extends State<ExplorePage> {
         );
   }
 
-  // ---------------- Init State ----------------
-
   @override
   void initState() {
     super.initState();
     context.read<ExploreBloc>().add(GetAllProductsEvent());
   }
-
-  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {

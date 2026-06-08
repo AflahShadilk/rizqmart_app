@@ -237,6 +237,7 @@ class _EditDetailsContent extends StatelessWidget {
             photoUrl: profile.photoUrl ?? '',
             userId: profile.userId,
             isEditing: true,
+            fallbackName: profile.name,
           ),
           10.h,
           Text(

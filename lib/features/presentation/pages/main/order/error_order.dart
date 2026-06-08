@@ -95,7 +95,7 @@ void orderErrorDialog(BuildContext context, {String? errorMessage}) {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                         Navigator.pop(dialogContext); // Close dialog
+                         Navigator.pop(dialogContext); 
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.error500,

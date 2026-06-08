@@ -8,7 +8,8 @@ class CartDataSource {
 
   String get currentUserId => auth.currentUser?.uid ?? '';
 
-  CollectionReference cartCollectionReference(String userId) {
+  CollectionReference? cartCollectionReference(String userId) {
+    if (userId.isEmpty) return null;
     return fireStore.collection('users').doc(userId).collection('cart');
   }
 
@@ -38,7 +39,10 @@ class CartDataSource {
         'addedAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp()
       };
-      await cartCollectionReference(userId)
+      final collection = cartCollectionReference(userId);
+      if (collection == null) throw Exception('User not logged in');
+      
+      await collection
           .doc(cartItemId)
           .set(cartData, SetOptions(merge: true));
     } catch (e) {
@@ -48,7 +52,10 @@ class CartDataSource {
 
   Stream<List<DocumentSnapshot>> getCartItems(String userId) {
     try {
-      return cartCollectionReference(userId)
+      final collection = cartCollectionReference(userId);
+      if (collection == null) return Stream.value([]);
+      
+      return collection
           .orderBy('addedAt', descending: true)
           .snapshots()
           .map((snap) => snap.docs);
@@ -62,7 +69,9 @@ class CartDataSource {
     required String cartItemId,
   }) async {
     try {
-      await cartCollectionReference(userId).doc(cartItemId).delete();
+      final collection = cartCollectionReference(userId);
+      if (collection == null) throw Exception('User not logged in');
+      await collection.doc(cartItemId).delete();
     } catch (e) {
       throw Exception('Failed to remove from cart: $e');
     }
@@ -77,7 +86,10 @@ class CartDataSource {
         await removeFromCart(userId: userId, cartItemId: cartItemId);
         return;
       }
-      await cartCollectionReference(userId)
+      final collection = cartCollectionReference(userId);
+      if (collection == null) throw Exception('User not logged in');
+
+      await collection
           .doc(cartItemId)
           .update({'count': count, 'updatedAt': FieldValue.serverTimestamp()});
     } catch (e) {
@@ -88,12 +100,15 @@ class CartDataSource {
 Future<void> incrementQuantity(
     {required String userId, required String cartItemId}) async {
   try {
-    final doc = await cartCollectionReference(userId).doc(cartItemId).get();
+    final collection = cartCollectionReference(userId);
+    if (collection == null) throw Exception('User not logged in');
+
+    final doc = await collection.doc(cartItemId).get();
     if (doc.exists) {
       final data = doc.data() as Map<String, dynamic>?;
       final currentCount = (data?['count'] ?? 1) as int;
       if (currentCount < 20) {
-        await cartCollectionReference(userId).doc(cartItemId).update({
+        await collection.doc(cartItemId).update({
           'count': FieldValue.increment(1),
           'updatedAt': FieldValue.serverTimestamp()
         });
@@ -107,7 +122,10 @@ Future<void> incrementQuantity(
 Future<void> decrementQuantity(
     {required String userId, required String cartItemId}) async {
   try {
-    final doc = await cartCollectionReference(userId).doc(cartItemId).get();
+    final collection = cartCollectionReference(userId);
+    if (collection == null) throw Exception('User not logged in');
+
+    final doc = await collection.doc(cartItemId).get();
     if (doc.exists) {
       final data = doc.data() as Map<String, dynamic>?;
       final currentCount = (data?['count'] ?? 1) as int;
@@ -115,12 +133,13 @@ Future<void> decrementQuantity(
       if (currentCount <= 1) {
         await removeFromCart(userId: userId, cartItemId: cartItemId);
       } else {
-        await cartCollectionReference(userId).doc(cartItemId).update({
+        await collection.doc(cartItemId).update({
           'count': FieldValue.increment(-1),
           'updatedAt': FieldValue.serverTimestamp(),
         });
       }
-    } else {
+    }
+ else {
     }
   } catch (e) {
     throw Exception('Failed to decrement quantity: $e');
@@ -129,8 +148,11 @@ Future<void> decrementQuantity(
 
   Future<void> clearCart(String userId) async {
     try {
+      final collection = cartCollectionReference(userId);
+      if (collection == null) return;
+
       final batch = fireStore.batch();
-      final snapshot = await cartCollectionReference(userId).get();
+      final snapshot = await collection.get();
 
       for (var doc in snapshot.docs) {
         batch.delete(doc.reference);
@@ -147,7 +169,10 @@ Future<void> decrementQuantity(
     required String cartItemId,
   }) async {
     try {
-      final doc = await cartCollectionReference(userId).doc(cartItemId).get();
+      final collection = cartCollectionReference(userId);
+      if (collection == null) return false;
+
+      final doc = await collection.doc(cartItemId).get();
       return doc.exists;
     } catch (e) {
       return false;

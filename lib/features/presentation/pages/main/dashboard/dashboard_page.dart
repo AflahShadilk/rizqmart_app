@@ -101,7 +101,14 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                   // The main view area reacting to the DashBloc state to either load or show products 
                   Expanded(
-                    child: BlocBuilder<DashBloc, DashState>(
+                    child: BlocConsumer<DashBloc, DashState>(
+                      listener: (context, state) {
+                        if (state is FailureLoadingProductState) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            ErrorMessageSnackBar.build(state),
+                          );
+                        }
+                      },
                       buildWhen: (_, current) =>
                           current is DashInitialState ||
                           current is LoadingProductState ||
@@ -114,7 +121,22 @@ class _DashboardPageState extends State<DashboardPage> {
                         }
 
                         if (dashState is FailureLoadingProductState) {
-                          return ErrorMessageSnackBar.build(dashState);
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.error_outline, size: 48, color: context.cs.error),
+                                const SizedBox(height: 16),
+                                Text(dashState.error),
+                                TextButton(
+                                  onPressed: () {
+                                    context.read<DashBloc>().add(const LoadingProductsEvent());
+                                  },
+                                  child: const Text('Retry'),
+                                ),
+                              ],
+                            ),
+                          );
                         }
 
                         if (dashState is LoadedProductState) {

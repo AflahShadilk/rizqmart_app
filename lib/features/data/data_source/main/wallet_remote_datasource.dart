@@ -26,6 +26,14 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
 
   @override
   Future<WalletModel> getWallet(String userId) async {
+    if (userId.isEmpty) {
+       return WalletModel(
+        userId: '',
+        balance: 0.0,
+        currency: 'INR',
+        lastUpdated: DateTime.now(),
+      );
+    }
     final doc = await firestore.collection('wallets').doc(userId).get();
     if (doc.exists) {
       return WalletModel.fromMap(doc.data()!, doc.id);
@@ -44,6 +52,14 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
 
   @override
   Stream<WalletModel> getWalletStream(String userId) {
+    if (userId.isEmpty) {
+      return Stream.value(WalletModel(
+          userId: '',
+          balance: 0.0,
+          currency: 'INR',
+          lastUpdated: DateTime.now(),
+        ));
+    }
     return firestore.collection('wallets').doc(userId).snapshots().map((doc) {
       if (doc.exists) {
         return WalletModel.fromMap(doc.data()!, doc.id);
@@ -78,6 +94,7 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
 
   @override
   Future<List<WalletTransactionModel>> getTransactions(String userId) async {
+    if (userId.isEmpty) return [];
     final query = await firestore
         .collection('wallets')
         .doc(userId)

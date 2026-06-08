@@ -43,57 +43,59 @@ class _CookTonightPageState extends State<CookTonightPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.cs.surface,
-      appBar: AppBar(
+    return ScaffoldMessenger(
+      child: Scaffold(
         backgroundColor: context.cs.surface,
-        elevation: 0,
-        title: const AppHeading('Cook Tonight'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, color: context.cs.onSurface),
-          onPressed: () {
-            context.read<CookTonightBloc>().add(const ResetCookTonightEvent());
-            Navigator.of(context).pop();
+        appBar: AppBar(
+          backgroundColor: context.cs.surface,
+          elevation: 0,
+          title: const AppHeading('Cook Tonight'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios_new_rounded, color: context.cs.onSurface),
+            onPressed: () {
+              context.read<CookTonightBloc>().add(const ResetCookTonightEvent());
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
+        body: BlocConsumer<CookTonightBloc, CookTonightState>(
+          listener: (context, state) {
+            if (state is CookTonightError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: context.cs.error,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              );
+            }
+            if (state is CookTonightLoaded) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => CookTonightResultPage(result: state.result),
+                ),
+              );
+            }
+          },
+          builder: (blocContext, state) {
+            if (state is CookTonightLoading) {
+              return const AiLoadingIndicator();
+            }
+            return _SearchView(
+              controller: _dishController,
+              servings: _servings,
+              onServingsChanged: (v) => setState(() => _servings = v),
+              onSubmit: () => _fetchIngredients(blocContext),
+              onDishChipSelected: (dish) {
+                _dishController.text = dish;
+                _fetchIngredients(blocContext);
+              },
+            );
           },
         ),
-      ),
-      body: BlocConsumer<CookTonightBloc, CookTonightState>(
-        listener: (context, state) {
-          if (state is CookTonightError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: context.cs.error,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            );
-          }
-          if (state is CookTonightLoaded) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => CookTonightResultPage(result: state.result),
-              ),
-            );
-          }
-        },
-        builder: (blocContext, state) {
-          if (state is CookTonightLoading) {
-            return const AiLoadingIndicator();
-          }
-          return _SearchView(
-            controller: _dishController,
-            servings: _servings,
-            onServingsChanged: (v) => setState(() => _servings = v),
-            onSubmit: () => _fetchIngredients(blocContext),
-            onDishChipSelected: (dish) {
-              _dishController.text = dish;
-              _fetchIngredients(blocContext);
-            },
-          );
-        },
       ),
     );
   }

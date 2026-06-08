@@ -5,24 +5,33 @@ import 'package:rizqmart/features/data/model/main/wish_fire_model.dart';
 class WishListDataSource {
   final FirebaseFirestore firebaseFirestore=FirebaseFirestore.instance;
 
-  CollectionReference _collection(String userId){
+  CollectionReference? _collection(String userId){
+    if (userId.isEmpty) return null;
     return firebaseFirestore.collection('users').doc(userId).collection('wishList');
   }
 
   Future<void>addToWishList(String userId,String productId,WishFireModel model)async{
-    await _collection(userId).doc(productId).set(model.toMap());
+    final collection = _collection(userId);
+    if (collection == null) throw Exception('User not logged in');
+    await collection.doc(productId).set(model.toMap());
   }
 
-  Future<void>deleteFrmWishList(String userId,String productId)async{
-    await _collection(userId).doc(productId).delete();
+   Future<void>deleteFrmWishList(String userId,String productId)async{
+    final collection = _collection(userId);
+    if (collection == null) throw Exception('User not logged in');
+    await collection.doc(productId).delete();
   }
 
   Future<bool>checkInWishList(String userId,String productId)async{
-    final doc=await _collection(userId).doc(productId).get();
+    final collection = _collection(userId);
+    if (collection == null) return false;
+    final doc=await collection.doc(productId).get();
     return doc.exists;
   }
 
   Stream<List<WishFireModel>> getWishList(String userId){
-    return _collection(userId).orderBy('addedAt',descending: true).snapshots().map((snap)=>snap.docs.map((doc)=>WishFireModel.fromFireStore(doc)).toList());                        
+    final collection = _collection(userId);
+    if (collection == null) return Stream.value([]);
+    return collection.orderBy('addedAt',descending: true).snapshots().map((snap)=>snap.docs.map((doc)=>WishFireModel.fromFireStore(doc)).toList());                        
   }
 }

@@ -30,6 +30,21 @@ class TextFormFLogin extends StatefulWidget {
 }
 
 class _TextFormFLoginState extends State<TextFormFLogin> {
+  late bool _obscureText;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscureText = widget.obscureText ?? false;
+  }
+
+  @override
+  void didUpdateWidget(covariant TextFormFLogin oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.obscureText != widget.obscureText) {
+      _obscureText = widget.obscureText ?? false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +55,7 @@ class _TextFormFLoginState extends State<TextFormFLogin> {
       validator: widget.validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       keyboardType: widget.keyboardType ?? TextInputType.text,
-      obscureText: widget.obscureText ?? false,
+      obscureText: _obscureText,
       maxLength: widget.maxLength,
       onChanged: widget.onChanged,
       decoration: InputDecoration(
@@ -48,6 +63,19 @@ class _TextFormFLoginState extends State<TextFormFLogin> {
         labelStyle: context.ts.bodyMedium,
         prefixIcon: widget.iconn != null
             ? Icon(widget.iconn, color: activeColor)
+            : null,
+        suffixIcon: widget.obscureText == true
+            ? IconButton(
+                icon: Icon(
+                  _obscureText ? Icons.visibility_off : Icons.visibility,
+                  color: context.cs.onSurfaceVariant,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
+              )
             : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:rizqmart/features/data/data_source/main/cook_tonight_remote_datasource.dart';
 import 'package:rizqmart/features/data/data_source/main/cook_tonight_remote_datasource_impl.dart';
+import 'package:rizqmart/features/data/data_source/services/gemini_service.dart';
 import 'package:rizqmart/features/data/repository/main/cook_tonight_repository_impl.dart';
 import 'package:rizqmart/features/domain/repositories/main/cook_tonight_repository.dart';
 import 'package:rizqmart/features/domain/usecase/main/cook_tonight/get_ingredients_for_dish_usecase.dart';
@@ -123,8 +124,6 @@ import 'package:rizqmart/features/domain/usecase/main/wallet/withdraw_wallet_amo
 import 'package:rizqmart/features/domain/usecase/main/payment/pay_with_wallet_usecase.dart';
 import 'package:rizqmart/features/presentation/bloc/wallet/wallet_bloc.dart';
 import 'package:rizqmart/features/domain/usecase/main/wallet/credit_wallet_usecase.dart';
-
-// Coupon Imports
 import 'package:rizqmart/features/data/data_source/main/coupon_data_source.dart';
 import 'package:rizqmart/features/data/repository/main/coupon_repository_impl.dart';
 import 'package:rizqmart/features/domain/repositories/main/coupon_repository.dart';
@@ -133,7 +132,6 @@ import 'package:rizqmart/features/presentation/cubits/coupon/coupon_cubit.dart';
 
 final sl = GetIt.instance;
 
-/// Initial setup function to register all dependency injections (DataSources, Repos, UseCases, Blocs) via GetIt.
 void setupLocator() {
   sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
   sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
@@ -350,18 +348,19 @@ void setupLocator() {
   sl.registerLazySingleton(() => GetActiveCouponsUseCase(repository: sl()));
   sl.registerFactory(() => AvailableCouponCubit(getActiveCouponsUseCase: sl()));
 
-  // Cook Tonight
-  sl.registerLazySingleton<http.Client>(() => http.Client());
-  sl.registerLazySingleton<CookTonightRemoteDatasource>(
-    () => CookTonightRemoteDatasourceImpl(sl()),
-  );
-  sl.registerLazySingleton<CookTonightRepository>(
-    () => CookTonightRepositoryImpl(sl()),
-  );
-  sl.registerLazySingleton(
-    () => GetIngredientsForDishUsecase(sl()),
-  );
-  sl.registerFactory(
-    () => CookTonightBloc(sl()),
-  );
+ // Cook Tonight
+sl.registerLazySingleton<http.Client>(() => http.Client());
+sl.registerLazySingleton<GeminiService>(() => GeminiService(sl()));
+sl.registerLazySingleton<CookTonightRemoteDatasource>(
+  () => CookTonightRemoteDatasourceImpl(sl()),
+);
+sl.registerLazySingleton<CookTonightRepository>(
+  () => CookTonightRepositoryImpl(sl()),
+);
+sl.registerLazySingleton(
+  () => GetIngredientsForDishUsecase(sl()),
+);
+sl.registerFactory(
+  () => CookTonightBloc(sl()),
+);
 }

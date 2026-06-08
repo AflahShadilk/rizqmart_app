@@ -57,7 +57,10 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     final result = await uploadProfilePhotoUsecase.call(event.userId, event.file);
     result.fold(
       (failure) => emit(UserProfileErrorState(message: failure.message)),
-      (photoUrl) => emit(UserProfilePhotoUploadedState(photoUrl: photoUrl)),
+      (photoUrl) {
+        emit(UserProfilePhotoUploadedState(photoUrl: photoUrl));
+        add(LoadUserProfileEvent(userId: event.userId));
+      },
     );
   }
 

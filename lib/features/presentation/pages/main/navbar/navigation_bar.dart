@@ -12,9 +12,12 @@ class NavigationBarPage extends StatelessWidget {
       create: (context) => NavigationCubit(),
       child: BlocBuilder<NavigationCubit, int>(
         builder: (context, selectedIndex) {
-          return Scaffold(
-            body: PageContainer(selectedIndex: selectedIndex),
-            bottomNavigationBar: BottomNavigationBarWidget(selectedIndex: selectedIndex),
+          return ScaffoldMessenger(
+            child: Scaffold(
+              extendBody: true,
+              body: PageContainer(selectedIndex: selectedIndex),
+              bottomNavigationBar: BottomNavigationBarWidget(selectedIndex: selectedIndex),
+            ),
           );
         },
       ),

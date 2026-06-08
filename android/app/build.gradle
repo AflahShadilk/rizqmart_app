@@ -32,9 +32,9 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.rizqmart.user"
-    compileSdk 35
-    ndkVersion flutter.ndkVersion
+    namespace "com.shadil.rizqmart"
+    compileSdk = 36
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         coreLibraryDesugaringEnabled true
@@ -51,9 +51,9 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.rizqmart.user"
+        applicationId "com.shadil.rizqmart"
         minSdk 23
-        targetSdk 35
+        targetSdk = 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -61,10 +61,17 @@ android {
 
     signingConfigs {
         release {
-        keyAlias keystoreProperties['keyAlias']
-        keyPassword keystoreProperties['keyPassword']
-        storeFile file("upload-keystore.jks")
-        storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            
+            def keystoreFile = keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : file('upload-keystore.jks')
+            if (!keystoreFile.exists()) {
+                // Try looking in the project root as a fallback
+                keystoreFile = rootProject.file("../upload-keystore.jks")
+            }
+            
+            storeFile keystoreFile
+            storePassword keystoreProperties['storePassword']
         }
     }
 

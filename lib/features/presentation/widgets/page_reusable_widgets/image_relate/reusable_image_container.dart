@@ -16,6 +16,7 @@ class ProductImage extends StatelessWidget {
   final double height;
   final double width;
   final BorderRadius borderRadius;
+  final String? fallbackName;
 
   // ---------------- Constructor ----------------
 
@@ -25,13 +26,30 @@ class ProductImage extends StatelessWidget {
     this.height = 110,
     this.width = double.infinity,
     this.borderRadius = const BorderRadius.all(Radius.circular(12)),
+    this.fallbackName,
   });
+
+  // ---------------- Helpers ----------------
+
+  String _initials(String name) {
+    final parts = name.trim().split(RegExp(r'\s+'));
+    if (parts.isEmpty || parts.first.isEmpty) return '?';
+    if (parts.length == 1) return parts.first[0].toUpperCase();
+    return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+  }
+
+  Color _avatarColor(String name) {
+    final hue = (name.codeUnits.fold(0, (a, b) => a + b) % 360).toDouble();
+    return HSLColor.fromAHSL(1.0, hue, 0.5, 0.40).toColor();
+  }
 
   // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final bool hasImage = imageUrl != null && imageUrl!.isNotEmpty;
+    final bool hasName = fallbackName != null && fallbackName!.trim().isNotEmpty;
 
     return ClipRRect(
       borderRadius: borderRadius,
@@ -41,7 +59,7 @@ class ProductImage extends StatelessWidget {
         color: Theme.of(context).brightness == Brightness.dark
             ? colorScheme.onSurface.withValues(alpha: 0.1)
             : Colors.grey.shade100,
-        child: imageUrl != null && imageUrl!.isNotEmpty
+        child: hasImage
             ? CachedNetworkImage(
                 imageUrl: imageUrl!,
                 fit: BoxFit.cover,
@@ -52,31 +70,51 @@ class ProductImage extends StatelessWidget {
                   width: width,
                   borderRadius: 12,
                 ),
-                errorWidget: (context, url, error) => Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.image_not_supported,
-                        color: colorScheme.onSurface.withValues(alpha: 0.4),
-                        size: 24,
-                      ),
-                      if (height > 60)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            'Image unavailable',
-                            style: TextStyle(
-                              fontSize: 10,
+                errorWidget: (context, url, error) => hasName
+                    ? _buildInitialsAvatar(fallbackName!)
+                    : Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.image_not_supported,
                               color: colorScheme.onSurface.withValues(alpha: 0.4),
+                              size: 24,
                             ),
-                          ),
+                            if (height > 60)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  'Image unavailable',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: colorScheme.onSurface.withValues(alpha: 0.4),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                    ],
-                  ),
-                ),
+                      ),
               )
-            : ImageNotSupportIcon(colorScheme: colorScheme, size: 24),
+            : hasName
+                ? _buildInitialsAvatar(fallbackName!)
+                : ImageNotSupportIcon(colorScheme: colorScheme, size: 24),
+      ),
+    );
+  }
+
+  Widget _buildInitialsAvatar(String name) {
+    return Container(
+      color: _avatarColor(name),
+      alignment: Alignment.center,
+      child: Text(
+        _initials(name),
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: (height * 0.35).clamp(14.0, 40.0),
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.5,
+        ),
       ),
     );
   }

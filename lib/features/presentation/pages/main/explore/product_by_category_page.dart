@@ -10,15 +10,11 @@ import 'package:rizqmart/features/presentation/bloc/main/explore/explore_bloc.da
 import 'package:rizqmart/features/presentation/bloc/main/explore/explore_event.dart';
 import 'package:rizqmart/features/presentation/bloc/main/explore/explore_state.dart';
 import 'package:rizqmart/features/presentation/widgets/bloc%20helper/circular_progress.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:rizqmart/features/presentation/widgets/extensions/sized_box.dart';
 import 'filter_bottom_sheet.dart';
 import 'package:rizqmart/features/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 import 'package:rizqmart/features/presentation/pages/main/explore/widgets/filtered_product_grid.dart';
 
-// ---------------- Controllers & Classes ----------------
-
-/// A catalog page displaying a grid of products filtered by a specific category.
 class ProductByCategoryPage extends StatefulWidget {
   final String categoryName;
   const ProductByCategoryPage({super.key, required this.categoryName});
@@ -28,12 +24,7 @@ class ProductByCategoryPage extends StatefulWidget {
 }
 
 class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
-
-  // ---------------- Variables ----------------
-
   late FilterCubit filterCubit;
-
-  // ---------------- Init State ----------------
   @override
   void initState() {
     super.initState();
@@ -43,14 +34,11 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
         );
   }
 
-  // ---------------- Dispose ----------------
   @override
   void dispose() {
     filterCubit.close();
     super.dispose();
   }
-
-  // ---------------- Helper Methods ----------------
 
   void showFilters(List<ExploreEntities> allProducts) {
     Set<String> brands = {};
@@ -126,8 +114,6 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
     return allVariants;
   }
 
-  // ---------------- Build Method ----------------
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme;
@@ -152,7 +138,7 @@ class _ProductByCategoryPageState extends State<ProductByCategoryPage> {
                 showFilters(state.products);
               }
             },
-            icon: Icon(Symbols.settings, color: theme.primary),
+            icon: Icon(Icons.filter_list_alt, color: theme.primary),
           ),
         ],
       ),

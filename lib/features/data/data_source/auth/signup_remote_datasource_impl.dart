@@ -19,9 +19,11 @@ class SignupRemoteDatasourceImpl implements SignupRemoteDatasource {
     final userId = credantial.user!.uid;
     await firebaseFirestore.collection('users').doc(userId).set({
       'uid': userId,
+      'userId': userId,
       'name': name,
       'email': email,
       'createdAt': DateTime.now().toIso8601String(),
+      'updatedAt': DateTime.now().toIso8601String(),
       'walletBalance': 0.0,
       'isBlocked': false,
     });

@@ -12,13 +12,17 @@ class AddressRemoteDataSource {
     required this.firestore,
   });
 
-  CollectionReference addressCollection(String userId) {
+  CollectionReference? addressCollection(String userId) {
+    if (userId.isEmpty) return null;
     return firestore.collection('users').doc(userId).collection('addresses');
   }
 
   Future<List<AddressFireStoreModel>> getAddresses(String userId) async {
     try {
-      final snapshot = await addressCollection(userId)
+      final collection = addressCollection(userId);
+      if (collection == null) return [];
+      
+      final snapshot = await collection
           .orderBy('createdAt', descending: true)
           .get();
 
@@ -35,6 +39,7 @@ class AddressRemoteDataSource {
   Future<AddressFireStoreModel> addAddress(AddressEntities address) async {
     try {
       final userAddressCollection = addressCollection(address.userId);
+      if (userAddressCollection == null) throw Exception('User not logged in');
 
       if (address.isDefault) {
         await unsetAllDefaultAddresses(address.userId);
@@ -57,6 +62,7 @@ class AddressRemoteDataSource {
   Future<AddressFireStoreModel> updateAddress(AddressEntities address) async {
     try {
       final userAddressCollection = addressCollection(address.userId);
+      if (userAddressCollection == null) throw Exception('User not logged in');
 
       if (address.isDefault) {
         await unsetAllDefaultAddresses(address.userId, excludeId: address.id);
@@ -80,7 +86,9 @@ class AddressRemoteDataSource {
   
   Future<void> deleteAddress(String userId, String addressId) async {
     try {
-      await addressCollection(userId).doc(addressId).delete();
+      final collection = addressCollection(userId);
+      if (collection == null) throw Exception('User not logged in');
+      await collection.doc(addressId).delete();
     } on FirebaseException catch (e) {
       throw Exception('Failed to delete address: ${e.message}');
     } catch (e) {
@@ -94,7 +102,10 @@ class AddressRemoteDataSource {
       
       await unsetAllDefaultAddresses(userId);
       
-      await addressCollection(userId).doc(addressId).update({
+      final collection = addressCollection(userId);
+      if (collection == null) throw Exception('User not logged in');
+
+      await collection.doc(addressId).update({
         'isDefault': true,
       });
     } on FirebaseException catch (e) {
@@ -108,7 +119,10 @@ class AddressRemoteDataSource {
   Future<void> unsetAllDefaultAddresses(String userId, {String? excludeId}) async {
     try {
       
-      final snapshot = await addressCollection(userId)
+      final collection = addressCollection(userId);
+      if (collection == null) return;
+
+      final snapshot = await collection
           .where('isDefault', isEqualTo: true)
           .get();
 

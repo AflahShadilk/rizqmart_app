@@ -1,4 +1,4 @@
-package com.rizqmart.user
+package com.shadil.rizqmart
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
