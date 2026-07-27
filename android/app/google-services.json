@@ -170,6 +170,14 @@
           }
         },
         {
+          "client_id": "570019429913-sq32v0ict1vf9and8q093fljopp68ra9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shadil.rizqmart",
+            "certificate_hash": "94f077a38653f131c01038741a7036a4279fc73d"
+          }
+        },
+        {
           "client_id": "570019429913-1i815iku1kgvlt1ifgrbkemct0alq91l.apps.googleusercontent.com",
           "client_type": 3
         }
