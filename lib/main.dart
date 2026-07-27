@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:rizqmart/di/bloc_providers.dart';
@@ -31,7 +32,10 @@ void main() async {
         await Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
         );
-        
+
+        // Pass all uncaught Flutter framework errors to Crashlytics
+        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
         FirebaseMessaging.onBackgroundMessage(
             firebaseMessagingBackgroundHandler);
       } catch (e) {
@@ -60,13 +64,10 @@ void main() async {
       runApp(MyApp(navigatorKey: navigatorKey));
     },
     (error, stackTrace) {
-      FlutterError.reportError(
-        FlutterErrorDetails(exception: error, stack: stackTrace),
-      );
+      // Send uncaught async errors to Crashlytics
+      FirebaseCrashlytics.instance.recordError(error, stackTrace, fatal: true);
     },
   );
-
-  FlutterError.onError = FlutterError.presentError;
 }
 
 class MyApp extends StatelessWidget {

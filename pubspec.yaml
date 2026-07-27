@@ -69,6 +69,7 @@ dependencies:
   printing: ^5.14.2
   flutter_local_notifications: ^19.5.0
   firebase_messaging: ^16.1.1
+  firebase_crashlytics: ^5.0.7
   flutter_rating_bar: ^4.0.1
   responsive_display: ^1.0.0
   bloc: ^9.2.0
