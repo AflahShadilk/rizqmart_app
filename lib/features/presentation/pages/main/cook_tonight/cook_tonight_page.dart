@@ -63,7 +63,7 @@ class _CookTonightPageState extends State<CookTonightPage> {
             if (state is CookTonightError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.message),
+                  content: const Text('Something went wrong. Please try again later.'),
                   backgroundColor: context.cs.error,
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(

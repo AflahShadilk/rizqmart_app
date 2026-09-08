@@ -154,19 +154,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "570019429913-8ul4l33lurjn2o892qgbribgfvh4rkau.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.shadil.rizqmart",
-            "certificate_hash": "f10fe606a829ee925f7a1b913ab080f65a6ba757"
-          }
-        },
-        {
           "client_id": "570019429913-dr46q4qigubado01cb7dgvqi1jc78vni.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.shadil.rizqmart",
             "certificate_hash": "e8d7ea65839a7f64e3c4c18fc26c83fe0ac9c4b5"
+          }
+        },
+        {
+          "client_id": "570019429913-qt4ph9imb979rv7qtl2t7nh5c7jdubo2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shadil.rizqmart",
+            "certificate_hash": "a3dca25d05130e39c31f96c5c0f2b5210bd9b8b2"
           }
         },
         {
