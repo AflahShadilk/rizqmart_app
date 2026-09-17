@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/presentation/routes/app_routes.dart';
-import 'package:rizqmart/features/presentation/pages/onboarding/widget/welcome_page_widget.dart';
-import 'package:rizqmart/features/presentation/pages/onboarding/widget/onboarding_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:rizqmart/features/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/features/presentation/cubits/auth/welcome_cubit.dart';
 import 'package:rizqmart/features/presentation/cubits/auth/welcome_state.dart';
+import 'package:rizqmart/features/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/features/presentation/widgets/buttons/reusable_main_button.dart';
 
-// ---------------- Welcome Flow ----------------
-
-/// A flow widget that manages the onboarding welcome pages and animations
-/// for new users before they log in.
 class WelcomeFlow extends StatelessWidget {
   const WelcomeFlow({super.key});
-
-  // ---------------- Build Method ----------------
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +20,6 @@ class WelcomeFlow extends StatelessWidget {
   }
 }
 
-// ---------------- Welcome View ----------------
-
 class _WelcomeView extends StatefulWidget {
   const _WelcomeView();
 
@@ -35,39 +27,16 @@ class _WelcomeView extends StatefulWidget {
   State<_WelcomeView> createState() => _WelcomeViewState();
 }
 
-class _WelcomeViewState extends State<_WelcomeView>
-    with TickerProviderStateMixin {
-
-  // ---------------- Controllers ----------------
-
+class _WelcomeViewState extends State<_WelcomeView> {
   final PageController _pageController = PageController();
-  late AnimationController _animationController;
-
-  // ---------------- Variables ----------------
 
   static const int _totalPages = 3;
-
-  // ---------------- Init State ----------------
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-  }
-
-  // ---------------- Dispose ----------------
 
   @override
   void dispose() {
     _pageController.dispose();
-    _animationController.dispose();
     super.dispose();
   }
-
-  // ---------------- Helper Methods ----------------
 
   Future<void> _completeOnboarding() async {
     final pref = await SharedPreferences.getInstance();
@@ -77,88 +46,174 @@ class _WelcomeViewState extends State<_WelcomeView>
     }
   }
 
-  void _skipToEnd() {
-    _animationController.forward(from: 0.0);
-    _pageController.jumpToPage(_totalPages - 1);
+  void _nextOrComplete(int currentPage) {
+    if (currentPage < _totalPages - 1) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      _completeOnboarding();
+    }
   }
 
-  // ---------------- Build Method ----------------
+  void _skipToEnd() {
+    _pageController.jumpToPage(_totalPages - 1);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // ---------------- Page View ----------------
-          BlocListener<WelcomeCubit, WelcomeState>(
-            listener: (context, state) {
-              _animationController.forward(from: 0.0);
-            },
-            child: PageView(
-              controller: _pageController,
-              physics: const BouncingScrollPhysics(),
-              onPageChanged: (index) {
-                context.read<WelcomeCubit>().setPage(index);
-              },
-              children: [
-                OnboardingPageContent(
-                  title: 'Fresh & Organic',
-                  subtitle:
-                      'Get your groceries straight from farms to your doorstep.',
-                  imagePath: 'assets/icons_and_images/leeficon.png',
-                  bgColor: const Color(0xFF81C784),
-                  onPress: _completeOnboarding,
-                ),
-                OnboardingPageContent(
-                  title: 'Lightning Fast Delivery',
-                  subtitle:
-                      'Delivered in as fast as one hour, right when you need it.',
-                  imagePath: 'assets/icons_and_images/deliveryIcon.png',
-                  bgColor: const Color(0xFF4DB6AC),
-                  onPress: _completeOnboarding,
-                ),
-                OnboardingPageContent(
-                  title: 'Easy, Secure & Refundable',
-                  subtitle:
-                      'Shop with confidence. Easy returns and secure payments.',
-                  imagePath: 'assets/icons_and_images/secureicon.png',
-                  bgColor: const Color(0xFF7986CB),
-                  showButton: true,
-                  onPress: _completeOnboarding,
-                ),
-              ],
-            ),
-          ),
-
-          // ---------------- Skip Button ----------------
-          Positioned(
-            top: 50,
-            right: 20,
-            child: TextButton(
-              onPressed: _skipToEnd,
-              child: const Text(
-                'Skip',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+      backgroundColor: context.cs.surface,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16.0, top: 8.0),
+                child: TextButton(
+                  onPressed: _skipToEnd,
+                  child: Text(
+                    'Skip',
+                    style: context.ts.bodyLarge?.copyWith(
+                      color: context.cs.onSurface.withValues(alpha: 0.5),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                physics: const BouncingScrollPhysics(),
+                onPageChanged: (index) {
+                  context.read<WelcomeCubit>().setPage(index);
+                },
+                children: const [
+                  _OnboardingPage(
+                    title: 'Fresh & Organic',
+                    subtitle:
+                        'Get your groceries straight from farms to your doorstep.',
+                    imagePath: 'assets/icons_and_images/leeficon.png',
+                  ),
+                  _OnboardingPage(
+                    title: 'Lightning Fast Delivery',
+                    subtitle:
+                        'Delivered in as fast as one hour, right when you need it.',
+                    imagePath: 'assets/icons_and_images/deliveryIcon.png',
+                  ),
+                  _OnboardingPage(
+                    title: 'Easy, Secure & Refundable',
+                    subtitle:
+                        'Shop with confidence. Easy returns and secure payments.',
+                    imagePath: 'assets/icons_and_images/secureicon.png',
+                  ),
+                ],
+              ),
+            ),
+            BlocBuilder<WelcomeCubit, WelcomeState>(
+              builder: (context, state) {
+                int currentPage = 0;
+                if (state is WelcomeInitial) {
+                  currentPage = state.currentPage;
+                } else if (state is WelcomePageUpdated) {
+                  currentPage = state.currentPage;
+                }
 
-          // ---------------- Page Indicator ----------------
-          Positioned(
-            bottom: 30,
-            left: 20,
-            right: 20,
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          _totalPages,
+                          (index) => AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            height: 8,
+                            width: currentPage == index ? 24 : 8,
+                            decoration: BoxDecoration(
+                              color: currentPage == index
+                                  ? context.cs.secondary
+                                  : context.cs.onSurface.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                      ),
+                      32.h,
+                      SizedBox(
+                        width: double.infinity,
+                        child: MainButton(
+                          label: currentPage == _totalPages - 1
+                              ? 'Get Started'
+                              : 'Next',
+                          onPress: () => _nextOrComplete(currentPage),
+                          color: context.cs.primary,
+                          textColor: context.cs.onPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OnboardingPage extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String imagePath;
+
+  const _OnboardingPage({
+    required this.title,
+    required this.subtitle,
+    required this.imagePath,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            flex: 3,
+            child: Image.asset(
+              imagePath,
+              fit: BoxFit.contain,
+            ),
+          ),
+          Expanded(
+            flex: 2,
             child: Column(
               children: [
-                OnboardingIndicator(
-                  pageCount: _totalPages,
-                  animationController: _animationController,
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: context.ts.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: context.cs.onSurface,
+                  ),
                 ),
-                25.h,
+                16.h,
+                Text(
+                  subtitle,
+                  textAlign: TextAlign.center,
+                  style: context.ts.bodyLarge?.copyWith(
+                    color: context.cs.onSurface.withValues(alpha: 0.6),
+                    height: 1.5,
+                  ),
+                ),
               ],
             ),
           ),
