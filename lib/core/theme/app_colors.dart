@@ -89,4 +89,16 @@ class AppColors {
   static const Color chatErrorBackground = Color.fromRGBO(244, 67, 54, 0.1);
   static Color chatErrorIcon = const Color.fromRGBO(244, 67, 54, 0.7);
   static const Color chatErrorText = Color(0xFFF44336);
+
+  // Zepto Redesign Colors
+  static const Color primaryGreen = Color(0xFF1B5E20);
+  static const Color accentOrange = Color(0xFFFF7A00);
+  static const Color backgroundLight = Color(0xFFF7F8FA);
+  static const Color textPrimary = Color(0xFF1A1A1A);
+  static const Color textSecondary = Color(0xFF6B7280);
+  
+  static const Color statusPending = Color(0xFFFFC107);
+  static const Color statusConfirmed = Color(0xFF2196F3);
+  static const Color statusDelivered = Color(0xFF4CAF50);
+  static const Color statusCancelled = Color(0xFFF44336);
 }
