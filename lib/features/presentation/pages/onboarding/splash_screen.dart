@@ -1,18 +1,15 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:rizqmart/core/constant/constants.dart';
 import 'package:rizqmart/features/presentation/routes/app_routes.dart';
 import 'package:rizqmart/features/data/data_source/services/notification_service.dart';
 import 'package:rizqmart/core/theme/context_theme.dart';
 import 'package:rizqmart/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rizqmart/features/presentation/widgets/common/icon_and_name.dart';
 
-// ---------------- Splash Screen ----------------
-
-/// A splash screen that shows an initial loading animation and handles routing
-/// based on user login status.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -20,30 +17,12 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-
-  // ---------------- Controllers ----------------
-
-  late final AnimationController _lottieController;
-
-  // ---------------- Init State ----------------
-
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _lottieController = AnimationController(vsync: this);
+    Future.delayed(const Duration(seconds: 2), _navigateAfterAnimation);
   }
-
-  // ---------------- Dispose ----------------
-
-  @override
-  void dispose() {
-    _lottieController.dispose();
-    super.dispose();
-  }
-
-  // ---------------- Helper Methods ----------------
 
   Future<void> _navigateAfterAnimation() async {
     final pref = await SharedPreferences.getInstance();
@@ -63,25 +42,24 @@ class _SplashScreenState extends State<SplashScreen>
     }
   }
 
-  // ---------------- Build Method ----------------
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.cs.surface,
-      body: Center(
-        // ---------------- Lottie Animation ----------------
-        child: Lottie.asset(
-          'assets/lottie/Shopping Cart.json',
-          controller: _lottieController,
-          width: 250,
-          height: 250,
-          fit: BoxFit.contain,
-          onLoaded: (composition) {
-            _lottieController
-              ..duration = composition.duration
-              ..forward().whenComplete(_navigateAfterAnimation);
-          },
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const IconRizq(),
+              const SizedBox(height: 16),
+              const RizqMartName(),
+              const SizedBox(height: 48),
+              CircularProgressIndicator(
+                color: context.cs.primary,
+              ),
+            ],
+          ),
         ),
       ),
     );
