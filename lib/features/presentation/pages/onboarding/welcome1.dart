@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rizqmart/features/presentation/routes/app_routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/features/presentation/cubits/auth/welcome_cubit.dart';
 import 'package:rizqmart/features/presentation/cubits/auth/welcome_state.dart';
-import 'package:rizqmart/features/presentation/widgets/extensions/sized_box.dart';
-import 'package:rizqmart/features/presentation/widgets/buttons/reusable_main_button.dart';
 
 class WelcomeFlow extends StatelessWidget {
   const WelcomeFlow({super.key});
@@ -29,7 +28,6 @@ class _WelcomeView extends StatefulWidget {
 
 class _WelcomeViewState extends State<_WelcomeView> {
   final PageController _pageController = PageController();
-
   static const int _totalPages = 3;
 
   @override
@@ -46,17 +44,6 @@ class _WelcomeViewState extends State<_WelcomeView> {
     }
   }
 
-  void _nextOrComplete(int currentPage) {
-    if (currentPage < _totalPages - 1) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    } else {
-      _completeOnboarding();
-    }
-  }
-
   void _skipToEnd() {
     _pageController.jumpToPage(_totalPages - 1);
   }
@@ -64,105 +51,135 @@ class _WelcomeViewState extends State<_WelcomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.cs.surface,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 16.0, top: 8.0),
+      backgroundColor: AppColors.backgroundLight,
+      body: Stack(
+        children: [
+          PageView(
+            controller: _pageController,
+            physics: const BouncingScrollPhysics(),
+            onPageChanged: (index) {
+              context.read<WelcomeCubit>().setPage(index);
+            },
+            children: const [
+              _OnboardingPage(
+                title: 'Fresh & Organic',
+                subtitle: 'Get your groceries straight from farms to your doorstep.',
+                imagePath: 'assets/icons_and_images/leeficon.png',
+              ),
+              _OnboardingPage(
+                title: 'Lightning Fast Delivery',
+                subtitle: 'Delivered in as fast as one hour, right when you need it.',
+                imagePath: 'assets/icons_and_images/deliveryIcon.png',
+              ),
+              _OnboardingPage(
+                title: 'Easy, Secure & Refundable',
+                subtitle: 'Shop with confidence. Easy returns and secure payments.',
+                imagePath: 'assets/icons_and_images/secureicon.png',
+              ),
+            ],
+          ),
+          
+          // Bottom Controls (Dots & Button)
+          BlocBuilder<WelcomeCubit, WelcomeState>(
+            builder: (context, state) {
+              int currentPage = 0;
+              if (state is WelcomeInitial) {
+                currentPage = state.currentPage;
+              } else if (state is WelcomePageUpdated) {
+                currentPage = state.currentPage;
+              }
+
+              return Positioned(
+                bottom: 40,
+                left: 24,
+                right: 24,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Dots
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        _totalPages,
+                        (index) => AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          height: 8,
+                          width: currentPage == index ? 24 : 8,
+                          decoration: BoxDecoration(
+                            color: currentPage == index
+                                ? AppColors.primaryBlue
+                                : AppColors.dividerGray,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    // Button (Only on last slide)
+                    if (currentPage == _totalPages - 1)
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: ElevatedButton(
+                          onPressed: _completeOnboarding,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryBlue,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            'Get Started',
+                            style: GoogleFonts.manrope(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      const SizedBox(height: 56), // Reserve space so dots don't jump
+                  ],
+                ),
+              );
+            },
+          ),
+
+          // Skip Button (Top Right)
+          BlocBuilder<WelcomeCubit, WelcomeState>(
+            builder: (context, state) {
+              int currentPage = 0;
+              if (state is WelcomeInitial) {
+                currentPage = state.currentPage;
+              } else if (state is WelcomePageUpdated) {
+                currentPage = state.currentPage;
+              }
+
+              if (currentPage == _totalPages - 1) {
+                return const SizedBox.shrink();
+              }
+
+              return Positioned(
+                top: MediaQuery.of(context).padding.top + 8,
+                right: 16,
                 child: TextButton(
                   onPressed: _skipToEnd,
                   child: Text(
                     'Skip',
-                    style: context.ts.bodyLarge?.copyWith(
-                      color: context.cs.onSurface.withValues(alpha: 0.5),
+                    style: GoogleFonts.manrope(
+                      color: AppColors.textSecondary,
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-              ),
-            ),
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                physics: const BouncingScrollPhysics(),
-                onPageChanged: (index) {
-                  context.read<WelcomeCubit>().setPage(index);
-                },
-                children: const [
-                  _OnboardingPage(
-                    title: 'Fresh & Organic',
-                    subtitle:
-                        'Get your groceries straight from farms to your doorstep.',
-                    imagePath: 'assets/icons_and_images/leeficon.png',
-                  ),
-                  _OnboardingPage(
-                    title: 'Lightning Fast Delivery',
-                    subtitle:
-                        'Delivered in as fast as one hour, right when you need it.',
-                    imagePath: 'assets/icons_and_images/deliveryIcon.png',
-                  ),
-                  _OnboardingPage(
-                    title: 'Easy, Secure & Refundable',
-                    subtitle:
-                        'Shop with confidence. Easy returns and secure payments.',
-                    imagePath: 'assets/icons_and_images/secureicon.png',
-                  ),
-                ],
-              ),
-            ),
-            BlocBuilder<WelcomeCubit, WelcomeState>(
-              builder: (context, state) {
-                int currentPage = 0;
-                if (state is WelcomeInitial) {
-                  currentPage = state.currentPage;
-                } else if (state is WelcomePageUpdated) {
-                  currentPage = state.currentPage;
-                }
-
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          _totalPages,
-                          (index) => AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            height: 8,
-                            width: currentPage == index ? 24 : 8,
-                            decoration: BoxDecoration(
-                              color: currentPage == index
-                                  ? context.cs.secondary
-                                  : context.cs.onSurface.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                        ),
-                      ),
-                      32.h,
-                      SizedBox(
-                        width: double.infinity,
-                        child: MainButton(
-                          label: currentPage == _totalPages - 1
-                              ? 'Get Started'
-                              : 'Next',
-                          onPress: () => _nextOrComplete(currentPage),
-                          color: context.cs.primary,
-                          textColor: context.cs.onPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -181,44 +198,61 @@ class _OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 3,
+    return Column(
+      children: [
+        // Top ~60% Image
+        Expanded(
+          flex: 6,
+          child: Container(
+            width: double.infinity,
+            alignment: Alignment.center,
             child: Image.asset(
               imagePath,
-              fit: BoxFit.contain,
+              fit: BoxFit.cover,
             ),
           ),
-          Expanded(
-            flex: 2,
+        ),
+        // Bottom ~40% White Panel
+        Expanded(
+          flex: 4,
+          child: Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(28),
+                topRight: Radius.circular(28),
+              ),
+            ),
+            padding: const EdgeInsets.fromLTRB(24, 40, 24, 24),
             child: Column(
               children: [
                 Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: context.ts.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: context.cs.onSurface,
+                  style: GoogleFonts.manrope(
+                    color: AppColors.textPrimary,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800, // ExtraBold
                   ),
                 ),
-                16.h,
+                const SizedBox(height: 12),
                 Text(
                   subtitle,
                   textAlign: TextAlign.center,
-                  style: context.ts.bodyLarge?.copyWith(
-                    color: context.cs.onSurface.withValues(alpha: 0.6),
-                    height: 1.5,
+                  maxLines: 1, // one-line gray subtitle
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.manrope(
+                    color: AppColors.textSecondary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
