@@ -1,0 +1,210 @@
+{
+  "project_info": {
+    "project_number": "570019429913",
+    "project_id": "rizqmart-486b8",
+    "storage_bucket": "rizqmart-486b8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570019429913:android:be3b3ef5771467b0623488",
+        "android_client_info": {
+          "package_name": "com.example.rizqmart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "570019429913-pdvegalue3qe822e88es1g6d8n7j0pgk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.rizqmart",
+            "certificate_hash": "e8d7ea65839a7f64e3c4c18fc26c83fe0ac9c4b5"
+          }
+        },
+        {
+          "client_id": "570019429913-1i815iku1kgvlt1ifgrbkemct0alq91l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0AT2C41Rrd_nF1feRffyMWwCpHOgh7bI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "570019429913-1i815iku1kgvlt1ifgrbkemct0alq91l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "570019429913-lqnhesfdvj7imufo2q3s3m38nttv9bhj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.rizqmart"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570019429913:android:541a07ffbeeb5887623488",
+        "android_client_info": {
+          "package_name": "com.example.rizqmartadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "570019429913-6afjkn9l76e73pnco9pokelanhok0ba1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.rizqmartadmin",
+            "certificate_hash": "e8d7ea65839a7f64e3c4c18fc26c83fe0ac9c4b5"
+          }
+        },
+        {
+          "client_id": "570019429913-1i815iku1kgvlt1ifgrbkemct0alq91l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0AT2C41Rrd_nF1feRffyMWwCpHOgh7bI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "570019429913-1i815iku1kgvlt1ifgrbkemct0alq91l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "570019429913-lqnhesfdvj7imufo2q3s3m38nttv9bhj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.rizqmart"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570019429913:android:4104029167ca20c9623488",
+        "android_client_info": {
+          "package_name": "com.rizqmart.user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "570019429913-f7f79n2n8co3ibcu04ghdfrjr9aue851.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rizqmart.user",
+            "certificate_hash": "9371aaee8d7aa5b0f5d5e99666fceacbf7887a09"
+          }
+        },
+        {
+          "client_id": "570019429913-ltrasc0e3t2vbh803c24vap6lqngqadk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rizqmart.user",
+            "certificate_hash": "e8d7ea65839a7f64e3c4c18fc26c83fe0ac9c4b5"
+          }
+        },
+        {
+          "client_id": "570019429913-1i815iku1kgvlt1ifgrbkemct0alq91l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0AT2C41Rrd_nF1feRffyMWwCpHOgh7bI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "570019429913-1i815iku1kgvlt1ifgrbkemct0alq91l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "570019429913-lqnhesfdvj7imufo2q3s3m38nttv9bhj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.rizqmart"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570019429913:android:3c1b7c2d5cab211a623488",
+        "android_client_info": {
+          "package_name": "com.shadil.rizqmart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "570019429913-dr46q4qigubado01cb7dgvqi1jc78vni.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shadil.rizqmart",
+            "certificate_hash": "e8d7ea65839a7f64e3c4c18fc26c83fe0ac9c4b5"
+          }
+        },
+        {
+          "client_id": "570019429913-qt4ph9imb979rv7qtl2t7nh5c7jdubo2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shadil.rizqmart",
+            "certificate_hash": "a3dca25d05130e39c31f96c5c0f2b5210bd9b8b2"
+          }
+        },
+        {
+          "client_id": "570019429913-sq32v0ict1vf9and8q093fljopp68ra9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shadil.rizqmart",
+            "certificate_hash": "94f077a38653f131c01038741a7036a4279fc73d"
+          }
+        },
+        {
+          "client_id": "570019429913-1i815iku1kgvlt1ifgrbkemct0alq91l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0AT2C41Rrd_nF1feRffyMWwCpHOgh7bI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "570019429913-1i815iku1kgvlt1ifgrbkemct0alq91l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "570019429913-lqnhesfdvj7imufo2q3s3m38nttv9bhj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.rizqmart"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
