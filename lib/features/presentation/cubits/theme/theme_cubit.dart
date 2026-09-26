@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/presentation/cubits/theme/theme_state.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 
 
 import 'package:rizqmart/core/theme/app_colors.dart';
@@ -17,8 +17,8 @@ class ThemeCubit extends Cubit<ThemeState> {
     useMaterial3: true,
     scaffoldBackgroundColor: AppColors.backgroundLight,
 
-    colorScheme: ColorScheme.light(
-      primary: AppColors.primaryGreen,
+    colorScheme: const ColorScheme.light(
+      primary: AppColors.primaryBlue,
       secondary: AppColors.accentOrange,
       surface: Colors.white,
       onPrimary: Colors.white,
@@ -27,24 +27,24 @@ class ThemeCubit extends Cubit<ThemeState> {
       error: AppColors.statusCancelled,
     ),
 
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       backgroundColor: AppColors.backgroundLight,
       foregroundColor: AppColors.textPrimary,
       elevation: 0,
-      titleTextStyle: TextStyle(
+      titleTextStyle: GoogleFonts.manrope(
         fontSize: 19,
         fontWeight: FontWeight.w700,
         color: AppColors.textPrimary,
       ),
     ),
 
-    textTheme: const TextTheme(
-      titleLarge: TextStyle(
+    textTheme: GoogleFonts.manropeTextTheme(ThemeData.light().textTheme).copyWith(
+      titleLarge: GoogleFonts.manrope(
         fontSize: 22,
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),
-      bodyMedium: TextStyle(
+      bodyMedium: GoogleFonts.manrope(
         fontSize: 16,
         color: AppColors.textSecondary,
       ),
@@ -52,7 +52,7 @@ class ThemeCubit extends Cubit<ThemeState> {
 
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.primaryBlue,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
         shape: RoundedRectangleBorder(
@@ -67,42 +67,42 @@ class ThemeCubit extends Cubit<ThemeState> {
     useMaterial3: true,
     scaffoldBackgroundColor: const Color(0xFF111315),
 
-    colorScheme: ColorScheme.dark(
-      primary: AppColors.primaryGreen,
+    colorScheme: const ColorScheme.dark(
+      primary: AppColors.primaryBlue,
       secondary: AppColors.accentOrange,
-      surface: const Color(0xFF1A1C1E),
+      surface: Color(0xFF1A1C1E),
       onPrimary: Colors.white,
       onSecondary: Colors.white,
-      onSurface: const Color(0xFFF7F8FA),
+      onSurface: Color(0xFFF7F8FA),
       error: AppColors.statusCancelled,
     ),
 
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF111315),
+    appBarTheme: AppBarTheme(
+      backgroundColor: const Color(0xFF111315),
       foregroundColor: Colors.white,
       elevation: 0,
-      titleTextStyle: TextStyle(
+      titleTextStyle: GoogleFonts.manrope(
         fontSize: 19,
         fontWeight: FontWeight.w700,
         color: Colors.white,
       ),
     ),
 
-    textTheme: const TextTheme(
-      titleLarge: TextStyle(
+    textTheme: GoogleFonts.manropeTextTheme(ThemeData.dark().textTheme).copyWith(
+      titleLarge: GoogleFonts.manrope(
         fontSize: 22,
         fontWeight: FontWeight.bold,
         color: Colors.white,
       ),
-      bodyMedium: TextStyle(
+      bodyMedium: GoogleFonts.manrope(
         fontSize: 16,
-        color: Color(0xFFC9C9C9),
+        color: const Color(0xFFC9C9C9),
       ),
     ),
 
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.primaryBlue,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
         shape: RoundedRectangleBorder(

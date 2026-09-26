@@ -90,12 +90,15 @@ class AppColors {
   static Color chatErrorIcon = const Color.fromRGBO(244, 67, 54, 0.7);
   static const Color chatErrorText = Color(0xFFF44336);
 
-  // Zepto Redesign Colors
-  static const Color primaryGreen = Color(0xFF1B5E20);
-  static const Color accentOrange = Color(0xFFFF7A00);
+  // Figma Redesign Colors
+  static const Color primaryBlue = Color(0xFF2A4BA0);
+  static const Color accentOrange = Color(0xFFF55A00);
+  static const Color accentAmber = Color(0xFFF9B023);
   static const Color backgroundLight = Color(0xFFF7F8FA);
-  static const Color textPrimary = Color(0xFF1A1A1A);
-  static const Color textSecondary = Color(0xFF6B7280);
+  static const Color textPrimary = Color(0xFF1E222B);
+  static const Color textSecondary = Color(0xFF616A7D);
+  static const Color dividerGray = Color(0xFFE0E3EA);
+  static const Color labelGray = Color(0xFF8891A5);
   
   static const Color statusPending = Color(0xFFFFC107);
   static const Color statusConfirmed = Color(0xFF2196F3);
