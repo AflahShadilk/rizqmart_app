@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,17 +11,7 @@ import 'package:rizqmart/features/presentation/bloc/auth/signIn/signin_event.dar
 import 'package:rizqmart/features/presentation/bloc/auth/signIn/signin_state.dart';
 import 'package:rizqmart/features/presentation/pages/validators/email_validator.dart';
 import 'package:rizqmart/features/presentation/pages/validators/password_validator.dart';
-import 'package:rizqmart/features/presentation/widgets/common/app_logo.dart';
-import 'package:rizqmart/features/presentation/widgets/common/auth_decoration_names.dart';
-import 'package:rizqmart/features/presentation/widgets/common/auth_text_field.dart';
-import 'package:rizqmart/features/presentation/widgets/buttons/elevated_buttons.dart';
-import 'package:rizqmart/features/presentation/widgets/buttons/google_sign_button.dart';
-import 'package:rizqmart/features/presentation/widgets/buttons/text_button.dart';
-import 'package:rizqmart/features/presentation/widgets/extensions/sized_box.dart';
-import 'package:rizqmart/features/presentation/widgets/common/page_responsive.dart';
-import 'package:rizqmart/features/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 
-/// A page widget representing the main login screen for existing users to authenticate via email or Google.
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -35,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> createAccount = GlobalKey<FormState>();
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -45,182 +34,332 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double fontSize;
-
-    if (Responsive.isTablet(context)) {
-      fontSize = 22;
-    } else {
-      fontSize = 18;
-    }
     return BlocConsumer<SigninBloc, SignInState>(
       listener: (context, state) {
         if (state is SignInSuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(state.massage),
-            backgroundColor: AppColors.success500.withValues(alpha: .2),
+            backgroundColor: AppColors.success500.withValues(alpha: 0.2),
           ));
-          Navigator.pushReplacementNamed(context,AppRoutes.navigationBar);
-
+          Navigator.pushReplacementNamed(context, AppRoutes.navigationBar);
           email.clear();
           password.clear();
         } else if (state is SignInFailureState) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(state.error),
-              backgroundColor: AppColors.error500.withValues(alpha: 0.3)));
+            content: Text(state.error),
+            backgroundColor: AppColors.error500.withValues(alpha: 0.3),
+          ));
         }
       },
       builder: (context, state) {
-        final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-        final isKeyboardVisible = keyboardHeight > 0;
-
-        return ResponsiveWrapper(child: Scaffold(
-          backgroundColor: Colors.green,
+        return Scaffold(
+          backgroundColor: AppColors.primaryBlue,
           resizeToAvoidBottomInset: true,
-          body: SafeArea(
-              child: Stack(
+          body: Column(
             children: [
-              Column(
-                children: [
-                  40.h,
-                  Center(child: CommonAppLogo()),
-                  20.h,
-                ],
-              ),
-              AnimatedPositioned(
-                duration: Duration(milliseconds: 200),
-                top: isKeyboardVisible
-                    ? MediaQuery.of(context).size.height * 0.15
-                    : MediaQuery.of(context).size.height * 0.43,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  width: double.infinity,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.black10,
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      )
+              // Header Block
+              Container(
+                width: double.infinity,
+                height: 300,
+                color: AppColors.primaryBlue,
+                child: SafeArea(
+                  bottom: false,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'RizqMart',
+                        style: GoogleFonts.manrope(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800, // ExtraBold
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Fresh groceries, delivered fast',
+                        style: GoogleFonts.manrope(
+                          color: Colors.white.withValues(alpha: 0.8), // 80% opacity
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400, // Regular
+                        ),
+                      ),
                     ],
                   ),
+                ),
+              ),
+              // Overlapping Card
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(28),
+                      topRight: Radius.circular(28),
+                    ),
+                  ),
                   child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
                     child: Form(
                       key: createAccount,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Center(
-                            child: Text(
-                              'Login',
-                              style: GoogleFonts.poppins(
-                                fontSize: fontSize,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.black50,
+                          Text(
+                            'Welcome Back',
+                            style: GoogleFonts.manrope(
+                              color: AppColors.textPrimary,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w800, // ExtraBold
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Login to continue shopping',
+                            style: GoogleFonts.manrope(
+                              color: AppColors.textSecondary,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400, // Regular
+                            ),
+                          ),
+                          const SizedBox(height: 32),
+                          // Email Field
+                          Text(
+                            'EMAIL',
+                            style: GoogleFonts.manrope(
+                              color: AppColors.labelGray,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600, // SemiBold
+                            ),
+                          ),
+                          TextFormField(
+                            controller: email,
+                            validator: emailValidator,
+                            keyboardType: TextInputType.emailAddress,
+                            style: GoogleFonts.manrope(
+                              color: AppColors.textPrimary,
+                              fontSize: 16,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'Enter your email',
+                              hintStyle: GoogleFonts.manrope(
+                                color: AppColors.textSecondary,
+                                fontSize: 16,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: AppColors.dividerGray, width: 1),
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: AppColors.primaryBlue, width: 1),
+                              ),
+                              errorBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red, width: 1),
                               ),
                             ),
                           ),
-                          24.h,
-                          fieldCatogoryName(context, 'Email'),
-                          TextFormFLogin(
-                            controller: email,
-                            hint: 'Enter your email',
-                            validator: emailValidator,
-                            keyboardType: TextInputType.emailAddress,
+                          const SizedBox(height: 24),
+                          // Password Field
+                          Text(
+                            'PASSWORD',
+                            style: GoogleFonts.manrope(
+                              color: AppColors.labelGray,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                          10.h,
-                          fieldCatogoryName(context, 'Password'),
-                          TextFormFLogin(
+                          TextFormField(
                             controller: password,
-                            hint: 'Enter password',
                             validator: passwordValidator,
-                            obscureText: true,
+                            obscureText: _obscurePassword,
+                            style: GoogleFonts.manrope(
+                              color: AppColors.textPrimary,
+                              fontSize: 16,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'Enter your password',
+                              hintStyle: GoogleFonts.manrope(
+                                color: AppColors.textSecondary,
+                                fontSize: 16,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: AppColors.dividerGray, width: 1),
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: AppColors.primaryBlue, width: 1),
+                              ),
+                              errorBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red, width: 1),
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                  color: AppColors.textSecondary,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
+                              ),
+                            ),
                           ),
-                          AuthTextButton(
-                            onPress: () {
-                              Navigator.of(context).pushNamed(AppRoutes.forgot);
-                            },
-                            content: "Forgot Password?",
-                            color: AppColors.black,
+                          const SizedBox(height: 16),
+                          // Forgot Password
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(AppRoutes.forgot);
+                              },
+                              child: Text(
+                                'Forgot Password?',
+                                style: GoogleFonts.manrope(
+                                  color: AppColors.primaryBlue,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
                           ),
-
-                          
-                          Center(
-                            child: CustomElevatedButton(
-                              fontSize: fontSize,
-                              onPress: () async {
+                          const SizedBox(height: 32),
+                          // Login Button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: ElevatedButton(
+                              onPressed: () {
                                 if (createAccount.currentState!.validate()) {
                                   context.read<SigninBloc>().add(
-                                      SignInSubmittedEvent(
-                                          emailId: email.text.trim(),
-                                          password: password.text.trim()));
-                                }
-                              },
-                              color: Colors.green,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 80, vertical: 14),
-                              content: 'Login',
-                            ),
-                          ),
-                          Center(
-                            child:
-                                BlocConsumer<GooogleAuthBloc, GooogleAuthState>(
-                              listener: (context, state) {
-                                if (state is GooogleAuthFailure) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(
-                                            'Google Sign-In Error: ${state.message}')),
-                                  );
-                                } else if (state is GooogleAuthSuccess) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Welcome ${state.user.displayName ?? state.user.email}',
-                                      ),
+                                    SignInSubmittedEvent(
+                                      emailId: email.text.trim(),
+                                      password: password.text.trim(),
                                     ),
                                   );
-                                  Navigator.pushReplacementNamed(context, AppRoutes.navigationBar);
                                 }
                               },
-                              builder: (context, state) {
-                                if (state is GooogleAuthLoading) {
-                                  return const SizedBox(
-                                    height: 50,
-                                    child: Center(
-                                        child: CircularProgressIndicator()),
-                                  );
-                                }
-
-                                return GoogleSignInButton(
-                                  onPressed: () {
-                                    context
-                                        .read<GooogleAuthBloc>()
-                                        .add(SignInWithGoogleEvent());
-                                    
-                                    
-                                  },
-                                );
-                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primaryBlue,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                elevation: 0,
+                              ),
+                              child: Text(
+                                'Login',
+                                style: GoogleFonts.manrope(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                             ),
                           ),
-                          5.h,
+                          const SizedBox(height: 24),
+                          // OR divider
+                          Row(
+                            children: [
+                              const Expanded(child: Divider(color: AppColors.dividerGray, thickness: 1)),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Text(
+                                  'OR',
+                                  style: GoogleFonts.manrope(
+                                    color: AppColors.textSecondary,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              const Expanded(child: Divider(color: AppColors.dividerGray, thickness: 1)),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                          // Google Sign In
+                          BlocConsumer<GooogleAuthBloc, GooogleAuthState>(
+                            listener: (context, state) {
+                              if (state is GooogleAuthFailure) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Google Sign-In Error: ${state.message}')),
+                                );
+                              } else if (state is GooogleAuthSuccess) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Welcome ${state.user.displayName ?? state.user.email}'),
+                                  ),
+                                );
+                                Navigator.pushReplacementNamed(context, AppRoutes.navigationBar);
+                              }
+                            },
+                            builder: (context, state) {
+                              if (state is GooogleAuthLoading) {
+                                return const Center(child: CircularProgressIndicator());
+                              }
+                              return SizedBox(
+                                width: double.infinity,
+                                height: 56,
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    context.read<GooogleAuthBloc>().add(SignInWithGoogleEvent());
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    side: const BorderSide(color: AppColors.dividerGray, width: 1),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset('assets/icons_and_images/googleicon.png', height: 24, width: 24),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Sign in with Google',
+                                        style: GoogleFonts.manrope(
+                                          color: AppColors.textPrimary,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 32),
+                          // Sign Up Link
                           Center(
-                            child: AuthTextButton(
-                              onPress: () {
+                            child: GestureDetector(
+                              onTap: () {
                                 Navigator.pushNamed(context, AppRoutes.signUp);
                               },
-                              content: "Don't have an account? Sign up",
-                              color: Colors.green,
+                              child: RichText(
+                                text: TextSpan(
+                                  text: "Don't have an account? ",
+                                  style: GoogleFonts.manrope(
+                                    color: AppColors.textSecondary,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: "Sign Up",
+                                      style: GoogleFonts.manrope(
+                                        color: AppColors.primaryBlue,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          )
+                          ),
+                          const SizedBox(height: 16),
                         ],
                       ),
                     ),
@@ -228,8 +367,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ],
-          )),
-        ));
+          ),
+        );
       },
     );
   }
