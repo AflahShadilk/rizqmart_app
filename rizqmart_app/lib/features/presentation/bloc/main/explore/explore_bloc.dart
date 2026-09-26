@@ -1,0 +1,128 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dartz/dartz.dart';
+import 'package:rizqmart/core/error/failures.dart';
+import 'package:rizqmart/features/domain/usecase/main/explore/get_category_usecase.dart';
+import 'package:rizqmart/features/domain/usecase/main/explore/get_productbycategory_usecase.dart';
+import 'package:rizqmart/features/domain/usecase/main/explore/get_products_usecase.dart';
+import 'package:rizqmart/features/domain/usecase/main/explore/search_products_usecase.dart';
+import 'package:rizqmart/features/presentation/bloc/main/explore/explore_event.dart';
+import 'package:rizqmart/features/presentation/bloc/main/explore/explore_state.dart';
+import 'package:rizqmart/features/domain/entities/main/explore_entities.dart';
+import 'package:rizqmart/features/data/model/main/explore_model.dart';
+
+/// Business logic for fetching and managing products, categories, and search results on the explore page.
+class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
+  final GetProductsUsecase getProductUsecase;
+  final GetProductbycategoryUsecase getProductbycategoryUsecase;
+  final SearchProductsUsecase searchProductsUsecase;
+  final GetCategoryUsecase getCategoryUsecase;
+  ExploreBloc(
+      {required this.getProductUsecase,
+      required this.getProductbycategoryUsecase,
+      required this.searchProductsUsecase,
+      required this.getCategoryUsecase})
+      : super(ExploreInitialState()) {
+        on<GetAllProductsEvent>(onGetProducts);
+        on<GetProductsByCategoryEvent>(onGetProductsByCategory);
+        on<SearchProductsEvent>(onSearchProducts);
+        on<GetCategoriesEvent>(onGetCategories);
+      }
+
+  Future<void> onGetProducts(GetAllProductsEvent event, Emitter<ExploreState> emit) async {
+    emit(ExploreLoadingState());
+    
+    final results = await Future.wait([
+      getProductUsecase.call().first,
+      getCategoryUsecase.call().first,
+    ]);
+    
+    final productsResult = results[0] as Either<Failure, List<ExploreEntities>>;
+    final categoriesResult = results[1] as Either<Failure, List<CategoryModel>>;
+    
+    productsResult.fold(
+      (failure) => emit(ExploreFailureState(failure.message)),
+      (products) {
+        categoriesResult.fold(
+          (failure) => emit(ExploreFailureState(failure.message)),
+          (categories) => emit(ExploreLoadedState(
+            products: products,
+            categories: categories,
+          )),
+        );
+      },
+    );
+  }
+
+  Future<void> onGetProductsByCategory(
+    GetProductsByCategoryEvent event,
+    Emitter<ExploreState> emit,
+  ) async {
+    emit(ExploreLoadingState());
+    
+    final results = await Future.wait([
+      getProductbycategoryUsecase.call(event.category).first,
+      getCategoryUsecase.call().first,
+    ]);
+    
+    final productsResult = results[0] as Either<Failure, List<ExploreEntities>>;
+    final categoriesResult = results[1] as Either<Failure, List<CategoryModel>>;
+    
+    productsResult.fold(
+      (failure) => emit(ExploreFailureState(failure.message)),
+      (products) {
+        categoriesResult.fold(
+          (failure) => emit(ExploreFailureState(failure.message)),
+          (categories) => emit(ExploreLoadedState(
+            products: products,
+            categories: categories,
+          )),
+        );
+      },
+    );
+  }
+
+  Future<void> onSearchProducts(
+    SearchProductsEvent event,
+    Emitter<ExploreState> emit,
+  ) async {
+    emit(ExploreLoadingState());
+    
+    final results = await Future.wait([
+      searchProductsUsecase.call(event.query).first,
+      getCategoryUsecase.call().first,
+    ]);
+    
+    final productsResult = results[0] as Either<Failure, List<ExploreEntities>>;
+    final categoriesResult = results[1] as Either<Failure, List<CategoryModel>>;
+    
+    productsResult.fold(
+      (failure) => emit(ExploreFailureState(failure.message)),
+      (products) {
+        categoriesResult.fold(
+          (failure) => emit(ExploreFailureState(failure.message)),
+          (categories) => emit(ExploreLoadedState(
+            products: products,
+            categories: categories,
+          )),
+        );
+      },
+    );
+  }
+
+  Future<void> onGetCategories(
+    GetCategoriesEvent event,
+    Emitter<ExploreState> emit,
+  ) async {
+    emit(ExploreLoadingState());
+    
+    final categoriesResult = await getCategoryUsecase.call().first;
+    
+    categoriesResult.fold(
+      (failure) => emit(ExploreFailureState(failure.message)),
+      (categories) => emit(ExploreLoadedState(
+        products: [],
+        categories: categories,
+      )),
+    );
+  }
+}
