@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/features/presentation/bloc/notification/notification_bloc.dart';
 import 'package:rizqmart/features/presentation/bloc/notification/notification_event.dart';
 import 'package:rizqmart/features/presentation/bloc/notification/notification_state.dart';
@@ -19,13 +20,21 @@ class NotificationsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.cs.surface,
+      backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
+        backgroundColor: AppColors.primaryBlue,
+        foregroundColor: Colors.white,
+        elevation: 0,
         title: Text(
           'Notifications',
-          style: context.ts.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          style: GoogleFonts.manrope(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         centerTitle: true,
+        // "Clear All" tappable text action — behavior unchanged
         actions: [
           TextButton(
             onPressed: () {
@@ -36,9 +45,10 @@ class NotificationsPage extends StatelessWidget {
             },
             child: Text(
               'Clear All',
-              style: context.ts.labelMedium?.copyWith(
-                color: context.cs.primary,
+              style: GoogleFonts.manrope(
+                color: Colors.white.withValues(alpha: 0.85),
                 fontWeight: FontWeight.w600,
+                fontSize: 14,
               ),
             ),
           ),
@@ -48,7 +58,9 @@ class NotificationsPage extends StatelessWidget {
       body: BlocBuilder<NotificationBloc, NotificationState>(
         builder: (context, state) {
           if (state is NotificationLoadingState) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.primaryBlue),
+            );
           }
           if (state is NotificationLoadedState) {
             if (state.notifications.isEmpty) {
@@ -57,9 +69,13 @@ class NotificationsPage extends StatelessWidget {
             return ListView.separated(
               padding: const EdgeInsets.symmetric(vertical: 8),
               itemCount: state.notifications.length,
-              separatorBuilder: (context, index) => Divider(
+              // Thin divider using design system dividerGray
+              separatorBuilder: (context, index) => const Divider(
                 height: 1,
-                color: context.cs.outlineVariant.withValues(alpha: 0.1),
+                thickness: 1,
+                color: AppColors.dividerGray,
+                indent: 16,
+                endIndent: 16,
               ),
               itemBuilder: (context, index) {
                 final notification = state.notifications[index];
@@ -71,7 +87,10 @@ class NotificationsPage extends StatelessWidget {
             return Center(
               child: Text(
                 'Failed to load notifications',
-                style: context.ts.bodyMedium?.copyWith(color: context.cs.error),
+                style: GoogleFonts.manrope(
+                  color: AppColors.statusCancelled,
+                  fontSize: 14,
+                ),
               ),
             );
           }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/core/theme/app_colors.dart';
 
 // ---------------- Notification Icon Widget ----------------
 
-/// Reusable icon widget for notification items, styled based on its read status and notification type.
+/// Reusable icon widget for notification items — soft blue-tinted circle,
+/// icon color shifts to primary for unread and lighter for read.
 class NotificationIcon extends StatelessWidget {
   final String type;
   final bool isRead;
@@ -17,10 +18,15 @@ class NotificationIcon extends StatelessWidget {
 // ---------------- Build Method ----------------
   @override
   Widget build(BuildContext context) {
-    Color iconColor = isRead ? context.cs.secondary : context.cs.primary;
-    Color bgColor = isRead ? context.cs.secondaryContainer.withValues(alpha: 0.4) : context.cs.primaryContainer.withValues(alpha: 0.6);
+    // Unread: solid blue tint; read: very faint blue tint
+    final Color bgColor = isRead
+        ? AppColors.primaryBlue.withValues(alpha: 0.08)
+        : AppColors.primaryBlue.withValues(alpha: 0.15);
+    final Color iconColor = isRead
+        ? AppColors.textSecondary
+        : AppColors.primaryBlue;
+
     IconData icon = Icons.notifications_rounded;
-    
     if (type == 'order') icon = Icons.local_mall_rounded;
     if (type == 'chat') icon = Icons.chat_bubble_rounded;
 
@@ -29,7 +35,7 @@ class NotificationIcon extends StatelessWidget {
       height: 44,
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(12),
+        shape: BoxShape.circle,
       ),
       child: Icon(icon, size: 22, color: iconColor),
     );

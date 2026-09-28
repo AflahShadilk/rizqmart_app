@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/features/presentation/widgets/extensions/sized_box.dart';
 
 // ---------------- Notification Empty State Widget ----------------
 
-/// Widget displaying a placeholder when there are no new notifications.
+/// Placeholder shown when the user has no notifications.
+/// Styled with the design system: soft blue-tinted icon circle, textPrimary heading, textSecondary body.
 class NotificationEmptyState extends StatelessWidget {
   const NotificationEmptyState({super.key});
 
@@ -15,30 +17,36 @@ class NotificationEmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Soft blue-tinted circle matching the NotificationIcon pattern
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: context.cs.surfaceContainerHighest.withValues(alpha: 0.3),
+              color: AppColors.primaryBlue.withValues(alpha: 0.08),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.notifications_none_rounded, 
-              size: 48, 
-              color: context.cs.outline.withValues(alpha: 0.7),
+            child: const Icon(
+              Icons.notifications_none_rounded,
+              size: 48,
+              color: AppColors.primaryBlue,
             ),
           ),
-          20.h,
+          24.h,
           Text(
-            "All caught up!", 
-            style: context.ts.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
+            'No notifications yet',
+            style: GoogleFonts.manrope(
+              color: AppColors.textPrimary,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
             ),
           ),
           8.h,
           Text(
-            'No new notifications', 
-            style: context.ts.bodyMedium?.copyWith(
-              color: context.cs.outline,
+            "You're all caught up! We'll let you know\nwhen something new arrives.",
+            style: GoogleFonts.manrope(
+              color: AppColors.textSecondary,
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+              height: 1.5,
             ),
             textAlign: TextAlign.center,
           ),

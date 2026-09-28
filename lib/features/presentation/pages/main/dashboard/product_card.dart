@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rizqmart/features/presentation/routes/app_routes.dart';
-import 'package:rizqmart/core/theme/context_theme.dart';
+import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/features/domain/entities/main/product_entities.dart';
 import 'package:rizqmart/features/domain/utils/product/variant_det_getter.dart';
 import 'package:rizqmart/features/presentation/widgets/buttons/add_to_cart_button.dart';
@@ -16,6 +16,7 @@ import 'package:rizqmart/features/presentation/cubits/coupon/coupon_state.dart';
 
 
 /// A reusable card widget to display a single product's summary, image, and price within grid layouts.
+/// Sizes itself flexibly from the parent — no hardcoded width or height.
 class ProductCard extends StatefulWidget {
   final ProductEntities product;
 
@@ -36,12 +37,15 @@ class _ProductCardState extends State<ProductCard>
   late String? productImage;
   late String variantName;
   late double variantMrp;
+  // Number of distinct variants — used to decide whether to show "From ₹X"
+  late int variantCount;
 
   late double discount;
   late bool hasDiscount;
   late double discountedPrice;
 
-  static const double _radiusValue = 12;
+  // Shared border radius for card and image corners
+  static const double _radius = 16;
 
   @override
   bool get wantKeepAlive => true;
@@ -54,11 +58,11 @@ class _ProductCardState extends State<ProductCard>
     _initializeProductDetails();
 
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.96).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
   }
@@ -66,13 +70,18 @@ class _ProductCardState extends State<ProductCard>
   void _initializeProductDetails() {
     productName = widget.product.name;
     productImage = getVariantImages(widget.product).firstOrNull;
-    variantName = getVariantNames(widget.product).first;
-    variantMrp = getVariantMrp(widget.product).first;
-    
+
+    final allNames = getVariantNames(widget.product);
+    final allMrps = getVariantMrp(widget.product);
+
+    variantCount = allNames.length;
+    variantName = allNames.firstOrNull ?? '';
+    variantMrp = allMrps.firstOrNull ?? 0.0;
+
     discount = widget.product.discount ?? 0;
     hasDiscount = discount > 0;
-    discountedPrice = hasDiscount 
-        ? variantMrp - (variantMrp * discount / 100) 
+    discountedPrice = hasDiscount
+        ? variantMrp - (variantMrp * discount / 100)
         : variantMrp;
   }
 
@@ -107,7 +116,13 @@ class _ProductCardState extends State<ProductCard>
 
     final colorScheme = Theme.of(context).colorScheme;
 
-    // Gesture detector handles the press animation and navigation to detail screen
+    // Price label: "From ₹X" for multi-variant products, "₹X" for single-variant
+    final priceLabel = variantCount > 1
+        ? 'From ₹${discountedPrice.toStringAsFixed(0)}'
+        : '₹${discountedPrice.toStringAsFixed(0)}';
+
+    // Gesture detector handles the press animation and navigation to detail screen.
+    // No hardcoded width/height — the card sizes to whatever the parent provides.
     return GestureDetector(
       onTapDown: (_) => _controller.forward(),
       onTapUp: (_) => _controller.reverse(),
@@ -115,151 +130,67 @@ class _ProductCardState extends State<ProductCard>
       onTap: _onTapNav,
       child: ScaleTransition(
         scale: _scaleAnimation,
-        child: SizedBox(
-          width: 140,
-          height: 200,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(_radiusValue),
-              boxShadow: [
-                BoxShadow(
-                  color: colorScheme.onSurface.withValues(alpha: 0.03),
-                  blurRadius: 4,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(_radiusValue),
-              child: Material(
-                color: colorScheme.surface,
-                child: Stack(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ProductImage(imageUrl: productImage),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                  // Product name and variant description section
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        productName,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.inter(
-                                        textStyle: Theme.of(context)
-                                            .textTheme
-                                            .labelLarge
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                              color: colorScheme.onSurface,
-                                              fontSize: 14,
-                                            ),
-                                      ),
-                                    ),
-                                    Text(
-                                      variantName,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.inter(
-                                        textStyle: Theme.of(context)
-                                            .textTheme
-                                            .labelSmall
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.w500,
-                                              color: colorScheme.onSurface,
-                                              fontSize: 11,
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                // Pricing and Add to Cart button section
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          if (hasDiscount) ...[
-                                            Text(
-                                              '₹${variantMrp.toStringAsFixed(0)}',
-                                              style: GoogleFonts.inter(
-                                                decoration: TextDecoration.lineThrough,
-                                                color: context.cs.onSurface.withValues(alpha: 0.6),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            2.h,
-                                          ],
-                                          Text(
-                                            '₹${discountedPrice.toStringAsFixed(0)}',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.inter(
-                                              textStyle: Theme.of(context)
-                                                  .textTheme
-                                                  .labelSmall
-                                                  ?.copyWith(
-                                                    letterSpacing: 0.5,
-                                                    color: colorScheme.primary,
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w700,
-                                                  ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(0, 0, 5, 5),
-                                      child: AddToCartButton(
-                                        widget: widget.product,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    // Discount badge showing percentage off if applicable
-                    if (hasDiscount)
-                      Positioned(
-                        top: 8,
-                        left: 8,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: colorScheme.error,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            '${discount.toStringAsFixed(0)}% OFF',
-                            style: GoogleFonts.inter(
-                              color: colorScheme.onError,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(_radius),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.06),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(_radius),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Image fills top ~60% with rounded top corners already handled by parent ClipRRect
+                Expanded(
+                  flex: 6,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ProductImage(
+                        imageUrl: productImage,
+                        width: double.infinity,
+                        height: double.infinity,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(_radius),
+                          topRight: Radius.circular(_radius),
                         ),
                       ),
-                      // Coupon badge shown if a coupon is available but no direct discount exists
+                      // Discount badge top-left
+                      if (hasDiscount)
+                        Positioned(
+                          top: 8,
+                          left: 8,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: colorScheme.error,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              '${discount.toStringAsFixed(0)}% OFF',
+                              style: GoogleFonts.manrope(
+                                color: colorScheme.onError,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ),
+                      // Coupon badge shown if a coupon exists but no direct discount
                       BlocBuilder<AvailableCouponCubit, AvailableCouponState>(
                         builder: (context, state) {
                           if (state is AvailableCouponLoaded) {
-                            final hasOffer = state.coupons.any((c) => c.applicableProductIds.isEmpty || c.applicableProductIds.contains(widget.product.id));
+                            final hasOffer = state.coupons.any(
+                              (c) => c.applicableProductIds.isEmpty ||
+                                  c.applicableProductIds.contains(widget.product.id),
+                            );
                             if (hasOffer && !hasDiscount) {
                               return Positioned(
                                 top: 8,
@@ -267,13 +198,13 @@ class _ProductCardState extends State<ProductCard>
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                                   decoration: BoxDecoration(
-                                    color: colorScheme.secondary,
+                                    color: AppColors.accentAmber,
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
                                     'Offer Inside!',
-                                    style: GoogleFonts.inter(
-                                      color: colorScheme.onSecondary,
+                                    style: GoogleFonts.manrope(
+                                      color: AppColors.textPrimary,
                                       fontSize: 10,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -285,13 +216,126 @@ class _ProductCardState extends State<ProductCard>
                           return const SizedBox.shrink();
                         },
                       ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+
+                // Bottom ~40%: text info + add-to-cart button
+                Expanded(
+                  flex: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Product name and variant/weight label
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              productName,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.manrope(
+                                fontWeight: FontWeight.w600, // SemiBold
+                                color: AppColors.textPrimary,
+                                fontSize: 13,
+                              ),
+                            ),
+                            if (variantName.isNotEmpty) ...[
+                              2.h,
+                              Text(
+                                variantName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.manrope(
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.textSecondary,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+
+                        // Price row + circular add-to-cart button
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Strikethrough MRP shown only when discounted
+                                  if (hasDiscount) ...[
+                                    Text(
+                                      '₹${variantMrp.toStringAsFixed(0)}',
+                                      style: GoogleFonts.manrope(
+                                        decoration: TextDecoration.lineThrough,
+                                        color: AppColors.textSecondary,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    2.h,
+                                  ],
+                                  // Final price — amber/orange bold as per design spec
+                                  Text(
+                                    priceLabel,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.manrope(
+                                      color: AppColors.accentAmber,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // AddToCartButton — only the container color is overridden here;
+                            // increment/decrement logic inside the widget is untouched.
+                            Theme(
+                              data: Theme.of(context).copyWith(
+                                colorScheme: Theme.of(context).colorScheme.copyWith(
+                                  // The button internally uses success500 (green); we restyle to blue here
+                                  primary: AppColors.primaryBlue,
+                                ),
+                              ),
+                              child: _BlueCartButton(product: widget.product),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// A thin wrapper that renders the AddToCartButton with a blue circular container
+/// instead of the default green — only the visual container is changed here.
+class _BlueCartButton extends StatelessWidget {
+  final ProductEntities product;
+
+  const _BlueCartButton({required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: const BoxDecoration(
+        color: AppColors.primaryBlue,
+        shape: BoxShape.circle,
+      ),
+      child: AddToCartButton(widget: product),
     );
   }
 }
