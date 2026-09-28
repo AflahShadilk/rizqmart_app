@@ -1,15 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rizqmart/features/presentation/routes/app_routes.dart';
 import 'package:rizqmart/core/theme/app_colors.dart';
+import 'package:rizqmart/features/presentation/routes/app_routes.dart';
+import 'package:rizqmart/features/presentation/widgets/extensions/sized_box.dart';
+import 'package:rizqmart/features/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rizqmart/features/presentation/bloc/main/address/address_bloc.dart';
 import 'package:rizqmart/features/presentation/bloc/main/address/address_state.dart';
 import 'package:rizqmart/features/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/presentation/pages/main/dashboard/widgets/notification_button.dart';
-import 'package:rizqmart/features/presentation/widgets/page_reusable_widgets/image_relate/reusable_image_container.dart';
 
+/// A custom app bar widget rendered on the blue header background.
+/// Contains the logo, location indicator, action icons, and a white pill search bar.
 class TopBarItems extends StatelessWidget {
   final TextEditingController searchController;
   final Function(String) onSearch;
@@ -20,27 +23,39 @@ class TopBarItems extends StatelessWidget {
     required this.onSearch,
   });
 
+// ---------------- Build Method ----------------
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final currentUser = FirebaseAuth.instance.currentUser;
     final isLoggedIn = currentUser != null;
 
+    // Transparent — the blue Scaffold background shows through as the header color
     return Container(
       width: double.infinity,
-      color: AppColors.primaryBlue,
+      color: Colors.transparent,
       child: Column(
         children: [
-          SizedBox(height: MediaQuery.of(context).padding.top + 16),
+          // Safe-area top padding
+          SizedBox(height: MediaQuery.of(context).padding.top + 8),
+
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Location Display
+                // App Logo / Branding Image
+                Image(
+                  image: const AssetImage('assets/icons_and_images/carrot.png'),
+                  width: size.width * 0.08,
+                  color: Colors.white,
+                ),
+                12.w,
+
+                // Location Display — tapping refreshes the current location
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                       context.read<AddressBloc>().add(GetCurrentLocationEvent());
+                      context.read<AddressBloc>().add(GetCurrentLocationEvent());
                     },
                     child: BlocBuilder<AddressBloc, AddressState>(
                       builder: (context, state) {
@@ -50,16 +65,16 @@ class TopBarItems extends StatelessWidget {
                         } else if (state is LocationLoadingState) {
                           locationText = 'Locating...';
                         }
-                    
+
                         return Row(
-                          mainAxisSize: MainAxisSize.min, 
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             const Icon(
                               Icons.location_on_rounded,
                               color: Colors.white,
-                              size: 20,
+                              size: 18,
                             ),
-                            const SizedBox(width: 4),
+                            4.w,
                             Flexible(
                               child: Text(
                                 locationText,
@@ -78,41 +93,41 @@ class TopBarItems extends StatelessWidget {
                     ),
                   ),
                 ),
-                
-                // User Actions Group
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Wrap with local Theme override to cleanly turn the notification icon white
-                    Theme(
-                      data: Theme.of(context).copyWith(
-                        colorScheme: Theme.of(context).colorScheme.copyWith(
-                          surfaceContainerHighest: Colors.white.withValues(alpha: 0.2),
-                          primary: Colors.white,
-                          error: AppColors.accentOrange,
-                          onError: Colors.white,
-                        ),
-                      ),
-                      child: const NotificationButton(),
+
+                // Notification bell and profile — override colorScheme so icons render white
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme: Theme.of(context).colorScheme.copyWith(
+                      surfaceContainerHighest: Colors.white.withValues(alpha: 0.2),
+                      primary: Colors.white,
+                      error: AppColors.accentAmber,
+                      onError: Colors.white,
                     ),
-                    const SizedBox(width: 16),
-                    isLoggedIn
-                        ? const ProfileButton()
-                        : const LoginButton(),
-                  ],
+                  ),
+                  child: const NotificationButton(),
                 ),
+                12.w,
+                isLoggedIn ? const ProfileButton() : const LoginButton(),
               ],
             ),
           ),
-          
-          // Global Search Bar Widget styled as a pill
+
+          // White pill search bar sits at the bottom of the blue header area.
+          // The rounded white card in DashboardPage starts just below this.
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
             child: Container(
               height: 48,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: TextField(
                 controller: searchController,
@@ -127,9 +142,16 @@ class TopBarItems extends StatelessWidget {
                     color: AppColors.textSecondary,
                     fontSize: 14,
                   ),
-                  prefixIcon: const Icon(Icons.search_rounded, color: AppColors.textSecondary),
+                  prefixIcon: const Icon(
+                    Icons.search_rounded,
+                    color: AppColors.textSecondary,
+                    size: 20,
+                  ),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 14,
+                  ),
                 ),
               ),
             ),
@@ -140,6 +162,9 @@ class TopBarItems extends StatelessWidget {
   }
 }
 
+// ---------------- User Action Widgets ----------------
+
+/// Circular profile avatar button; tapping navigates to the profile page.
 class ProfileButton extends StatelessWidget {
   const ProfileButton({super.key});
 
@@ -186,6 +211,7 @@ class ProfileButton extends StatelessWidget {
   }
 }
 
+/// Builds a quick login button for guest users to sign in.
 class LoginButton extends StatelessWidget {
   const LoginButton({super.key});
 

@@ -78,7 +78,7 @@ class CouponCard extends StatelessWidget {
                       ),
                       child: Text(
                         '${coupon.percentage.toStringAsFixed(0)}% OFF',
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.manrope(
                           color: colorScheme.onError,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -101,7 +101,7 @@ class CouponCard extends StatelessWidget {
                       coupon.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.inter(
+                      style: GoogleFonts.manrope(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: colorScheme.onSurface,
@@ -119,7 +119,7 @@ class CouponCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             'Min. Order: ₹${coupon.minOrderValue.toStringAsFixed(0)}',
-                            style: GoogleFonts.inter(
+                            style: GoogleFonts.manrope(
                               fontSize: 11,
                               color: colorScheme.onSurface.withValues(alpha: 0.6),
                             ),

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/features/presentation/cubits/dashboard/search/dash_board_search_cubit.dart';
 import 'package:rizqmart/features/presentation/bloc/notification/notification_bloc.dart';
 import 'package:rizqmart/features/presentation/bloc/notification/notification_event.dart';
-import 'package:rizqmart/core/theme/app_colors.dart';
 import 'package:rizqmart/features/presentation/bloc/main/address/address_bloc.dart';
 import 'package:rizqmart/features/presentation/bloc/main/address/address_event.dart';
 import 'package:rizqmart/features/domain/entities/main/product_entities.dart';
@@ -17,12 +16,16 @@ import 'package:rizqmart/features/presentation/cubits/search_bar/search_state.da
 import 'package:rizqmart/features/presentation/widgets/search_helper/empty_product_state.dart';
 import 'package:rizqmart/features/presentation/pages/main/dashboard/topbar_items.dart';
 import 'package:rizqmart/features/presentation/widgets/bloc%20helper/circular_progress.dart';
+import 'package:rizqmart/features/presentation/widgets/bloc%20helper/scaffold_error.dart';
 import 'package:rizqmart/features/presentation/widgets/page_reusable_widgets/responsive_wrapper.dart';
 import 'package:rizqmart/features/presentation/pages/main/dashboard/widgets/search_dropdown_overlay.dart';
 import 'package:rizqmart/features/presentation/pages/main/dashboard/widgets/exclusive_offers_section.dart';
+import 'package:rizqmart/features/presentation/pages/main/dashboard/widgets/all_products_section.dart';
 import 'package:rizqmart/features/presentation/pages/main/dashboard/widgets/cook_tonight_dashboard_card.dart';
-import 'package:rizqmart/features/presentation/pages/main/dashboard/product_card.dart';
 
+// ---------------- Controllers & Classes ----------------
+
+/// The primary home screen widget of the app showcasing products, offers, and a search interface.
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -31,8 +34,11 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+
+  // ---------------- Variables ----------------
   final TextEditingController searchController = TextEditingController();
 
+  // ---------------- Init State ----------------
   @override
   void initState() {
     super.initState();
@@ -45,6 +51,7 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
+  // ---------------- Dashboard Refresh Logic ----------------
   Future<void> _refreshDashboard() async {
     context.read<DashBloc>().add(const LoadingProductsEvent());
     context.read<AddressBloc>().add(GetCurrentLocationEvent());
@@ -54,84 +61,45 @@ class _DashboardPageState extends State<DashboardPage> {
       context.read<NotificationBloc>().add(LoadNotificationsEvent(user.uid));
     }
 
+    // Delay added to ensure the RefreshIndicator shows the spinner smoothly
     await Future.delayed(const Duration(milliseconds: 1000));
   }
 
+  // ---------------- Dispose ----------------
   @override
   void dispose() {
     searchController.dispose();
     super.dispose();
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: GoogleFonts.manrope(
-              color: AppColors.textPrimary,
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          Text(
-            'See All',
-            style: GoogleFonts.manrope(
-              color: AppColors.primaryBlue,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProductRow(List<ProductEntities> products) {
-    if (products.isEmpty) return const SizedBox.shrink();
-    return SizedBox(
-      height: 280, // Height for ProductCard layout mapping
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        scrollDirection: Axis.horizontal,
-        itemCount: products.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 16),
-        itemBuilder: (context, index) {
-          return SizedBox(
-            width: 160,
-            child: ProductCard(
-              key: ValueKey(products[index].id),
-              product: products[index],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
+  // ---------------- Build Method ----------------
   @override
   Widget build(BuildContext context) {
+    // Provide a localized SearchCubit instance for the Dashboard to manage its search state
     return BlocProvider(
       create: (ctx) => DashboardSearchCubit(
         searchCubit: ctx.read<SearchCubit>(),
       ),
+      // Apply responsive layout constraints for different screen sizes
       child: Builder(
         builder: (context) => ResponsiveWrapper(
           child: Scaffold(
-            backgroundColor: AppColors.primaryBlue, // Fills the gap securely as header background
+            // Blue background fills the top header area behind the TopBar
+            backgroundColor: AppColors.primaryBlue,
+            // Stack allows the dropdown overlay to appear above the main scrollable content
             body: Stack(
               children: [
                 Column(
                   children: [
+                    // Blue header: TopBar renders on the blue Scaffold background
                     TopBarItems(
                       searchController: searchController,
                       onSearch: (query) {
                         context.read<DashboardSearchCubit>().search(query);
                       },
                     ),
+
+                    // White content card overlapping upward into the blue header
                     Expanded(
                       child: Container(
                         width: double.infinity,
@@ -151,7 +119,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             listener: (context, state) {
                               if (state is FailureLoadingProductState) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(state.error)),
+                                  ErrorMessageSnackBar.build(state),
                                 );
                               }
                             },
@@ -215,21 +183,22 @@ class _DashboardPageState extends State<DashboardPage> {
                                       );
                                     }
 
+                                    // Main dashboard content inside the white card
                                     return RefreshIndicator(
                                       onRefresh: _refreshDashboard,
                                       child: SingleChildScrollView(
                                         physics: const AlwaysScrollableScrollPhysics(),
-                                        padding: const EdgeInsets.only(bottom: 24),
+                                        padding: const EdgeInsets.only(top: 8, bottom: 24),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
+                                            // Banner/offers carousel — rounded corners handled inside the widget
                                             const ExclusiveOffersSection(),
                                             const SizedBox(height: 16),
+                                            // Cook Tonight card — restyled with blue gradient, no green fills
                                             const CookTonightDashboardCard(),
-                                            _buildSectionHeader('Popular Products'),
-                                            _buildProductRow(displayProducts),
-                                            _buildSectionHeader('Categories'),
-                                            _buildProductRow(displayProducts.reversed.toList()), // placeholder distribution
+                                            // Products section with section header + responsive grid
+                                            AllProductsSection(products: displayProducts),
                                           ],
                                         ),
                                       ),
@@ -246,6 +215,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                   ],
                 ),
+                // Search dropdown overlay floats above everything
                 SearchDropdownOverlay(searchController: searchController),
               ],
             ),
